@@ -34,8 +34,7 @@ class AppDotted extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (_, constraints) {
-        final count =
-            (constraints.maxWidth / (dashWidth + dashGap)).floor();
+        final count = (constraints.maxWidth / (dashWidth + dashGap)).floor();
         return Padding(
           padding: EdgeInsets.symmetric(vertical: 1.h),
           child: Row(

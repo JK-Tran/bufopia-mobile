@@ -97,8 +97,9 @@ class SettingsLanguageSwitcher extends StatelessWidget {
                     child: AppText.c1(
                       opt.$2,
                       fontSize: 10.sp,
-                      fontWeight:
-                          isSelected ? FontWeight.w700 : FontWeight.w600,
+                      fontWeight: isSelected
+                          ? FontWeight.w700
+                          : FontWeight.w600,
                       color: isSelected
                           ? (isPaper
                                 ? AppColors.paperTextDark

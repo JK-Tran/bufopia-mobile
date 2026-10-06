@@ -183,19 +183,21 @@ class _HomeMenuItemState extends State<HomeMenuItem> {
                                 SizedBox(
                                   height: (h * 0.012).clamp(3.0, 6.0),
                                 ),
-                                Padding(
-                                  padding: EdgeInsets.symmetric(
-                                    horizontal: w * 0.02,
-                                  ),
-                                  child: AppText.c1(
-                                    widget.data.subtitle,
-                                    fontSize: (h * 0.056).clamp(10.5, 15.5),
-                                    color: widget.isPaperTheme
-                                        ? AppColors.paperTextMedium
-                                        : AppColors.grayDark,
-                                    textAlign: TextAlign.center,
-                                    maxLines: 3,
-                                    overflow: TextOverflow.ellipsis,
+                                Flexible(
+                                  child: Padding(
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: w * 0.02,
+                                    ),
+                                    child: AppText.c1(
+                                      widget.data.subtitle,
+                                      fontSize: (h * 0.056).clamp(10.5, 15.5),
+                                      color: widget.isPaperTheme
+                                          ? AppColors.paperTextMedium
+                                          : AppColors.grayDark,
+                                      textAlign: TextAlign.center,
+                                      maxLines: 3,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
                                   ),
                                 ),
                               ],

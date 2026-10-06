@@ -31,9 +31,17 @@ class HomeSettingsDialog extends StatelessWidget {
         ),
         title: Row(
           children: [
-            Icon(Icons.chat_bubble_outline_rounded, color: AppColors.blue, size: 20.r),
+            Icon(
+              Icons.chat_bubble_outline_rounded,
+              color: AppColors.blue,
+              size: 20.r,
+            ),
             SizedBox(width: 8.w),
-            AppText.t3('Góp ý cho Bufopia', fontWeight: FontWeight.w700, fontSize: 16.sp),
+            AppText.t3(
+              'Góp ý cho Bufopia',
+              fontWeight: FontWeight.w700,
+              fontSize: 16.sp,
+            ),
           ],
         ),
         content: Column(
@@ -77,14 +85,16 @@ class HomeSettingsDialog extends StatelessWidget {
             final isSoundEnabled =
                 appState.isMusicEnabled || appState.isSfxEnabled;
 
-            final dialogBg =
-                isClassic ? AppColors.white : AppColors.paperSurfaceWarm;
+            final dialogBg = isClassic
+                ? AppColors.white
+                : AppColors.paperSurfaceWarm;
             final dialogBorder = isClassic
                 ? AppColors.classicBorder
                 : AppColors.paperBorderDark;
 
-            final primaryBg =
-                isClassic ? AppColors.classicButtonBlue : AppColors.paperGreen;
+            final primaryBg = isClassic
+                ? AppColors.classicButtonBlue
+                : AppColors.paperGreen;
             final primaryExtrusion = isClassic
                 ? AppColors.classicButtonBlueExtrusion
                 : AppColors.paperGreenExtrusion;
@@ -113,8 +123,9 @@ class HomeSettingsDialog extends StatelessWidget {
                     boxShadow: [
                       BoxShadow(
                         color: isClassic
-                            ? AppColors.classicShadowIndigo
-                                .withValues(alpha: 0.16)
+                            ? AppColors.classicShadowIndigo.withValues(
+                                alpha: 0.16,
+                              )
                             : AppColors.black.withValues(alpha: 0.22),
                         blurRadius: 18.r,
                         offset: Offset(0, 6.h),
@@ -166,12 +177,12 @@ class HomeSettingsDialog extends StatelessWidget {
                           SettingsItem(
                             title: 'Ngôn ngữ',
                             subtitle: 'Ngôn ngữ hiển thị của trò chơi',
-                          action: SettingsLanguageSwitcher(
+                            action: SettingsLanguageSwitcher(
                               currentLanguage: appState.languageCode,
                               isPaper: isPaper,
-                              onChanged: (code) => context
-                                  .read<AppBloc>()
-                                  .add(AppEvent.languageChanged(code)),
+                              onChanged: (code) => context.read<AppBloc>().add(
+                                AppEvent.languageChanged(code),
+                              ),
                             ),
                           ),
 
@@ -187,9 +198,9 @@ class HomeSettingsDialog extends StatelessWidget {
                             action: SettingsThemeSwitcher(
                               currentTheme: appState.appTheme,
                               isPaper: isPaper,
-                              onChanged: (theme) => context
-                                  .read<AppBloc>()
-                                  .add(AppEvent.themeChanged(theme)),
+                              onChanged: (theme) => context.read<AppBloc>().add(
+                                AppEvent.themeChanged(theme),
+                              ),
                             ),
                           ),
 
@@ -222,22 +233,22 @@ class HomeSettingsDialog extends StatelessWidget {
                               onPressed: () {
                                 if (isSoundEnabled) {
                                   if (appState.isMusicEnabled) {
-                                    context
-                                        .read<AppBloc>()
-                                        .add(const AppEvent.musicToggled());
+                                    context.read<AppBloc>().add(
+                                      const AppEvent.musicToggled(),
+                                    );
                                   }
                                   if (appState.isSfxEnabled) {
-                                    context
-                                        .read<AppBloc>()
-                                        .add(const AppEvent.sfxToggled());
+                                    context.read<AppBloc>().add(
+                                      const AppEvent.sfxToggled(),
+                                    );
                                   }
                                 } else {
-                                  context
-                                      .read<AppBloc>()
-                                      .add(const AppEvent.musicToggled());
-                                  context
-                                      .read<AppBloc>()
-                                      .add(const AppEvent.sfxToggled());
+                                  context.read<AppBloc>().add(
+                                    const AppEvent.musicToggled(),
+                                  );
+                                  context.read<AppBloc>().add(
+                                    const AppEvent.sfxToggled(),
+                                  );
                                 }
                               },
                             ),

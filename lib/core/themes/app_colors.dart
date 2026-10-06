@@ -173,7 +173,6 @@ abstract final class AppColors {
   static const Color leaderboardTabSelectedBorder = Color(0xFF16A34A);
   static const Color leaderboardRowBg = Color(0xFFFCFBF7);
 
-
   // --- 9. Paper Theme Palette ---
   // Backgrounds & Surfaces
   static const Color paperBackground = Color(0xFFFCF9F2);
