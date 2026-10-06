@@ -1,0 +1,1 @@
+typedef Disposable = void Function();

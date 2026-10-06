@@ -1,0 +1,27 @@
+{
+  "@@locale": "es",
+  "counterAppBarTitle": "Contador",
+  "@counterAppBarTitle": {
+    "description": "Texto mostrado en la AppBar de la página del contador"
+  },
+  "navHome": "Explorar",
+  "navMap": "Mapa",
+  "navChat": "Mensajes",
+  "navProfile": "Perfil",
+
+  "unknownError": "Ocurrió un error desconocido",
+  "networkError": "Error de conexión de red. Por favor, compruebe su conexión.",
+  "timeoutError": "Tiempo de conexión agotado. Inténtelo de nuevo.",
+  "sessionExpiredError": "La sesión ha caducado. Inicie sesión de nuevo.",
+  "unauthorizedError": "Acceso no autorizado. Inicie sesión.",
+  "forbiddenError": "Acceso prohibido.",
+  "notFoundError": "Recurso no encontrado.",
+  "serverError": "Error del servidor. Inténtelo de nuevo más tarde.",
+
+  "year": "año(s)",
+  "month": "mes(es)",
+  "day": "día(s)",
+  "hour": "hora(s)",
+  "minute": "minuto(s)",
+  "justNow": "Ahora mismo"
+}

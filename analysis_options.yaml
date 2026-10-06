@@ -1,0 +1,20 @@
+include:
+  - package:very_good_analysis/analysis_options.yaml
+  - package:bloc_lint/recommended.yaml
+analyzer:
+  exclude:
+    - lib/l10n/gen/*
+    - lib/shared/l10n/gen/*
+    - build/**
+    - android/**
+    - ios/**
+    - web/**
+    - windows/**
+    - macos/**
+    - linux/**
+linter:
+  rules:
+    public_member_api_docs: false
+    one_member_abstracts: false
+    unawaited_futures: false
+    discarded_futures: false

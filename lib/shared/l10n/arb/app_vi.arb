@@ -1,0 +1,24 @@
+{
+  "@@locale": "vi",
+  "counterAppBarTitle": "Bộ đếm",
+  "navHome": "Khám phá",
+  "navMap": "Bản đồ",
+  "navChat": "Tin nhắn",
+  "navProfile": "Cá nhân",
+
+  "unknownError": "Đã xảy ra lỗi không xác định",
+  "networkError": "Lỗi kết nối mạng. Vui lòng kiểm tra lại đường truyền.",
+  "timeoutError": "Kết nối quá thời gian chờ. Vui lòng thử lại.",
+  "sessionExpiredError": "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.",
+  "unauthorizedError": "Không có quyền truy cập. Vui lòng đăng nhập.",
+  "forbiddenError": "Truy cập bị từ chối.",
+  "notFoundError": "Không tìm thấy dữ liệu yêu cầu.",
+  "serverError": "Lỗi máy chủ. Vui lòng thử lại sau.",
+
+  "year": "năm trước",
+  "month": "tháng trước",
+  "day": "ngày trước",
+  "hour": "giờ trước",
+  "minute": "phút trước",
+  "justNow": "Vừa xong"
+}

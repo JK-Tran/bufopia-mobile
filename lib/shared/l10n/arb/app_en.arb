@@ -1,0 +1,27 @@
+{
+  "@@locale": "en",
+  "counterAppBarTitle": "Counter",
+  "@counterAppBarTitle": {
+    "description": "Text shown in the AppBar of the Counter Page"
+  },
+  "navHome": "Explore",
+  "navMap": "Map",
+  "navChat": "Messages",
+  "navProfile": "Profile",
+
+  "unknownError": "An unknown error occurred",
+  "networkError": "Network connection error. Please check your internet connection.",
+  "timeoutError": "Connection timed out. Please try again.",
+  "sessionExpiredError": "Session has expired. Please log in again.",
+  "unauthorizedError": "Unauthorized access. Please log in.",
+  "forbiddenError": "Access forbidden.",
+  "notFoundError": "Requested resource not found.",
+  "serverError": "Server error. Please try again later.",
+
+  "year": "year(s) ago",
+  "month": "month(s) ago",
+  "day": "day(s) ago",
+  "hour": "hour(s) ago",
+  "minute": "minute(s) ago",
+  "justNow": "Just now"
+}
