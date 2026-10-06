@@ -6,7 +6,7 @@ abstract class LeaderboardState with _$LeaderboardState {
     @Default(false) bool isLoading,
     String? errorMessage,
     @Default('xp') String selectedMetric,
-    LeaderboardEntity? leaderboard,
-    @Default({}) Map<String, LeaderboardEntity> leaderboardsByMetric,
+    Leaderboard? leaderboard,
+    @Default({}) Map<String, Leaderboard> leaderboardsByMetric,
   }) = _LeaderboardState;
 }

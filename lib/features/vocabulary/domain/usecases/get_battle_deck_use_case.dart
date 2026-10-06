@@ -1,4 +1,4 @@
-import 'package:bufopia/features/vocabulary/domain/entities/battle_deck_entity.dart';
+import 'package:bufopia/features/vocabulary/domain/entities/battle_deck.dart';
 import 'package:bufopia/features/vocabulary/domain/repositories/vocabulary_repository.dart';
 import 'package:bufopia/shared/infrastructure/domain/usecase/future/base_future_use_case.dart';
 import 'package:bufopia/shared/infrastructure/domain/usecase/io/base_input.dart';
@@ -24,8 +24,7 @@ abstract class GetBattleDeckInput extends BaseInput with _$GetBattleDeckInput {
 @freezed
 abstract class GetBattleDeckOutput extends BaseOutput
     with _$GetBattleDeckOutput {
-  const factory GetBattleDeckOutput(BattleDeckEntity deck) =
-      _GetBattleDeckOutput;
+  const factory GetBattleDeckOutput(BattleDeck deck) = _GetBattleDeckOutput;
 
   const GetBattleDeckOutput._();
 }

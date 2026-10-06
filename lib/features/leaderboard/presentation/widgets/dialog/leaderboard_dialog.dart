@@ -3,7 +3,7 @@ import 'package:bufopia/components/app_game_dialog.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
-import 'package:bufopia/features/leaderboard/domain/entities/leaderboard_entity.dart';
+import 'package:bufopia/features/leaderboard/domain/entities/leaderboard.dart';
 import 'package:bufopia/features/leaderboard/presentation/bloc/leaderboard_bloc.dart';
 import 'package:bufopia/features/leaderboard/presentation/widgets/leaderboard_list.dart';
 import 'package:bufopia/features/leaderboard/presentation/widgets/leaderboard_podium.dart';
@@ -105,7 +105,7 @@ class _LeaderboardDialogState extends State<LeaderboardDialog> {
             }
 
             final players =
-                state.leaderboard?.players ?? const <LeaderboardPlayerEntity>[];
+                state.leaderboard?.players ?? const <LeaderboardPlayer>[];
             if (players.isEmpty) {
               return _buildEmpty();
             }
@@ -180,11 +180,11 @@ class _LeaderboardDialogState extends State<LeaderboardDialog> {
   // Main content
 
   Widget _buildContent({
-    required List<LeaderboardPlayerEntity> players,
+    required List<LeaderboardPlayer> players,
     required String metric,
     required bool isPaper,
   }) {
-    LeaderboardPlayerEntity? findByRank(int rank) {
+    LeaderboardPlayer? findByRank(int rank) {
       final filtered = players.where((p) => p.rank == rank);
       return filtered.isEmpty ? null : filtered.first;
     }

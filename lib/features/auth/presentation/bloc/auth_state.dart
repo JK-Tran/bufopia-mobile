@@ -5,7 +5,7 @@ abstract class AuthState with _$AuthState {
   const factory AuthState({
     @Default(false) bool isLoggedIn,
     @Default(false) bool isLoading,
-    UserEntity? currentUser,
+    User? currentUser,
     String? errorMessage,
   }) = _AuthState;
 }

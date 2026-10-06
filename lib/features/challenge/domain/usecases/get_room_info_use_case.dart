@@ -1,4 +1,4 @@
-import 'package:bufopia/features/challenge/domain/entities/room_info_entity.dart';
+import 'package:bufopia/features/challenge/domain/entities/room_info.dart';
 import 'package:bufopia/features/challenge/domain/repositories/challenge_room_repository.dart';
 import 'package:bufopia/shared/infrastructure/domain/usecase/future/base_future_use_case.dart';
 import 'package:bufopia/shared/infrastructure/domain/usecase/io/base_input.dart';
@@ -20,7 +20,7 @@ abstract class GetRoomInfoInput extends BaseInput with _$GetRoomInfoInput {
 @freezed
 abstract class GetRoomInfoOutput extends BaseOutput with _$GetRoomInfoOutput {
   const factory GetRoomInfoOutput({
-    RoomInfoEntity? roomInfo,
+    RoomInfo? roomInfo,
   }) = _GetRoomInfoOutput;
 
   const GetRoomInfoOutput._();

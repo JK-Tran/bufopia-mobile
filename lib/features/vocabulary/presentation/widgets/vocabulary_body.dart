@@ -1,7 +1,7 @@
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
-import 'package:bufopia/features/vocabulary/domain/entities/battle_question_entity.dart';
+import 'package:bufopia/features/vocabulary/domain/entities/battle_question.dart';
 import 'package:bufopia/features/vocabulary/presentation/bloc/vocabulary_bloc.dart';
 import 'package:bufopia/features/vocabulary/presentation/widgets/dialog/vocabulary_result_dialog.dart';
 import 'package:bufopia/features/vocabulary/presentation/widgets/vocabulary_answer_item.dart';
@@ -35,7 +35,7 @@ class VocabularyBody extends StatelessWidget {
   static const String _paperBgPath =
       'assets/images/background_switch/app_background_1.webp';
 
-  String _getTargetWord(BattleQuestionEntity? currentQ) {
+  String _getTargetWord(BattleQuestion? currentQ) {
     if (currentQ == null) return '';
     return currentQ.vi.isNotEmpty ? currentQ.vi : currentQ.en;
   }

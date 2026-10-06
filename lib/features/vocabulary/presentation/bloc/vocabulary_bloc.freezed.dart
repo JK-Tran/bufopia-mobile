@@ -1337,7 +1337,7 @@ String toString() {
 /// @nodoc
 mixin _$VocabularyState {
 
- bool get isLoading; String? get errorMessage; BattleDeckEntity? get deckEntity; List<BattleQuestionEntity> get questions; int get currentQuestionIndex; int get player1Score; int get player2Score; int get correctCountP1; int get remainingSeconds; bool get isRoundLocked; String? get selectedWordP1; String? get selectedWordP2; bool get isGameOver; bool get isSavingReward; BattleRewardEntity? get reward; List<String> get optionsP1; List<String> get optionsP2; bool get isBotOpponent; String? get roomCode; String? get opponentName; String? get opponentAvatar; bool get isOpponentConnected; bool get isOpponentLeft; String? get opponentLeftMessage; int get playerIndex; int get matchRound; int get startedAt; String? get selectedOptionIdP1; String? get selectedOptionIdP2; bool? get isP1Correct; bool? get isP2Correct; bool get isWaitingForReady; String get topic; String? get currentUid; Map<String, bool> get answersP1;
+ bool get isLoading; String? get errorMessage; BattleDeck? get deckEntity; List<BattleQuestion> get questions; int get currentQuestionIndex; int get player1Score; int get player2Score; int get correctCountP1; int get remainingSeconds; bool get isRoundLocked; String? get selectedWordP1; String? get selectedWordP2; bool get isGameOver; bool get isSavingReward; BattleReward? get reward; List<String> get optionsP1; List<String> get optionsP2; bool get isBotOpponent; String? get roomCode; String? get opponentName; String? get opponentAvatar; bool get isOpponentConnected; bool get isOpponentLeft; String? get opponentLeftMessage; int get playerIndex; int get matchRound; int get startedAt; String? get selectedOptionIdP1; String? get selectedOptionIdP2; bool? get isP1Correct; bool? get isP2Correct; bool get isWaitingForReady; String get topic; String? get currentUid; Map<String, bool> get answersP1;
 /// Create a copy of VocabularyState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1368,11 +1368,11 @@ abstract mixin class $VocabularyStateCopyWith<$Res>  {
   factory $VocabularyStateCopyWith(VocabularyState value, $Res Function(VocabularyState) _then) = _$VocabularyStateCopyWithImpl;
 @useResult
 $Res call({
- bool isLoading, String? errorMessage, BattleDeckEntity? deckEntity, List<BattleQuestionEntity> questions, int currentQuestionIndex, int player1Score, int player2Score, int correctCountP1, int remainingSeconds, bool isRoundLocked, String? selectedWordP1, String? selectedWordP2, bool isGameOver, bool isSavingReward, BattleRewardEntity? reward, List<String> optionsP1, List<String> optionsP2, bool isBotOpponent, String? roomCode, String? opponentName, String? opponentAvatar, bool isOpponentConnected, bool isOpponentLeft, String? opponentLeftMessage, int playerIndex, int matchRound, int startedAt, String? selectedOptionIdP1, String? selectedOptionIdP2, bool? isP1Correct, bool? isP2Correct, bool isWaitingForReady, String topic, String? currentUid, Map<String, bool> answersP1
+ bool isLoading, String? errorMessage, BattleDeck? deckEntity, List<BattleQuestion> questions, int currentQuestionIndex, int player1Score, int player2Score, int correctCountP1, int remainingSeconds, bool isRoundLocked, String? selectedWordP1, String? selectedWordP2, bool isGameOver, bool isSavingReward, BattleReward? reward, List<String> optionsP1, List<String> optionsP2, bool isBotOpponent, String? roomCode, String? opponentName, String? opponentAvatar, bool isOpponentConnected, bool isOpponentLeft, String? opponentLeftMessage, int playerIndex, int matchRound, int startedAt, String? selectedOptionIdP1, String? selectedOptionIdP2, bool? isP1Correct, bool? isP2Correct, bool isWaitingForReady, String topic, String? currentUid, Map<String, bool> answersP1
 });
 
 
-$BattleDeckEntityCopyWith<$Res>? get deckEntity;$BattleRewardEntityCopyWith<$Res>? get reward;
+$BattleDeckCopyWith<$Res>? get deckEntity;$BattleRewardCopyWith<$Res>? get reward;
 
 }
 /// @nodoc
@@ -1390,8 +1390,8 @@ class _$VocabularyStateCopyWithImpl<$Res>
 isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
 as String?,deckEntity: freezed == deckEntity ? _self.deckEntity : deckEntity // ignore: cast_nullable_to_non_nullable
-as BattleDeckEntity?,questions: null == questions ? _self.questions : questions // ignore: cast_nullable_to_non_nullable
-as List<BattleQuestionEntity>,currentQuestionIndex: null == currentQuestionIndex ? _self.currentQuestionIndex : currentQuestionIndex // ignore: cast_nullable_to_non_nullable
+as BattleDeck?,questions: null == questions ? _self.questions : questions // ignore: cast_nullable_to_non_nullable
+as List<BattleQuestion>,currentQuestionIndex: null == currentQuestionIndex ? _self.currentQuestionIndex : currentQuestionIndex // ignore: cast_nullable_to_non_nullable
 as int,player1Score: null == player1Score ? _self.player1Score : player1Score // ignore: cast_nullable_to_non_nullable
 as int,player2Score: null == player2Score ? _self.player2Score : player2Score // ignore: cast_nullable_to_non_nullable
 as int,correctCountP1: null == correctCountP1 ? _self.correctCountP1 : correctCountP1 // ignore: cast_nullable_to_non_nullable
@@ -1402,7 +1402,7 @@ as String?,selectedWordP2: freezed == selectedWordP2 ? _self.selectedWordP2 : se
 as String?,isGameOver: null == isGameOver ? _self.isGameOver : isGameOver // ignore: cast_nullable_to_non_nullable
 as bool,isSavingReward: null == isSavingReward ? _self.isSavingReward : isSavingReward // ignore: cast_nullable_to_non_nullable
 as bool,reward: freezed == reward ? _self.reward : reward // ignore: cast_nullable_to_non_nullable
-as BattleRewardEntity?,optionsP1: null == optionsP1 ? _self.optionsP1 : optionsP1 // ignore: cast_nullable_to_non_nullable
+as BattleReward?,optionsP1: null == optionsP1 ? _self.optionsP1 : optionsP1 // ignore: cast_nullable_to_non_nullable
 as List<String>,optionsP2: null == optionsP2 ? _self.optionsP2 : optionsP2 // ignore: cast_nullable_to_non_nullable
 as List<String>,isBotOpponent: null == isBotOpponent ? _self.isBotOpponent : isBotOpponent // ignore: cast_nullable_to_non_nullable
 as bool,roomCode: freezed == roomCode ? _self.roomCode : roomCode // ignore: cast_nullable_to_non_nullable
@@ -1429,24 +1429,24 @@ as Map<String, bool>,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$BattleDeckEntityCopyWith<$Res>? get deckEntity {
+$BattleDeckCopyWith<$Res>? get deckEntity {
     if (_self.deckEntity == null) {
     return null;
   }
 
-  return $BattleDeckEntityCopyWith<$Res>(_self.deckEntity!, (value) {
+  return $BattleDeckCopyWith<$Res>(_self.deckEntity!, (value) {
     return _then(_self.copyWith(deckEntity: value));
   });
 }/// Create a copy of VocabularyState
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$BattleRewardEntityCopyWith<$Res>? get reward {
+$BattleRewardCopyWith<$Res>? get reward {
     if (_self.reward == null) {
     return null;
   }
 
-  return $BattleRewardEntityCopyWith<$Res>(_self.reward!, (value) {
+  return $BattleRewardCopyWith<$Res>(_self.reward!, (value) {
     return _then(_self.copyWith(reward: value));
   });
 }
@@ -1531,7 +1531,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isLoading,  String? errorMessage,  BattleDeckEntity? deckEntity,  List<BattleQuestionEntity> questions,  int currentQuestionIndex,  int player1Score,  int player2Score,  int correctCountP1,  int remainingSeconds,  bool isRoundLocked,  String? selectedWordP1,  String? selectedWordP2,  bool isGameOver,  bool isSavingReward,  BattleRewardEntity? reward,  List<String> optionsP1,  List<String> optionsP2,  bool isBotOpponent,  String? roomCode,  String? opponentName,  String? opponentAvatar,  bool isOpponentConnected,  bool isOpponentLeft,  String? opponentLeftMessage,  int playerIndex,  int matchRound,  int startedAt,  String? selectedOptionIdP1,  String? selectedOptionIdP2,  bool? isP1Correct,  bool? isP2Correct,  bool isWaitingForReady,  String topic,  String? currentUid,  Map<String, bool> answersP1)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isLoading,  String? errorMessage,  BattleDeck? deckEntity,  List<BattleQuestion> questions,  int currentQuestionIndex,  int player1Score,  int player2Score,  int correctCountP1,  int remainingSeconds,  bool isRoundLocked,  String? selectedWordP1,  String? selectedWordP2,  bool isGameOver,  bool isSavingReward,  BattleReward? reward,  List<String> optionsP1,  List<String> optionsP2,  bool isBotOpponent,  String? roomCode,  String? opponentName,  String? opponentAvatar,  bool isOpponentConnected,  bool isOpponentLeft,  String? opponentLeftMessage,  int playerIndex,  int matchRound,  int startedAt,  String? selectedOptionIdP1,  String? selectedOptionIdP2,  bool? isP1Correct,  bool? isP2Correct,  bool isWaitingForReady,  String topic,  String? currentUid,  Map<String, bool> answersP1)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _VocabularyState() when $default != null:
 return $default(_that.isLoading,_that.errorMessage,_that.deckEntity,_that.questions,_that.currentQuestionIndex,_that.player1Score,_that.player2Score,_that.correctCountP1,_that.remainingSeconds,_that.isRoundLocked,_that.selectedWordP1,_that.selectedWordP2,_that.isGameOver,_that.isSavingReward,_that.reward,_that.optionsP1,_that.optionsP2,_that.isBotOpponent,_that.roomCode,_that.opponentName,_that.opponentAvatar,_that.isOpponentConnected,_that.isOpponentLeft,_that.opponentLeftMessage,_that.playerIndex,_that.matchRound,_that.startedAt,_that.selectedOptionIdP1,_that.selectedOptionIdP2,_that.isP1Correct,_that.isP2Correct,_that.isWaitingForReady,_that.topic,_that.currentUid,_that.answersP1);case _:
@@ -1552,7 +1552,7 @@ return $default(_that.isLoading,_that.errorMessage,_that.deckEntity,_that.questi
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isLoading,  String? errorMessage,  BattleDeckEntity? deckEntity,  List<BattleQuestionEntity> questions,  int currentQuestionIndex,  int player1Score,  int player2Score,  int correctCountP1,  int remainingSeconds,  bool isRoundLocked,  String? selectedWordP1,  String? selectedWordP2,  bool isGameOver,  bool isSavingReward,  BattleRewardEntity? reward,  List<String> optionsP1,  List<String> optionsP2,  bool isBotOpponent,  String? roomCode,  String? opponentName,  String? opponentAvatar,  bool isOpponentConnected,  bool isOpponentLeft,  String? opponentLeftMessage,  int playerIndex,  int matchRound,  int startedAt,  String? selectedOptionIdP1,  String? selectedOptionIdP2,  bool? isP1Correct,  bool? isP2Correct,  bool isWaitingForReady,  String topic,  String? currentUid,  Map<String, bool> answersP1)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isLoading,  String? errorMessage,  BattleDeck? deckEntity,  List<BattleQuestion> questions,  int currentQuestionIndex,  int player1Score,  int player2Score,  int correctCountP1,  int remainingSeconds,  bool isRoundLocked,  String? selectedWordP1,  String? selectedWordP2,  bool isGameOver,  bool isSavingReward,  BattleReward? reward,  List<String> optionsP1,  List<String> optionsP2,  bool isBotOpponent,  String? roomCode,  String? opponentName,  String? opponentAvatar,  bool isOpponentConnected,  bool isOpponentLeft,  String? opponentLeftMessage,  int playerIndex,  int matchRound,  int startedAt,  String? selectedOptionIdP1,  String? selectedOptionIdP2,  bool? isP1Correct,  bool? isP2Correct,  bool isWaitingForReady,  String topic,  String? currentUid,  Map<String, bool> answersP1)  $default,) {final _that = this;
 switch (_that) {
 case _VocabularyState():
 return $default(_that.isLoading,_that.errorMessage,_that.deckEntity,_that.questions,_that.currentQuestionIndex,_that.player1Score,_that.player2Score,_that.correctCountP1,_that.remainingSeconds,_that.isRoundLocked,_that.selectedWordP1,_that.selectedWordP2,_that.isGameOver,_that.isSavingReward,_that.reward,_that.optionsP1,_that.optionsP2,_that.isBotOpponent,_that.roomCode,_that.opponentName,_that.opponentAvatar,_that.isOpponentConnected,_that.isOpponentLeft,_that.opponentLeftMessage,_that.playerIndex,_that.matchRound,_that.startedAt,_that.selectedOptionIdP1,_that.selectedOptionIdP2,_that.isP1Correct,_that.isP2Correct,_that.isWaitingForReady,_that.topic,_that.currentUid,_that.answersP1);case _:
@@ -1572,7 +1572,7 @@ return $default(_that.isLoading,_that.errorMessage,_that.deckEntity,_that.questi
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isLoading,  String? errorMessage,  BattleDeckEntity? deckEntity,  List<BattleQuestionEntity> questions,  int currentQuestionIndex,  int player1Score,  int player2Score,  int correctCountP1,  int remainingSeconds,  bool isRoundLocked,  String? selectedWordP1,  String? selectedWordP2,  bool isGameOver,  bool isSavingReward,  BattleRewardEntity? reward,  List<String> optionsP1,  List<String> optionsP2,  bool isBotOpponent,  String? roomCode,  String? opponentName,  String? opponentAvatar,  bool isOpponentConnected,  bool isOpponentLeft,  String? opponentLeftMessage,  int playerIndex,  int matchRound,  int startedAt,  String? selectedOptionIdP1,  String? selectedOptionIdP2,  bool? isP1Correct,  bool? isP2Correct,  bool isWaitingForReady,  String topic,  String? currentUid,  Map<String, bool> answersP1)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isLoading,  String? errorMessage,  BattleDeck? deckEntity,  List<BattleQuestion> questions,  int currentQuestionIndex,  int player1Score,  int player2Score,  int correctCountP1,  int remainingSeconds,  bool isRoundLocked,  String? selectedWordP1,  String? selectedWordP2,  bool isGameOver,  bool isSavingReward,  BattleReward? reward,  List<String> optionsP1,  List<String> optionsP2,  bool isBotOpponent,  String? roomCode,  String? opponentName,  String? opponentAvatar,  bool isOpponentConnected,  bool isOpponentLeft,  String? opponentLeftMessage,  int playerIndex,  int matchRound,  int startedAt,  String? selectedOptionIdP1,  String? selectedOptionIdP2,  bool? isP1Correct,  bool? isP2Correct,  bool isWaitingForReady,  String topic,  String? currentUid,  Map<String, bool> answersP1)?  $default,) {final _that = this;
 switch (_that) {
 case _VocabularyState() when $default != null:
 return $default(_that.isLoading,_that.errorMessage,_that.deckEntity,_that.questions,_that.currentQuestionIndex,_that.player1Score,_that.player2Score,_that.correctCountP1,_that.remainingSeconds,_that.isRoundLocked,_that.selectedWordP1,_that.selectedWordP2,_that.isGameOver,_that.isSavingReward,_that.reward,_that.optionsP1,_that.optionsP2,_that.isBotOpponent,_that.roomCode,_that.opponentName,_that.opponentAvatar,_that.isOpponentConnected,_that.isOpponentLeft,_that.opponentLeftMessage,_that.playerIndex,_that.matchRound,_that.startedAt,_that.selectedOptionIdP1,_that.selectedOptionIdP2,_that.isP1Correct,_that.isP2Correct,_that.isWaitingForReady,_that.topic,_that.currentUid,_that.answersP1);case _:
@@ -1587,14 +1587,14 @@ return $default(_that.isLoading,_that.errorMessage,_that.deckEntity,_that.questi
 
 
 class _VocabularyState extends VocabularyState {
-  const _VocabularyState({this.isLoading = false, this.errorMessage, this.deckEntity,  List<BattleQuestionEntity> questions = const [], this.currentQuestionIndex = 0, this.player1Score = 0, this.player2Score = 0, this.correctCountP1 = 0, this.remainingSeconds = 10, this.isRoundLocked = false, this.selectedWordP1, this.selectedWordP2, this.isGameOver = false, this.isSavingReward = false, this.reward,  List<String> optionsP1 = const [],  List<String> optionsP2 = const [], this.isBotOpponent = true, this.roomCode, this.opponentName, this.opponentAvatar, this.isOpponentConnected = false, this.isOpponentLeft = false, this.opponentLeftMessage, this.playerIndex = 0, this.matchRound = 1, this.startedAt = 0, this.selectedOptionIdP1, this.selectedOptionIdP2, this.isP1Correct, this.isP2Correct, this.isWaitingForReady = false, this.topic = 'daily', this.currentUid,  Map<String, bool> answersP1 = const {}}): _questions = questions,_optionsP1 = optionsP1,_optionsP2 = optionsP2,_answersP1 = answersP1,super._();
+  const _VocabularyState({this.isLoading = false, this.errorMessage, this.deckEntity,  List<BattleQuestion> questions = const [], this.currentQuestionIndex = 0, this.player1Score = 0, this.player2Score = 0, this.correctCountP1 = 0, this.remainingSeconds = 10, this.isRoundLocked = false, this.selectedWordP1, this.selectedWordP2, this.isGameOver = false, this.isSavingReward = false, this.reward,  List<String> optionsP1 = const [],  List<String> optionsP2 = const [], this.isBotOpponent = true, this.roomCode, this.opponentName, this.opponentAvatar, this.isOpponentConnected = false, this.isOpponentLeft = false, this.opponentLeftMessage, this.playerIndex = 0, this.matchRound = 1, this.startedAt = 0, this.selectedOptionIdP1, this.selectedOptionIdP2, this.isP1Correct, this.isP2Correct, this.isWaitingForReady = false, this.topic = 'daily', this.currentUid,  Map<String, bool> answersP1 = const {}}): _questions = questions,_optionsP1 = optionsP1,_optionsP2 = optionsP2,_answersP1 = answersP1,super._();
   
 
 @override@JsonKey() final  bool isLoading;
 @override final  String? errorMessage;
-@override final  BattleDeckEntity? deckEntity;
- final  List<BattleQuestionEntity> _questions;
-@override@JsonKey() List<BattleQuestionEntity> get questions {
+@override final  BattleDeck? deckEntity;
+ final  List<BattleQuestion> _questions;
+@override@JsonKey() List<BattleQuestion> get questions {
   if (_questions is EqualUnmodifiableListView) return _questions;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_questions);
@@ -1610,7 +1610,7 @@ class _VocabularyState extends VocabularyState {
 @override final  String? selectedWordP2;
 @override@JsonKey() final  bool isGameOver;
 @override@JsonKey() final  bool isSavingReward;
-@override final  BattleRewardEntity? reward;
+@override final  BattleReward? reward;
  final  List<String> _optionsP1;
 @override@JsonKey() List<String> get optionsP1 {
   if (_optionsP1 is EqualUnmodifiableListView) return _optionsP1;
@@ -1678,11 +1678,11 @@ abstract mixin class _$VocabularyStateCopyWith<$Res> implements $VocabularyState
   factory _$VocabularyStateCopyWith(_VocabularyState value, $Res Function(_VocabularyState) _then) = __$VocabularyStateCopyWithImpl;
 @override @useResult
 $Res call({
- bool isLoading, String? errorMessage, BattleDeckEntity? deckEntity, List<BattleQuestionEntity> questions, int currentQuestionIndex, int player1Score, int player2Score, int correctCountP1, int remainingSeconds, bool isRoundLocked, String? selectedWordP1, String? selectedWordP2, bool isGameOver, bool isSavingReward, BattleRewardEntity? reward, List<String> optionsP1, List<String> optionsP2, bool isBotOpponent, String? roomCode, String? opponentName, String? opponentAvatar, bool isOpponentConnected, bool isOpponentLeft, String? opponentLeftMessage, int playerIndex, int matchRound, int startedAt, String? selectedOptionIdP1, String? selectedOptionIdP2, bool? isP1Correct, bool? isP2Correct, bool isWaitingForReady, String topic, String? currentUid, Map<String, bool> answersP1
+ bool isLoading, String? errorMessage, BattleDeck? deckEntity, List<BattleQuestion> questions, int currentQuestionIndex, int player1Score, int player2Score, int correctCountP1, int remainingSeconds, bool isRoundLocked, String? selectedWordP1, String? selectedWordP2, bool isGameOver, bool isSavingReward, BattleReward? reward, List<String> optionsP1, List<String> optionsP2, bool isBotOpponent, String? roomCode, String? opponentName, String? opponentAvatar, bool isOpponentConnected, bool isOpponentLeft, String? opponentLeftMessage, int playerIndex, int matchRound, int startedAt, String? selectedOptionIdP1, String? selectedOptionIdP2, bool? isP1Correct, bool? isP2Correct, bool isWaitingForReady, String topic, String? currentUid, Map<String, bool> answersP1
 });
 
 
-@override $BattleDeckEntityCopyWith<$Res>? get deckEntity;@override $BattleRewardEntityCopyWith<$Res>? get reward;
+@override $BattleDeckCopyWith<$Res>? get deckEntity;@override $BattleRewardCopyWith<$Res>? get reward;
 
 }
 /// @nodoc
@@ -1700,8 +1700,8 @@ class __$VocabularyStateCopyWithImpl<$Res>
 isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
 as String?,deckEntity: freezed == deckEntity ? _self.deckEntity : deckEntity // ignore: cast_nullable_to_non_nullable
-as BattleDeckEntity?,questions: null == questions ? _self._questions : questions // ignore: cast_nullable_to_non_nullable
-as List<BattleQuestionEntity>,currentQuestionIndex: null == currentQuestionIndex ? _self.currentQuestionIndex : currentQuestionIndex // ignore: cast_nullable_to_non_nullable
+as BattleDeck?,questions: null == questions ? _self._questions : questions // ignore: cast_nullable_to_non_nullable
+as List<BattleQuestion>,currentQuestionIndex: null == currentQuestionIndex ? _self.currentQuestionIndex : currentQuestionIndex // ignore: cast_nullable_to_non_nullable
 as int,player1Score: null == player1Score ? _self.player1Score : player1Score // ignore: cast_nullable_to_non_nullable
 as int,player2Score: null == player2Score ? _self.player2Score : player2Score // ignore: cast_nullable_to_non_nullable
 as int,correctCountP1: null == correctCountP1 ? _self.correctCountP1 : correctCountP1 // ignore: cast_nullable_to_non_nullable
@@ -1712,7 +1712,7 @@ as String?,selectedWordP2: freezed == selectedWordP2 ? _self.selectedWordP2 : se
 as String?,isGameOver: null == isGameOver ? _self.isGameOver : isGameOver // ignore: cast_nullable_to_non_nullable
 as bool,isSavingReward: null == isSavingReward ? _self.isSavingReward : isSavingReward // ignore: cast_nullable_to_non_nullable
 as bool,reward: freezed == reward ? _self.reward : reward // ignore: cast_nullable_to_non_nullable
-as BattleRewardEntity?,optionsP1: null == optionsP1 ? _self._optionsP1 : optionsP1 // ignore: cast_nullable_to_non_nullable
+as BattleReward?,optionsP1: null == optionsP1 ? _self._optionsP1 : optionsP1 // ignore: cast_nullable_to_non_nullable
 as List<String>,optionsP2: null == optionsP2 ? _self._optionsP2 : optionsP2 // ignore: cast_nullable_to_non_nullable
 as List<String>,isBotOpponent: null == isBotOpponent ? _self.isBotOpponent : isBotOpponent // ignore: cast_nullable_to_non_nullable
 as bool,roomCode: freezed == roomCode ? _self.roomCode : roomCode // ignore: cast_nullable_to_non_nullable
@@ -1740,24 +1740,24 @@ as Map<String, bool>,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$BattleDeckEntityCopyWith<$Res>? get deckEntity {
+$BattleDeckCopyWith<$Res>? get deckEntity {
     if (_self.deckEntity == null) {
     return null;
   }
 
-  return $BattleDeckEntityCopyWith<$Res>(_self.deckEntity!, (value) {
+  return $BattleDeckCopyWith<$Res>(_self.deckEntity!, (value) {
     return _then(_self.copyWith(deckEntity: value));
   });
 }/// Create a copy of VocabularyState
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$BattleRewardEntityCopyWith<$Res>? get reward {
+$BattleRewardCopyWith<$Res>? get reward {
     if (_self.reward == null) {
     return null;
   }
 
-  return $BattleRewardEntityCopyWith<$Res>(_self.reward!, (value) {
+  return $BattleRewardCopyWith<$Res>(_self.reward!, (value) {
     return _then(_self.copyWith(reward: value));
   });
 }

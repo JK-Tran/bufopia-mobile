@@ -1,7 +1,7 @@
 import 'package:bufopia/components/app_avatar.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
-import 'package:bufopia/features/leaderboard/domain/entities/leaderboard_entity.dart';
+import 'package:bufopia/features/leaderboard/domain/entities/leaderboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
@@ -15,7 +15,7 @@ class LeaderboardListItem extends StatelessWidget {
     super.key,
   });
 
-  final LeaderboardPlayerEntity player;
+  final LeaderboardPlayer player;
   final bool isPaper;
   final NumberFormat fmt;
 

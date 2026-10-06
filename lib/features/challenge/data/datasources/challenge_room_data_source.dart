@@ -1,5 +1,5 @@
-import 'package:bufopia/features/challenge/data/models/room_info_model.dart';
-import 'package:bufopia/features/challenge/data/models/social_state_model.dart';
+import 'package:bufopia/features/challenge/data/models/room_info_data.dart';
+import 'package:bufopia/features/challenge/data/models/social_state_data.dart';
 import 'package:bufopia/shared/infrastructure/infrastructure.dart';
 import 'package:bufopia/shared/model/typedef.dart';
 import 'package:injectable/injectable.dart';
@@ -10,13 +10,13 @@ class ChallengeRoomDataSource {
 
   final NoneAuthAppServerApiClient _noneAuthAppServerApiClient;
 
-  Future<SocialStateModel?> getSocialState({required String uid}) async {
+  Future<SocialStateData?> getSocialState({required String uid}) async {
     return _noneAuthAppServerApiClient.request(
       method: RestMethod.get,
       successResponseMapperType: SuccessResponseMapperType.jsonObject,
       path: '/social/state',
       queryParameters: {'uid': uid},
-      decoder: (data) => SocialStateModel.fromJson(data! as JSON),
+      decoder: (data) => SocialStateData.fromJson(data! as JSON),
     );
   }
 
@@ -69,12 +69,12 @@ class ChallengeRoomDataSource {
     return response != null;
   }
 
-  Future<RoomInfoModel?> getRoomInfo({required String roomCode}) async {
+  Future<RoomInfoData?> getRoomInfo({required String roomCode}) async {
     return _noneAuthAppServerApiClient.request(
       method: RestMethod.get,
       successResponseMapperType: SuccessResponseMapperType.jsonObject,
       path: '/rooms/$roomCode',
-      decoder: (data) => RoomInfoModel.fromJson(data! as JSON),
+      decoder: (data) => RoomInfoData.fromJson(data! as JSON),
     );
   }
 }

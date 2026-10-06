@@ -2,13 +2,13 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:bufopia/core/base/base_bloc.dart';
-import 'package:bufopia/features/vocabulary/data/mapper/battle_question_mapper.dart';
-import 'package:bufopia/features/vocabulary/data/models/battle_question_model.dart';
-import 'package:bufopia/features/vocabulary/domain/entities/battle_deck_entity.dart';
-import 'package:bufopia/features/vocabulary/domain/entities/battle_question_entity.dart';
-import 'package:bufopia/features/vocabulary/domain/entities/battle_reward_entity.dart';
-import 'package:bufopia/features/vocabulary/domain/entities/match_record_entity.dart';
-import 'package:bufopia/features/vocabulary/domain/entities/word_profile_entity.dart';
+import 'package:bufopia/features/vocabulary/data/mapper/battle_question_data_mapper.dart';
+import 'package:bufopia/features/vocabulary/data/models/battle_question_data.dart';
+import 'package:bufopia/features/vocabulary/domain/entities/battle_deck.dart';
+import 'package:bufopia/features/vocabulary/domain/entities/battle_question.dart';
+import 'package:bufopia/features/vocabulary/domain/entities/battle_reward.dart';
+import 'package:bufopia/features/vocabulary/domain/entities/match_record.dart';
+import 'package:bufopia/features/vocabulary/domain/entities/word_profile.dart';
 import 'package:bufopia/features/vocabulary/domain/usecases/get_battle_deck_use_case.dart';
 import 'package:bufopia/features/vocabulary/domain/usecases/submit_battle_reward_use_case.dart';
 import 'package:bufopia/features/vocabulary/domain/usecases/submit_match_result_use_case.dart';
@@ -61,7 +61,7 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
   final SubmitWordProfilesUseCase _submitWordProfilesUseCase;
   final DeviceUidService _deviceUidService;
   final SocketService _socketService;
-  final BattleQuestionMapper _questionMapper;
+  final BattleQuestionDataMapper _questionMapper;
 
   Timer? _countdownTimer;
   Timer? _botTimer;
@@ -487,7 +487,7 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
         final matchId = 'match_${DateTime.now().millisecondsSinceEpoch}_$uid';
         await _submitMatchResultUseCase.execute(
           SubmitMatchResultInput(
-            MatchRecordEntity(
+            MatchRecord(
               id: matchId,
               uid: uid,
               topicId: state.topic,
@@ -508,7 +508,7 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
         final profiles = state.questions.map((q) {
           final isP1Correct = state.answersP1[q.id] == true;
           final interval = isP1Correct ? 6 : 1;
-          return WordProfileEntity(
+          return WordProfile(
             wordId: q.id,
             familiarity: isP1Correct ? 3 : 1,
             interval: interval,
@@ -598,7 +598,7 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
       final questions = event.rawDeck
           .map(
             (item) => _questionMapper.mapToEntity(
-              BattleQuestionModel.fromJson(
+              BattleQuestionData.fromJson(
                 Map<String, dynamic>.from(item as Map),
               ),
             ),
@@ -896,7 +896,7 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
     });
   }
 
-  List<String> _shuffleOptions(BattleQuestionEntity question) {
+  List<String> _shuffleOptions(BattleQuestion question) {
     final list = question.options.map((o) => o.en).toList()..shuffle(_random);
     return list;
   }

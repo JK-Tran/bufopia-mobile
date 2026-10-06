@@ -1,6 +1,6 @@
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
-import 'package:bufopia/features/leaderboard/domain/entities/leaderboard_entity.dart';
+import 'package:bufopia/features/leaderboard/domain/entities/leaderboard.dart';
 import 'package:bufopia/features/leaderboard/presentation/widgets/leaderboard_list_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -16,7 +16,7 @@ class LeaderboardList extends StatelessWidget {
     super.key,
   });
 
-  final List<LeaderboardPlayerEntity> players;
+  final List<LeaderboardPlayer> players;
   final String metric;
   final bool isPaper;
   final NumberFormat fmt;

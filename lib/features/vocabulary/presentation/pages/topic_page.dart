@@ -6,7 +6,7 @@ import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
 import 'package:bufopia/features/challenge/presentation/widgets/dialog/challenge_room_dialog.dart';
 import 'package:bufopia/features/home/presentation/widgets/home_header/dialog/home_settings_dialog.dart';
-import 'package:bufopia/features/vocabulary/domain/entities/topic_entity.dart';
+import 'package:bufopia/features/vocabulary/domain/entities/topic.dart';
 import 'package:bufopia/features/vocabulary/presentation/widgets/dialog/vocabulary_matchmaking_dialog.dart';
 import 'package:bufopia/features/vocabulary/presentation/widgets/topic/topic_grid.dart';
 import 'package:bufopia/features/vocabulary/presentation/widgets/topic/topic_header.dart';
@@ -36,7 +36,7 @@ class _TopicPageState extends State<TopicPage> {
     ]);
   }
 
-  void _onTopicTapped(TopicEntity topic) {
+  void _onTopicTapped(Topic topic) {
     setState(() {
       _selectedTopicId = topic.id;
     });

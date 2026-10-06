@@ -1,7 +1,7 @@
 import 'package:bufopia/components/app_avatar.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
-import 'package:bufopia/features/leaderboard/domain/entities/leaderboard_entity.dart';
+import 'package:bufopia/features/leaderboard/domain/entities/leaderboard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:intl/intl.dart';
@@ -16,9 +16,9 @@ class LeaderboardPodium extends StatelessWidget {
     super.key,
   });
 
-  final LeaderboardPlayerEntity? rank1;
-  final LeaderboardPlayerEntity? rank2;
-  final LeaderboardPlayerEntity? rank3;
+  final LeaderboardPlayer? rank1;
+  final LeaderboardPlayer? rank2;
+  final LeaderboardPlayer? rank3;
   final String metric;
   final NumberFormat fmt;
 
@@ -78,7 +78,7 @@ class LeaderboardPodiumCard extends StatelessWidget {
     super.key,
   });
 
-  final LeaderboardPlayerEntity? player;
+  final LeaderboardPlayer? player;
   final int rank;
   final String metric;
   final bool isCenter;

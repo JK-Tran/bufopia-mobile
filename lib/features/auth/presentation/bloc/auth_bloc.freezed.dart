@@ -132,7 +132,7 @@ return loggedOut(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? uid)?  getUserInfo,TResult Function( String displayName,  String? avatarUrl)?  updateProfile,TResult Function( UserEntity user)?  loggedIn,TResult Function( UserEntity user)?  userUpdated,TResult Function()?  loggedOut,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? uid)?  getUserInfo,TResult Function( String displayName,  String? avatarUrl)?  updateProfile,TResult Function( User user)?  loggedIn,TResult Function( User user)?  userUpdated,TResult Function()?  loggedOut,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _GetUserInfo() when getUserInfo != null:
 return getUserInfo(_that.uid);case _UpdateProfile() when updateProfile != null:
@@ -157,7 +157,7 @@ return loggedOut();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? uid)  getUserInfo,required TResult Function( String displayName,  String? avatarUrl)  updateProfile,required TResult Function( UserEntity user)  loggedIn,required TResult Function( UserEntity user)  userUpdated,required TResult Function()  loggedOut,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? uid)  getUserInfo,required TResult Function( String displayName,  String? avatarUrl)  updateProfile,required TResult Function( User user)  loggedIn,required TResult Function( User user)  userUpdated,required TResult Function()  loggedOut,}) {final _that = this;
 switch (_that) {
 case _GetUserInfo():
 return getUserInfo(_that.uid);case _UpdateProfile():
@@ -181,7 +181,7 @@ return loggedOut();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? uid)?  getUserInfo,TResult? Function( String displayName,  String? avatarUrl)?  updateProfile,TResult? Function( UserEntity user)?  loggedIn,TResult? Function( UserEntity user)?  userUpdated,TResult? Function()?  loggedOut,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? uid)?  getUserInfo,TResult? Function( String displayName,  String? avatarUrl)?  updateProfile,TResult? Function( User user)?  loggedIn,TResult? Function( User user)?  userUpdated,TResult? Function()?  loggedOut,}) {final _that = this;
 switch (_that) {
 case _GetUserInfo() when getUserInfo != null:
 return getUserInfo(_that.uid);case _UpdateProfile() when updateProfile != null:
@@ -341,7 +341,7 @@ class _LoggedIn implements AuthEvent {
   const _LoggedIn(this.user);
   
 
- final  UserEntity user;
+ final  User user;
 
 /// Create a copy of AuthEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -375,11 +375,11 @@ abstract mixin class _$LoggedInCopyWith<$Res> implements $AuthEventCopyWith<$Res
   factory _$LoggedInCopyWith(_LoggedIn value, $Res Function(_LoggedIn) _then) = __$LoggedInCopyWithImpl;
 @useResult
 $Res call({
- UserEntity user
+ User user
 });
 
 
-$UserEntityCopyWith<$Res> get user;
+$UserCopyWith<$Res> get user;
 
 }
 /// @nodoc
@@ -395,7 +395,7 @@ class __$LoggedInCopyWithImpl<$Res>
 @pragma('vm:prefer-inline') $Res call({Object? user = null,}) {
   return _then(_LoggedIn(
 null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
-as UserEntity,
+as User,
   ));
 }
 
@@ -403,9 +403,9 @@ as UserEntity,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$UserEntityCopyWith<$Res> get user {
+$UserCopyWith<$Res> get user {
   
-  return $UserEntityCopyWith<$Res>(_self.user, (value) {
+  return $UserCopyWith<$Res>(_self.user, (value) {
     return _then(_self.copyWith(user: value));
   });
 }
@@ -418,7 +418,7 @@ class _UserUpdated implements AuthEvent {
   const _UserUpdated(this.user);
   
 
- final  UserEntity user;
+ final  User user;
 
 /// Create a copy of AuthEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -452,11 +452,11 @@ abstract mixin class _$UserUpdatedCopyWith<$Res> implements $AuthEventCopyWith<$
   factory _$UserUpdatedCopyWith(_UserUpdated value, $Res Function(_UserUpdated) _then) = __$UserUpdatedCopyWithImpl;
 @useResult
 $Res call({
- UserEntity user
+ User user
 });
 
 
-$UserEntityCopyWith<$Res> get user;
+$UserCopyWith<$Res> get user;
 
 }
 /// @nodoc
@@ -472,7 +472,7 @@ class __$UserUpdatedCopyWithImpl<$Res>
 @pragma('vm:prefer-inline') $Res call({Object? user = null,}) {
   return _then(_UserUpdated(
 null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
-as UserEntity,
+as User,
   ));
 }
 
@@ -480,9 +480,9 @@ as UserEntity,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$UserEntityCopyWith<$Res> get user {
+$UserCopyWith<$Res> get user {
   
-  return $UserEntityCopyWith<$Res>(_self.user, (value) {
+  return $UserCopyWith<$Res>(_self.user, (value) {
     return _then(_self.copyWith(user: value));
   });
 }
@@ -523,7 +523,7 @@ String toString() {
 /// @nodoc
 mixin _$AuthState {
 
- bool get isLoggedIn; bool get isLoading; UserEntity? get currentUser; String? get errorMessage;
+ bool get isLoggedIn; bool get isLoading; User? get currentUser; String? get errorMessage;
 /// Create a copy of AuthState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -559,11 +559,11 @@ abstract mixin class $AuthStateCopyWith<$Res>  {
   factory $AuthStateCopyWith(AuthState value, $Res Function(AuthState) _then) = _$AuthStateCopyWithImpl;
 @useResult
 $Res call({
- bool isLoggedIn, bool isLoading, UserEntity? currentUser, String? errorMessage
+ bool isLoggedIn, bool isLoading, User? currentUser, String? errorMessage
 });
 
 
-$UserEntityCopyWith<$Res>? get currentUser;
+$UserCopyWith<$Res>? get currentUser;
 
 }
 /// @nodoc
@@ -581,7 +581,7 @@ class _$AuthStateCopyWithImpl<$Res>
 isLoggedIn: null == isLoggedIn ? _self.isLoggedIn : isLoggedIn // ignore: cast_nullable_to_non_nullable
 as bool,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,currentUser: freezed == currentUser ? _self.currentUser : currentUser // ignore: cast_nullable_to_non_nullable
-as UserEntity?,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
+as User?,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -589,12 +589,12 @@ as String?,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$UserEntityCopyWith<$Res>? get currentUser {
+$UserCopyWith<$Res>? get currentUser {
     if (_self.currentUser == null) {
     return null;
   }
 
-  return $UserEntityCopyWith<$Res>(_self.currentUser!, (value) {
+  return $UserCopyWith<$Res>(_self.currentUser!, (value) {
     return _then(_self.copyWith(currentUser: value));
   });
 }
@@ -679,7 +679,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isLoggedIn,  bool isLoading,  UserEntity? currentUser,  String? errorMessage)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isLoggedIn,  bool isLoading,  User? currentUser,  String? errorMessage)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AuthState() when $default != null:
 return $default(_that.isLoggedIn,_that.isLoading,_that.currentUser,_that.errorMessage);case _:
@@ -700,7 +700,7 @@ return $default(_that.isLoggedIn,_that.isLoading,_that.currentUser,_that.errorMe
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isLoggedIn,  bool isLoading,  UserEntity? currentUser,  String? errorMessage)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isLoggedIn,  bool isLoading,  User? currentUser,  String? errorMessage)  $default,) {final _that = this;
 switch (_that) {
 case _AuthState():
 return $default(_that.isLoggedIn,_that.isLoading,_that.currentUser,_that.errorMessage);case _:
@@ -720,7 +720,7 @@ return $default(_that.isLoggedIn,_that.isLoading,_that.currentUser,_that.errorMe
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isLoggedIn,  bool isLoading,  UserEntity? currentUser,  String? errorMessage)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isLoggedIn,  bool isLoading,  User? currentUser,  String? errorMessage)?  $default,) {final _that = this;
 switch (_that) {
 case _AuthState() when $default != null:
 return $default(_that.isLoggedIn,_that.isLoading,_that.currentUser,_that.errorMessage);case _:
@@ -740,7 +740,7 @@ class _AuthState implements AuthState {
 
 @override@JsonKey() final  bool isLoggedIn;
 @override@JsonKey() final  bool isLoading;
-@override final  UserEntity? currentUser;
+@override final  User? currentUser;
 @override final  String? errorMessage;
 
 /// Create a copy of AuthState
@@ -775,11 +775,11 @@ abstract mixin class _$AuthStateCopyWith<$Res> implements $AuthStateCopyWith<$Re
   factory _$AuthStateCopyWith(_AuthState value, $Res Function(_AuthState) _then) = __$AuthStateCopyWithImpl;
 @override @useResult
 $Res call({
- bool isLoggedIn, bool isLoading, UserEntity? currentUser, String? errorMessage
+ bool isLoggedIn, bool isLoading, User? currentUser, String? errorMessage
 });
 
 
-@override $UserEntityCopyWith<$Res>? get currentUser;
+@override $UserCopyWith<$Res>? get currentUser;
 
 }
 /// @nodoc
@@ -797,7 +797,7 @@ class __$AuthStateCopyWithImpl<$Res>
 isLoggedIn: null == isLoggedIn ? _self.isLoggedIn : isLoggedIn // ignore: cast_nullable_to_non_nullable
 as bool,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,currentUser: freezed == currentUser ? _self.currentUser : currentUser // ignore: cast_nullable_to_non_nullable
-as UserEntity?,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
+as User?,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -806,12 +806,12 @@ as String?,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$UserEntityCopyWith<$Res>? get currentUser {
+$UserCopyWith<$Res>? get currentUser {
     if (_self.currentUser == null) {
     return null;
   }
 
-  return $UserEntityCopyWith<$Res>(_self.currentUser!, (value) {
+  return $UserCopyWith<$Res>(_self.currentUser!, (value) {
     return _then(_self.copyWith(currentUser: value));
   });
 }

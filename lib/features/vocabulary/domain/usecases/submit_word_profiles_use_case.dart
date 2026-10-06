@@ -1,4 +1,4 @@
-import 'package:bufopia/features/vocabulary/domain/entities/word_profile_entity.dart';
+import 'package:bufopia/features/vocabulary/domain/entities/word_profile.dart';
 import 'package:bufopia/features/vocabulary/domain/repositories/vocabulary_repository.dart';
 import 'package:bufopia/shared/infrastructure/domain/usecase/future/base_future_use_case.dart';
 import 'package:bufopia/shared/infrastructure/domain/usecase/io/base_input.dart';
@@ -13,7 +13,7 @@ abstract class SubmitWordProfilesInput extends BaseInput
     with _$SubmitWordProfilesInput {
   const factory SubmitWordProfilesInput({
     required String uid,
-    required List<WordProfileEntity> profiles,
+    required List<WordProfile> profiles,
   }) = _SubmitWordProfilesInput;
 
   const SubmitWordProfilesInput._();

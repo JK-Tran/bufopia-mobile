@@ -207,7 +207,7 @@ String toString() {
 /// @nodoc
 mixin _$GetVocabularyOutput {
 
- VocabularyEntity get vocabulary;
+ Vocabulary get vocabulary;
 /// Create a copy of GetVocabularyOutput
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -243,11 +243,11 @@ abstract mixin class $GetVocabularyOutputCopyWith<$Res>  {
   factory $GetVocabularyOutputCopyWith(GetVocabularyOutput value, $Res Function(GetVocabularyOutput) _then) = _$GetVocabularyOutputCopyWithImpl;
 @useResult
 $Res call({
- VocabularyEntity vocabulary
+ Vocabulary vocabulary
 });
 
 
-$VocabularyEntityCopyWith<$Res> get vocabulary;
+$VocabularyCopyWith<$Res> get vocabulary;
 
 }
 /// @nodoc
@@ -263,16 +263,16 @@ class _$GetVocabularyOutputCopyWithImpl<$Res>
 @pragma('vm:prefer-inline') @override $Res call({Object? vocabulary = null,}) {
   return _then(GetVocabularyOutput(
 null == vocabulary ? _self.vocabulary : vocabulary // ignore: cast_nullable_to_non_nullable
-as VocabularyEntity,
+as Vocabulary,
   ));
 }
 /// Create a copy of GetVocabularyOutput
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$VocabularyEntityCopyWith<$Res> get vocabulary {
+$VocabularyCopyWith<$Res> get vocabulary {
   
-  return $VocabularyEntityCopyWith<$Res>(_self.vocabulary, (value) {
+  return $VocabularyCopyWith<$Res>(_self.vocabulary, (value) {
     return _then(_self.copyWith(vocabulary: value));
   });
 }
@@ -357,7 +357,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( VocabularyEntity vocabulary)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Vocabulary vocabulary)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _GetVocabularyOutput() when $default != null:
 return $default(_that.vocabulary);case _:
@@ -378,7 +378,7 @@ return $default(_that.vocabulary);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( VocabularyEntity vocabulary)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Vocabulary vocabulary)  $default,) {final _that = this;
 switch (_that) {
 case _GetVocabularyOutput():
 return $default(_that.vocabulary);case _:
@@ -398,7 +398,7 @@ return $default(_that.vocabulary);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( VocabularyEntity vocabulary)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Vocabulary vocabulary)?  $default,) {final _that = this;
 switch (_that) {
 case _GetVocabularyOutput() when $default != null:
 return $default(_that.vocabulary);case _:
@@ -416,7 +416,7 @@ class _GetVocabularyOutput extends GetVocabularyOutput {
   const _GetVocabularyOutput(this.vocabulary): super._();
   
 
-@override final  VocabularyEntity vocabulary;
+@override final  Vocabulary vocabulary;
 
 /// Create a copy of GetVocabularyOutput
 /// with the given fields replaced by the non-null parameter values.
@@ -450,11 +450,11 @@ abstract mixin class _$GetVocabularyOutputCopyWith<$Res> implements $GetVocabula
   factory _$GetVocabularyOutputCopyWith(_GetVocabularyOutput value, $Res Function(_GetVocabularyOutput) _then) = __$GetVocabularyOutputCopyWithImpl;
 @override @useResult
 $Res call({
- VocabularyEntity vocabulary
+ Vocabulary vocabulary
 });
 
 
-@override $VocabularyEntityCopyWith<$Res> get vocabulary;
+@override $VocabularyCopyWith<$Res> get vocabulary;
 
 }
 /// @nodoc
@@ -470,7 +470,7 @@ class __$GetVocabularyOutputCopyWithImpl<$Res>
 @override @pragma('vm:prefer-inline') $Res call({Object? vocabulary = null,}) {
   return _then(_GetVocabularyOutput(
 null == vocabulary ? _self.vocabulary : vocabulary // ignore: cast_nullable_to_non_nullable
-as VocabularyEntity,
+as Vocabulary,
   ));
 }
 
@@ -478,9 +478,9 @@ as VocabularyEntity,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$VocabularyEntityCopyWith<$Res> get vocabulary {
+$VocabularyCopyWith<$Res> get vocabulary {
   
-  return $VocabularyEntityCopyWith<$Res>(_self.vocabulary, (value) {
+  return $VocabularyCopyWith<$Res>(_self.vocabulary, (value) {
     return _then(_self.copyWith(vocabulary: value));
   });
 }

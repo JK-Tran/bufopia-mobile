@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SubmitWordProfilesInput {
 
- String get uid; List<WordProfileEntity> get profiles;
+ String get uid; List<WordProfile> get profiles;
 /// Create a copy of SubmitWordProfilesInput
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -51,7 +51,7 @@ abstract mixin class $SubmitWordProfilesInputCopyWith<$Res>  {
   factory $SubmitWordProfilesInputCopyWith(SubmitWordProfilesInput value, $Res Function(SubmitWordProfilesInput) _then) = _$SubmitWordProfilesInputCopyWithImpl;
 @useResult
 $Res call({
- String uid, List<WordProfileEntity> profiles
+ String uid, List<WordProfile> profiles
 });
 
 
@@ -72,7 +72,7 @@ class _$SubmitWordProfilesInputCopyWithImpl<$Res>
   return _then(SubmitWordProfilesInput(
 uid: null == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
 as String,profiles: null == profiles ? _self.profiles : profiles // ignore: cast_nullable_to_non_nullable
-as List<WordProfileEntity>,
+as List<WordProfile>,
   ));
 }
 
@@ -157,7 +157,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String uid,  List<WordProfileEntity> profiles)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String uid,  List<WordProfile> profiles)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SubmitWordProfilesInput() when $default != null:
 return $default(_that.uid,_that.profiles);case _:
@@ -178,7 +178,7 @@ return $default(_that.uid,_that.profiles);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String uid,  List<WordProfileEntity> profiles)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String uid,  List<WordProfile> profiles)  $default,) {final _that = this;
 switch (_that) {
 case _SubmitWordProfilesInput():
 return $default(_that.uid,_that.profiles);case _:
@@ -198,7 +198,7 @@ return $default(_that.uid,_that.profiles);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String uid,  List<WordProfileEntity> profiles)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String uid,  List<WordProfile> profiles)?  $default,) {final _that = this;
 switch (_that) {
 case _SubmitWordProfilesInput() when $default != null:
 return $default(_that.uid,_that.profiles);case _:
@@ -213,12 +213,12 @@ return $default(_that.uid,_that.profiles);case _:
 
 
 class _SubmitWordProfilesInput extends SubmitWordProfilesInput {
-  const _SubmitWordProfilesInput({required this.uid, required  List<WordProfileEntity> profiles}): _profiles = profiles,super._();
+  const _SubmitWordProfilesInput({required this.uid, required  List<WordProfile> profiles}): _profiles = profiles,super._();
   
 
 @override final  String uid;
- final  List<WordProfileEntity> _profiles;
-@override List<WordProfileEntity> get profiles {
+ final  List<WordProfile> _profiles;
+@override List<WordProfile> get profiles {
   if (_profiles is EqualUnmodifiableListView) return _profiles;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_profiles);
@@ -257,7 +257,7 @@ abstract mixin class _$SubmitWordProfilesInputCopyWith<$Res> implements $SubmitW
   factory _$SubmitWordProfilesInputCopyWith(_SubmitWordProfilesInput value, $Res Function(_SubmitWordProfilesInput) _then) = __$SubmitWordProfilesInputCopyWithImpl;
 @override @useResult
 $Res call({
- String uid, List<WordProfileEntity> profiles
+ String uid, List<WordProfile> profiles
 });
 
 
@@ -278,7 +278,7 @@ class __$SubmitWordProfilesInputCopyWithImpl<$Res>
   return _then(_SubmitWordProfilesInput(
 uid: null == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
 as String,profiles: null == profiles ? _self._profiles : profiles // ignore: cast_nullable_to_non_nullable
-as List<WordProfileEntity>,
+as List<WordProfile>,
   ));
 }
 

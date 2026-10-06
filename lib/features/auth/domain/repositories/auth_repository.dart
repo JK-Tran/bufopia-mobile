@@ -1,13 +1,13 @@
-import 'package:bufopia/features/auth/domain/entities/user_entity.dart';
+import 'package:bufopia/features/auth/domain/entities/user.dart';
 
 abstract class AuthRepository {
-  Future<UserEntity> getUserInfo({required String uid});
-  Future<UserEntity> updateUserProfile({
+  Future<User> getUserInfo({required String uid});
+  Future<User> updateUserProfile({
     required String uid,
     required String displayName,
     String? avatarUrl,
   });
-  UserEntity? getCurrentUser();
-  Future<bool> saveCurrentUser(UserEntity user);
+  User? getCurrentUser();
+  Future<bool> saveCurrentUser(User user);
   Future<void> clearCurrentUserData();
 }

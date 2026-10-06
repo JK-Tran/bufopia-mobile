@@ -1,13 +1,15 @@
-import 'package:bufopia/features/vocabulary/domain/entities/battle_deck_entity.dart';
-import 'package:bufopia/features/vocabulary/domain/entities/battle_reward_entity.dart';
-import 'package:bufopia/features/vocabulary/domain/entities/match_record_entity.dart';
-import 'package:bufopia/features/vocabulary/domain/entities/vocabulary_entity.dart';
-import 'package:bufopia/features/vocabulary/domain/entities/word_profile_entity.dart';
+import 'package:bufopia/features/vocabulary/data/models/feedback_data.dart';
+import 'package:bufopia/features/vocabulary/domain/entities/battle_deck.dart';
+import 'package:bufopia/features/vocabulary/domain/entities/battle_reward.dart';
+import 'package:bufopia/features/vocabulary/domain/entities/feedback.dart';
+import 'package:bufopia/features/vocabulary/domain/entities/match_record.dart';
+import 'package:bufopia/features/vocabulary/domain/entities/vocabulary.dart';
+import 'package:bufopia/features/vocabulary/domain/entities/word_profile.dart';
 
 abstract class VocabularyRepository {
-  Future<VocabularyEntity> getVocabulary();
+  Future<Vocabulary> getVocabulary();
 
-  Future<BattleDeckEntity> getDeck({
+  Future<BattleDeck> getDeck({
     required String topic,
     String? uid,
     String? opponentUid,
@@ -15,19 +17,21 @@ abstract class VocabularyRepository {
     String? recent,
   });
 
-  Future<bool> saveMatch(MatchRecordEntity match);
+  Future<bool> saveMatch(MatchRecord match);
 
-  Future<BattleRewardEntity> claimReward({
+  Future<BattleReward> claimReward({
     required String uid,
     required bool isWin,
     required int correctCount,
     required int points,
   });
 
-  Future<List<WordProfileEntity>> getProfiles(String uid);
+  Future<List<WordProfile>> getProfiles(String uid);
 
   Future<bool> syncProfiles(
     String uid,
-    List<WordProfileEntity> profiles,
+    List<WordProfile> profiles,
   );
+
+  Future<Feedback> sendFeedback(FeedbackData request);
 }

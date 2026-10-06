@@ -279,7 +279,7 @@ as String,
 /// @nodoc
 mixin _$GetSocialStateOutput {
 
- SocialStateEntity get socialState;
+ SocialState get socialState;
 /// Create a copy of GetSocialStateOutput
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -315,11 +315,11 @@ abstract mixin class $GetSocialStateOutputCopyWith<$Res>  {
   factory $GetSocialStateOutputCopyWith(GetSocialStateOutput value, $Res Function(GetSocialStateOutput) _then) = _$GetSocialStateOutputCopyWithImpl;
 @useResult
 $Res call({
- SocialStateEntity socialState
+ SocialState socialState
 });
 
 
-$SocialStateEntityCopyWith<$Res> get socialState;
+$SocialStateCopyWith<$Res> get socialState;
 
 }
 /// @nodoc
@@ -335,16 +335,16 @@ class _$GetSocialStateOutputCopyWithImpl<$Res>
 @pragma('vm:prefer-inline') @override $Res call({Object? socialState = null,}) {
   return _then(GetSocialStateOutput(
 socialState: null == socialState ? _self.socialState : socialState // ignore: cast_nullable_to_non_nullable
-as SocialStateEntity,
+as SocialState,
   ));
 }
 /// Create a copy of GetSocialStateOutput
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$SocialStateEntityCopyWith<$Res> get socialState {
+$SocialStateCopyWith<$Res> get socialState {
   
-  return $SocialStateEntityCopyWith<$Res>(_self.socialState, (value) {
+  return $SocialStateCopyWith<$Res>(_self.socialState, (value) {
     return _then(_self.copyWith(socialState: value));
   });
 }
@@ -429,7 +429,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( SocialStateEntity socialState)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( SocialState socialState)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _GetSocialStateOutput() when $default != null:
 return $default(_that.socialState);case _:
@@ -450,7 +450,7 @@ return $default(_that.socialState);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( SocialStateEntity socialState)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( SocialState socialState)  $default,) {final _that = this;
 switch (_that) {
 case _GetSocialStateOutput():
 return $default(_that.socialState);case _:
@@ -470,7 +470,7 @@ return $default(_that.socialState);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( SocialStateEntity socialState)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( SocialState socialState)?  $default,) {final _that = this;
 switch (_that) {
 case _GetSocialStateOutput() when $default != null:
 return $default(_that.socialState);case _:
@@ -488,7 +488,7 @@ class _GetSocialStateOutput extends GetSocialStateOutput {
   const _GetSocialStateOutput({required this.socialState}): super._();
   
 
-@override final  SocialStateEntity socialState;
+@override final  SocialState socialState;
 
 /// Create a copy of GetSocialStateOutput
 /// with the given fields replaced by the non-null parameter values.
@@ -522,11 +522,11 @@ abstract mixin class _$GetSocialStateOutputCopyWith<$Res> implements $GetSocialS
   factory _$GetSocialStateOutputCopyWith(_GetSocialStateOutput value, $Res Function(_GetSocialStateOutput) _then) = __$GetSocialStateOutputCopyWithImpl;
 @override @useResult
 $Res call({
- SocialStateEntity socialState
+ SocialState socialState
 });
 
 
-@override $SocialStateEntityCopyWith<$Res> get socialState;
+@override $SocialStateCopyWith<$Res> get socialState;
 
 }
 /// @nodoc
@@ -542,7 +542,7 @@ class __$GetSocialStateOutputCopyWithImpl<$Res>
 @override @pragma('vm:prefer-inline') $Res call({Object? socialState = null,}) {
   return _then(_GetSocialStateOutput(
 socialState: null == socialState ? _self.socialState : socialState // ignore: cast_nullable_to_non_nullable
-as SocialStateEntity,
+as SocialState,
   ));
 }
 
@@ -550,9 +550,9 @@ as SocialStateEntity,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$SocialStateEntityCopyWith<$Res> get socialState {
+$SocialStateCopyWith<$Res> get socialState {
   
-  return $SocialStateEntityCopyWith<$Res>(_self.socialState, (value) {
+  return $SocialStateCopyWith<$Res>(_self.socialState, (value) {
     return _then(_self.copyWith(socialState: value));
   });
 }

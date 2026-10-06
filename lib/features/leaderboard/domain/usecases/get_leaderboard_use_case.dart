@@ -1,4 +1,4 @@
-import 'package:bufopia/features/leaderboard/domain/entities/leaderboard_entity.dart';
+import 'package:bufopia/features/leaderboard/domain/entities/leaderboard.dart';
 import 'package:bufopia/features/leaderboard/domain/repositories/leaderboard_repository.dart';
 import 'package:bufopia/shared/infrastructure/domain/usecase/future/base_future_use_case.dart';
 import 'package:bufopia/shared/infrastructure/domain/usecase/io/base_input.dart';
@@ -25,7 +25,7 @@ abstract class GetLeaderboardInput extends BaseInput
 @freezed
 abstract class GetLeaderboardOutput extends BaseOutput
     with _$GetLeaderboardOutput {
-  const factory GetLeaderboardOutput(LeaderboardEntity leaderboard) =
+  const factory GetLeaderboardOutput(Leaderboard leaderboard) =
       _GetLeaderboardOutput;
 
   const GetLeaderboardOutput._();

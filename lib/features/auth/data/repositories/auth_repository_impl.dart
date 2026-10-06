@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:bufopia/features/auth/data/datasources/auth_data_source.dart';
-import 'package:bufopia/features/auth/data/mapper/user_mapper.dart';
-import 'package:bufopia/features/auth/data/models/user_model.dart';
-import 'package:bufopia/features/auth/domain/entities/user_entity.dart';
+import 'package:bufopia/features/auth/data/mapper/user_data_mapper.dart';
+import 'package:bufopia/features/auth/data/models/user_data.dart';
+import 'package:bufopia/features/auth/domain/entities/user.dart';
 import 'package:bufopia/features/auth/domain/repositories/auth_repository.dart';
 import 'package:bufopia/shared/services/local_storage/app_preferences.dart';
 import 'package:injectable/injectable.dart';
@@ -12,23 +12,23 @@ import 'package:injectable/injectable.dart';
 class AuthRepositoryImpl extends AuthRepository {
   AuthRepositoryImpl(
     this._dataSource,
-    this._userMapper,
+    this._userDataMapper,
     this._appPreferences,
   );
 
   final AuthDataSource _dataSource;
-  final UserMapper _userMapper;
+  final UserDataMapper _userDataMapper;
   final AppPreferences _appPreferences;
 
   @override
-  UserEntity? getCurrentUser() {
+  User? getCurrentUser() {
     final cached = _appPreferences.currentUser;
     if (cached != null && cached.isNotEmpty) {
       try {
-        final userData = UserModel.fromJson(
+        final userData = UserData.fromJson(
           json.decode(cached) as Map<String, dynamic>,
         );
-        return _userMapper.mapToEntity(userData);
+        return _userDataMapper.mapToEntity(userData);
       } on Exception {
         return null;
       }
@@ -38,22 +38,22 @@ class AuthRepositoryImpl extends AuthRepository {
   }
 
   @override
-  Future<bool> saveCurrentUser(UserEntity user) async {
-    final model = _userMapper.mapToData(user);
-    return _appPreferences.saveCurrentUser(json.encode(model.toJson()));
+  Future<bool> saveCurrentUser(User user) async {
+    final data = _userDataMapper.mapToData(user);
+    return _appPreferences.saveCurrentUser(json.encode(data.toJson()));
   }
 
   @override
   Future<void> clearCurrentUserData() => _appPreferences.clearCurrentUserData();
 
   @override
-  Future<UserEntity> getUserInfo({required String uid}) async {
+  Future<User> getUserInfo({required String uid}) async {
     final response = await _dataSource.getUserInfo(uid: uid);
-    return _userMapper.mapToEntity(response);
+    return _userDataMapper.mapToEntity(response);
   }
 
   @override
-  Future<UserEntity> updateUserProfile({
+  Future<User> updateUserProfile({
     required String uid,
     required String displayName,
     String? avatarUrl,
@@ -63,6 +63,6 @@ class AuthRepositoryImpl extends AuthRepository {
       displayName: displayName,
       avatarUrl: avatarUrl,
     );
-    return _userMapper.mapToEntity(response);
+    return _userDataMapper.mapToEntity(response);
   }
 }

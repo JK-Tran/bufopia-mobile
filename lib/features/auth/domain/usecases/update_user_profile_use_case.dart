@@ -1,4 +1,4 @@
-import 'package:bufopia/features/auth/domain/entities/user_entity.dart';
+import 'package:bufopia/features/auth/domain/entities/user.dart';
 import 'package:bufopia/features/auth/domain/repositories/auth_repository.dart';
 import 'package:bufopia/shared/infrastructure/domain/usecase/future/base_future_use_case.dart';
 import 'package:bufopia/shared/infrastructure/domain/usecase/io/base_input.dart';
@@ -23,8 +23,7 @@ abstract class UpdateUserProfileInput extends BaseInput
 @freezed
 abstract class UpdateUserProfileOutput extends BaseOutput
     with _$UpdateUserProfileOutput {
-  const factory UpdateUserProfileOutput(UserEntity? user) =
-      _UpdateUserProfileOutput;
+  const factory UpdateUserProfileOutput(User? user) = _UpdateUserProfileOutput;
 
   const UpdateUserProfileOutput._();
 }

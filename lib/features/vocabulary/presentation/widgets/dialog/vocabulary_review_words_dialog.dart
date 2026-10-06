@@ -4,7 +4,7 @@ import 'package:bufopia/components/app_game_dialog.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
-import 'package:bufopia/features/vocabulary/domain/entities/word_profile_entity.dart';
+import 'package:bufopia/features/vocabulary/domain/entities/word_profile.dart';
 import 'package:bufopia/features/vocabulary/domain/usecases/get_word_profiles_use_case.dart';
 import 'package:bufopia/shared/di/di.dart';
 import 'package:bufopia/shared/services/device/device_uid_service.dart';
@@ -76,7 +76,7 @@ class VocabularyReviewWordsDialog extends StatefulWidget {
 class _VocabularyReviewWordsDialogState
     extends State<VocabularyReviewWordsDialog> {
   bool _isLoading = true;
-  List<WordProfileEntity> _profiles = [];
+  List<WordProfile> _profiles = [];
 
   @override
   void initState() {

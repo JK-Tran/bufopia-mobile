@@ -4,7 +4,7 @@ import 'package:bufopia/components/components.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
-import 'package:bufopia/features/auth/domain/entities/user_entity.dart';
+import 'package:bufopia/features/auth/domain/entities/user.dart';
 import 'package:bufopia/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:bufopia/features/home/presentation/widgets/home_header/dialog/player_avatar_dialog.dart';
 import 'package:bufopia/features/home/presentation/widgets/home_header/dialog/player_edit_name_dialog.dart';
@@ -52,7 +52,7 @@ class _PlayerInfoDialogState extends State<PlayerInfoDialog> {
     _selectedAvatarUrl = user?.avatarUrl;
   }
 
-  void _onSave(UserEntity user, String newName) {
+  void _onSave(User user, String newName) {
     if (newName.isEmpty) return;
     setState(() {
       _isSaving = true;
@@ -107,7 +107,7 @@ class _PlayerInfoDialogState extends State<PlayerInfoDialog> {
   }
 
   /// Mở dialog đổi tên hiển thị
-  Future<void> _openEditNameSheet(UserEntity user) async {
+  Future<void> _openEditNameSheet(User user) async {
     final result = await PlayerEditNameDialog.show(
       context,
       initialName: _displayName,
@@ -123,7 +123,7 @@ class _PlayerInfoDialogState extends State<PlayerInfoDialog> {
 
     return BlocBuilder<AuthBloc, AuthState>(
       builder: (context, state) {
-        final user = state.currentUser ?? const UserEntity();
+        final user = state.currentUser ?? const User();
         final currentLevelXp = user.currentLevelXp;
         final neededForNext = user.neededForNext;
         final level = user.level;
@@ -256,7 +256,7 @@ class _PlayerInfoDialogState extends State<PlayerInfoDialog> {
     );
   }
 
-  Widget _buildProfileCard(UserEntity user, bool isPaper) {
+  Widget _buildProfileCard(User user, bool isPaper) {
     final primaryAccent = isPaper ? AppColors.paperGreen : AppColors.blue;
     final cardBg = isPaper ? AppColors.paperSurface : AppColors.lightBackground;
     final cardBorder = isPaper ? AppColors.paperBorder : AppColors.grayLight;

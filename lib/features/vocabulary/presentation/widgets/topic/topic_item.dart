@@ -2,7 +2,7 @@ import 'package:bufopia/components/app_paper_clip.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
-import 'package:bufopia/features/vocabulary/domain/entities/topic_entity.dart';
+import 'package:bufopia/features/vocabulary/domain/entities/topic.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -18,7 +18,7 @@ class TopicItem extends StatefulWidget {
     super.key,
   });
 
-  final TopicEntity topic;
+  final Topic topic;
   final bool isSelected;
   final VoidCallback onTap;
   final bool? isPaperTheme;
@@ -98,7 +98,7 @@ class _ItemBody extends StatelessWidget {
     required this.isPaperTheme,
   });
 
-  final TopicEntity topic;
+  final Topic topic;
   final bool isSelected;
   final bool isPressed;
   final bool isPaperTheme;
@@ -221,7 +221,7 @@ class _ItemBody extends StatelessWidget {
 class _ItemIllustration extends StatelessWidget {
   const _ItemIllustration({required this.topic});
 
-  final TopicEntity topic;
+  final Topic topic;
 
   @override
   Widget build(BuildContext context) {
@@ -386,7 +386,7 @@ class _ItemBadges extends StatelessWidget {
     required this.isPaperTheme,
   });
 
-  final TopicEntity topic;
+  final Topic topic;
   final bool isPaperTheme;
 
   @override

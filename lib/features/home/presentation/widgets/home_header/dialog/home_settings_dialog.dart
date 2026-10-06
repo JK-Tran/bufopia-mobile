@@ -1,8 +1,8 @@
 import 'package:bufopia/components/components.dart';
-import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
 import 'package:bufopia/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:bufopia/features/home/presentation/widgets/home_header/dialog/home_feedback_dialog.dart';
 import 'package:bufopia/features/home/presentation/widgets/home_header/dialog/player_info_dialog.dart';
 import 'package:bufopia/features/home/presentation/widgets/home_header/dialog/privacy_policy_dialog.dart';
 import 'package:bufopia/features/home/presentation/widgets/home_header/settings/settings.dart';
@@ -23,55 +23,7 @@ class HomeSettingsDialog extends StatelessWidget {
   }
 
   void _showFeedbackDialog(BuildContext context) {
-    showDialog<void>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16.w),
-        ),
-        title: Row(
-          children: [
-            Icon(
-              Icons.chat_bubble_outline_rounded,
-              color: AppColors.blue,
-              size: 20.r,
-            ),
-            SizedBox(width: 8.w),
-            AppText.t3(
-              'Góp ý cho Bufopia',
-              fontWeight: FontWeight.w700,
-              fontSize: 16.sp,
-            ),
-          ],
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            AppText.b2(
-              'Cảm ơn bạn đã luôn đồng hành cùng Bufopia!',
-              fontSize: 14.sp,
-              color: AppColors.grayDark,
-            ),
-            SizedBox(height: 6.h),
-            AppText.c1(
-              'Mọi đóng góp, báo lỗi hoặc ý tưởng tính năng mới '
-              'vui lòng gửi về: support@bufopia.app',
-              color: AppColors.grayMedium,
-              fontSize: 12.sp,
-            ),
-          ],
-        ),
-        actions: [
-          AppButton.primary(
-            text: 'Đóng',
-            fontSize: 12.sp,
-            padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 6.h),
-            onPressed: () => Navigator.of(ctx).pop(),
-          ),
-        ],
-      ),
-    );
+    HomeFeedbackDialog.show(context);
   }
 
   @override

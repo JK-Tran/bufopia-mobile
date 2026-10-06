@@ -2,8 +2,8 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:bufopia/core/base/base_bloc.dart';
-import 'package:bufopia/features/challenge/domain/entities/room_info_entity.dart';
-import 'package:bufopia/features/challenge/domain/entities/social_state_entity.dart';
+import 'package:bufopia/features/challenge/domain/entities/room_info.dart';
+import 'package:bufopia/features/challenge/domain/entities/social_state.dart';
 import 'package:bufopia/features/challenge/domain/usecases/delete_social_dismiss_use_case.dart';
 import 'package:bufopia/features/challenge/domain/usecases/get_room_info_use_case.dart';
 import 'package:bufopia/features/challenge/domain/usecases/get_social_state_use_case.dart';
@@ -220,7 +220,7 @@ class ChallengeRoomBloc
         emit(
           state.copyWith(
             isActionLoading: false,
-            socialState: SocialStateEntity(
+            socialState: SocialState(
               recent: currentSocial.recent,
               invitations: updatedInvitations,
             ),

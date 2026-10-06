@@ -285,7 +285,7 @@ as String?,
 /// @nodoc
 mixin _$UpdateUserProfileOutput {
 
- UserEntity? get user;
+ User? get user;
 /// Create a copy of UpdateUserProfileOutput
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -321,11 +321,11 @@ abstract mixin class $UpdateUserProfileOutputCopyWith<$Res>  {
   factory $UpdateUserProfileOutputCopyWith(UpdateUserProfileOutput value, $Res Function(UpdateUserProfileOutput) _then) = _$UpdateUserProfileOutputCopyWithImpl;
 @useResult
 $Res call({
- UserEntity? user
+ User? user
 });
 
 
-$UserEntityCopyWith<$Res>? get user;
+$UserCopyWith<$Res>? get user;
 
 }
 /// @nodoc
@@ -341,19 +341,19 @@ class _$UpdateUserProfileOutputCopyWithImpl<$Res>
 @pragma('vm:prefer-inline') @override $Res call({Object? user = freezed,}) {
   return _then(UpdateUserProfileOutput(
 freezed == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
-as UserEntity?,
+as User?,
   ));
 }
 /// Create a copy of UpdateUserProfileOutput
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$UserEntityCopyWith<$Res>? get user {
+$UserCopyWith<$Res>? get user {
     if (_self.user == null) {
     return null;
   }
 
-  return $UserEntityCopyWith<$Res>(_self.user!, (value) {
+  return $UserCopyWith<$Res>(_self.user!, (value) {
     return _then(_self.copyWith(user: value));
   });
 }
@@ -438,7 +438,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( UserEntity? user)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( User? user)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _UpdateUserProfileOutput() when $default != null:
 return $default(_that.user);case _:
@@ -459,7 +459,7 @@ return $default(_that.user);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( UserEntity? user)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( User? user)  $default,) {final _that = this;
 switch (_that) {
 case _UpdateUserProfileOutput():
 return $default(_that.user);case _:
@@ -479,7 +479,7 @@ return $default(_that.user);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( UserEntity? user)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( User? user)?  $default,) {final _that = this;
 switch (_that) {
 case _UpdateUserProfileOutput() when $default != null:
 return $default(_that.user);case _:
@@ -497,7 +497,7 @@ class _UpdateUserProfileOutput extends UpdateUserProfileOutput {
   const _UpdateUserProfileOutput(this.user): super._();
   
 
-@override final  UserEntity? user;
+@override final  User? user;
 
 /// Create a copy of UpdateUserProfileOutput
 /// with the given fields replaced by the non-null parameter values.
@@ -531,11 +531,11 @@ abstract mixin class _$UpdateUserProfileOutputCopyWith<$Res> implements $UpdateU
   factory _$UpdateUserProfileOutputCopyWith(_UpdateUserProfileOutput value, $Res Function(_UpdateUserProfileOutput) _then) = __$UpdateUserProfileOutputCopyWithImpl;
 @override @useResult
 $Res call({
- UserEntity? user
+ User? user
 });
 
 
-@override $UserEntityCopyWith<$Res>? get user;
+@override $UserCopyWith<$Res>? get user;
 
 }
 /// @nodoc
@@ -551,7 +551,7 @@ class __$UpdateUserProfileOutputCopyWithImpl<$Res>
 @override @pragma('vm:prefer-inline') $Res call({Object? user = freezed,}) {
   return _then(_UpdateUserProfileOutput(
 freezed == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
-as UserEntity?,
+as User?,
   ));
 }
 
@@ -559,12 +559,12 @@ as UserEntity?,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$UserEntityCopyWith<$Res>? get user {
+$UserCopyWith<$Res>? get user {
     if (_self.user == null) {
     return null;
   }
 
-  return $UserEntityCopyWith<$Res>(_self.user!, (value) {
+  return $UserCopyWith<$Res>(_self.user!, (value) {
     return _then(_self.copyWith(user: value));
   });
 }

@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:bufopia/core/base/base_bloc.dart';
-import 'package:bufopia/features/auth/domain/entities/user_entity.dart';
+import 'package:bufopia/features/auth/domain/entities/user.dart';
 import 'package:bufopia/features/auth/domain/usecases/clear_user_cache_use_case.dart';
 import 'package:bufopia/features/auth/domain/usecases/get_cached_user_use_case.dart';
 import 'package:bufopia/features/auth/domain/usecases/get_user_info_use_case.dart';

@@ -279,7 +279,7 @@ as String,
 /// @nodoc
 mixin _$GetRoomInfoOutput {
 
- RoomInfoEntity? get roomInfo;
+ RoomInfo? get roomInfo;
 /// Create a copy of GetRoomInfoOutput
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -315,11 +315,11 @@ abstract mixin class $GetRoomInfoOutputCopyWith<$Res>  {
   factory $GetRoomInfoOutputCopyWith(GetRoomInfoOutput value, $Res Function(GetRoomInfoOutput) _then) = _$GetRoomInfoOutputCopyWithImpl;
 @useResult
 $Res call({
- RoomInfoEntity? roomInfo
+ RoomInfo? roomInfo
 });
 
 
-$RoomInfoEntityCopyWith<$Res>? get roomInfo;
+$RoomInfoCopyWith<$Res>? get roomInfo;
 
 }
 /// @nodoc
@@ -335,19 +335,19 @@ class _$GetRoomInfoOutputCopyWithImpl<$Res>
 @pragma('vm:prefer-inline') @override $Res call({Object? roomInfo = freezed,}) {
   return _then(GetRoomInfoOutput(
 roomInfo: freezed == roomInfo ? _self.roomInfo : roomInfo // ignore: cast_nullable_to_non_nullable
-as RoomInfoEntity?,
+as RoomInfo?,
   ));
 }
 /// Create a copy of GetRoomInfoOutput
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$RoomInfoEntityCopyWith<$Res>? get roomInfo {
+$RoomInfoCopyWith<$Res>? get roomInfo {
     if (_self.roomInfo == null) {
     return null;
   }
 
-  return $RoomInfoEntityCopyWith<$Res>(_self.roomInfo!, (value) {
+  return $RoomInfoCopyWith<$Res>(_self.roomInfo!, (value) {
     return _then(_self.copyWith(roomInfo: value));
   });
 }
@@ -432,7 +432,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( RoomInfoEntity? roomInfo)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( RoomInfo? roomInfo)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _GetRoomInfoOutput() when $default != null:
 return $default(_that.roomInfo);case _:
@@ -453,7 +453,7 @@ return $default(_that.roomInfo);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( RoomInfoEntity? roomInfo)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( RoomInfo? roomInfo)  $default,) {final _that = this;
 switch (_that) {
 case _GetRoomInfoOutput():
 return $default(_that.roomInfo);case _:
@@ -473,7 +473,7 @@ return $default(_that.roomInfo);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( RoomInfoEntity? roomInfo)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( RoomInfo? roomInfo)?  $default,) {final _that = this;
 switch (_that) {
 case _GetRoomInfoOutput() when $default != null:
 return $default(_that.roomInfo);case _:
@@ -491,7 +491,7 @@ class _GetRoomInfoOutput extends GetRoomInfoOutput {
   const _GetRoomInfoOutput({this.roomInfo}): super._();
   
 
-@override final  RoomInfoEntity? roomInfo;
+@override final  RoomInfo? roomInfo;
 
 /// Create a copy of GetRoomInfoOutput
 /// with the given fields replaced by the non-null parameter values.
@@ -525,11 +525,11 @@ abstract mixin class _$GetRoomInfoOutputCopyWith<$Res> implements $GetRoomInfoOu
   factory _$GetRoomInfoOutputCopyWith(_GetRoomInfoOutput value, $Res Function(_GetRoomInfoOutput) _then) = __$GetRoomInfoOutputCopyWithImpl;
 @override @useResult
 $Res call({
- RoomInfoEntity? roomInfo
+ RoomInfo? roomInfo
 });
 
 
-@override $RoomInfoEntityCopyWith<$Res>? get roomInfo;
+@override $RoomInfoCopyWith<$Res>? get roomInfo;
 
 }
 /// @nodoc
@@ -545,7 +545,7 @@ class __$GetRoomInfoOutputCopyWithImpl<$Res>
 @override @pragma('vm:prefer-inline') $Res call({Object? roomInfo = freezed,}) {
   return _then(_GetRoomInfoOutput(
 roomInfo: freezed == roomInfo ? _self.roomInfo : roomInfo // ignore: cast_nullable_to_non_nullable
-as RoomInfoEntity?,
+as RoomInfo?,
   ));
 }
 
@@ -553,12 +553,12 @@ as RoomInfoEntity?,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$RoomInfoEntityCopyWith<$Res>? get roomInfo {
+$RoomInfoCopyWith<$Res>? get roomInfo {
     if (_self.roomInfo == null) {
     return null;
   }
 
-  return $RoomInfoEntityCopyWith<$Res>(_self.roomInfo!, (value) {
+  return $RoomInfoCopyWith<$Res>(_self.roomInfo!, (value) {
     return _then(_self.copyWith(roomInfo: value));
   });
 }

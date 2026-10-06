@@ -1,8 +1,9 @@
-import 'package:bufopia/features/vocabulary/data/models/battle_deck_response_model.dart';
-import 'package:bufopia/features/vocabulary/data/models/battle_reward_response_model.dart';
-import 'package:bufopia/features/vocabulary/data/models/match_record_model.dart';
-import 'package:bufopia/features/vocabulary/data/models/vocabulary_response_model.dart';
-import 'package:bufopia/features/vocabulary/data/models/word_profile_model.dart';
+import 'package:bufopia/features/vocabulary/data/models/battle_deck_data.dart';
+import 'package:bufopia/features/vocabulary/data/models/battle_reward_data.dart';
+import 'package:bufopia/features/vocabulary/data/models/feedback_data.dart';
+import 'package:bufopia/features/vocabulary/data/models/match_record_data.dart';
+import 'package:bufopia/features/vocabulary/data/models/vocabulary_data.dart';
+import 'package:bufopia/features/vocabulary/data/models/word_profile_data.dart';
 import 'package:bufopia/shared/infrastructure/infrastructure.dart';
 import 'package:bufopia/shared/model/typedef.dart';
 import 'package:injectable/injectable.dart';
@@ -13,16 +14,16 @@ class VocabularyDataSource {
 
   final NoneAuthAppServerApiClient _noneAuthAppServerApiClient;
 
-  Future<VocabularyResponseModel?> getVocabulary() async {
+  Future<VocabularyDataResponse?> getVocabulary() async {
     return _noneAuthAppServerApiClient.request(
       method: RestMethod.get,
       successResponseMapperType: SuccessResponseMapperType.jsonObject,
       path: '/vocabulary',
-      decoder: (data) => VocabularyResponseModel.fromJson(data! as JSON),
+      decoder: (data) => VocabularyDataResponse.fromJson(data! as JSON),
     );
   }
 
-  Future<BattleDeckResponseModel?> getDeck({
+  Future<BattleDeckDataResponse?> getDeck({
     required String topic,
     String? uid,
     String? opponentUid,
@@ -41,11 +42,11 @@ class VocabularyDataSource {
         'count': count,
         if (recent != null && recent.isNotEmpty) 'recent': recent,
       },
-      decoder: (data) => BattleDeckResponseModel.fromJson(data! as JSON),
+      decoder: (data) => BattleDeckDataResponse.fromJson(data! as JSON),
     );
   }
 
-  Future<bool> saveMatch(MatchRecordModel match) async {
+  Future<bool> saveMatch(MatchRecordData match) async {
     final response = await _noneAuthAppServerApiClient.request(
       method: RestMethod.post,
       successResponseMapperType: SuccessResponseMapperType.jsonObject,
@@ -55,7 +56,7 @@ class VocabularyDataSource {
     return response != null;
   }
 
-  Future<BattleRewardResponseModel?> claimReward({
+  Future<BattleRewardDataResponse?> claimReward({
     required String uid,
     required bool isWin,
     required int correctCount,
@@ -70,29 +71,41 @@ class VocabularyDataSource {
         'correctCount': correctCount,
         'points': points,
       },
-      decoder: (data) => BattleRewardResponseModel.fromJson(data! as JSON),
+      decoder: (data) => BattleRewardDataResponse.fromJson(data! as JSON),
     );
   }
 
-  Future<WordProfilesResponseModel?> getProfiles(String uid) async {
+  Future<WordProfilesDataResponse?> getProfiles(String uid) async {
     return _noneAuthAppServerApiClient.request(
       method: RestMethod.get,
       successResponseMapperType: SuccessResponseMapperType.jsonObject,
       path: '/profiles/$uid',
-      decoder: (data) => WordProfilesResponseModel.fromJson(data! as JSON),
+      decoder: (data) => WordProfilesDataResponse.fromJson(data! as JSON),
     );
   }
 
   Future<bool> syncProfiles(
     String uid,
-    List<WordProfileModel> profiles,
+    List<WordProfileData> profiles,
   ) async {
     final response = await _noneAuthAppServerApiClient.request(
       method: RestMethod.post,
       successResponseMapperType: SuccessResponseMapperType.jsonObject,
       path: '/profiles/$uid',
-      body: SyncProfilesRequestModel(profiles: profiles).toJson(),
+      body: SyncProfilesRequestData(profiles: profiles).toJson(),
     );
     return response != null;
+  }
+
+  Future<FeedbackDataResponse?> sendFeedback(
+    FeedbackData request,
+  ) async {
+    return _noneAuthAppServerApiClient.request(
+      method: RestMethod.post,
+      successResponseMapperType: SuccessResponseMapperType.jsonObject,
+      path: '/feedback',
+      body: request.toJson(),
+      decoder: (data) => FeedbackDataResponse.fromJson(data! as JSON),
+    );
   }
 }

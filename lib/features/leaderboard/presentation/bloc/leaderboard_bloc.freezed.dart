@@ -355,7 +355,7 @@ as String,
 /// @nodoc
 mixin _$LeaderboardState {
 
- bool get isLoading; String? get errorMessage; String get selectedMetric; LeaderboardEntity? get leaderboard; Map<String, LeaderboardEntity> get leaderboardsByMetric;
+ bool get isLoading; String? get errorMessage; String get selectedMetric; Leaderboard? get leaderboard; Map<String, Leaderboard> get leaderboardsByMetric;
 /// Create a copy of LeaderboardState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -391,11 +391,11 @@ abstract mixin class $LeaderboardStateCopyWith<$Res>  {
   factory $LeaderboardStateCopyWith(LeaderboardState value, $Res Function(LeaderboardState) _then) = _$LeaderboardStateCopyWithImpl;
 @useResult
 $Res call({
- bool isLoading, String? errorMessage, String selectedMetric, LeaderboardEntity? leaderboard, Map<String, LeaderboardEntity> leaderboardsByMetric
+ bool isLoading, String? errorMessage, String selectedMetric, Leaderboard? leaderboard, Map<String, Leaderboard> leaderboardsByMetric
 });
 
 
-$LeaderboardEntityCopyWith<$Res>? get leaderboard;
+$LeaderboardCopyWith<$Res>? get leaderboard;
 
 }
 /// @nodoc
@@ -414,20 +414,20 @@ isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nulla
 as bool,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
 as String?,selectedMetric: null == selectedMetric ? _self.selectedMetric : selectedMetric // ignore: cast_nullable_to_non_nullable
 as String,leaderboard: freezed == leaderboard ? _self.leaderboard : leaderboard // ignore: cast_nullable_to_non_nullable
-as LeaderboardEntity?,leaderboardsByMetric: null == leaderboardsByMetric ? _self.leaderboardsByMetric : leaderboardsByMetric // ignore: cast_nullable_to_non_nullable
-as Map<String, LeaderboardEntity>,
+as Leaderboard?,leaderboardsByMetric: null == leaderboardsByMetric ? _self.leaderboardsByMetric : leaderboardsByMetric // ignore: cast_nullable_to_non_nullable
+as Map<String, Leaderboard>,
   ));
 }
 /// Create a copy of LeaderboardState
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$LeaderboardEntityCopyWith<$Res>? get leaderboard {
+$LeaderboardCopyWith<$Res>? get leaderboard {
     if (_self.leaderboard == null) {
     return null;
   }
 
-  return $LeaderboardEntityCopyWith<$Res>(_self.leaderboard!, (value) {
+  return $LeaderboardCopyWith<$Res>(_self.leaderboard!, (value) {
     return _then(_self.copyWith(leaderboard: value));
   });
 }
@@ -512,7 +512,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isLoading,  String? errorMessage,  String selectedMetric,  LeaderboardEntity? leaderboard,  Map<String, LeaderboardEntity> leaderboardsByMetric)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isLoading,  String? errorMessage,  String selectedMetric,  Leaderboard? leaderboard,  Map<String, Leaderboard> leaderboardsByMetric)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _LeaderboardState() when $default != null:
 return $default(_that.isLoading,_that.errorMessage,_that.selectedMetric,_that.leaderboard,_that.leaderboardsByMetric);case _:
@@ -533,7 +533,7 @@ return $default(_that.isLoading,_that.errorMessage,_that.selectedMetric,_that.le
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isLoading,  String? errorMessage,  String selectedMetric,  LeaderboardEntity? leaderboard,  Map<String, LeaderboardEntity> leaderboardsByMetric)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isLoading,  String? errorMessage,  String selectedMetric,  Leaderboard? leaderboard,  Map<String, Leaderboard> leaderboardsByMetric)  $default,) {final _that = this;
 switch (_that) {
 case _LeaderboardState():
 return $default(_that.isLoading,_that.errorMessage,_that.selectedMetric,_that.leaderboard,_that.leaderboardsByMetric);case _:
@@ -553,7 +553,7 @@ return $default(_that.isLoading,_that.errorMessage,_that.selectedMetric,_that.le
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isLoading,  String? errorMessage,  String selectedMetric,  LeaderboardEntity? leaderboard,  Map<String, LeaderboardEntity> leaderboardsByMetric)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isLoading,  String? errorMessage,  String selectedMetric,  Leaderboard? leaderboard,  Map<String, Leaderboard> leaderboardsByMetric)?  $default,) {final _that = this;
 switch (_that) {
 case _LeaderboardState() when $default != null:
 return $default(_that.isLoading,_that.errorMessage,_that.selectedMetric,_that.leaderboard,_that.leaderboardsByMetric);case _:
@@ -568,15 +568,15 @@ return $default(_that.isLoading,_that.errorMessage,_that.selectedMetric,_that.le
 
 
 class _LeaderboardState implements LeaderboardState {
-  const _LeaderboardState({this.isLoading = false, this.errorMessage, this.selectedMetric = 'xp', this.leaderboard,  Map<String, LeaderboardEntity> leaderboardsByMetric = const {}}): _leaderboardsByMetric = leaderboardsByMetric;
+  const _LeaderboardState({this.isLoading = false, this.errorMessage, this.selectedMetric = 'xp', this.leaderboard,  Map<String, Leaderboard> leaderboardsByMetric = const {}}): _leaderboardsByMetric = leaderboardsByMetric;
   
 
 @override@JsonKey() final  bool isLoading;
 @override final  String? errorMessage;
 @override@JsonKey() final  String selectedMetric;
-@override final  LeaderboardEntity? leaderboard;
- final  Map<String, LeaderboardEntity> _leaderboardsByMetric;
-@override@JsonKey() Map<String, LeaderboardEntity> get leaderboardsByMetric {
+@override final  Leaderboard? leaderboard;
+ final  Map<String, Leaderboard> _leaderboardsByMetric;
+@override@JsonKey() Map<String, Leaderboard> get leaderboardsByMetric {
   if (_leaderboardsByMetric is EqualUnmodifiableMapView) return _leaderboardsByMetric;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableMapView(_leaderboardsByMetric);
@@ -615,11 +615,11 @@ abstract mixin class _$LeaderboardStateCopyWith<$Res> implements $LeaderboardSta
   factory _$LeaderboardStateCopyWith(_LeaderboardState value, $Res Function(_LeaderboardState) _then) = __$LeaderboardStateCopyWithImpl;
 @override @useResult
 $Res call({
- bool isLoading, String? errorMessage, String selectedMetric, LeaderboardEntity? leaderboard, Map<String, LeaderboardEntity> leaderboardsByMetric
+ bool isLoading, String? errorMessage, String selectedMetric, Leaderboard? leaderboard, Map<String, Leaderboard> leaderboardsByMetric
 });
 
 
-@override $LeaderboardEntityCopyWith<$Res>? get leaderboard;
+@override $LeaderboardCopyWith<$Res>? get leaderboard;
 
 }
 /// @nodoc
@@ -638,8 +638,8 @@ isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nulla
 as bool,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
 as String?,selectedMetric: null == selectedMetric ? _self.selectedMetric : selectedMetric // ignore: cast_nullable_to_non_nullable
 as String,leaderboard: freezed == leaderboard ? _self.leaderboard : leaderboard // ignore: cast_nullable_to_non_nullable
-as LeaderboardEntity?,leaderboardsByMetric: null == leaderboardsByMetric ? _self._leaderboardsByMetric : leaderboardsByMetric // ignore: cast_nullable_to_non_nullable
-as Map<String, LeaderboardEntity>,
+as Leaderboard?,leaderboardsByMetric: null == leaderboardsByMetric ? _self._leaderboardsByMetric : leaderboardsByMetric // ignore: cast_nullable_to_non_nullable
+as Map<String, Leaderboard>,
   ));
 }
 
@@ -647,12 +647,12 @@ as Map<String, LeaderboardEntity>,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$LeaderboardEntityCopyWith<$Res>? get leaderboard {
+$LeaderboardCopyWith<$Res>? get leaderboard {
     if (_self.leaderboard == null) {
     return null;
   }
 
-  return $LeaderboardEntityCopyWith<$Res>(_self.leaderboard!, (value) {
+  return $LeaderboardCopyWith<$Res>(_self.leaderboard!, (value) {
     return _then(_self.copyWith(leaderboard: value));
   });
 }

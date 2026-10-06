@@ -1,5 +1,5 @@
 import 'package:bufopia/core/base/base_bloc.dart';
-import 'package:bufopia/features/leaderboard/domain/entities/leaderboard_entity.dart';
+import 'package:bufopia/features/leaderboard/domain/entities/leaderboard.dart';
 import 'package:bufopia/features/leaderboard/domain/usecases/get_leaderboard_use_case.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -48,7 +48,7 @@ class LeaderboardBloc extends BaseBloc<LeaderboardEvent, LeaderboardState> {
           limit: event.limit,
         ),
       );
-      final updatedMap = Map<String, LeaderboardEntity>.from(
+      final updatedMap = Map<String, Leaderboard>.from(
         state.leaderboardsByMetric,
       )..[event.metric] = output.leaderboard;
 

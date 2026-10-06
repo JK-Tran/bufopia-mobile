@@ -1,4 +1,4 @@
-import 'package:bufopia/features/auth/data/models/user_model.dart';
+import 'package:bufopia/features/auth/data/models/user_data.dart';
 import 'package:bufopia/shared/infrastructure/infrastructure.dart';
 import 'package:bufopia/shared/model/typedef.dart';
 import 'package:injectable/injectable.dart';
@@ -9,16 +9,16 @@ class AuthDataSource {
 
   final NoneAuthAppServerApiClient _noneAuthAppServerApiClient;
 
-  Future<UserModel?> getUserInfo({required String uid}) async {
+  Future<UserData?> getUserInfo({required String uid}) async {
     return _noneAuthAppServerApiClient.request(
       method: RestMethod.get,
       successResponseMapperType: SuccessResponseMapperType.jsonObject,
       path: '/users/$uid',
-      decoder: (data) => UserModel.fromJson((data! as JSON)['user'] as JSON),
+      decoder: (data) => UserData.fromJson((data! as JSON)['user'] as JSON),
     );
   }
 
-  Future<UserModel?> updateUserProfile({
+  Future<UserData?> updateUserProfile({
     required String uid,
     required String displayName,
     String? avatarUrl,
@@ -31,7 +31,7 @@ class AuthDataSource {
         'display_name': displayName,
         'avatar_url': ?avatarUrl,
       },
-      decoder: (data) => UserModel.fromJson((data! as JSON)['user'] as JSON),
+      decoder: (data) => UserData.fromJson((data! as JSON)['user'] as JSON),
     );
   }
 }

@@ -2,7 +2,7 @@ import 'package:bufopia/components/components.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
-import 'package:bufopia/features/challenge/domain/entities/social_state_entity.dart';
+import 'package:bufopia/features/challenge/domain/entities/social_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -17,7 +17,7 @@ class ChallengeRivals extends StatelessWidget {
     super.key,
   });
 
-  final List<RivalEntity> rivals;
+  final List<Rival> rivals;
   final bool isRoomCreated;
   final ValueChanged<String> onInviteRival;
 

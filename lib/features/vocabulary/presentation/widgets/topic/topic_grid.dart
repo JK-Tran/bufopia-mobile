@@ -1,4 +1,4 @@
-import 'package:bufopia/features/vocabulary/domain/entities/topic_entity.dart';
+import 'package:bufopia/features/vocabulary/domain/entities/topic.dart';
 import 'package:bufopia/features/vocabulary/presentation/widgets/topic/topic_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -8,14 +8,14 @@ class TopicGrid extends StatelessWidget {
   const TopicGrid({
     required this.selectedTopicId,
     required this.onTopicSelected,
-    this.topics = TopicEntityX.defaultTopics,
+    this.topics = TopicX.defaultTopics,
     this.isPaperTheme,
     super.key,
   });
 
-  final List<TopicEntity> topics;
+  final List<Topic> topics;
   final String selectedTopicId;
-  final ValueChanged<TopicEntity> onTopicSelected;
+  final ValueChanged<Topic> onTopicSelected;
   final bool? isPaperTheme;
 
   @override
@@ -47,7 +47,7 @@ class TopicGrid extends StatelessWidget {
             final topic = topics[index];
             return TopicItem(
               topic: topic,
-              isSelected: selectedTopicId == topic.id,
+              isSelected: topic.id == selectedTopicId,
               isPaperTheme: isPaperTheme,
               onTap: () => onTopicSelected(topic),
             );
