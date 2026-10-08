@@ -38,57 +38,59 @@ class HomeBody extends StatelessWidget {
           children: [
             Image.asset(
               bgAsset,
-              fit: isPaper ? BoxFit.cover : BoxFit.contain,
+              fit: BoxFit.cover,
               width: double.infinity,
               height: double.infinity,
             ),
 
-            // 2. Main Game Screen Layout (Header + 3-Card Carousel)
+            // 2. Main Game Screen Layout (Header + Centered 2x2 Menu Grid)
             SafeArea(
-              minimum: const EdgeInsets.symmetric(
-                horizontal: 14,
-                // vertical: 6,
-              ),
+              minimum: EdgeInsets.fromLTRB(14.w, 16.h, 14.w, 12.h),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
                   // Top Header Bar: Capsule + Logo + Sound & Settings
-                  BlocBuilder<AuthBloc, AuthState>(
-                    buildWhen: (previous, current) =>
-                        previous.currentUser != current.currentUser,
-                    builder: (context, authState) {
-                      final user = authState.currentUser;
-                      return HomeHeader(
-                        userName: (user?.displayName.isNotEmpty == true)
-                            ? user!.displayName
-                            : 'Alex',
-                        userLevel: user?.level ?? 1,
-                        userXp: user?.xp ?? 0,
-                        userStreak: user?.streak ?? 0,
-                        currentLevelXp: user?.currentLevelXp ?? 0,
-                        neededForNext: (user?.neededForNext ?? 0) > 0
-                            ? user!.neededForNext
-                            : 100,
-                        xpProgress: ((user?.progressPercent ?? 0) / 100).clamp(
-                          0.0,
-                          1.0,
-                        ),
-                        avatarUrl: user?.avatarUrl,
-                        onProfilePressed: () => PlayerInfoDialog.show(context),
-                        onSoundPressed: onSoundPressed,
-                        onSettingsPressed: onSettingsPressed,
-                      );
-                    },
+                  Padding(
+                    padding: EdgeInsets.only(top: 6.h),
+                    child: BlocBuilder<AuthBloc, AuthState>(
+                      buildWhen: (previous, current) =>
+                          previous.currentUser != current.currentUser,
+                      builder: (context, authState) {
+                        final user = authState.currentUser;
+                        return HomeHeader(
+                          userName: (user?.displayName.isNotEmpty == true)
+                              ? user!.displayName
+                              : 'Alex',
+                          userLevel: user?.level ?? 1,
+                          userXp: user?.xp ?? 0,
+                          userStreak: user?.streak ?? 0,
+                          currentLevelXp: user?.currentLevelXp ?? 0,
+                          neededForNext: (user?.neededForNext ?? 0) > 0
+                              ? user!.neededForNext
+                              : 100,
+                          xpProgress:
+                              ((user?.progressPercent ?? 0) / 100).clamp(
+                            0.0,
+                            1.0,
+                          ),
+                          avatarUrl: user?.avatarUrl,
+                          onProfilePressed: () =>
+                              PlayerInfoDialog.show(context),
+                          onSoundPressed: onSoundPressed,
+                          onSettingsPressed: onSettingsPressed,
+                        );
+                      },
+                    ),
                   ),
 
-                  SizedBox(height: 6.h),
-
-                  // Center: Horizontal Cards Layout
+                  // Center: 2x2 Grid trải đều ở giữa
                   Expanded(
-                    child: HomeMenu(
-                      onQuickBattle: onQuickBattle,
-                      onChooseTopic: onChooseTopic,
-                      onReviewWeakWords: onReviewWeakWords,
+                    child: Center(
+                      child: HomeMenu(
+                        onQuickBattle: onQuickBattle,
+                        onChooseTopic: onChooseTopic,
+                        onReviewWeakWords: onReviewWeakWords,
+                      ),
                     ),
                   ),
                 ],

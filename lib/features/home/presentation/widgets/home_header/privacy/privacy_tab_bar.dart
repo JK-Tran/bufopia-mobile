@@ -31,17 +31,19 @@ class PrivacyTabBar extends StatelessWidget {
     const tabs = LegalPoliciesData.tabs;
     final total = tabs.length;
 
-    final barBg = isClassic ? const Color(0xFFF1F5F9) : const Color(0xFFEBE4D5);
+    final barBg = isClassic
+        ? AppColors.lightBackground
+        : AppColors.paperBadgeBg;
     final barBorder = isClassic
-        ? const Color(0xFFE2E8F0)
-        : const Color(0xFFDDD5C5);
-    final sliderBg = isClassic ? AppColors.white : const Color(0xFFFCF9F2);
+        ? AppColors.grayLight
+        : AppColors.paperBorder;
+    final sliderBg = isClassic ? AppColors.white : AppColors.paperCardBg;
     final sliderBorder = isClassic
-        ? const Color(0xFFCBD5E1)
-        : const Color(0xFFD4C7B4);
+        ? AppColors.grayExtrusion
+        : AppColors.paperBorder;
 
     return Container(
-      height: 40.h,
+      height: 52.h,
       padding: EdgeInsets.all(4.r),
       decoration: BoxDecoration(
         color: barBg,
@@ -121,37 +123,48 @@ class _PrivacyTabLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final selectedTextColor = isClassic
-        ? const Color(0xFF0F172A)
+        ? AppColors.grayDark
         : AppColors.paperTextDark;
     final selectedIconColor = isClassic
         ? AppColors.classicButtonEmerald
         : AppColors.paperGreen;
     final unselectedTextColor = isClassic
-        ? const Color(0xFF64748B)
-        : const Color(0xFF718096);
+        ? AppColors.grayMedium
+        : AppColors.paperTextMuted;
     final unselectedIconColor = isClassic
-        ? const Color(0xFF94A3B8)
-        : const Color(0xFF8C8275);
+        ? AppColors.darkOnSurfaceVariant
+        : AppColors.paperTextMuted;
 
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        Icon(
-          tab.tabIcon,
-          size: 14.r,
-          color: isSelected ? selectedIconColor : unselectedIconColor,
+    return Center(
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 3.h),
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                tab.tabIcon,
+                size: 16.r,
+                color: isSelected ? selectedIconColor : unselectedIconColor,
+              ),
+              SizedBox(height: 3.h),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 2.w),
+                child: AppText.c1(
+                  tab.tabLabel,
+                  fontSize: 10.sp,
+                  fontWeight: isSelected ? FontWeight.w700 : null,
+                  color: isSelected ? selectedTextColor : unselectedTextColor,
+                  maxLines: 1,
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ],
+          ),
         ),
-        SizedBox(height: 2.h),
-        AppText.c1(
-          tab.tabLabel,
-          fontSize: 9.sp,
-          fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-          color: isSelected ? selectedTextColor : unselectedTextColor,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          textAlign: TextAlign.center,
-        ),
-      ],
+      ),
     );
   }
 }

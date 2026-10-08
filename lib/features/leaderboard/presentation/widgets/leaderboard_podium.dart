@@ -2,9 +2,9 @@ import 'package:bufopia/components/app_avatar.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/leaderboard/domain/entities/leaderboard.dart';
+import 'package:bufopia/shared/utils/number_format_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:intl/intl.dart';
 
 class LeaderboardPodium extends StatelessWidget {
   const LeaderboardPodium({
@@ -12,7 +12,6 @@ class LeaderboardPodium extends StatelessWidget {
     required this.rank2,
     required this.rank3,
     required this.metric,
-    required this.fmt,
     super.key,
   });
 
@@ -20,7 +19,6 @@ class LeaderboardPodium extends StatelessWidget {
   final LeaderboardPlayer? rank2;
   final LeaderboardPlayer? rank3;
   final String metric;
-  final NumberFormat fmt;
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +33,6 @@ class LeaderboardPodium extends StatelessWidget {
               rank: 2,
               metric: metric,
               isCenter: false,
-              fmt: fmt,
             ),
           ),
           SizedBox(width: 6.w),
@@ -46,7 +43,6 @@ class LeaderboardPodium extends StatelessWidget {
               rank: 1,
               metric: metric,
               isCenter: true,
-              fmt: fmt,
             ),
           ),
           SizedBox(width: 6.w),
@@ -57,7 +53,6 @@ class LeaderboardPodium extends StatelessWidget {
               rank: 3,
               metric: metric,
               isCenter: false,
-              fmt: fmt,
             ),
           ),
         ],
@@ -72,7 +67,6 @@ class LeaderboardPodiumCard extends StatelessWidget {
     required this.rank,
     required this.metric,
     required this.isCenter,
-    required this.fmt,
     this.gradientColors,
     this.borderColor,
     super.key,
@@ -82,7 +76,6 @@ class LeaderboardPodiumCard extends StatelessWidget {
   final int rank;
   final String metric;
   final bool isCenter;
-  final NumberFormat fmt;
   final List<Color>? gradientColors;
   final Color? borderColor;
 
@@ -242,8 +235,8 @@ class LeaderboardPodiumCard extends StatelessWidget {
                         child: Center(
                           child: AppText.c1(
                             '$rank',
-                            fontSize: 8.5.sp,
-                            fontWeight: FontWeight.w800,
+                            fontSize: 10.sp,
+                            fontWeight: FontWeight.w700,
                             color: AppColors.white,
                           ),
                         ),
@@ -251,9 +244,9 @@ class LeaderboardPodiumCard extends StatelessWidget {
                     ),
                   ],
                 ),
-                SizedBox(height: 3.h),
+                SizedBox(height: 4.h),
 
-                // Tên người chơi + Cấp độ (nằm chung 1 dòng như mẫu web)
+                // Tên người chơi + Cấp độ (nằm chung 1 dòng)
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   mainAxisSize: MainAxisSize.min,
@@ -263,19 +256,18 @@ class LeaderboardPodiumCard extends StatelessWidget {
                         player!.displayName.isNotEmpty
                             ? player!.displayName
                             : 'Ẩn danh',
-                        fontSize: isCenter ? 11.sp : 10.sp,
+                        fontSize: isCenter ? 12.sp : 10.sp,
                         fontWeight: FontWeight.w700,
-                        color: const Color(0xFF2D3748),
+                        color: AppColors.grayDark,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
-                    SizedBox(width: 3.w),
+                    SizedBox(width: 2.w),
                     AppText.c1(
                       'Cấp ${player!.level}',
-                      fontSize: 9.sp,
-                      fontWeight: FontWeight.w500,
-                      color: const Color(0xFF718096),
+                      fontSize: 10.sp,
+                      color: AppColors.grayMedium,
                     ),
                   ],
                 ),
@@ -289,17 +281,17 @@ class LeaderboardPodiumCard extends StatelessWidget {
                   textBaseline: TextBaseline.alphabetic,
                   children: [
                     AppText.b2(
-                      fmt.format(player!.value),
-                      fontSize: isCenter ? 12.sp : 11.sp,
-                      fontWeight: FontWeight.w900,
-                      color: const Color(0xFF1A202C),
+                      NumberFormatUtils.formatNumber(player!.value),
+                      fontSize: 12.sp,
+                      fontWeight: FontWeight.w700,
+                      color: AppColors.grayDark,
                     ),
                     SizedBox(width: 2.w),
                     AppText.c1(
                       _unit(metric),
-                      fontSize: 8.5.sp,
+                      fontSize: 10.sp,
                       fontWeight: FontWeight.w700,
-                      color: const Color(0xFF4A5568),
+                      color: AppColors.grayMedium,
                     ),
                   ],
                 ),

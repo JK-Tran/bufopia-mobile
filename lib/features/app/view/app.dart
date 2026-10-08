@@ -3,10 +3,12 @@ import 'package:bufopia/core/constants/device_constants.dart';
 import 'package:bufopia/core/router/app_router.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
 import 'package:bufopia/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:bufopia/shared/constants/ui/ui_constants.dart';
 import 'package:bufopia/shared/di/di.dart';
 import 'package:bufopia/shared/l10n/gen/app_localizations.dart';
 import 'package:bufopia/shared/utils/log_utils.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -23,6 +25,7 @@ class _AppState extends State<App> with WidgetsBindingObserver {
   @override
   void initState() {
     super.initState();
+    SystemChrome.setPreferredOrientations(UiConstants.mobileOrientation);
     WidgetsBinding.instance.addObserver(this);
     _appBloc = sl<AppBloc>()..add(const AppEvent.initiated());
   }

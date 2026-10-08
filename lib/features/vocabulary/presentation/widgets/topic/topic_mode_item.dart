@@ -51,12 +51,12 @@ class TopicModeItem extends StatelessWidget {
       backgroundColor: isPaper ? AppColors.paperCardBg : AppColors.white,
       borderColor: isPaper ? AppColors.paperBorder : cardBorderColor,
       borderWidth: 1.5.w,
-      borderRadius: BorderRadius.circular(12.r),
+      borderRadius: BorderRadius.circular(14.r),
       extrusionColor: isPaper ? AppColors.paperExtrusion : cardShadowColor,
       extrusionHeight: 2.5.h,
       padding: EdgeInsets.symmetric(
-        horizontal: 5.w,
-        vertical: 5.h,
+        horizontal: 8.w,
+        vertical: 8.h,
       ),
       onTap: () {
         context.read<AppBloc>().add(const AppEvent.clickSoundPlayed());
@@ -68,8 +68,8 @@ class TopicModeItem extends StatelessWidget {
           // 1. Top Mode Badge
           Container(
             padding: EdgeInsets.symmetric(
-              horizontal: 6.w,
-              vertical: 2.h,
+              horizontal: 8.w,
+              vertical: 2.5.h,
             ),
             decoration: BoxDecoration(
               color: isPaper ? badgeColor.withValues(alpha: 0.12) : badgeColor,
@@ -83,13 +83,13 @@ class TopicModeItem extends StatelessWidget {
               children: [
                 Icon(
                   badgeIcon,
-                  size: 10.r,
+                  size: 11.r,
                   color: isPaper ? badgeColor : AppColors.white,
                 ),
                 SizedBox(width: 3.w),
                 AppText.c1(
                   badgeText,
-                  fontSize: 8.sp,
+                  fontSize: 10.sp,
                   fontWeight: FontWeight.w700,
                   color: isPaper ? badgeColor : AppColors.white,
                 ),
@@ -97,30 +97,37 @@ class TopicModeItem extends StatelessWidget {
             ),
           ),
 
+          SizedBox(height: 6.h),
+
           // 2. Mascot / Mode Illustration
           Image.asset(
             imagePath,
-            height: 40.h,
-            width: 44.w,
+            height: 46.h,
+            width: 50.w,
             fit: BoxFit.contain,
             errorBuilder: (context, error, stackTrace) => Icon(
               Icons.sports_esports_rounded,
-              size: 32.r,
+              size: 36.r,
               color: badgeColor,
             ),
           ),
 
+          SizedBox(height: 4.h),
+
           // 3. Title
-          AppText.t3(
-            title,
-            fontSize: 10.sp,
-            fontWeight: FontWeight.w700,
-            color: isPaper ? AppColors.paperTextDark : AppColors.grayDark,
-            textAlign: TextAlign.center,
-            maxLines: 1,
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: AppText.t3(
+              title,
+              fontSize: 12.sp,
+              fontWeight: FontWeight.w700,
+              color: isPaper ? AppColors.paperTextDark : AppColors.grayDark,
+              textAlign: TextAlign.center,
+              maxLines: 1,
+            ),
           ),
 
-          SizedBox(height: 5.h),
+          SizedBox(height: 6.h),
 
           // 4. Action Button with 3D Effect
           IgnorePointer(
@@ -129,39 +136,39 @@ class TopicModeItem extends StatelessWidget {
                     text: buttonText,
                     icon: Icon(
                       buttonIcon,
-                      size: 10.r,
+                      size: 12.r,
                       color: AppColors.white,
                     ),
-                    height: 24.h,
+                    height: 28.h,
                     width: double.infinity,
-                    padding: EdgeInsets.symmetric(horizontal: 3.w),
-                    spacing: 2.5,
-                    fontSize: 10.sp,
+                    padding: EdgeInsets.symmetric(horizontal: 6.w),
+                    spacing: 3,
+                    fontSize: 12.sp,
                     fontWeight: FontWeight.w700,
                     backgroundColor: AppColors.paperGreen,
                     borderColor: AppColors.paperGreenBorder,
                     extrusionColor: AppColors.paperGreenExtrusion,
                     extrusionHeight: 2,
-                    borderRadius: BorderRadius.circular(8.r),
+                    borderRadius: BorderRadius.circular(10.r),
                   )
                 : AppButton(
                     text: buttonText,
                     icon: Icon(
                       buttonIcon,
-                      size: 10.r,
+                      size: 12.r,
                       color: AppColors.white,
                     ),
-                    height: 24.h,
+                    height: 28.h,
                     width: double.infinity,
-                    padding: EdgeInsets.symmetric(horizontal: 3.w),
-                    spacing: 2.5,
-                    fontSize: 10.sp,
+                    padding: EdgeInsets.symmetric(horizontal: 6.w),
+                    spacing: 3,
+                    fontSize: 12.sp,
                     fontWeight: FontWeight.w700,
                     gradient: buttonGradient,
                     borderColor: AppColors.white.withValues(alpha: 0.35),
                     extrusionColor: buttonExtrusionColor,
                     extrusionHeight: 2,
-                    borderRadius: BorderRadius.circular(8.r),
+                    borderRadius: BorderRadius.circular(10.r),
                   ),
           ),
         ],

@@ -67,9 +67,9 @@ class PlayerAvatarDialog extends StatelessWidget {
     return AppGameDialog(
       title: 'Chọn ảnh đại diện',
       icon: Icons.photo_camera_rounded,
-      maxWidth: 420.w,
+      maxWidth: 340.w,
       footerText: null,
-      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 14.h),
+      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 14.h),
       backgroundColor: isPaper ? AppColors.paperCardBg : AppColors.white,
       borderColor: isPaper ? AppColors.paperBorder : AppColors.blueLight,
       headerGradientColors: isPaper
@@ -100,7 +100,7 @@ class PlayerAvatarDialog extends StatelessWidget {
               onTap: () => _openCamera(context),
             ),
           ),
-          SizedBox(width: 12.w),
+          SizedBox(width: 10.w),
           Expanded(
             child: _buildActionCard(
               icon: Icons.photo_library_rounded,
@@ -136,11 +136,11 @@ class PlayerAvatarDialog extends StatelessWidget {
       ),
       extrusionColor: bevelColor,
       borderRadius: BorderRadius.circular(14.w),
-      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 14.h),
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 12.h),
       child: Row(
         children: [
           Container(
-            padding: EdgeInsets.all(8.w),
+            padding: EdgeInsets.all(6.w),
             decoration: BoxDecoration(
               color: AppColors.white.withValues(alpha: 0.22),
               shape: BoxShape.circle,
@@ -152,10 +152,10 @@ class PlayerAvatarDialog extends StatelessWidget {
             child: Icon(
               icon,
               color: AppColors.white,
-              size: 22.w,
+              size: 20.w,
             ),
           ),
-          SizedBox(width: 10.w),
+          SizedBox(width: 8.w),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -164,8 +164,10 @@ class PlayerAvatarDialog extends StatelessWidget {
                 AppText.t3(
                   title,
                   color: AppColors.white,
-                  fontWeight: FontWeight.w900,
+                  fontWeight: FontWeight.w700,
                   fontSize: 14.sp,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   shadows: [
                     Shadow(
                       color: AppColors.black.withValues(alpha: 0.25),
@@ -178,8 +180,9 @@ class PlayerAvatarDialog extends StatelessWidget {
                 AppText.c1(
                   subtitle,
                   color: AppColors.white.withValues(alpha: 0.85),
-                  fontWeight: FontWeight.w600,
                   fontSize: 10.sp,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),

@@ -31,8 +31,8 @@ class _HomePageState extends BasePageState<HomePage, HomeBloc> {
   void initState() {
     super.initState();
     SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
     ]);
     bloc.add(const HomeEvent.initiated());
     context.read<AuthBloc>().add(const AuthEvent.getUserInfo());

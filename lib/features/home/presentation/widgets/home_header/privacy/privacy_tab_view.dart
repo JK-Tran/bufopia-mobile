@@ -48,24 +48,24 @@ class _PrivacyIntro extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bg = isClassic ? const Color(0xFFF8FAFC) : const Color(0xFFF7F3E9);
-    final border = isClassic
-        ? const Color(0xFFE2E8F0)
-        : const Color(0xFFE2DACB);
+    final bg = isClassic
+        ? AppColors.lightBackground
+        : AppColors.paperSurface;
+    final border = isClassic ? AppColors.grayLight : AppColors.paperBorder;
     final iconCircleBg = isClassic
-        ? const Color(0xFFECFDF5)
-        : const Color(0xFFE8F5E9);
+        ? AppColors.topicEasyBg
+        : AppColors.paperSurfaceWarm;
     final iconCircleBorder = isClassic
-        ? const Color(0xFFA7F3D0)
+        ? AppColors.modeBotBorder
         : AppColors.paperGreenBorder;
     final iconColor = isClassic
         ? AppColors.classicButtonEmerald
         : AppColors.paperGreen;
     final titleColor = isClassic
-        ? const Color(0xFF0F172A)
+        ? AppColors.grayDark
         : AppColors.paperTextDark;
     final introColor = isClassic
-        ? const Color(0xFF334155)
+        ? AppColors.grayMedium
         : AppColors.paperTextMedium;
 
     return Container(
@@ -95,13 +95,46 @@ class _PrivacyIntro extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                AppText.b2(
-                  tab.title,
-                  fontSize: 12.sp,
-                  fontWeight: FontWeight.w700,
-                  color: titleColor,
+                Row(
+                  children: [
+                    Expanded(
+                      child: AppText.b2(
+                        tab.title,
+                        fontSize: 12.sp,
+                        fontWeight: FontWeight.w700,
+                        color: titleColor,
+                      ),
+                    ),
+                    SizedBox(width: 6.w),
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 6.w,
+                        vertical: 2.h,
+                      ),
+                      decoration: BoxDecoration(
+                        color: isClassic
+                            ? AppColors.topicEasyBg
+                            : AppColors.paperBadgeBg,
+                        borderRadius: BorderRadius.circular(8.r),
+                        border: Border.all(
+                          color: isClassic
+                              ? AppColors.modeBotBorder
+                              : AppColors.paperBadgeBorder,
+                          width: 1.w,
+                        ),
+                      ),
+                      child: AppText.c1(
+                        tab.tag,
+                        fontSize: 10.sp,
+                        fontWeight: FontWeight.w700,
+                        color: isClassic
+                            ? AppColors.modeBotButtonExtrusion
+                            : AppColors.paperBadgeText,
+                      ),
+                    ),
+                  ],
                 ),
-                SizedBox(height: 2.h),
+                SizedBox(height: 3.h),
                 AppText.c1(
                   tab.intro,
                   fontSize: 10.sp,

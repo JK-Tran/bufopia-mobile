@@ -5,6 +5,7 @@ import 'package:bufopia/core/base/base_bloc.dart';
 import 'package:bufopia/features/vocabulary/data/mapper/battle_question_data_mapper.dart';
 import 'package:bufopia/features/vocabulary/data/models/battle_question_data.dart';
 import 'package:bufopia/features/vocabulary/domain/entities/battle_deck.dart';
+import 'package:bufopia/features/vocabulary/domain/entities/battle_option.dart';
 import 'package:bufopia/features/vocabulary/domain/entities/battle_question.dart';
 import 'package:bufopia/features/vocabulary/domain/entities/battle_reward.dart';
 import 'package:bufopia/features/vocabulary/domain/entities/match_record.dart';
@@ -259,7 +260,9 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
         );
 
         _startRoundTimer();
-        _scheduleBotAction();
+        if (event.isBotOpponent) {
+          _scheduleBotAction();
+        }
       },
       doOnError: (e) {
         emit(
@@ -284,7 +287,8 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
     if (currentQ == null) return;
 
     // 1. Chế độ Đấu Online (Gửi optionId lên Backend theo quy tắc SSOT)
-    if (!state.isBotOpponent && event.isPlayer1) {
+    final isOnline = !state.isBotOpponent && state.roomCode != null;
+    if (isOnline && event.isPlayer1) {
       final selectedOpt = currentQ.options.firstWhere(
         (o) => o.en == event.selectedWord || o.vi == event.selectedWord,
         orElse: () => currentQ.options.first,
@@ -300,7 +304,6 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
         state.copyWith(
           selectedWordP1: event.selectedWord,
           selectedOptionIdP1: selectedOpt.id,
-          isRoundLocked: true,
         ),
       );
       return;
@@ -311,41 +314,73 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
         event.selectedWord == currentQ.en || event.selectedWord == currentQ.vi;
 
     if (event.isPlayer1) {
-      final updatedAnswers = Map<String, bool>.from(state.answersP1);
-      if (updatedAnswers[currentQ.id] != true) {
-        updatedAnswers[currentQ.id] = isCorrect;
-      }
-
-      emit(
-        state.copyWith(
-          selectedWordP1: event.selectedWord,
-          answersP1: updatedAnswers,
-        ),
-      );
       if (isCorrect) {
         _countdownTimer?.cancel();
         _botTimer?.cancel();
+
+        final updatedAnswers = Map<String, bool>.from(state.answersP1);
+        if (updatedAnswers[currentQ.id] != true) {
+          updatedAnswers[currentQ.id] = true;
+        }
+
         emit(
           state.copyWith(
+            selectedWordP1: event.selectedWord,
+            isP1Correct: true,
             isRoundLocked: true,
             player1Score: state.player1Score + 100,
             correctCountP1: state.correctCountP1 + 1,
+            answersP1: updatedAnswers,
           ),
         );
         _scheduleNextRound();
+      } else {
+        final updatedWrong = List<String>.from(state.wrongWordsP1);
+        if (!updatedWrong.contains(event.selectedWord)) {
+          updatedWrong.add(event.selectedWord);
+        }
+
+        emit(
+          state.copyWith(
+            selectedWordP1: event.selectedWord,
+            isP1Correct: false,
+            wrongWordsP1: updatedWrong,
+            isRoundLocked: false,
+          ),
+        );
       }
     } else {
-      emit(state.copyWith(selectedWordP2: event.selectedWord));
       if (isCorrect) {
         _countdownTimer?.cancel();
         _botTimer?.cancel();
+
         emit(
           state.copyWith(
+            selectedWordP2: event.selectedWord,
+            isP2Correct: true,
             isRoundLocked: true,
             player2Score: state.player2Score + 100,
           ),
         );
         _scheduleNextRound();
+      } else {
+        final updatedWrong = List<String>.from(state.wrongWordsP2);
+        if (!updatedWrong.contains(event.selectedWord)) {
+          updatedWrong.add(event.selectedWord);
+        }
+
+        emit(
+          state.copyWith(
+            selectedWordP2: event.selectedWord,
+            isP2Correct: false,
+            wrongWordsP2: updatedWrong,
+            isRoundLocked: false,
+          ),
+        );
+
+        if (state.isBotOpponent) {
+          _scheduleBotAction();
+        }
       }
     }
   }
@@ -359,7 +394,8 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
       return;
     }
 
-    if (!state.isBotOpponent) {
+    final isOnline = !state.isBotOpponent && state.roomCode != null;
+    if (isOnline) {
       final elapsedMs =
           DateTime.now().millisecondsSinceEpoch - _localRoundStartTime;
       final remainingSeconds = ((12000 - elapsedMs) / 1000).ceil().clamp(0, 12);
@@ -413,13 +449,21 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
         isRoundLocked: false,
         selectedWordP1: null,
         selectedWordP2: null,
+        selectedOptionIdP1: null,
+        selectedOptionIdP2: null,
+        isP1Correct: null,
+        isP2Correct: null,
         optionsP1: optionsP1,
         optionsP2: optionsP2,
+        wrongWordsP1: const [],
+        wrongWordsP2: const [],
       ),
     );
 
     _startRoundTimer();
-    _scheduleBotAction();
+    if (state.isBotOpponent) {
+      _scheduleBotAction();
+    }
   }
 
   void _onBotAnswer(
@@ -430,18 +474,23 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
     final currentQ = state.currentQuestion;
     if (currentQ == null || state.optionsP2.isEmpty) return;
 
+    final availableOptions = state.optionsP2
+        .where((w) => !state.wrongWordsP2.contains(w))
+        .toList();
+    if (availableOptions.isEmpty) return;
+
     final shouldPickCorrect = _random.nextDouble() < 0.7;
     String chosenWord;
 
-    if (shouldPickCorrect) {
+    if (shouldPickCorrect && availableOptions.contains(currentQ.en)) {
       chosenWord = currentQ.en;
     } else {
-      final wrongOptions = state.optionsP2
+      final wrongAvailable = availableOptions
           .where((w) => w != currentQ.en)
           .toList();
-      chosenWord = wrongOptions.isNotEmpty
-          ? wrongOptions[_random.nextInt(wrongOptions.length)]
-          : state.optionsP2.first;
+      chosenWord = wrongAvailable.isNotEmpty
+          ? wrongAvailable[_random.nextInt(wrongAvailable.length)]
+          : availableOptions.first;
     }
 
     add(
@@ -676,6 +725,8 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
         selectedOptionIdP2: null,
         isP1Correct: null,
         isP2Correct: null,
+        wrongWordsP1: const [],
+        wrongWordsP2: const [],
         remainingSeconds: 12,
       ),
     );
@@ -695,11 +746,26 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
         ? event.scores[1 - state.playerIndex]
         : state.player2Score;
 
+    final currentQ = state.currentQuestion;
+    final answeredWord = currentQ?.options.firstWhere(
+      (o) => o.id == event.optionId,
+      orElse: () => const BattleOption(),
+    );
+    final wordText = (answeredWord?.en.isNotEmpty == true)
+        ? answeredWord!.en
+        : (answeredWord?.vi ?? '');
+
     if (isMe) {
       final updatedAnswers = Map<String, bool>.from(state.answersP1);
-      final currentQ = state.currentQuestion;
       if (currentQ != null) {
         updatedAnswers[currentQ.id] = event.isCorrect;
+      }
+
+      final wrongList = List<String>.from(state.wrongWordsP1);
+      if (!event.isCorrect &&
+          wordText.isNotEmpty &&
+          !wrongList.contains(wordText)) {
+        wrongList.add(wordText);
       }
 
       emit(
@@ -707,25 +773,38 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
           player1Score: myScore,
           player2Score: rivalScore,
           selectedOptionIdP1: event.optionId,
+          selectedWordP1: wordText.isNotEmpty ? wordText : state.selectedWordP1,
           isP1Correct: event.isCorrect,
           correctCountP1: event.isCorrect
               ? state.correctCountP1 + 1
               : state.correctCountP1,
           answersP1: updatedAnswers,
+          wrongWordsP1: wrongList,
+          isRoundLocked: event.isCorrect || state.isRoundLocked,
         ),
       );
     } else {
+      final wrongList = List<String>.from(state.wrongWordsP2);
+      if (!event.isCorrect &&
+          wordText.isNotEmpty &&
+          !wrongList.contains(wordText)) {
+        wrongList.add(wordText);
+      }
+
       emit(
         state.copyWith(
           player1Score: myScore,
           player2Score: rivalScore,
           selectedOptionIdP2: event.optionId,
+          selectedWordP2: wordText.isNotEmpty ? wordText : state.selectedWordP2,
           isP2Correct: event.isCorrect,
+          wrongWordsP2: wrongList,
+          isRoundLocked: event.isCorrect || state.isRoundLocked,
         ),
       );
     }
 
-    // Nếu trả lời đúng, khóa lượt và dừng timer chờ hiệu ứng reveal 1.35s
+    // Nếu bất kỳ ai trả lời đúng, khóa lượt và dừng timer chờ hiệu ứng reveal
     if (event.isCorrect) {
       _countdownTimer?.cancel();
       emit(state.copyWith(isRoundLocked: true));
@@ -777,6 +856,8 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
         isP2Correct: null,
         optionsP1: options,
         optionsP2: options,
+        wrongWordsP1: const [],
+        wrongWordsP2: const [],
         player1Score: myScore,
         player2Score: rivalScore,
         remainingSeconds: 12,

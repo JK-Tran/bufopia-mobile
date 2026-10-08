@@ -34,10 +34,10 @@ Future<void> bootstrap(FutureOr<Widget> Function() builder) async {
   // Add cross-flavor configuration here
   await SharedConfig.getInstance().config();
 
-  // Khóa mặc định hướng màn hình ngang cho toàn app khi khởi động
+  // Khóa mặc định hướng màn hình dọc cho toàn app khi khởi động
   await SystemChrome.setPreferredOrientations([
-    DeviceOrientation.landscapeLeft,
-    DeviceOrientation.landscapeRight,
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
   ]);
 
   runApp(await builder());

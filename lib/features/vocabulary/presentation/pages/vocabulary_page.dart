@@ -45,6 +45,10 @@ class _VocabularyPageState
 
   bool _isOpponentLeftDialogShown = false;
 
+  bool get isLocal2P =>
+      !widget.isBotOpponent &&
+      (widget.roomCode == null || widget.roomCode!.isEmpty);
+
   @override
   void initState() {
     super.initState();
@@ -57,10 +61,30 @@ class _VocabularyPageState
         initialOpponentAvatar: widget.initialOpponentAvatar,
       ),
     );
+
+    // Chế độ 2 người 1 máy thì xoay ngang (Landscape),
+    // còn lại (Bot, Online, Phòng ID) thì giữ màn hình dọc (Portrait)
+    if (isLocal2P) {
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.landscapeLeft,
+        DeviceOrientation.landscapeRight,
+      ]);
+    } else {
+      SystemChrome.setPreferredOrientations([
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown,
+      ]);
+    }
+  }
+
+  @override
+  void dispose() {
+    // Luôn khôi phục về chế độ dọc khi rời màn hình đấu
     SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
     ]);
+    super.dispose();
   }
 
   void _handleBack() {
@@ -80,14 +104,28 @@ class _VocabularyPageState
 
   void _showQuitConfirmationDialog() {
     final isPaper = context.read<AppBloc>().state.isPaperTheme;
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
+
+    final dialogMaxWidth = isLandscape ? 380.0 : 480.w;
+    final dialogMaxHeight = isLandscape ? 200.0 : 220.h;
+    final contentFontSize = isLandscape ? 13.5 : 14.sp;
+    final btnWidth = isLandscape ? 110.0 : 120.w;
+    final btnHeight = isLandscape ? 34.0 : 36.h;
+    final btnFontSize = isLandscape ? 12.0 : 12.sp;
+    final btnSpacing = isLandscape ? 12.0 : 14.w;
+    final contentSpacing = isLandscape ? 10.0 : 14.h;
+    final footerMsg = isLocal2P
+        ? '⚠️ Rời trận sẽ kết thúc ván đấu của cả 2 người chơi!'
+        : '⚠️ Rời trận giữa chừng sẽ tính là bạn thua cuộc!';
 
     // Hiển thị dialog xác nhận nếu đang trong ván đấu
     AppGameDialog.show<void>(
       context: context,
       title: 'RỜI KHỎI TRẬN ĐẤU?',
       icon: Icons.logout_rounded,
-      maxWidth: 480.w,
-      maxHeight: 220.h,
+      maxWidth: dialogMaxWidth,
+      maxHeight: dialogMaxHeight,
       backgroundColor: isPaper ? AppColors.paperCardBg : AppColors.white,
       borderColor: isPaper ? AppColors.paperBorder : AppColors.blueLight,
       headerGradientColors: isPaper
@@ -103,16 +141,16 @@ class _VocabularyPageState
           ? [
               BoxShadow(
                 color: AppColors.paperExtrusion,
-                offset: Offset(0, 4.h),
+                offset: Offset(0, isLandscape ? 3 : 4.h),
               ),
               BoxShadow(
                 color: AppColors.black.withValues(alpha: 0.12),
-                blurRadius: 16.r,
-                offset: Offset(0, 8.h),
+                blurRadius: isLandscape ? 12 : 16.r,
+                offset: Offset(0, isLandscape ? 6 : 8.h),
               ),
             ]
           : null,
-      footerText: '⚠️ Rời trận giữa chừng sẽ tính là bạn thua cuộc!',
+      footerText: footerMsg,
       footerBackgroundColor: isPaper ? AppColors.paperSurface : null,
       footerBorderColor: isPaper ? AppColors.paperBorder : null,
       footerTextColor: isPaper ? AppColors.paperTextMedium : null,
@@ -123,19 +161,19 @@ class _VocabularyPageState
             'Bạn có chắc chắn muốn rời khỏi trận đấu này không?',
             color: isPaper ? AppColors.paperTextDark : AppColors.grayDark,
             fontWeight: FontWeight.w700,
-            fontSize: 14.sp,
+            fontSize: contentFontSize,
             textAlign: TextAlign.center,
           ),
-          SizedBox(height: 14.h),
+          SizedBox(height: contentSpacing),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               if (isPaper)
                 AppButton(
                   text: 'Ở LẠI',
-                  width: 120.w,
-                  height: 36.h,
-                  fontSize: 12.sp,
+                  width: btnWidth,
+                  height: btnHeight,
+                  fontSize: btnFontSize,
                   fontWeight: FontWeight.w700,
                   backgroundColor: AppColors.paperSurface,
                   borderColor: AppColors.paperBorder,
@@ -147,19 +185,19 @@ class _VocabularyPageState
               else
                 AppButton.secondary(
                   text: 'Ở LẠI',
-                  width: 120.w,
-                  height: 36.h,
-                  fontSize: 12.sp,
+                  width: btnWidth,
+                  height: btnHeight,
+                  fontSize: btnFontSize,
                   onPressed: () =>
                       Navigator.of(context, rootNavigator: true).pop(),
                 ),
-              SizedBox(width: 14.w),
+              SizedBox(width: btnSpacing),
               if (isPaper)
                 AppButton(
                   text: 'RỜI TRẬN',
-                  width: 120.w,
-                  height: 36.h,
-                  fontSize: 12.sp,
+                  width: btnWidth,
+                  height: btnHeight,
+                  fontSize: btnFontSize,
                   fontWeight: FontWeight.w700,
                   backgroundColor: AppColors.dialogCloseBg,
                   borderColor: AppColors.dialogCloseBorder,
@@ -180,9 +218,9 @@ class _VocabularyPageState
               else
                 AppButton.danger(
                   text: 'RỜI TRẬN',
-                  width: 120.w,
-                  height: 36.h,
-                  fontSize: 12.sp,
+                  width: btnWidth,
+                  height: btnHeight,
+                  fontSize: btnFontSize,
                   onPressed: () {
                     Navigator.of(context, rootNavigator: true).pop();
                     if (mounted && Navigator.of(context).canPop()) {
@@ -387,10 +425,10 @@ class _VocabularyPageState
                 (b) => b.state.isPaperTheme,
               );
 
-              // Khi máy đang xoay từ dọc sang ngang, chỉ hiển thị ảnh nền
-              // để chuyển cảnh mượt mà và triệt tiêu 100% lỗi overflow
-              // giật hình
-              if (orientation == Orientation.portrait) {
+              // Ở chế độ 2 người cùng máy (Local 2P),
+              /// khi máy đang xoay từ dọc sang ngang,
+              // hiển thị ảnh nền để chuyển cảnh mượt mà và chống giật hình
+              if (isLocal2P && orientation == Orientation.portrait) {
                 return Stack(
                   fit: StackFit.expand,
                   children: [
@@ -412,7 +450,7 @@ class _VocabularyPageState
                         ? battleState.opponentName!
                         : (widget.initialOpponentName?.isNotEmpty == true
                               ? widget.initialOpponentName!
-                              : 'ĐỐI THỦ'));
+                              : (isLocal2P ? 'NGƯỜI CHƠI 2' : 'ĐỐI THỦ')));
               final p2Avatar = widget.isBotOpponent
                   ? (p1Avatar.contains('pip')
                         ? 'assets/images/bunny-avatar.webp'
@@ -429,6 +467,7 @@ class _VocabularyPageState
                 player1Avatar: p1Avatar,
                 player2Name: p2Name,
                 player2Avatar: p2Avatar,
+                isLocal2P: isLocal2P,
               );
             },
           ),

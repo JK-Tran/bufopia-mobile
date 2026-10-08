@@ -1,7 +1,7 @@
-import 'dart:math';
-
+import 'package:bufopia/components/app_game_dialog.dart';
 import 'package:bufopia/components/app_snack_bar.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
+import 'package:bufopia/features/app/bloc/app_bloc.dart';
 import 'package:bufopia/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:bufopia/features/home/presentation/widgets/home_header/feedback/feedback.dart';
 import 'package:bufopia/features/vocabulary/domain/entities/word.dart';
@@ -41,9 +41,6 @@ class _HomeFeedbackDialogState extends State<HomeFeedbackDialog> {
   List<FeedbackWordEntry> _historyWords = [];
   List<FeedbackWordEntry> _allWords = [];
   bool _isFullDictionaryMode = false;
-
-  static const Color _sandBorder = Color(0xFFC9BCA7);
-  static const Color _dialogBg = Color(0xFFFFFDF8);
 
   @override
   void initState() {
@@ -235,98 +232,104 @@ class _HomeFeedbackDialogState extends State<HomeFeedbackDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final screenSize = MediaQuery.of(context).size;
-    final dialogWidth = min(screenSize.width * 0.92, 590.w);
-    final dialogHeight = min(screenSize.height * 0.94, 345.h);
-
+    final isPaper = context.select<AppBloc, bool>((b) => b.state.isPaperTheme);
     final displayEntries = _isFullDictionaryMode ? _allWords : _historyWords;
 
-    return Dialog(
-      backgroundColor: Colors.transparent,
-      insetPadding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
-      child: Container(
-        width: dialogWidth,
-        height: dialogHeight,
-        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
-        decoration: BoxDecoration(
-          color: _dialogBg,
-          borderRadius: BorderRadius.circular(14.r),
-          border: Border.all(color: _sandBorder, width: 2.w),
-          boxShadow: [
-            BoxShadow(
-              color: AppColors.black.withValues(alpha: 0.35),
-              blurRadius: 18,
-              offset: const Offset(0, 8),
-            ),
-          ],
-        ),
-        child: _isSubmittedSuccess
-            ? FeedbackSuccess(
-                reportedWord: _submittedReportedWord,
-                onReset: _handleResetForm,
-                onComplete: () => Navigator.of(context).pop(),
-              )
-            : Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  // 1. Header Bar + 2 Tabs
-                  FeedbackHeader(
-                    activeTab: _activeTab,
-                    historyCount: _historyWords.length,
-                    onTabChanged: (tab) {
-                      setState(() {
-                        _activeTab = tab;
-                        _selectedWordEntry = null;
-                      });
-                    },
-                  ),
-
-                  SizedBox(height: 6.h),
-
-                  // 2. Nội dung Tab
-                  Expanded(
-                    child: _isLoading
-                        ? const Center(
-                            child: CircularProgressIndicator(
-                              valueColor: AlwaysStoppedAnimation<Color>(
-                                Color(0xFF3B6E38),
-                              ),
-                            ),
-                          )
-                        : _activeTab == FeedbackActiveTab.general
-                        ? FeedbackTab(
-                            isSubmitting: _isSubmitting,
-                            onSubmit: _submitGeneralFeedback,
-                          )
-                        : _selectedWordEntry != null
-                        ? FeedbackReport(
-                            entry: _selectedWordEntry!,
-                            isSubmitting: _isSubmitting,
-                            onBack: () => setState(
-                              () => _selectedWordEntry = null,
-                            ),
-                            onSubmit: _submitWordReport,
-                            onPlayAudio: () => _onPlayAudio(
-                              _selectedWordEntry!.word,
-                            ),
-                          )
-                        : FeedbackWordList(
-                            entries: displayEntries,
-                            isFullDictionaryMode: _isFullDictionaryMode,
-                            onSelectWord: (entry) => setState(
-                              () => _selectedWordEntry = entry,
-                            ),
-                            onPlayAudio: _onPlayAudio,
-                            onSearchAllVocabulary: () {
-                              setState(() {
-                                _isFullDictionaryMode = true;
-                              });
-                            },
-                          ),
-                  ),
-                ],
+    return AppGameDialog(
+      title: 'GÓP Ý & BÁO LỖI',
+      icon: Icons.chat_bubble_rounded,
+      maxWidth: 340.w,
+      maxHeight: _isSubmittedSuccess ? 320.h : 560.h,
+      isScrollable: false,
+      footerText: '⭐ Ý kiến của bạn giúp Bufopia ngày một tốt hơn ⭐',
+      padding: EdgeInsets.fromLTRB(10.w, 8.h, 10.w, 8.h),
+      backgroundColor: isPaper ? AppColors.paperCardBg : AppColors.white,
+      borderColor: isPaper ? AppColors.paperBorder : AppColors.blueLight,
+      headerGradientColors: isPaper
+          ? const [AppColors.paperGreen, AppColors.paperGreenDark]
+          : const [AppColors.blueLight, AppColors.blueDark],
+      boxShadow: isPaper
+          ? [
+              BoxShadow(
+                color: AppColors.paperExtrusion,
+                offset: Offset(0, 4.h),
               ),
-      ),
+              BoxShadow(
+                color: AppColors.black.withValues(alpha: 0.12),
+                blurRadius: 16.r,
+                offset: Offset(0, 8.h),
+              ),
+            ]
+          : null,
+      footerBackgroundColor: isPaper ? AppColors.paperSurface : null,
+      footerBorderColor: isPaper ? AppColors.paperBorder : null,
+      footerTextColor: isPaper ? AppColors.paperTextMedium : null,
+      child: _isSubmittedSuccess
+          ? FeedbackSuccess(
+              reportedWord: _submittedReportedWord,
+              onReset: _handleResetForm,
+              onComplete: () => Navigator.of(context).pop(),
+            )
+          : Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                // 1. Tab Switcher
+                FeedbackHeader(
+                  activeTab: _activeTab,
+                  historyCount: _historyWords.length,
+                  onTabChanged: (tab) {
+                    setState(() {
+                      _activeTab = tab;
+                      _selectedWordEntry = null;
+                    });
+                  },
+                ),
+
+                SizedBox(height: 8.h),
+
+                // 2. Nội dung Tab
+                Expanded(
+                  child: _isLoading
+                      ? const Center(
+                          child: CircularProgressIndicator(
+                            valueColor: AlwaysStoppedAnimation<Color>(
+                              AppColors.primary,
+                            ),
+                          ),
+                        )
+                      : _activeTab == FeedbackActiveTab.general
+                      ? FeedbackTab(
+                          isSubmitting: _isSubmitting,
+                          onSubmit: _submitGeneralFeedback,
+                        )
+                      : _selectedWordEntry != null
+                      ? FeedbackReport(
+                          entry: _selectedWordEntry!,
+                          isSubmitting: _isSubmitting,
+                          onBack: () => setState(
+                            () => _selectedWordEntry = null,
+                          ),
+                          onSubmit: _submitWordReport,
+                          onPlayAudio: () => _onPlayAudio(
+                            _selectedWordEntry!.word,
+                          ),
+                        )
+                      : FeedbackWordList(
+                          entries: displayEntries,
+                          isFullDictionaryMode: _isFullDictionaryMode,
+                          onSelectWord: (entry) => setState(
+                            () => _selectedWordEntry = entry,
+                          ),
+                          onPlayAudio: _onPlayAudio,
+                          onSearchAllVocabulary: () {
+                            setState(() {
+                              _isFullDictionaryMode = true;
+                            });
+                          },
+                        ),
+                ),
+              ],
+            ),
     );
   }
 }

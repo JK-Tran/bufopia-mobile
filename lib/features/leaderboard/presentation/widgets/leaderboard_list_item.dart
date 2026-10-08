@@ -2,22 +2,20 @@ import 'package:bufopia/components/app_avatar.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/leaderboard/domain/entities/leaderboard.dart';
+import 'package:bufopia/shared/utils/number_format_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:intl/intl.dart';
 
 /// Hàng hiển thị một người chơi từ hạng #4 trở xuống trong bảng xếp hạng.
 class LeaderboardListItem extends StatelessWidget {
   const LeaderboardListItem({
     required this.player,
     required this.isPaper,
-    required this.fmt,
     super.key,
   });
 
   final LeaderboardPlayer player;
   final bool isPaper;
-  final NumberFormat fmt;
 
   @override
   Widget build(BuildContext context) {
@@ -94,7 +92,7 @@ class LeaderboardListItem extends StatelessWidget {
 
           // Điểm số
           AppText.c1(
-            fmt.format(player.value),
+            NumberFormatUtils.formatNumber(player.value),
             fontSize: 12.sp,
             fontWeight: FontWeight.w700,
             color: AppColors.indigo,

@@ -1,7 +1,6 @@
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
-import 'package:bufopia/features/vocabulary/presentation/widgets/vocabulary_answer_item.dart';
-import 'package:bufopia/features/vocabulary/presentation/widgets/vocabulary_answers_grid.dart';
+import 'package:bufopia/features/vocabulary/vocabulary.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -34,14 +33,19 @@ class VocabularyArena extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isPaper = context.select<AppBloc, bool>((b) => b.state.isPaperTheme);
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
+    final horizontalPadding = isLandscape ? 16.0 : 16.w;
+    final vsMargin = isLandscape ? 8.0 : 8.w;
+    final vsSize = isLandscape ? 38.0 : 44.r;
 
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 16.w),
+      padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
       child: Row(
         children: [
           // 4 Thẻ đáp án Player 1
           Expanded(
-            child: VocabularyAnswersGrid(
+            child: LandscapeAnswersGrid(
               options: optionsP1,
               isPlayer1: true,
               isRoundLocked: isRoundLocked,
@@ -52,26 +56,26 @@ class VocabularyArena extends StatelessWidget {
 
           // Logo VS ở trung tâm
           Padding(
-            padding: EdgeInsets.symmetric(horizontal: 8.w),
+            padding: EdgeInsets.symmetric(horizontal: vsMargin),
             child: isPaper
                 ? Container(
-                    width: 44.r,
-                    height: 44.r,
+                    width: vsSize,
+                    height: vsSize,
                     decoration: BoxDecoration(
                       color: AppColors.paperCardBg,
                       shape: BoxShape.circle,
                       border: Border.all(
                         color: AppColors.paperBorder,
-                        width: 1.5.w,
+                        width: 1.5,
                       ),
-                      boxShadow: [
+                      boxShadow: const [
                         BoxShadow(
                           color: AppColors.paperExtrusion,
-                          offset: Offset(0, 2.h),
+                          offset: Offset(0, 2),
                         ),
                       ],
                     ),
-                    padding: EdgeInsets.all(5.r),
+                    padding: const EdgeInsets.all(5),
                     child: Image.asset(
                       _vsPath,
                       fit: BoxFit.contain,
@@ -79,14 +83,14 @@ class VocabularyArena extends StatelessWidget {
                   )
                 : Image.asset(
                     _vsPath,
-                    height: 48.h,
+                    height: isLandscape ? 38.0 : 48.h,
                     fit: BoxFit.contain,
                   ),
           ),
 
           // 4 Thẻ đáp án Player 2
           Expanded(
-            child: VocabularyAnswersGrid(
+            child: LandscapeAnswersGrid(
               options: optionsP2,
               isPlayer1: false,
               isRoundLocked: isRoundLocked,

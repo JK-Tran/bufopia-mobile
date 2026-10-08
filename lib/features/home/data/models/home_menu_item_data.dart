@@ -13,6 +13,7 @@ class HomeMenuItemData {
     required this.imagePath,
     required this.backgroundImagePath,
     this.onTap,
+    this.isLocked = false,
   });
 
   final String title;
@@ -25,4 +26,5 @@ class HomeMenuItemData {
   final String imagePath;
   final String backgroundImagePath;
   final VoidCallback? onTap;
+  final bool isLocked;
 }

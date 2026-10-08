@@ -2,22 +2,17 @@ import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-/// Hàng 6 khuyên lò xo kim loại 3D nhô lên ở đỉnh sổ tay (Paper Theme)
+/// Hàng khuyên lò xo kim loại 3D nhô lên ở đỉnh sổ tay (Paper Theme)
 class HomeMenuSpiralRings extends StatelessWidget {
-  const HomeMenuSpiralRings({super.key});
+  const HomeMenuSpiralRings({this.count = 4, super.key});
+
+  final int count;
 
   @override
   Widget build(BuildContext context) {
-    return const Row(
+    return Row(
       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-      children: [
-        _SpiralRingItem(),
-        _SpiralRingItem(),
-        _SpiralRingItem(),
-        _SpiralRingItem(),
-        _SpiralRingItem(),
-        _SpiralRingItem(),
-      ],
+      children: List.generate(count, (_) => const _SpiralRingItem()),
     );
   }
 }

@@ -23,13 +23,15 @@ class PrivacyHeader extends StatelessWidget {
     final iconColor = isClassic
         ? AppColors.classicButtonEmerald
         : AppColors.paperGreen;
-    final tagBg = isClassic ? const Color(0xFFD1FAE5) : const Color(0xFFECE7DA);
+    final tagBg = isClassic
+        ? AppColors.topicEasyBg
+        : AppColors.paperBadgeBg;
     final tagBorder = isClassic
-        ? const Color(0xFFA7F3D0)
-        : const Color(0xFFDDD5C5);
+        ? AppColors.modeBotBorder
+        : AppColors.paperBadgeBorder;
     final tagTextColor = isClassic
-        ? const Color(0xFF047857)
-        : const Color(0xFF4A463E);
+        ? AppColors.modeBotButtonExtrusion
+        : AppColors.paperBadgeText;
 
     return Row(
       children: [
@@ -64,10 +66,10 @@ class PrivacyHeader extends StatelessWidget {
           onPressed: onClose,
           backgroundColor: isClassic
               ? AppColors.white
-              : const Color(0xFFFDFBF7),
-          borderColor: const Color(0xFFEF4444),
-          extrusionColor: const Color(0xFFDC2626),
-          iconColor: const Color(0xFFDC2626),
+              : AppColors.paperSurfaceWarm,
+          borderColor: AppColors.darkError,
+          extrusionColor: AppColors.pillCloseIcon,
+          iconColor: AppColors.pillCloseIcon,
           size: 24.r,
           iconSize: 14.r,
         ),

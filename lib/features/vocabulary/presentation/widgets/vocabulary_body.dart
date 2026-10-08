@@ -1,14 +1,11 @@
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
-import 'package:bufopia/features/vocabulary/domain/entities/battle_question.dart';
 import 'package:bufopia/features/vocabulary/presentation/bloc/vocabulary_bloc.dart';
 import 'package:bufopia/features/vocabulary/presentation/widgets/dialog/vocabulary_result_dialog.dart';
+import 'package:bufopia/features/vocabulary/presentation/widgets/landscape/vocabulary_landscape_arena.dart';
+import 'package:bufopia/features/vocabulary/presentation/widgets/portrait/vocabulary_portrait_arena.dart';
 import 'package:bufopia/features/vocabulary/presentation/widgets/vocabulary_answer_item.dart';
-import 'package:bufopia/features/vocabulary/presentation/widgets/vocabulary_arena.dart';
-import 'package:bufopia/features/vocabulary/presentation/widgets/vocabulary_header.dart';
-import 'package:bufopia/features/vocabulary/presentation/widgets/vocabulary_player_badge.dart';
-import 'package:bufopia/features/vocabulary/presentation/widgets/vocabulary_question_panel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -22,6 +19,7 @@ class VocabularyBody extends StatelessWidget {
     this.player1Avatar = 'assets/images/bunny-avatar.webp',
     this.player2Name = 'BOT (VỪA)',
     this.player2Avatar = 'assets/images/pip-avatar.webp',
+    this.isLocal2P = false,
   });
 
   final VoidCallback? onBackPressed;
@@ -29,16 +27,14 @@ class VocabularyBody extends StatelessWidget {
   final String player1Avatar;
   final String player2Name;
   final String player2Avatar;
+  final bool isLocal2P;
 
-  static const String _classicBgPath =
+  static const String _classicBgPath = 'assets/images/app_background.webp';
+  static const String _classicLandscapeBgPath =
       'assets/images/quick_battle/background_quick_battle.png';
   static const String _paperBgPath =
       'assets/images/background_switch/app_background_1.webp';
 
-  String _getTargetWord(BattleQuestion? currentQ) {
-    if (currentQ == null) return '';
-    return currentQ.vi.isNotEmpty ? currentQ.vi : currentQ.en;
-  }
 
   VocabularyAnswerStatus _getAnswerStatus({
     required VocabularyState state,
@@ -46,7 +42,13 @@ class VocabularyBody extends StatelessWidget {
     required int index,
     required String word,
   }) {
-    if (!state.isBotOpponent) {
+    final wrongList = isPlayer1 ? state.wrongWordsP1 : state.wrongWordsP2;
+    if (wrongList.contains(word)) {
+      return VocabularyAnswerStatus.wrong;
+    }
+
+    final isOnline = !state.isBotOpponent && state.roomCode != null;
+    if (isOnline) {
       final currentQ = state.currentQuestion;
       if (currentQ == null || index >= currentQ.options.length) {
         return VocabularyAnswerStatus.normal;
@@ -88,19 +90,9 @@ class VocabularyBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isPaper = context.select<AppBloc, bool>((b) => b.state.isPaperTheme);
-    final bgPath = isPaper ? _paperBgPath : _classicBgPath;
-
-    if (MediaQuery.orientationOf(context) == Orientation.portrait) {
-      return Image.asset(
-        bgPath,
-        width: double.infinity,
-        height: double.infinity,
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) => ColoredBox(
-          color: isPaper ? AppColors.paperBackground : AppColors.peach,
-        ),
-      );
-    }
+    final bgPath = isPaper
+        ? _paperBgPath
+        : (isLocal2P ? _classicLandscapeBgPath : _classicBgPath);
 
     final state = context.watch<VocabularyBloc>().state;
     final currentQ = state.currentQuestion;
@@ -165,86 +157,55 @@ class VocabularyBody extends StatelessWidget {
             ),
           ),
 
-        // 2. Nội dung chính trong SafeArea khi đã có câu hỏi
+        // 2. Nội dung chính khi đã có câu hỏi
         if (currentQ != null && !state.isWaitingForReady)
-          SafeArea(
-            child: Column(
-              children: [
-                // A. Header điều hướng trên cùng (Back, Trang chủ, Chơi lại)
-                VocabularyHeader(onBackPressed: onBackPressed),
-
-                SizedBox(height: 2.h),
-
-                // B. Thông tin trận đấu: P1 Badge | Thẻ câu hỏi | P2 Badge
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 16.w),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // P1 Info Badge (Avatar + Score & Name)
-                      VocabularyPlayerBadge.player1(
-                        name: player1Name,
-                        avatarPath: player1Avatar,
-                        score: state.player1Score,
-                      ),
-
-                      // Thẻ câu hỏi từ vựng mục tiêu lớn & tiến trình ván đấu
-                      VocabularyQuestionPanel(
-                        targetWord: _getTargetWord(currentQ),
-                        remainingSeconds: state.remainingSeconds,
-                        currentRound: state.currentQuestionIndex + 1,
-                      ),
-
-                      // P2 Info Badge (Score & Name + Avatar đối xứng)
-                      VocabularyPlayerBadge.player2(
-                        name: player2Name,
-                        avatarPath: player2Avatar,
-                        score: state.player2Score,
-                      ),
-                    ],
-                  ),
-                ),
-
-                const Spacer(),
-
-                // C. Đấu trường đối kháng 2 bên (P1 Answers | VS | P2 Answers)
-                VocabularyArena(
-                  optionsP1: state.optionsP1,
-                  optionsP2: state.optionsP2,
-                  isRoundLocked: state.isRoundLocked,
-                  getOptionStatusP1: (index, word) => _getAnswerStatus(
+          if (isLocal2P)
+            VocabularyLandscapeArena(
+              state: state,
+              player1Name: player1Name,
+              player1Avatar: player1Avatar,
+              player2Name: player2Name,
+              player2Avatar: player2Avatar,
+              onBackPressed: onBackPressed,
+              getAnswerStatus: ({
+                required isPlayer1,
+                required index,
+                required word,
+              }) =>
+                  _getAnswerStatus(
                     state: state,
-                    isPlayer1: true,
+                    isPlayer1: isPlayer1,
                     index: index,
                     word: word,
                   ),
-                  getOptionStatusP2: (index, word) => _getAnswerStatus(
-                    state: state,
-                    isPlayer1: false,
-                    index: index,
-                    word: word,
-                  ),
-                  onSelectAnswerP1: (word) =>
-                      context.read<VocabularyBloc>().add(
-                        VocabularyEvent.selectAnswer(
-                          isPlayer1: true,
-                          selectedWord: word,
-                        ),
-                      ),
-                  onSelectAnswerP2: (word) =>
-                      context.read<VocabularyBloc>().add(
-                        VocabularyEvent.selectAnswer(
-                          isPlayer1: false,
-                          selectedWord: word,
-                        ),
-                      ),
+              onSelectAnswerP1: (word) => context.read<VocabularyBloc>().add(
+                VocabularyEvent.selectAnswer(
+                  isPlayer1: true,
+                  selectedWord: word,
                 ),
-
-                const Spacer(),
-              ],
+              ),
+              onSelectAnswerP2: (word) => context.read<VocabularyBloc>().add(
+                VocabularyEvent.selectAnswer(
+                  isPlayer1: false,
+                  selectedWord: word,
+                ),
+              ),
+            )
+          else
+            VocabularyPortraitArena(
+              state: state,
+              player1Name: player1Name,
+              player1Avatar: player1Avatar,
+              player2Name: player2Name,
+              player2Avatar: player2Avatar,
+              onBackPressed: onBackPressed,
+              onSelectAnswer: (word) => context.read<VocabularyBloc>().add(
+                VocabularyEvent.selectAnswer(
+                  isPlayer1: true,
+                  selectedWord: word,
+                ),
+              ),
             ),
-          ),
 
         // D. Overlay Thông báo khi kết thúc ván đấu (Game Over)
         if (state.isGameOver)

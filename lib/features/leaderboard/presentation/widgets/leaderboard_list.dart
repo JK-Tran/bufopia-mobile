@@ -4,7 +4,6 @@ import 'package:bufopia/features/leaderboard/domain/entities/leaderboard.dart';
 import 'package:bufopia/features/leaderboard/presentation/widgets/leaderboard_list_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:intl/intl.dart';
 
 /// Danh sach nguoi choi tu hang #4 tro xuong, bao gom header cot.
 class LeaderboardList extends StatelessWidget {
@@ -12,14 +11,12 @@ class LeaderboardList extends StatelessWidget {
     required this.players,
     required this.metric,
     required this.isPaper,
-    required this.fmt,
     super.key,
   });
 
   final List<LeaderboardPlayer> players;
   final String metric;
   final bool isPaper;
-  final NumberFormat fmt;
 
   @override
   Widget build(BuildContext context) {
@@ -34,7 +31,7 @@ class LeaderboardList extends StatelessWidget {
               SizedBox(
                 width: 44.w,
                 child: AppText.c1(
-                  'HANG',
+                  'HẠNG',
                   fontSize: 10.sp,
                   fontWeight: FontWeight.w700,
                   color: AppColors.grayMedium,
@@ -42,7 +39,7 @@ class LeaderboardList extends StatelessWidget {
               ),
               Expanded(
                 child: AppText.c1(
-                  'NGUOI CHOI',
+                  'NGƯỜI CHƠI',
                   fontSize: 10.sp,
                   fontWeight: FontWeight.w700,
                   color: AppColors.grayMedium,
@@ -69,7 +66,6 @@ class LeaderboardList extends StatelessWidget {
           itemBuilder: (_, i) => LeaderboardListItem(
             player: players[i],
             isPaper: isPaper,
-            fmt: fmt,
           ),
         ),
       ],
@@ -80,9 +76,9 @@ class LeaderboardList extends StatelessWidget {
   static String _metricColumnLabel(String metric) {
     switch (metric) {
       case 'win_streak':
-        return 'CHUOI';
+        return 'CHUỖI';
       case 'streak':
-        return 'NGAY';
+        return 'NGÀY';
       default:
         return 'XP';
     }

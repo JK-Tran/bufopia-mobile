@@ -17,6 +17,8 @@ class AppGameDialog extends StatelessWidget {
     this.onClose,
     this.maxWidth,
     this.maxHeight,
+    this.height,
+    this.isScrollable = true,
     this.padding,
     this.backgroundColor,
     this.borderColor,
@@ -37,6 +39,8 @@ class AppGameDialog extends StatelessWidget {
   final VoidCallback? onClose;
   final double? maxWidth;
   final double? maxHeight;
+  final double? height;
+  final bool isScrollable;
   final EdgeInsetsGeometry? padding;
   final Color? backgroundColor;
   final Color? borderColor;
@@ -58,6 +62,8 @@ class AppGameDialog extends StatelessWidget {
     VoidCallback? onClose,
     double? maxWidth,
     double? maxHeight,
+    double? height,
+    bool isScrollable = true,
     EdgeInsetsGeometry? padding,
     Color? backgroundColor,
     Color? borderColor,
@@ -80,6 +86,8 @@ class AppGameDialog extends StatelessWidget {
         onClose: onClose,
         maxWidth: maxWidth,
         maxHeight: maxHeight,
+        height: height,
+        isScrollable: isScrollable,
         padding: padding,
         backgroundColor: backgroundColor,
         borderColor: borderColor,
@@ -96,56 +104,82 @@ class AppGameDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
+    final screenHeight = MediaQuery.of(context).size.height;
+
+    final resolvedMaxWidth = maxWidth ?? (isLandscape ? 440.0 : 340.w);
+    final resolvedMaxHeight =
+        maxHeight ??
+        (isLandscape ? (screenHeight * 0.9).clamp(280.0, 360.0) : 560.h);
+    final insetPad = isLandscape
+        ? const EdgeInsets.symmetric(horizontal: 20, vertical: 10)
+        : EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h);
+    final bodyPad =
+        padding ??
+        (isLandscape
+            ? const EdgeInsets.fromLTRB(14, 8, 14, 6)
+            : EdgeInsets.fromLTRB(12.w, 8.h, 12.w, 6.h));
+
     return Dialog(
       backgroundColor: Colors.transparent,
-      insetPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+      insetPadding: insetPad,
       child: Container(
+        height: height ?? (!isScrollable ? resolvedMaxHeight : null),
         constraints: BoxConstraints(
-          maxWidth: maxWidth ?? 520.w,
-          maxHeight: maxHeight ?? 330.h,
+          maxWidth: resolvedMaxWidth,
+          maxHeight: resolvedMaxHeight,
         ),
         decoration: BoxDecoration(
           color: backgroundColor ?? AppColors.white,
-          borderRadius: BorderRadius.circular(20.w),
+          borderRadius: BorderRadius.circular(isLandscape ? 18 : 20.w),
           border: Border.all(
             color: borderColor ?? AppColors.blueLight,
-            width: 2.w,
+            width: isLandscape ? 1.5 : 2.w,
           ),
           boxShadow:
               boxShadow ??
               [
                 BoxShadow(
                   color: AppColors.blue.withValues(alpha: 0.25),
-                  blurRadius: 18.w,
-                  offset: Offset(0, 8.h),
+                  blurRadius: isLandscape ? 16 : 18.w,
+                  offset: Offset(0, isLandscape ? 6 : 8.h),
                 ),
                 BoxShadow(
                   color: AppColors.black.withValues(alpha: 0.16),
-                  blurRadius: 24.w,
-                  offset: Offset(0, 12.h),
+                  blurRadius: isLandscape ? 20 : 24.w,
+                  offset: Offset(0, isLandscape ? 8 : 12.h),
                 ),
               ],
         ),
         child: ClipRRect(
-          borderRadius: BorderRadius.circular(18.w),
+          borderRadius: BorderRadius.circular(isLandscape ? 16 : 18.w),
           child: Column(
-            mainAxisSize: MainAxisSize.min,
+            mainAxisSize: isScrollable ? MainAxisSize.min : MainAxisSize.max,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // ── 1. Header Bar ──────────────────────────────────────────
               _buildHeader(context),
 
-              // ── 2. Scrollable Body (Tự động co theo nội dung) ──────────
-              Flexible(
-                child: SingleChildScrollView(
-                  physics: const BouncingScrollPhysics(),
-                  padding: padding ?? EdgeInsets.fromLTRB(12.w, 8.h, 12.w, 6.h),
-                  child: child,
+              // ── 2. Body ────────────────────────────────────────────────
+              if (isScrollable)
+                Flexible(
+                  child: SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    padding: bodyPad,
+                    child: child,
+                  ),
+                )
+              else
+                Expanded(
+                  child: Padding(
+                    padding: bodyPad,
+                    child: child,
+                  ),
                 ),
-              ),
 
               // ── 3. Footer Bar ──────────────────────────────────────────
-              _buildFooter(),
+              _buildFooter(context),
             ],
           ),
         ),
@@ -154,6 +188,8 @@ class AppGameDialog extends StatelessWidget {
   }
 
   Widget _buildHeader(BuildContext context) {
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
     final gradientColors =
         headerGradientColors ??
         const [
@@ -162,8 +198,8 @@ class AppGameDialog extends StatelessWidget {
         ];
 
     return Container(
-      height: 30.h,
-      padding: EdgeInsets.symmetric(horizontal: 14.w),
+      height: isLandscape ? 38 : 36.h,
+      padding: EdgeInsets.symmetric(horizontal: isLandscape ? 12 : 14.w),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
@@ -177,30 +213,39 @@ class AppGameDialog extends StatelessWidget {
             Icon(
               icon,
               color: headerTitleColor ?? AppColors.white,
-              size: 20.w,
+              size: isLandscape ? 18 : 20.w,
             ),
-            SizedBox(width: 8.w),
+            SizedBox(width: isLandscape ? 6 : 8.w),
           ],
-          AppText.t3(
-            title,
-            fontWeight: FontWeight.w900,
-            fontSize: 20.sp,
-            color: headerTitleColor ?? AppColors.white,
-            shadows: [
-              Shadow(
-                color: AppColors.black.withValues(alpha: 0.25),
-                offset: const Offset(0, 1.5),
-                blurRadius: 3,
+          Expanded(
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              alignment: Alignment.centerLeft,
+              child: AppText.t3(
+                title,
+                fontWeight: FontWeight.w700,
+                fontSize: isLandscape ? 14 : 16.sp,
+                maxLines: 1,
+                color: headerTitleColor ?? AppColors.white,
+                shadows: [
+                  Shadow(
+                    color: AppColors.black.withValues(alpha: 0.25),
+                    offset: const Offset(0, 1.5),
+                    blurRadius: 3,
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
-          const Spacer(),
           if (headerTrailing != null) ...[
+            SizedBox(width: isLandscape ? 6 : 6.w),
             headerTrailing!,
-            SizedBox(width: 8.w),
           ],
+          SizedBox(width: isLandscape ? 8 : 8.w),
           // Nút Đóng (X) tròn 3D
           AppButton.close(
+            size: isLandscape ? 26 : null,
+            iconSize: isLandscape ? 14 : null,
             onPressed: onClose ?? () => Navigator.of(context).pop(),
           ),
         ],
@@ -208,7 +253,9 @@ class AppGameDialog extends StatelessWidget {
     );
   }
 
-  Widget _buildFooter() {
+  Widget _buildFooter(BuildContext context) {
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
     if (footerChild != null) {
       return footerChild!;
     }
@@ -216,7 +263,7 @@ class AppGameDialog extends StatelessWidget {
       return const SizedBox.shrink();
     }
     return Container(
-      height: 24.h,
+      height: isLandscape ? 24 : 24.h,
       decoration: BoxDecoration(
         color: footerBackgroundColor ?? AppColors.skySurface,
         border: Border(
@@ -229,8 +276,8 @@ class AppGameDialog extends StatelessWidget {
         child: AppText.c1(
           footerText!,
           color: footerTextColor ?? AppColors.skyDark,
-          fontWeight: FontWeight.w800,
-          fontSize: 10.sp,
+          fontWeight: FontWeight.w700,
+          fontSize: isLandscape ? 10 : 10.sp,
         ),
       ),
     );

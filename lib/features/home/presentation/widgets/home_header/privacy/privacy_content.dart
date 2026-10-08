@@ -18,13 +18,13 @@ class PrivacyContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bg = isClassic ? AppColors.white : const Color(0xFFFCF9F2);
-    final border = isClassic
-        ? const Color(0xFFE2E8F0)
-        : const Color(0xFFE2DACB);
-    const titleColor = Color(0xFF9A3412);
+    final bg = isClassic ? AppColors.white : AppColors.paperCardBg;
+    final border = isClassic ? AppColors.grayLight : AppColors.paperBorder;
+    final titleColor = isClassic
+        ? AppColors.orangeDeep
+        : AppColors.paperStreakText;
     final textColor = isClassic
-        ? const Color(0xFF1E293B)
+        ? AppColors.grayDark
         : AppColors.paperTextDark;
     final bulletColor = isClassic
         ? AppColors.classicButtonEmerald
@@ -60,13 +60,11 @@ class PrivacyContent extends StatelessWidget {
                   if (isBullet)
                     Padding(
                       padding: EdgeInsets.only(top: 1.h, right: 6.w),
-                      child: Text(
+                      child: AppText.c1(
                         '✦',
-                        style: TextStyle(
-                          fontSize: 10.sp,
-                          color: bulletColor,
-                          fontWeight: FontWeight.w700,
-                        ),
+                        fontSize: 10.sp,
+                        color: bulletColor,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
                   Expanded(

@@ -38,6 +38,8 @@ abstract class VocabularyState with _$VocabularyState {
     @Default('daily') String topic,
     String? currentUid,
     @Default({}) Map<String, bool> answersP1,
+    @Default([]) List<String> wrongWordsP1,
+    @Default([]) List<String> wrongWordsP2,
   }) = _VocabularyState;
 
   const VocabularyState._();

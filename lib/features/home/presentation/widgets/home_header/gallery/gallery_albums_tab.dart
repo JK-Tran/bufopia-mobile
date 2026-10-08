@@ -34,7 +34,7 @@ class GalleryAlbumsTab extends StatelessWidget {
             AppText.t3(
               'Không tìm thấy album',
               color: AppColors.grayDark,
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.w700,
               fontSize: 14.sp,
             ),
           ],
@@ -139,8 +139,8 @@ class _AlbumTileItem extends StatelessWidget {
                           AppText.b2(
                             album.name,
                             fontWeight: isSelected
-                                ? FontWeight.w800
-                                : FontWeight.w600,
+                                ? FontWeight.w700
+                                : null,
                             fontSize: 14.sp,
                             color: isSelected
                                 ? AppColors.blue

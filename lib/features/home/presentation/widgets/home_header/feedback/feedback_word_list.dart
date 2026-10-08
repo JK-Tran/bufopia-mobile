@@ -40,11 +40,6 @@ class _FeedbackWordListState extends State<FeedbackWordList> {
   String _selectedMode = 'Tất cả';
   String _searchQuery = '';
 
-  static const Color _mossGreen = Color(0xFF3B6E38);
-  static const Color _mossGreenDark = Color(0xFF2A5228);
-  static const Color _sandBorder = Color(0xFFC9BCA7);
-  static const Color _warmBeige = Color(0xFFF1EBD9);
-
   static const List<String> _modes = [
     'Tất cả',
     'Nối từ',
@@ -91,128 +86,117 @@ class _FeedbackWordListState extends State<FeedbackWordList> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        // 1.  Ô tìm kiếm (bên trái) + Chip lọc chế độ (bên phải)
-        Row(
-          children: [
-            // Ô tìm kiếm gọn gàng
-            Expanded(
-              flex: 4,
-              child: Container(
-                height: 28.h,
-                decoration: BoxDecoration(
-                  color: AppColors.white,
-                  borderRadius: BorderRadius.circular(6.r),
-                  border: Border.all(color: _sandBorder, width: 1.w),
-                ),
-                padding: EdgeInsets.symmetric(horizontal: 8.w),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.search_rounded,
-                      size: 14.r,
-                      color: const Color(0xFF786C59),
+        // 1. Ô tìm kiếm full width
+        Container(
+          height: 30.h,
+          decoration: BoxDecoration(
+            color: AppColors.white,
+            borderRadius: BorderRadius.circular(8.r),
+            border: Border.all(
+              color: AppColors.feedbackSandBorder,
+              width: 1.w,
+            ),
+          ),
+          padding: EdgeInsets.symmetric(horizontal: 10.w),
+          child: Row(
+            children: [
+              Icon(
+                Icons.search_rounded,
+                size: 16.r,
+                color: AppColors.feedbackTextBrown,
+              ),
+              SizedBox(width: 8.w),
+              Expanded(
+                child: TextField(
+                  controller: _searchController,
+                  style: TextStyle(
+                    fontSize: 12.sp,
+                    color: AppColors.paperTextDark,
+                    fontFamily: 'Inter',
+                  ),
+                  decoration: InputDecoration(
+                    hintText: 'Tìm từ tiếng Anh, tiếng Việt...',
+                    hintStyle: TextStyle(
+                      fontSize: 12.sp,
+                      color: AppColors.darkOnSurfaceVariant,
+                      fontFamily: 'Inter',
                     ),
-                    SizedBox(width: 6.w),
-                    Expanded(
-                      child: TextField(
-                        controller: _searchController,
-                        style: TextStyle(
-                          fontSize: 12.sp,
-                          color: AppColors.paperTextDark,
-                          fontFamily: 'Inter',
-                        ),
-                        decoration: InputDecoration(
-                          hintText: 'Tìm từ tiếng Anh, tiếng Việt...',
-                          hintStyle: TextStyle(
-                            fontSize: 10.sp,
-                            color: AppColors.darkOnSurfaceVariant,
-                            fontFamily: 'Inter',
-                          ),
-                          border: InputBorder.none,
-                          isDense: true,
-                          contentPadding: EdgeInsets.zero,
-                        ),
-                        onChanged: (val) {
-                          setState(() {
-                            _searchQuery = val;
-                          });
-                        },
-                      ),
-                    ),
-                    if (_searchQuery.isNotEmpty)
-                      GestureDetector(
-                        onTap: () {
-                          _searchController.clear();
-                          setState(() {
-                            _searchQuery = '';
-                          });
-                        },
-                        child: Icon(
-                          Icons.cancel_rounded,
-                          size: 14.r,
-                          color: AppColors.darkOnSurfaceVariant,
-                        ),
-                      ),
-                  ],
+                    border: InputBorder.none,
+                    isDense: true,
+                    contentPadding: EdgeInsets.zero,
+                  ),
+                  onChanged: (val) {
+                    setState(() {
+                      _searchQuery = val;
+                    });
+                  },
                 ),
               ),
-            ),
-
-            SizedBox(width: 6.w),
-
-            // Dãy chip lọc chế độ chơi cuộn ngang
-            Expanded(
-              flex: 5,
-              child: SizedBox(
-                height: 28.h,
-                child: SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    children: _modes.map((mode) {
-                      final isSelected = _selectedMode == mode;
-                      final count = _countForMode(mode);
-                      return Padding(
-                        padding: EdgeInsets.only(right: 4.w),
-                        child: GestureDetector(
-                          onTap: () => setState(() => _selectedMode = mode),
-                          child: Container(
-                            height: 28.h,
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 8.w,
-                            ),
-                            decoration: BoxDecoration(
-                              color: isSelected ? _mossGreen : _warmBeige,
-                              borderRadius: BorderRadius.circular(6.r),
-                              border: Border.all(
-                                color: isSelected
-                                    ? _mossGreenDark
-                                    : _sandBorder,
-                                width: 1.w,
-                              ),
-                            ),
-                            alignment: Alignment.center,
-                            child: AppText.c1(
-                              '$mode ($count)',
-                              fontSize: 10.sp,
-                              fontWeight: isSelected ? FontWeight.w700 : null,
-                              color: isSelected
-                                  ? AppColors.white
-                                  : AppColors.paperBadgeText,
-                            ),
-                          ),
-                        ),
-                      );
-                    }).toList(),
+              if (_searchQuery.isNotEmpty)
+                GestureDetector(
+                  onTap: () {
+                    _searchController.clear();
+                    setState(() {
+                      _searchQuery = '';
+                    });
+                  },
+                  child: Icon(
+                    Icons.cancel_rounded,
+                    size: 16.r,
+                    color: AppColors.darkOnSurfaceVariant,
                   ),
                 ),
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
 
         SizedBox(height: 6.h),
 
-        // 2. Lưới danh sách các thẻ từ vựng (Tối ưu hóa không gian hiển thị)
+        // 2. Dãy chip lọc chế độ chơi cuộn ngang
+        SizedBox(
+          height: 26.h,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemCount: _modes.length,
+            separatorBuilder: (_, _) => SizedBox(width: 6.w),
+            itemBuilder: (context, index) {
+              final mode = _modes[index];
+              final isSelected = _selectedMode == mode;
+              final count = _countForMode(mode);
+              return GestureDetector(
+                onTap: () => setState(() => _selectedMode = mode),
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 10.w),
+                  decoration: BoxDecoration(
+                    color: isSelected
+                        ? AppColors.feedbackMossGreen
+                        : AppColors.feedbackWarmBeigeDark,
+                    borderRadius: BorderRadius.circular(6.r),
+                    border: Border.all(
+                      color: isSelected
+                          ? AppColors.feedbackMossGreenDark
+                          : AppColors.feedbackSandBorder,
+                      width: 1.w,
+                    ),
+                  ),
+                  alignment: Alignment.center,
+                  child: AppText.c1(
+                    '$mode ($count)',
+                    fontSize: 10.sp,
+                    fontWeight: isSelected ? FontWeight.w700 : null,
+                    color: isSelected
+                        ? AppColors.white
+                        : AppColors.paperBadgeText,
+                  ),
+                ),
+              );
+            },
+          ),
+        ),
+
+        SizedBox(height: 6.h),
+
+        // 3. Lưới danh sách các thẻ từ vựng (2 cột chuẩn portrait)
         Expanded(
           child: filtered.isEmpty
               ? Center(
@@ -233,15 +217,10 @@ class _FeedbackWordListState extends State<FeedbackWordList> {
                     ],
                   ),
                 )
-              : GridView.builder(
-                  padding: EdgeInsets.only(bottom: 2.h),
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    childAspectRatio: 2,
-                    crossAxisSpacing: 6,
-                    mainAxisSpacing: 6,
-                  ),
+              : ListView.separated(
+                  padding: EdgeInsets.only(bottom: 4.h),
                   itemCount: filtered.length,
+                  separatorBuilder: (_, _) => SizedBox(height: 6.h),
                   itemBuilder: (context, index) {
                     final item = filtered[index];
                     return FeedbackWordListItem(
@@ -267,7 +246,7 @@ class _FeedbackWordListState extends State<FeedbackWordList> {
                     Icon(
                       Icons.menu_book_outlined,
                       size: 12.r,
-                      color: _mossGreen,
+                      color: AppColors.feedbackMossGreen,
                     ),
                     SizedBox(width: 4.w),
                     AppText.c1(
@@ -275,7 +254,7 @@ class _FeedbackWordListState extends State<FeedbackWordList> {
                       ' Nhấn để tìm trong toàn bộ từ điển',
                       fontSize: 10.sp,
                       fontWeight: FontWeight.w600,
-                      color: _mossGreen,
+                      color: AppColors.feedbackMossGreen,
                     ),
                   ],
                 ),

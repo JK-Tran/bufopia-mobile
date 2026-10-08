@@ -288,14 +288,17 @@ class AppButton extends StatefulWidget {
     extrusionColor: extrusionColor ?? AppColors.grayExtrusion,
     borderColor: borderColor,
     extrusionHeight: extrusionHeight,
-    width: size ?? 26.w,
-    height: size ?? 26.w,
+    width: size ??
+        (ScreenUtil().orientation == Orientation.landscape ? 26 : 26.w),
+    height: size ??
+        (ScreenUtil().orientation == Orientation.landscape ? 26 : 26.w),
     padding: EdgeInsets.zero,
     shape: BoxShape.circle,
     child: Icon(
       icon,
       color: iconColor ?? AppColors.grayDark,
-      size: iconSize ?? 16.w,
+      size: iconSize ??
+          (ScreenUtil().orientation == Orientation.landscape ? 16 : 16.w),
     ),
   );
 

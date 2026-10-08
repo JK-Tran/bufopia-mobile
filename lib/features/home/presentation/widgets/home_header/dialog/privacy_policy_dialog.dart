@@ -1,9 +1,7 @@
-import 'dart:math';
-
+import 'package:bufopia/components/app_game_dialog.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
 import 'package:bufopia/features/home/data/models/legal_policies_data.dart';
-import 'package:bufopia/features/home/presentation/widgets/home_header/privacy/privacy_header.dart';
 import 'package:bufopia/features/home/presentation/widgets/home_header/privacy/privacy_tab_bar.dart';
 import 'package:bufopia/features/home/presentation/widgets/home_header/privacy/privacy_tab_view.dart';
 import 'package:flutter/material.dart';
@@ -22,7 +20,7 @@ class PrivacyPolicyDialog extends StatefulWidget {
   }) {
     return showDialog<void>(
       context: context,
-      barrierColor: AppColors.black.withValues(alpha: 0.55),
+      barrierColor: AppColors.black.withValues(alpha: 0.5),
       builder: (_) => PrivacyPolicyDialog(initialTabKey: initialTabKey),
     );
   }
@@ -69,89 +67,67 @@ class _PrivacyPolicyDialogState extends State<PrivacyPolicyDialog> {
     return BlocBuilder<AppBloc, AppState>(
       builder: (context, state) {
         final isClassic = state.isClassicTheme;
+        final isPaper = state.isPaperTheme;
         final currentTab = LegalPoliciesData.tabs[_tabIndex];
 
-        final dialogBg = isClassic
-            ? AppColors.white
-            : AppColors.paperSurfaceWarm;
-        final dialogBorder = isClassic
-            ? AppColors.classicBorder
-            : AppColors.paperBorderDark;
-
-        return Dialog(
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          insetPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 6.h),
-          child: Center(
-            child: Container(
-              width: min(500.w, 0.88.sw),
-              constraints: BoxConstraints(maxHeight: 0.95.sh),
-              decoration: BoxDecoration(
-                color: dialogBg,
-                borderRadius: BorderRadius.circular(18.r),
-                border: Border.all(color: dialogBorder, width: 1.5.w),
-                boxShadow: [
+        return AppGameDialog(
+          title: 'CHÍNH SÁCH & ĐIỀU KHOẢN',
+          icon: Icons.verified_user_rounded,
+          maxWidth: 340.w,
+          maxHeight: 560.h,
+          isScrollable: false,
+          footerText: '⭐ Bufopia cam kết bảo vệ dữ liệu & quyền riêng tư ⭐',
+          padding: EdgeInsets.fromLTRB(10.w, 8.h, 10.w, 6.h),
+          backgroundColor: isPaper ? AppColors.paperCardBg : AppColors.white,
+          borderColor: isPaper ? AppColors.paperBorder : AppColors.blueLight,
+          headerGradientColors: isPaper
+              ? const [AppColors.paperGreen, AppColors.paperGreenDark]
+              : const [AppColors.blueLight, AppColors.blueDark],
+          boxShadow: isPaper
+              ? [
                   BoxShadow(
-                    color: isClassic
-                        ? AppColors.classicShadowIndigo.withValues(alpha: 0.18)
-                        : AppColors.black.withValues(alpha: 0.25),
-                    blurRadius: 20.r,
-                    offset: Offset(0, 6.h),
+                    color: AppColors.paperExtrusion,
+                    offset: Offset(0, 4.h),
                   ),
-                ],
+                  BoxShadow(
+                    color: AppColors.black.withValues(alpha: 0.12),
+                    blurRadius: 16.r,
+                    offset: Offset(0, 8.h),
+                  ),
+                ]
+              : null,
+          footerBackgroundColor: isPaper ? AppColors.paperSurface : null,
+          footerBorderColor: isPaper ? AppColors.paperBorder : null,
+          footerTextColor: isPaper ? AppColors.paperTextMedium : null,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              // 1. Tab bar
+              PrivacyTabBar(
+                selectedIndex: _tabIndex,
+                onTabSelected: _onTab,
+                isClassic: isClassic,
               ),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(16.r),
-                child: Padding(
-                  padding: EdgeInsets.fromLTRB(14.w, 10.h, 14.w, 10.h),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      // 1. Header
-                      PrivacyHeader(
-                        tag: currentTab.tag,
-                        isClassic: isClassic,
-                        onClose: () => Navigator.of(context).pop(),
-                      ),
-                      SizedBox(height: 8.h),
+              SizedBox(height: 8.h),
 
-                      // 2. Tab bar
-                      PrivacyTabBar(
-                        selectedIndex: _tabIndex,
-                        onTabSelected: _onTab,
-                        isClassic: isClassic,
-                      ),
-                      SizedBox(height: 6.h),
-
-                      // 3. Scrollable content
-                      Expanded(
-                        child: Scrollbar(
-                          controller: _scroll,
-                          thumbVisibility: true,
-                          radius: Radius.circular(4.r),
-                          child: SingleChildScrollView(
-                            controller: _scroll,
-                            physics: const BouncingScrollPhysics(),
-                            padding: EdgeInsets.only(right: 6.w),
-                            child: PrivacyTabView(
-                              tab: currentTab,
-                              isClassic: isClassic,
-                            ),
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 6.h),
-
-                      // // 4. Footer
-                      // PrivacyFooter(
-                      //   isClassic: isClassic,
-                      //   onConfirm: () => Navigator.of(context).pop(),
-                      // ),
-                    ],
+              // 2. Scrollable content
+              Expanded(
+                child: Scrollbar(
+                  controller: _scroll,
+                  thumbVisibility: true,
+                  radius: Radius.circular(4.r),
+                  child: SingleChildScrollView(
+                    controller: _scroll,
+                    physics: const BouncingScrollPhysics(),
+                    padding: EdgeInsets.only(right: 4.w),
+                    child: PrivacyTabView(
+                      tab: currentTab,
+                      isClassic: isClassic,
+                    ),
                   ),
                 ),
               ),
-            ),
+            ],
           ),
         );
       },

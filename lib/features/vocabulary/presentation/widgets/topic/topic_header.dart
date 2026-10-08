@@ -37,7 +37,7 @@ class TopicHeader extends StatelessWidget {
         ),
         padding: EdgeInsets.all(2.w),
         child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
+          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(14.r),
             border: Border.all(
@@ -53,41 +53,43 @@ class TopicHeader extends StatelessWidget {
               ],
             ),
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    Icons.auto_awesome_rounded,
-                    size: 14.r,
-                    color: AppColors.paperGreen,
-                  ),
-                  SizedBox(width: 6.w),
-                  AppText.t3(
-                    'Chọn Nội Dung',
-                    fontSize: 18.sp,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 0.6,
-                    color: AppColors.paperTextDark,
-                  ),
-                  SizedBox(width: 6.w),
-                  Icon(
-                    Icons.auto_awesome_rounded,
-                    size: 14.r,
-                    color: AppColors.paperGreen,
-                  ),
-                ],
-              ),
-              SizedBox(height: 1.h),
-              AppText.c1(
-                'Chọn một chủ đề hoặc để hệ thống trộn ngẫu nhiên',
-                fontSize: 10.sp,
-                fontWeight: FontWeight.w500,
-                color: AppColors.paperTextMedium,
-              ),
-            ],
+          child: FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.auto_awesome_rounded,
+                      size: 14.r,
+                      color: AppColors.paperGreen,
+                    ),
+                    SizedBox(width: 6.w),
+                    AppText.t3(
+                      'Chọn Nội Dung',
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.w700,
+                      letterSpacing: 0.6,
+                      color: AppColors.paperTextDark,
+                    ),
+                    SizedBox(width: 6.w),
+                    Icon(
+                      Icons.auto_awesome_rounded,
+                      size: 14.r,
+                      color: AppColors.paperGreen,
+                    ),
+                  ],
+                ),
+                SizedBox(height: 1.h),
+                AppText.c1(
+                  'Chọn một chủ đề thi đấu',
+                  fontSize: 10.sp,
+                  color: AppColors.paperTextMedium,
+                ),
+              ],
+            ),
           ),
         ),
       );
@@ -111,7 +113,7 @@ class TopicHeader extends StatelessWidget {
       ),
       padding: EdgeInsets.all(2.w),
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 4.h),
+        padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(14.r),
           // Viền sáng viền trong màu giấy da sáng
@@ -131,62 +133,64 @@ class TopicHeader extends StatelessWidget {
             stops: [0.0, 0.45, 1.0],
           ),
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.auto_awesome_rounded,
-                  size: 14.r,
-                  color: AppColors.woodBoardShadow,
-                  shadows: [
-                    Shadow(
-                      color: AppColors.white.withValues(alpha: 0.8),
-                      offset: Offset(0, 1.h),
-                      blurRadius: 1.r,
-                    ),
-                  ],
-                ),
-                SizedBox(width: 6.w),
-                AppText.t3(
-                  'Chọn Nội Dung',
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 0.6,
-                  color: AppColors.woodBoardShadow,
-                  shadows: [
-                    Shadow(
-                      color: AppColors.white.withValues(alpha: 0.65),
-                      offset: Offset(0, 1.h),
-                      blurRadius: 1.r,
-                    ),
-                  ],
-                ),
-                SizedBox(width: 6.w),
-                Icon(
-                  Icons.auto_awesome_rounded,
-                  size: 14.r,
-                  color: AppColors.woodBoardShadow,
-                  shadows: [
-                    Shadow(
-                      color: AppColors.white.withValues(alpha: 0.8),
-                      offset: Offset(0, 1.h),
-                      blurRadius: 1.r,
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            SizedBox(height: 1.h),
-            AppText.c1(
-              'Chọn một chủ đề hoặc để hệ thống trộn ngẫu nhiên',
-              fontSize: 10.sp,
-              fontWeight: FontWeight.w500,
-              color: AppColors.brownDark,
-            ),
-          ],
+        child: FittedBox(
+          fit: BoxFit.scaleDown,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Icon(
+                    Icons.auto_awesome_rounded,
+                    size: 14.r,
+                    color: AppColors.woodBoardShadow,
+                    shadows: [
+                      Shadow(
+                        color: AppColors.white.withValues(alpha: 0.8),
+                        offset: Offset(0, 1.h),
+                        blurRadius: 1.r,
+                      ),
+                    ],
+                  ),
+                  SizedBox(width: 6.w),
+                  AppText.t3(
+                    'Chọn Nội Dung',
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w700,
+                    letterSpacing: 0.6,
+                    color: AppColors.woodBoardShadow,
+                    shadows: [
+                      Shadow(
+                        color: AppColors.white.withValues(alpha: 0.65),
+                        offset: Offset(0, 1.h),
+                        blurRadius: 1.r,
+                      ),
+                    ],
+                  ),
+                  SizedBox(width: 6.w),
+                  Icon(
+                    Icons.auto_awesome_rounded,
+                    size: 14.r,
+                    color: AppColors.woodBoardShadow,
+                    shadows: [
+                      Shadow(
+                        color: AppColors.white.withValues(alpha: 0.8),
+                        offset: Offset(0, 1.h),
+                        blurRadius: 1.r,
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              SizedBox(height: 1.h),
+              AppText.c1(
+                'Chọn một chủ đề thi đấu',
+                fontSize: 10.sp,
+                color: AppColors.brownDark,
+              ),
+            ],
+          ),
         ),
       ),
     );

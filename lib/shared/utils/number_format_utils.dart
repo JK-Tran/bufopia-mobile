@@ -4,8 +4,16 @@ import 'package:intl/intl.dart';
 class NumberFormatUtils {
   NumberFormatUtils._();
 
-  static String formatNumber(int number) {
-    return NumberFormat(NumberFormatConstants.defaultFormat).format(number);
+  static final NumberFormat _defaultFormatter = NumberFormat(
+    NumberFormatConstants.defaultFormat,
+  );
+
+  /// Formatter mặc định ('#,###')
+  static NumberFormat get defaultFormatter => _defaultFormatter;
+
+  /// Định dạng số theo chuẩn '#,###' (ví dụ: 15,645)
+  static String formatNumber(num number) {
+    return _defaultFormatter.format(number);
   }
 
   static String formatScore(String scoreStr) {

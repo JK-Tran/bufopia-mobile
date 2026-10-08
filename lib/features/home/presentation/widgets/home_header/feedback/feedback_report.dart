@@ -36,11 +36,6 @@ class _FeedbackReportState extends State<FeedbackReport> {
 
   String _selectedIssue = 'Sửa nghĩa tiếng Việt';
 
-  static const Color _mossGreen = Color(0xFF3B6E38);
-  static const Color _mossGreenDark = Color(0xFF2A5228);
-  static const Color _sandBorder = Color(0xFFC9BCA7);
-  static const Color _warmBeige = Color(0xFFF7F2E7);
-
   static const List<Map<String, dynamic>> _issueTypes = [
     {
       'title': 'Sửa nghĩa tiếng Việt',
@@ -119,9 +114,12 @@ class _FeedbackReportState extends State<FeedbackReport> {
           Container(
             padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 6.h),
             decoration: BoxDecoration(
-              color: _warmBeige,
+              color: AppColors.feedbackWarmBeigeLight,
               borderRadius: BorderRadius.circular(8.r),
-              border: Border.all(color: _sandBorder, width: 1.w),
+              border: Border.all(
+                color: AppColors.feedbackSandBorder,
+                width: 1.w,
+              ),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -135,9 +133,12 @@ class _FeedbackReportState extends State<FeedbackReport> {
                       vertical: 2.h,
                     ),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFF1EBD9),
+                      color: AppColors.feedbackWarmBeigeDark,
                       borderRadius: BorderRadius.circular(6.r),
-                      border: Border.all(color: _sandBorder, width: 1.w),
+                      border: Border.all(
+                        color: AppColors.feedbackSandBorder,
+                        width: 1.w,
+                      ),
                     ),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
@@ -176,13 +177,13 @@ class _FeedbackReportState extends State<FeedbackReport> {
                       child: Container(
                         padding: EdgeInsets.all(2.r),
                         decoration: const BoxDecoration(
-                          color: Color(0xFFE5DCCF),
+                          color: AppColors.feedbackAudioPressed,
                           shape: BoxShape.circle,
                         ),
                         child: Icon(
                           Icons.volume_up_rounded,
                           size: 12.r,
-                          color: const Color(0xFF5D4037),
+                          color: AppColors.brownDark,
                         ),
                       ),
                     ),
@@ -193,10 +194,10 @@ class _FeedbackReportState extends State<FeedbackReport> {
                         vertical: 2.h,
                       ),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFFFF7ED),
+                        color: AppColors.podiumBronze3Bg,
                         borderRadius: BorderRadius.circular(6.r),
                         border: Border.all(
-                          color: const Color(0xFFFED7AA),
+                          color: AppColors.podiumBronze3BgEnd,
                           width: 1.w,
                         ),
                       ),
@@ -204,7 +205,7 @@ class _FeedbackReportState extends State<FeedbackReport> {
                         gameMode,
                         fontSize: 10.sp,
                         fontWeight: FontWeight.w700,
-                        color: const Color(0xFFC2410C),
+                        color: AppColors.paperStreakText,
                       ),
                     ),
                     SizedBox(width: 6.w),
@@ -214,13 +215,13 @@ class _FeedbackReportState extends State<FeedbackReport> {
                         vertical: 2.h,
                       ),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFF1EBD9),
+                        color: AppColors.feedbackWarmBeigeDark,
                         borderRadius: BorderRadius.circular(6.r),
                       ),
                       child: AppText.c1(
                         '# ${word.topic.isNotEmpty ? word.topic : "general"}',
                         fontSize: 10.sp,
-                        color: const Color(0xFF786C59),
+                        color: AppColors.feedbackTextBrown,
                       ),
                     ),
                   ],
@@ -271,10 +272,14 @@ class _FeedbackReportState extends State<FeedbackReport> {
                 child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                   decoration: BoxDecoration(
-                    color: isSelected ? _mossGreen : const Color(0xFFFAF5EC),
+                    color: isSelected
+                        ? AppColors.feedbackMossGreen
+                        : AppColors.feedbackWarmBeigeLight,
                     borderRadius: BorderRadius.circular(6.r),
                     border: Border.all(
-                      color: isSelected ? _mossGreenDark : _sandBorder,
+                      color: isSelected
+                          ? AppColors.feedbackMossGreenDark
+                          : AppColors.feedbackSandBorder,
                       width: 1.w,
                     ),
                   ),
@@ -292,9 +297,7 @@ class _FeedbackReportState extends State<FeedbackReport> {
                       AppText.c1(
                         title,
                         fontSize: 10.sp,
-                        fontWeight: isSelected
-                            ? FontWeight.w700
-                            : null,
+                        fontWeight: isSelected ? FontWeight.w700 : null,
                         color: isSelected
                             ? AppColors.white
                             : AppColors.paperBadgeText,
@@ -331,7 +334,10 @@ class _FeedbackReportState extends State<FeedbackReport> {
             decoration: BoxDecoration(
               color: AppColors.white,
               borderRadius: BorderRadius.circular(8.r),
-              border: Border.all(color: _sandBorder, width: 1.w),
+              border: Border.all(
+                color: AppColors.feedbackSandBorder,
+                width: 1.w,
+              ),
             ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -402,7 +408,10 @@ class _FeedbackReportState extends State<FeedbackReport> {
             decoration: BoxDecoration(
               color: AppColors.white,
               borderRadius: BorderRadius.circular(6.r),
-              border: Border.all(color: _sandBorder, width: 1.w),
+              border: Border.all(
+                color: AppColors.feedbackSandBorder,
+                width: 1.w,
+              ),
             ),
             child: TextField(
               controller: _contactController,
@@ -472,14 +481,14 @@ class _FeedbackReportState extends State<FeedbackReport> {
                 fontSize: 12.sp,
                 fontWeight: FontWeight.w700,
                 backgroundColor: _canSubmit
-                    ? _mossGreen
-                    : const Color(0xFF9EAA9B),
+                    ? AppColors.feedbackMossGreen
+                    : AppColors.feedbackDisabled,
                 borderColor: _canSubmit
-                    ? _mossGreenDark
-                    : const Color(0xFF8A9687),
+                    ? AppColors.feedbackMossGreenDark
+                    : AppColors.feedbackDisabledBorder,
                 extrusionColor: _canSubmit
-                    ? _mossGreenDark
-                    : const Color(0xFF7A8677),
+                    ? AppColors.feedbackMossGreenDark
+                    : AppColors.feedbackDisabledExtrusion,
                 extrusionHeight: 2,
                 padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 6.h),
                 borderRadius: BorderRadius.circular(6.r),

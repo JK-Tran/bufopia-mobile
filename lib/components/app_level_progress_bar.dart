@@ -83,7 +83,7 @@ class AppLevelProgressBar extends StatelessWidget {
                     AppText.c1(
                       'CẤP $level',
                       color: AppColors.white,
-                      fontWeight: FontWeight.w900,
+                      fontWeight: FontWeight.w700,
                       fontSize: 10.sp,
                     ),
                   ],
