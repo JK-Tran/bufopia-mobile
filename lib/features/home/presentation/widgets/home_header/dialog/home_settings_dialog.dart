@@ -2,10 +2,12 @@ import 'package:bufopia/components/components.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
 import 'package:bufopia/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:bufopia/features/auth/presentation/widgets/dialog/account_conflict_dialog.dart';
 import 'package:bufopia/features/home/presentation/widgets/home_header/dialog/home_feedback_dialog.dart';
 import 'package:bufopia/features/home/presentation/widgets/home_header/dialog/player_info_dialog.dart';
 import 'package:bufopia/features/home/presentation/widgets/home_header/dialog/privacy_policy_dialog.dart';
 import 'package:bufopia/features/home/presentation/widgets/home_header/settings/settings.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -28,7 +30,30 @@ class HomeSettingsDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<AppBloc, AppState>(
+    return BlocListener<AuthBloc, AuthState>(
+      listener: (context, state) async {
+        if (state.conflict != null) {
+          final choice = await AccountConflictDialog.show(
+            context,
+            conflict: state.conflict!,
+          );
+          if (!context.mounted) return;
+          if (choice == ConflictResolutionChoice.merge) {
+            context.read<AuthBloc>().add(
+                  const AuthEvent.resolveAccountConflict(action: 'merge'),
+                );
+          } else if (choice == ConflictResolutionChoice.overwrite) {
+            context.read<AuthBloc>().add(
+                  const AuthEvent.resolveAccountConflict(action: 'overwrite'),
+                );
+          } else {
+            context.read<AuthBloc>().add(
+                  const AuthEvent.cancelAccountConflict(),
+                );
+          }
+        }
+      },
+      child: BlocBuilder<AppBloc, AppState>(
       builder: (context, appState) {
         return BlocBuilder<AuthBloc, AuthState>(
           builder: (context, authState) {
@@ -92,28 +117,110 @@ class HomeSettingsDialog extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   // ── 1. Tài khoản ────────────────────────────────────
-                  SettingsItem(
-                    showTopDivider: false,
-                    title: 'Tài khoản',
-                    subtitle: authState.currentUser != null
-                        ? 'Đã đăng nhập: ${authState.currentUser!.displayName}'
-                        : 'Đăng nhập để lưu tiến độ trên thiết bị',
-                    action: AppButton(
-                      text: authState.currentUser != null
-                          ? 'HỒ SƠ'
-                          : 'ĐĂNG NHẬP',
-                      backgroundColor: primaryBg,
-                      extrusionColor: primaryExtrusion,
-                      fontSize: btnFontSize,
-                      fontWeight: FontWeight.w700,
-                      height: btnHeight,
-                      borderRadius: BorderRadius.circular(8.r),
-                      padding: btnPadding,
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                        PlayerInfoDialog.show(context);
-                      },
-                    ),
+                  Builder(
+                    builder: (context) {
+                      final fbUser =
+                          FirebaseAuth.instance.currentUser;
+                      final isGoogleLinked =
+                          fbUser != null && !fbUser.isAnonymous;
+                      final userName =
+                          authState.currentUser?.displayName.isNotEmpty == true
+                              ? authState.currentUser!.displayName
+                              : 'Khách';
+
+                      if (isGoogleLinked) {
+                        return SettingsItem(
+                          showTopDivider: false,
+                          title: 'Tài khoản',
+                          subtitle:
+                              'Google: ${fbUser.email ?? userName}',
+                          action: AppButton(
+                            text: 'HỒ SƠ',
+                            backgroundColor: primaryBg,
+                            extrusionColor: primaryExtrusion,
+                            fontSize: btnFontSize,
+                            fontWeight: FontWeight.w700,
+                            height: btnHeight,
+                            borderRadius: BorderRadius.circular(8.r),
+                            padding: btnPadding,
+                            onPressed: () {
+                              Navigator.of(context).pop();
+                              PlayerInfoDialog.show(context);
+                            },
+                          ),
+                        );
+                      }
+
+                      return SettingsItem(
+                        showTopDivider: false,
+                        title: 'Tài khoản',
+                        subtitle:
+                            'Khách: $userName (Chưa liên kết Google)',
+                        action: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            AppIconButton(
+                              icon: Icons.person_rounded,
+                              tooltip: 'Xem hồ sơ',
+                              size: btnHeight,
+                              iconSize: 14.r,
+                              backgroundColor: isPaper
+                                  ? AppColors.paperCardBg
+                                  : AppColors.white,
+                              iconColor: isPaper
+                                  ? AppColors.paperTextDark
+                                  : AppColors.grayDark,
+                              borderColor: isPaper
+                                  ? AppColors.paperBorder
+                                  : AppColors.grayLight,
+                              extrusionColor: isPaper
+                                  ? AppColors.paperExtrusion
+                                  : AppColors.grayExtrusion,
+                              extrusionHeight: 2,
+                              onPressed: () {
+                                Navigator.of(context).pop();
+                                PlayerInfoDialog.show(context);
+                              },
+                            ),
+                            SizedBox(width: 6.w),
+                            AppButton(
+                              icon: authState.isLoading
+                                  ? SizedBox(
+                                      width: 12.w,
+                                      height: 12.w,
+                                      child: const CircularProgressIndicator(
+                                        strokeWidth: 2,
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                          AppColors.white,
+                                        ),
+                                      ),
+                                    )
+                                  : Icon(
+                                      Icons.cloud_sync_rounded,
+                                      size: 14.w,
+                                      color: AppColors.white,
+                                    ),
+                              text: 'ĐĂNG NHẬP',
+                              backgroundColor: primaryBg,
+                              extrusionColor: primaryExtrusion,
+                              fontSize: btnFontSize,
+                              fontWeight: FontWeight.w700,
+                              height: btnHeight,
+                              borderRadius: BorderRadius.circular(8.r),
+                              padding: btnPadding,
+                              onPressed: authState.isLoading
+                                  ? null
+                                  : () {
+                                      context.read<AuthBloc>().add(
+                                            const AuthEvent.signInWithGoogle(),
+                                          );
+                                    },
+                            ),
+                          ],
+                        ),
+                      );
+                    },
                   ),
 
                   // ── 2. Ngôn ngữ ─────────────────────────────────────
@@ -239,6 +346,7 @@ class HomeSettingsDialog extends StatelessWidget {
           },
         );
       },
-    );
-  }
+    ),
+  );
+}
 }

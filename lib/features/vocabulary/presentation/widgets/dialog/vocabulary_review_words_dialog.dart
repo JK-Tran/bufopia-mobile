@@ -4,10 +4,12 @@ import 'package:bufopia/components/app_game_dialog.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
+import 'package:bufopia/features/auth/domain/usecases/get_cached_user_use_case.dart';
 import 'package:bufopia/features/vocabulary/domain/entities/word_profile.dart';
 import 'package:bufopia/features/vocabulary/domain/usecases/get_word_profiles_use_case.dart';
 import 'package:bufopia/shared/di/di.dart';
 import 'package:bufopia/shared/services/device/device_uid_service.dart';
+import 'package:bufopia/shared/services/firebase/firebase_auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -86,8 +88,11 @@ class _VocabularyReviewWordsDialogState
 
   Future<void> _fetchProfiles() async {
     try {
-      final uidService = sl<DeviceUidService>();
-      final uid = await uidService.getDeviceUid();
+      final cachedUid = sl<GetCachedUserUseCase>().execute()?.uid;
+      final uid = cachedUid?.isNotEmpty == true
+          ? cachedUid!
+          : (sl<FirebaseAuthService>().currentUid ??
+              await sl<DeviceUidService>().getDeviceUid());
       final useCase = sl<GetWordProfilesUseCase>();
       final output = await useCase.execute(GetWordProfilesInput(uid: uid));
 

@@ -139,6 +139,8 @@ class VocabularyLandscapeArena extends StatelessWidget {
               ),
               onSelectAnswerP1: onSelectAnswerP1,
               onSelectAnswerP2: onSelectAnswerP2,
+              cooldownSecondsP1: state.cooldownSecondsP1,
+              cooldownSecondsP2: state.cooldownSecondsP2,
             ),
 
             const Spacer(),

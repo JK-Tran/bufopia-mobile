@@ -24,50 +24,49 @@ class LeaderboardBloc extends BaseBloc<LeaderboardEvent, LeaderboardState> {
     Emitter<LeaderboardState> emit,
   ) async {
     final cached = state.leaderboardsByMetric[event.metric];
-    if (cached != null) {
-      emit(
-        state.copyWith(
-          leaderboard: cached,
-          selectedMetric: event.metric,
-        ),
-      );
-    } else {
-      emit(
-        state.copyWith(
-          isLoading: true,
-          errorMessage: null,
-          selectedMetric: event.metric,
-        ),
-      );
-    }
 
-    try {
-      final output = await _getLeaderboardUseCase.execute(
-        GetLeaderboardInput(
-          metric: event.metric,
-          limit: event.limit,
-        ),
-      );
-      final updatedMap = Map<String, Leaderboard>.from(
-        state.leaderboardsByMetric,
-      )..[event.metric] = output.leaderboard;
+    return runBlocCatching(
+      handleLoading: false,
+      doOnSubscribe: () {
+        if (cached != null) {
+          safeEmit(
+            state.copyWith(
+              leaderboard: cached,
+              selectedMetric: event.metric,
+            ),
+          );
+        } else {
+          safeEmit(
+            state.copyWith(
+              isLoading: true,
+              errorMessage: null,
+              selectedMetric: event.metric,
+            ),
+          );
+        }
+      },
+      action: () async {
+        final output = await _getLeaderboardUseCase.execute(
+          GetLeaderboardInput(
+            metric: event.metric,
+            limit: event.limit,
+          ),
+        );
+        final updatedMap = Map<String, Leaderboard>.from(
+          state.leaderboardsByMetric,
+        )..[event.metric] = output.leaderboard;
 
-      emit(
-        state.copyWith(
-          isLoading: false,
-          leaderboard: output.leaderboard,
-          leaderboardsByMetric: updatedMap,
-          errorMessage: null,
-        ),
-      );
-    } on Exception catch (e) {
-      emit(
-        state.copyWith(
-          isLoading: false,
-          errorMessage: e.toString(),
-        ),
-      );
-    }
+        safeEmit(
+          state.copyWith(
+            leaderboard: output.leaderboard,
+            leaderboardsByMetric: updatedMap,
+            errorMessage: null,
+          ),
+        );
+      },
+      doOnError: (e) => safeEmit(state.copyWith(errorMessage: e.toString())),
+      doOnSuccessOrError: () => safeEmit(state.copyWith(isLoading: false)),
+    );
   }
 
   Future<void> _onLeaderboardMetricChanged(
@@ -76,7 +75,7 @@ class LeaderboardBloc extends BaseBloc<LeaderboardEvent, LeaderboardState> {
   ) async {
     final cached = state.leaderboardsByMetric[event.metric];
     if (cached != null) {
-      emit(
+      safeEmit(
         state.copyWith(
           selectedMetric: event.metric,
           leaderboard: cached,

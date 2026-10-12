@@ -99,12 +99,14 @@ class _ChallengeRoomViewState extends State<ChallengeRoomView> {
         final isPaper = context.select<AppBloc, bool>(
           (b) => b.state.isPaperTheme,
         );
+        final isLandscape =
+            MediaQuery.of(context).orientation == Orientation.landscape;
 
         return AppGameDialog(
           title: 'PHÒNG ĐẤU ONLINE',
           icon: Icons.sports_kabaddi_rounded,
-          maxWidth: 340.w,
-          maxHeight: 275.h,
+          maxWidth: isLandscape ? 490.0 : 360.w,
+          maxHeight: isLandscape ? 335.0 : 540.h,
           backgroundColor: isPaper ? AppColors.paperCardBg : AppColors.white,
           borderColor: isPaper ? AppColors.paperBorder : AppColors.blueLight,
           headerGradientColors: isPaper
@@ -127,7 +129,9 @@ class _ChallengeRoomViewState extends State<ChallengeRoomView> {
           footerBackgroundColor: isPaper ? AppColors.paperSurface : null,
           footerBorderColor: isPaper ? AppColors.paperBorder : null,
           footerTextColor: isPaper ? AppColors.paperTextMedium : null,
-          padding: EdgeInsets.fromLTRB(10.w, 6.h, 10.w, 4.h),
+          padding: isLandscape
+              ? const EdgeInsets.fromLTRB(16, 10, 16, 8)
+              : EdgeInsets.fromLTRB(14.w, 8.h, 14.w, 6.h),
           onClose: () => Navigator.of(context).pop(),
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -141,7 +145,7 @@ class _ChallengeRoomViewState extends State<ChallengeRoomView> {
                 ),
               ),
 
-              SizedBox(height: 6.h),
+              SizedBox(height: isLandscape ? 10 : 8.h),
 
               // 2. Nội dung Tab
               if (state.currentTab == ChallengeRoomTab.join)
@@ -164,12 +168,12 @@ class _ChallengeRoomViewState extends State<ChallengeRoomView> {
                   },
                 ),
 
-              SizedBox(height: 6.h),
+              SizedBox(height: isLandscape ? 8 : 6.h),
               Divider(
-                height: 1.h,
+                height: isLandscape ? 14 : 12.h,
                 color: isPaper ? AppColors.paperBorder : AppColors.skyBorder,
               ),
-              SizedBox(height: 4.h),
+              SizedBox(height: isLandscape ? 4 : 4.h),
 
               // 3. Mục Lời mời đến
               ChallengeInvitations(
@@ -187,12 +191,12 @@ class _ChallengeRoomViewState extends State<ChallengeRoomView> {
                 },
               ),
 
-              SizedBox(height: 6.h),
+              SizedBox(height: isLandscape ? 8 : 6.h),
               Divider(
-                height: 1.h,
+                height: isLandscape ? 14 : 12.h,
                 color: isPaper ? AppColors.paperBorder : AppColors.skyBorder,
               ),
-              SizedBox(height: 6.h),
+              SizedBox(height: isLandscape ? 4 : 4.h),
 
               // 4. Mục 5 đối thủ gần nhất
               ChallengeRivals(

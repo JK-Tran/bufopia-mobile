@@ -46,21 +46,19 @@ class ChallengeRoomBloc
   FutureOr<void> _onInit(
     _Init event,
     Emitter<ChallengeRoomState> emit,
-  ) async {
-    emit(state.copyWith(isLoading: true, currentUid: event.uid));
-    try {
-      final output = await _getSocialStateUseCase.execute(
-        GetSocialStateInput(uid: event.uid),
-      );
-      emit(
-        state.copyWith(
-          isLoading: false,
-          socialState: output.socialState,
-        ),
-      );
-    } on Exception catch (_) {
-      emit(state.copyWith(isLoading: false));
-    }
+  ) {
+    return runBlocCatching(
+      handleLoading: false,
+      doOnSubscribe: () =>
+          safeEmit(state.copyWith(isLoading: true, currentUid: event.uid)),
+      action: () async {
+        final output = await _getSocialStateUseCase.execute(
+          GetSocialStateInput(uid: event.uid),
+        );
+        safeEmit(state.copyWith(socialState: output.socialState));
+      },
+      doOnSuccessOrError: () => safeEmit(state.copyWith(isLoading: false)),
+    );
   }
 
   void _onSwitchTab(
@@ -70,7 +68,7 @@ class ChallengeRoomBloc
     final newTab = event.tabIndex == 0
         ? ChallengeRoomTab.join
         : ChallengeRoomTab.create;
-    emit(
+    safeEmit(
       state.copyWith(
         currentTab: newTab,
         errorMessage: null,
@@ -84,7 +82,7 @@ class ChallengeRoomBloc
     Emitter<ChallengeRoomState> emit,
   ) {
     final randomCode = (100000 + Random().nextInt(900000)).toString();
-    emit(
+    safeEmit(
       state.copyWith(
         createdRoomCode: randomCode,
         errorMessage: null,
@@ -97,7 +95,7 @@ class ChallengeRoomBloc
     _CancelRoom event,
     Emitter<ChallengeRoomState> emit,
   ) {
-    emit(
+    safeEmit(
       state.copyWith(
         createdRoomCode: null,
         errorMessage: null,
@@ -108,129 +106,139 @@ class ChallengeRoomBloc
   FutureOr<void> _onJoinRoom(
     _JoinRoom event,
     Emitter<ChallengeRoomState> emit,
-  ) async {
-    if (state.isActionLoading) return;
+  ) {
+    if (state.isActionLoading) return null;
     final code = event.roomCode.trim();
     if (code.length < 6) {
-      emit(
+      safeEmit(
         state.copyWith(
           errorMessage: 'Vui lòng nhập đúng mã phòng gồm 6 chữ số!',
         ),
       );
-      return;
+      return null;
     }
 
-    emit(state.copyWith(isActionLoading: true, errorMessage: null));
-    try {
-      final output = await _getRoomInfoUseCase.execute(
-        GetRoomInfoInput(roomCode: code),
-      );
-      emit(state.copyWith(isActionLoading: false));
-
-      if (output.roomInfo != null) {
-        emit(state.copyWith(joinedRoom: output.roomInfo));
+    return runBlocCatching(
+      handleLoading: false,
+      doOnSubscribe: () => safeEmit(
+        state.copyWith(isActionLoading: true, errorMessage: null),
+      ),
+      action: () async {
+        final output = await _getRoomInfoUseCase.execute(
+          GetRoomInfoInput(roomCode: code),
+        );
+        if (output.roomInfo != null) {
+          safeEmit(state.copyWith(joinedRoom: output.roomInfo));
+        }
         event.onJoined(code);
-      } else {
-        // Nếu server chưa có phòng trong DB thì chấp nhận vào phòng trực tiếp
+      },
+      doOnError: (e) {
         event.onJoined(code);
-      }
-    } on Exception catch (_) {
-      emit(state.copyWith(isActionLoading: false));
-      event.onJoined(code);
-    }
+      },
+      doOnSuccessOrError: () => safeEmit(
+        state.copyWith(isActionLoading: false),
+      ),
+    );
   }
 
   FutureOr<void> _onInviteRival(
     _InviteRival event,
     Emitter<ChallengeRoomState> emit,
-  ) async {
-    if (state.isActionLoading) return;
+  ) {
+    if (state.isActionLoading) return null;
     final uid = state.currentUid;
     final roomCode = state.createdRoomCode;
-    if (uid == null || roomCode == null) return;
+    if (uid == null || roomCode == null) return null;
 
-    emit(state.copyWith(isActionLoading: true));
-    try {
-      final output = await _submitSocialInviteUseCase.execute(
-        SubmitSocialInviteInput(
-          uid: uid,
-          targetUid: event.targetUid,
-          roomCode: roomCode,
-        ),
-      );
-      emit(
-        state.copyWith(
-          isActionLoading: false,
-          successMessage: output.success
-              ? 'Đã gửi lời mời thi đấu thành công!'
-              : 'Chờ 10 giây trước khi gửi tiếp lời mời.',
-        ),
-      );
-    } on Exception catch (_) {
-      emit(state.copyWith(isActionLoading: false));
-    }
+    return runBlocCatching(
+      handleLoading: false,
+      doOnSubscribe: () => safeEmit(state.copyWith(isActionLoading: true)),
+      action: () async {
+        final output = await _submitSocialInviteUseCase.execute(
+          SubmitSocialInviteInput(
+            uid: uid,
+            targetUid: event.targetUid,
+            roomCode: roomCode,
+          ),
+        );
+        safeEmit(
+          state.copyWith(
+            successMessage: output.success
+                ? 'Đã gửi lời mời thi đấu thành công!'
+                : 'Chờ 10 giây trước khi gửi tiếp lời mời.',
+          ),
+        );
+      },
+      doOnSuccessOrError: () => safeEmit(
+        state.copyWith(isActionLoading: false),
+      ),
+    );
   }
 
   FutureOr<void> _onAcceptInvitation(
     _AcceptInvitation event,
     Emitter<ChallengeRoomState> emit,
-  ) async {
-    if (state.isActionLoading) return;
+  ) {
+    if (state.isActionLoading) return null;
     final uid = state.currentUid;
-    if (uid == null) return;
+    if (uid == null) return null;
 
-    emit(state.copyWith(isActionLoading: true));
-    try {
-      final output = await _submitSocialAcceptUseCase.execute(
-        SubmitSocialAcceptInput(
-          uid: uid,
-          invitationId: event.invitationId,
-        ),
-      );
-      emit(state.copyWith(isActionLoading: false));
-      if (output.roomCode != null && output.roomCode!.isNotEmpty) {
-        event.onAccepted(output.roomCode!);
-      }
-    } on Exception catch (_) {
-      emit(state.copyWith(isActionLoading: false));
-    }
+    return runBlocCatching(
+      handleLoading: false,
+      doOnSubscribe: () => safeEmit(state.copyWith(isActionLoading: true)),
+      action: () async {
+        final output = await _submitSocialAcceptUseCase.execute(
+          SubmitSocialAcceptInput(
+            uid: uid,
+            invitationId: event.invitationId,
+          ),
+        );
+        if (output.roomCode != null && output.roomCode!.isNotEmpty) {
+          event.onAccepted(output.roomCode!);
+        }
+      },
+      doOnSuccessOrError: () => safeEmit(
+        state.copyWith(isActionLoading: false),
+      ),
+    );
   }
 
   FutureOr<void> _onDismissInvitation(
     _DismissInvitation event,
     Emitter<ChallengeRoomState> emit,
-  ) async {
-    if (state.isActionLoading) return;
+  ) {
+    if (state.isActionLoading) return null;
     final uid = state.currentUid;
-    if (uid == null) return;
+    if (uid == null) return null;
 
-    emit(state.copyWith(isActionLoading: true));
-    try {
-      await _deleteSocialDismissUseCase.execute(
-        DeleteSocialDismissInput(
-          uid: uid,
-          invitationId: event.invitationId,
-        ),
-      );
-      final currentSocial = state.socialState;
-      if (currentSocial != null) {
-        final updatedInvitations = currentSocial.invitations
-            .where((inv) => inv.id != event.invitationId)
-            .toList();
-        emit(
-          state.copyWith(
-            isActionLoading: false,
-            socialState: SocialState(
-              recent: currentSocial.recent,
-              invitations: updatedInvitations,
-            ),
+    return runBlocCatching(
+      handleLoading: false,
+      doOnSubscribe: () => safeEmit(state.copyWith(isActionLoading: true)),
+      action: () async {
+        await _deleteSocialDismissUseCase.execute(
+          DeleteSocialDismissInput(
+            uid: uid,
+            invitationId: event.invitationId,
           ),
         );
-      } else {
-        emit(state.copyWith(isActionLoading: false));
-      }
-    } on Exception catch (_) {
-      emit(state.copyWith(isActionLoading: false));
-    }
+        final currentSocial = state.socialState;
+        if (currentSocial != null) {
+          final updatedInvitations = currentSocial.invitations
+              .where((inv) => inv.id != event.invitationId)
+              .toList();
+          safeEmit(
+            state.copyWith(
+              socialState: SocialState(
+                recent: currentSocial.recent,
+                invitations: updatedInvitations,
+              ),
+            ),
+          );
+        }
+      },
+      doOnSuccessOrError: () => safeEmit(
+        state.copyWith(isActionLoading: false),
+      ),
+    );
   }
 }

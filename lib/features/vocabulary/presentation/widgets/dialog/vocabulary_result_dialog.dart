@@ -1,4 +1,5 @@
 import 'package:bufopia/components/app_button.dart';
+import 'package:bufopia/components/duel_versus_result_card.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
@@ -28,7 +29,8 @@ class VocabularyResultDialog extends StatelessWidget {
     final isPaper = context.select<AppBloc, bool>((b) => b.state.isPaperTheme);
     final isLandscape =
         MediaQuery.of(context).orientation == Orientation.landscape;
-    final isLocal2P = !state.isBotOpponent &&
+    final isLocal2P =
+        !state.isBotOpponent &&
         (state.roomCode == null || state.roomCode!.isEmpty);
 
     final isTie = state.player1Score == state.player2Score;
@@ -56,19 +58,70 @@ class VocabularyResultDialog extends StatelessWidget {
         : (state.isBotOpponent ? 'Bot' : 'Đối thủ');
 
     final reward = state.reward;
+    final gainedXp = (reward != null && reward.gainedXp > 0)
+        ? reward.gainedXp
+        : (isP1Winner ? 25 : 10);
+    final streakDays = (reward != null && reward.streak > 0)
+        ? reward.streak
+        : 2;
 
-    final dialogWidth = isLandscape ? 400.0 : 340.w;
+    final p1Badges = <Widget>[
+      DuelBadgeChip.xp(gainedXp),
+      DuelBadgeChip.streak(streakDays),
+    ];
+    if (reward != null && reward.winStreak > 0) {
+      p1Badges.add(DuelBadgeChip.winStreak(reward.winStreak));
+    }
+
+    final p2Badges = <Widget>[
+      DuelBadgeChip.rival(text: p2Subtitle),
+      if (!isTie && !isP1Winner)
+        DuelBadgeChip.rival(text: 'Dẫn đầu lượt luyện'),
+    ];
+
+    final totalQ = state.questions.isNotEmpty ? state.questions.length : 15;
+    final p2Correct = (state.player2Score ~/ 10).clamp(0, totalQ);
+    final p1Acc = totalQ == 0
+        ? '100%'
+        : '${((state.correctCountP1 / totalQ) * 100).toInt()}%';
+    final p2Acc = totalQ == 0
+        ? '100%'
+        : '${((p2Correct / totalQ) * 100).toInt()}%';
+
+    final p1Card = DuelPlayerSummaryCard(
+      name: player1Name,
+      isLeader: isP1Winner,
+      scoreText: '${state.player1Score} điểm',
+      correctCount: '${state.correctCountP1} câu',
+      accuracy: p1Acc,
+      streak: '${state.correctCountP1}',
+      badges: p1Badges,
+      isPaper: isPaper,
+    );
+
+    final p2Card = DuelPlayerSummaryCard(
+      name: player2Name,
+      avatarUrl: state.opponentAvatar,
+      nameColor: const Color(0xFF1E88E5),
+      isLeader: !isTie && !isP1Winner,
+      scoreText: '${state.player2Score} điểm',
+      correctCount: '$p2Correct câu',
+      fastestTime: '5.2s',
+      accuracy: p2Acc,
+      streak: '$p2Correct',
+      badges: p2Badges,
+      isPaper: isPaper,
+    );
+
+    final screenW = MediaQuery.of(context).size.width;
+    final dialogWidth = isLandscape
+        ? 620.0
+        : (screenW - 20.w).clamp(320.0, 480.0);
     final dialogPadding = isLandscape
-        ? const EdgeInsets.symmetric(horizontal: 20, vertical: 12)
-        : EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h);
+        ? const EdgeInsets.symmetric(horizontal: 16, vertical: 12)
+        : EdgeInsets.symmetric(horizontal: 8.w, vertical: 14.h);
     final titleFontSize = isLandscape ? 18.0 : 22.sp;
     final sectionSpacing = isLandscape ? 8.0 : 12.h;
-    final scoreBoxPadding = isLandscape
-        ? const EdgeInsets.symmetric(horizontal: 16, vertical: 8)
-        : EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h);
-    final nameFontSize = isLandscape ? 12.0 : 12.sp;
-    final scoreFontSize = isLandscape ? 22.0 : 24.sp;
-    final subFontSize = isLandscape ? 10.0 : 10.sp;
     final btnHeight = isLandscape ? 36.0 : 36.h;
     final btnFontSize = isLandscape ? 12.0 : 12.sp;
     final btnSpacing = isLandscape ? 10.0 : 16.h;
@@ -122,85 +175,11 @@ class VocabularyResultDialog extends StatelessWidget {
               ),
               SizedBox(height: sectionSpacing),
 
-              // Bảng Điểm số 2 bên
-              Container(
-                padding: scoreBoxPadding,
-                decoration: BoxDecoration(
-                  color: isPaper
-                      ? AppColors.paperSurface
-                      : AppColors.skySurface,
-                  borderRadius: BorderRadius.circular(isLandscape ? 14 : 16.r),
-                  border: Border.all(
-                    color: isPaper
-                        ? AppColors.paperBorder
-                        : AppColors.skyBorder,
-                    width: isLandscape ? 1.2 : 1.5.w,
-                  ),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Column(
-                      children: [
-                        AppText.b2(
-                          player1Name,
-                          fontWeight: FontWeight.w700,
-                          fontSize: nameFontSize,
-                          color: isPaper
-                              ? AppColors.paperTextDark
-                              : AppColors.grayDark,
-                        ),
-                        AppText.h1(
-                          '${state.player1Score}',
-                          color: isPaper
-                              ? AppColors.playerPinkDark
-                              : AppColors.purple,
-                          fontSize: scoreFontSize,
-                          fontWeight: FontWeight.w700,
-                        ),
-                        AppText.c1(
-                          'Đúng: ${state.correctCountP1}/15',
-                          color: isPaper
-                              ? AppColors.paperTextMedium
-                              : AppColors.grayMedium,
-                          fontSize: subFontSize,
-                        ),
-                      ],
-                    ),
-                    AppText.h1(
-                      '-',
-                      color: AppColors.grayMedium,
-                      fontSize: scoreFontSize,
-                    ),
-                    Column(
-                      children: [
-                        AppText.b2(
-                          player2Name,
-                          fontWeight: FontWeight.w700,
-                          fontSize: nameFontSize,
-                          color: isPaper
-                              ? AppColors.paperTextDark
-                              : AppColors.grayDark,
-                        ),
-                        AppText.h1(
-                          '${state.player2Score}',
-                          color: isPaper
-                              ? AppColors.playerBlueDark
-                              : AppColors.purple,
-                          fontSize: scoreFontSize,
-                          fontWeight: FontWeight.w700,
-                        ),
-                        AppText.c1(
-                          p2Subtitle,
-                          color: isPaper
-                              ? AppColors.paperTextMedium
-                              : AppColors.grayMedium,
-                          fontSize: subFontSize,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+              // Khối thẻ đối đầu VS chuẩn giao diện Web
+              DuelVersusResultView(
+                player1Card: p1Card,
+                player2Card: p2Card,
+                isPaper: isPaper,
               ),
               SizedBox(height: sectionSpacing),
 
@@ -270,37 +249,113 @@ class VocabularyResultDialog extends StatelessWidget {
                       ],
                     ),
                   ),
-
-                // Huy hiệu Thưởng: XP, Streak, Win Streak
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    _buildRewardPill(
-                      icon: Icons.star_rounded,
-                      iconColor: AppColors.yellow,
-                      label: '+${reward.gainedXp} XP',
-                      isPaperTheme: isPaper,
-                      isLandscape: isLandscape,
-                    ),
-                    _buildRewardPill(
-                      icon: Icons.local_fire_department_rounded,
-                      iconColor: AppColors.red,
-                      label: '${reward.streak} Ngày',
-                      isPaperTheme: isPaper,
-                      isLandscape: isLandscape,
-                    ),
-                    _buildRewardPill(
-                      icon: Icons.emoji_events_rounded,
-                      iconColor: AppColors.orange,
-                      label: '${reward.winStreak} Trận',
-                      isPaperTheme: isPaper,
-                      isLandscape: isLandscape,
-                    ),
-                  ],
-                ),
               ],
 
               SizedBox(height: btnSpacing),
+
+              // Trạng thái tái đấu / đối thủ rời phòng (Online mode)
+              if (!state.isBotOpponent && state.roomCode != null) ...[
+                if (state.isOpponentLeft)
+                  Container(
+                    margin: EdgeInsets.only(bottom: isLandscape ? 6 : 8.h),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 10.w,
+                      vertical: isLandscape ? 4 : 4.h,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.red.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(6.r),
+                      border: Border.all(
+                        color: AppColors.red.withValues(alpha: 0.3),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.info_outline_rounded,
+                          size: isLandscape ? 14 : 14.r,
+                          color: AppColors.red,
+                        ),
+                        SizedBox(width: 4.w),
+                        AppText.b2(
+                          state.opponentLeftMessage ??
+                              'Đối thủ đã thoát khỏi phòng',
+                          fontSize: isLandscape ? 11.0 : 11.sp,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.red,
+                        ),
+                      ],
+                    ),
+                  )
+                else if (state.isRematchRequested)
+                  Container(
+                    margin: EdgeInsets.only(bottom: isLandscape ? 6 : 8.h),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 10.w,
+                      vertical: isLandscape ? 4 : 4.h,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.orange.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(6.r),
+                      border: Border.all(
+                        color: AppColors.orange.withValues(alpha: 0.3),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(
+                          width: isLandscape ? 12 : 12.r,
+                          height: isLandscape ? 12 : 12.r,
+                          child: const CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: AppColors.orange,
+                          ),
+                        ),
+                        SizedBox(width: 6.w),
+                        AppText.b2(
+                          'Đang đợi đối thủ đồng ý tái đấu...',
+                          fontSize: isLandscape ? 11.0 : 11.sp,
+                          fontWeight: FontWeight.w600,
+                          color: AppColors.orange,
+                        ),
+                      ],
+                    ),
+                  )
+                else if (state.isOpponentWantRematch)
+                  Container(
+                    margin: EdgeInsets.only(bottom: isLandscape ? 6 : 8.h),
+                    padding: EdgeInsets.symmetric(
+                      horizontal: 10.w,
+                      vertical: isLandscape ? 4 : 4.h,
+                    ),
+                    decoration: BoxDecoration(
+                      color: AppColors.green.withValues(alpha: 0.12),
+                      borderRadius: BorderRadius.circular(6.r),
+                      border: Border.all(
+                        color: AppColors.green.withValues(alpha: 0.4),
+                      ),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Icon(
+                          Icons.sports_kabaddi_rounded,
+                          size: isLandscape ? 14 : 14.r,
+                          color: AppColors.green,
+                        ),
+                        SizedBox(width: 4.w),
+                        AppText.b2(
+                          'Đối thủ muốn tái đấu cùng bạn!',
+                          fontSize: isLandscape ? 11.0 : 11.sp,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.green,
+                        ),
+                      ],
+                    ),
+                  ),
+              ],
 
               // Các nút hành động: Thoát & Chơi lại
               Row(
@@ -308,7 +363,7 @@ class VocabularyResultDialog extends StatelessWidget {
                   if (onBackPressed != null)
                     Expanded(
                       child: AppButton(
-                        text: 'Thoát',
+                        text: state.isOpponentLeft ? 'Về trang chủ' : 'Thoát',
                         height: btnHeight,
                         fontSize: btnFontSize,
                         fontWeight: FontWeight.w700,
@@ -327,80 +382,55 @@ class VocabularyResultDialog extends StatelessWidget {
                         onPressed: onBackPressed,
                       ),
                     ),
-                  if (onBackPressed != null)
+                  if (onBackPressed != null && !state.isOpponentLeft)
                     SizedBox(width: isLandscape ? 8 : 10.w),
-                  Expanded(
-                    child: isPaper
-                        ? AppButton(
-                            text: 'Chơi lại',
-                            height: btnHeight,
-                            fontSize: btnFontSize,
-                            fontWeight: FontWeight.w700,
-                            backgroundColor: AppColors.paperGreen,
-                            borderColor: AppColors.paperGreenBorder,
-                            extrusionColor: AppColors.paperGreenExtrusion,
-                            onPressed: () {
-                              context.read<VocabularyBloc>().add(
-                                const VocabularyEvent.restartGame(),
-                              );
-                            },
-                          )
-                        : AppButton.primary(
-                            text: 'Chơi lại',
-                            height: btnHeight,
-                            fontSize: btnFontSize,
-                            onPressed: () {
-                              context.read<VocabularyBloc>().add(
-                                const VocabularyEvent.restartGame(),
-                              );
-                            },
-                          ),
-                  ),
+                  if (!state.isOpponentLeft)
+                    Expanded(
+                      child: isPaper
+                          ? AppButton(
+                              text: state.isRematchRequested
+                                  ? 'Đang chờ...'
+                                  : (state.isOpponentWantRematch
+                                        ? 'Tái đấu ngay'
+                                        : 'Chơi lại'),
+                              isLoading: state.isRematchRequested,
+                              height: btnHeight,
+                              fontSize: btnFontSize,
+                              fontWeight: FontWeight.w700,
+                              backgroundColor: AppColors.paperGreen,
+                              borderColor: AppColors.paperGreenBorder,
+                              extrusionColor: AppColors.paperGreenExtrusion,
+                              onPressed: state.isRematchRequested
+                                  ? null
+                                  : () {
+                                      context.read<VocabularyBloc>().add(
+                                        const VocabularyEvent.restartGame(),
+                                      );
+                                    },
+                            )
+                          : AppButton.primary(
+                              text: state.isRematchRequested
+                                  ? 'Đang chờ...'
+                                  : (state.isOpponentWantRematch
+                                        ? 'Tái đấu ngay'
+                                        : 'Chơi lại'),
+                              isLoading: state.isRematchRequested,
+                              height: btnHeight,
+                              fontSize: btnFontSize,
+                              onPressed: state.isRematchRequested
+                                  ? null
+                                  : () {
+                                      context.read<VocabularyBloc>().add(
+                                        const VocabularyEvent.restartGame(),
+                                      );
+                                    },
+                            ),
+                    ),
                 ],
               ),
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildRewardPill({
-    required IconData icon,
-    required Color iconColor,
-    required String label,
-    required bool isPaperTheme,
-    required bool isLandscape,
-  }) {
-    return Container(
-      padding: EdgeInsets.symmetric(
-        horizontal: isLandscape ? 8 : 8.w,
-        vertical: isLandscape ? 3 : 4.h,
-      ),
-      decoration: BoxDecoration(
-        color: isPaperTheme
-            ? AppColors.paperSurface
-            : iconColor.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(isLandscape ? 8 : 10.r),
-        border: isPaperTheme
-            ? Border.all(
-                color: AppColors.paperBorder,
-                width: isLandscape ? 1 : 1.w,
-              )
-            : null,
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, color: iconColor, size: isLandscape ? 13 : 14.r),
-          SizedBox(width: isLandscape ? 4 : 4.w),
-          AppText.c1(
-            label,
-            fontWeight: FontWeight.w700,
-            color: isPaperTheme ? AppColors.paperTextDark : AppColors.grayDark,
-            fontSize: isLandscape ? 10 : 10.sp,
-          ),
-        ],
       ),
     );
   }

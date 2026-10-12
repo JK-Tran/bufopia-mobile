@@ -8,14 +8,16 @@ import 'package:bufopia/components/app_snack_bar.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
+import 'package:bufopia/features/auth/domain/usecases/get_cached_user_use_case.dart';
 import 'package:bufopia/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:bufopia/shared/di/di.dart';
+import 'package:bufopia/shared/services/firebase/firebase_auth_service.dart';
+import 'package:bufopia/shared/services/socket/duel_socket_service.dart';
 import 'package:bufopia/shared/services/socket/models/socket_event.dart';
-import 'package:bufopia/shared/services/socket/socket_service.dart';
 import 'package:bufopia/shared/utils/string_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:get_it/get_it.dart';
 
 /// Dialog Tìm Trận Online thuộc Home Menu phong cách Radar Scanner
 class VocabularyMatchmakingDialog extends StatefulWidget {
@@ -61,7 +63,7 @@ class VocabularyMatchmakingDialog extends StatefulWidget {
 class _VocabularyMatchmakingDialogState
     extends State<VocabularyMatchmakingDialog>
     with TickerProviderStateMixin {
-  late final SocketService _socketService;
+  late final DuelSocketService _socketService;
   StreamSubscription<SocketEvent>? _subscription;
   Timer? _timer;
   int _secondsElapsed = 0;
@@ -83,7 +85,7 @@ class _VocabularyMatchmakingDialogState
   @override
   void initState() {
     super.initState();
-    _socketService = GetIt.instance.get<SocketService>();
+    _socketService = sl<DuelSocketService>();
 
     _pulseController = AnimationController(
       vsync: this,
@@ -115,7 +117,13 @@ class _VocabularyMatchmakingDialogState
 
   Future<void> _connectMatchmake() async {
     final currentUser = context.read<AuthBloc>().state.currentUser;
-    final currentUid = currentUser?.uid;
+    final cachedUid = sl<GetCachedUserUseCase>().execute()?.uid;
+    final fbUid = sl<FirebaseAuthService>().currentUid;
+    final currentUid = (currentUser?.uid.isNotEmpty == true)
+        ? currentUser!.uid
+        : (cachedUid?.isNotEmpty == true)
+        ? cachedUid!
+        : fbUid;
     final fallbackUid =
         'guest_${DateTime.now().millisecondsSinceEpoch % 10000}';
     final uid = currentUid ?? fallbackUid;
@@ -269,8 +277,8 @@ class _VocabularyMatchmakingDialogState
           // ── 1. Status Row: Đang tìm đối thủ + Bộ đếm giờ ─────────────
           _buildStatusRow(isPaper),
 
-          // Thông báo lỗi (nếu có lỗi kết nối)
-          if (_errorMessage != null) ...[
+          // Thông báo lỗi (nếu có lỗi kết nối và chưa ghép cặp)
+          if (_errorMessage != null && !_isMatched) ...[
             SizedBox(height: 4.h),
             Container(
               padding: EdgeInsets.symmetric(
@@ -534,7 +542,7 @@ class _RadarScannerWidget extends StatelessWidget {
           ),
 
           // 3. Nếu tìm thấy đối thủ, hiển thị blip đối thủ trên radar
-          if (isMatched && rivalAvatar != null)
+          if (isMatched)
             Positioned(
               right: 4.w,
               top: 4.h,

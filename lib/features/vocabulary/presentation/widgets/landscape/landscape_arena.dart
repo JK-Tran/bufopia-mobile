@@ -17,6 +17,8 @@ class LandscapeArena extends StatelessWidget {
     required this.onSelectAnswerP1,
     required this.onSelectAnswerP2,
     super.key,
+    this.cooldownSecondsP1 = 0,
+    this.cooldownSecondsP2 = 0,
   });
 
   final List<String> optionsP1;
@@ -28,6 +30,8 @@ class LandscapeArena extends StatelessWidget {
   getOptionStatusP2;
   final void Function(String word) onSelectAnswerP1;
   final void Function(String word) onSelectAnswerP2;
+  final int cooldownSecondsP1;
+  final int cooldownSecondsP2;
 
   static const String _vsPath = 'assets/images/quick_battle/vs.png';
 
@@ -51,6 +55,8 @@ class LandscapeArena extends StatelessWidget {
               isPlayer1: true,
               isRoundLocked: isRoundLocked,
               getOptionStatus: getOptionStatusP1,
+              cooldownSeconds: cooldownSecondsP1,
+              isPaper: isPaper,
               onSelectAnswer: onSelectAnswerP1,
             ),
           ),
@@ -96,6 +102,8 @@ class LandscapeArena extends StatelessWidget {
               isPlayer1: false,
               isRoundLocked: isRoundLocked,
               getOptionStatus: getOptionStatusP2,
+              cooldownSeconds: cooldownSecondsP2,
+              isPaper: isPaper,
               onSelectAnswer: onSelectAnswerP2,
             ),
           ),

@@ -52,8 +52,10 @@ class _VocabularyPageState
   @override
   void initState() {
     super.initState();
+    final currentUser = context.read<AuthBloc>().state.currentUser;
     bloc.add(
       VocabularyEvent.initDeck(
+        uid: currentUser?.uid,
         topic: widget.topic,
         isBotOpponent: widget.isBotOpponent,
         roomCode: widget.roomCode,

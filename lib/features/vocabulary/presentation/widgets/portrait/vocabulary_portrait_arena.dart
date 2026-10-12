@@ -68,8 +68,9 @@ class VocabularyPortraitArena extends StatelessWidget {
   bool? _getOpponentCorrect() {
     if (state.isP2Correct != null) return state.isP2Correct;
     final opponentWord = _getOpponentChosenWord();
-    if (opponentWord != null && state.currentQuestion != null) {
-      return opponentWord == state.currentQuestion!.en;
+    final currentQ = state.currentQuestion;
+    if (opponentWord != null && currentQ != null) {
+      return opponentWord == currentQ.en || opponentWord == currentQ.vi;
     }
     return null;
   }
@@ -81,13 +82,27 @@ class VocabularyPortraitArena extends StatelessWidget {
     final chosen = _getPlayerChosenWord();
     if (chosen == null || chosen != word) return VocabularyAnswerStatus.normal;
 
+    final isOnline = !state.isBotOpponent && state.roomCode != null;
+    if (isOnline) {
+      // Đấu online: Chỉ hiển thị correct/wrong khi Server đã phản hồi.
+      // Trong lúc chờ máy chủ, giữ trạng thái normal.
+      if (state.isP1Correct == null) {
+        return VocabularyAnswerStatus.normal;
+      }
+      return state.isP1Correct!
+          ? VocabularyAnswerStatus.correct
+          : VocabularyAnswerStatus.wrong;
+    }
+
     if (state.isP1Correct != null) {
       return state.isP1Correct!
           ? VocabularyAnswerStatus.correct
           : VocabularyAnswerStatus.wrong;
     }
-    final currentEn = state.currentQuestion?.en;
-    return word == currentEn
+    final currentQ = state.currentQuestion;
+    final isCorrect =
+        currentQ != null && (word == currentQ.en || word == currentQ.vi);
+    return isCorrect
         ? VocabularyAnswerStatus.correct
         : VocabularyAnswerStatus.wrong;
   }
@@ -154,7 +169,9 @@ class VocabularyPortraitArena extends StatelessWidget {
               player2Avatar: player2Avatar,
               getAnswerStatus: _getP1Status,
               isOptionDisabled: (word) =>
-                  state.isRoundLocked || state.wrongWordsP1.contains(word),
+                  state.isRoundLocked ||
+                  state.wrongWordsP1.contains(word) ||
+                  state.cooldownSecondsP1 > 0,
               isPlayerSelected: (word) =>
                   chosenWordP1 == word || state.wrongWordsP1.contains(word),
               isOpponentSelected: (word) =>
@@ -164,6 +181,8 @@ class VocabularyPortraitArena extends StatelessWidget {
                 if (chosenWordP2 == word) return opponentCorrect;
                 return null;
               },
+              cooldownSeconds: state.cooldownSecondsP1,
+              isPaper: isPaper,
               onSelectAnswer: onSelectAnswer,
             ),
 

@@ -19,22 +19,33 @@ mixin BaseBlocMixin<S> on BlocBase<S> {
     return super.close();
   }
 
+  /// Phát state an toàn, tránh ngoại lệ khi BLoC đã đóng (isClosed)
+  void safeEmit(S state) {
+    if (!isClosed) {
+      emit(state);
+    }
+  }
+
   /// Utility method to run an async action, automatically show/hide loading, and catch errors.
   Future<void> runBlocCatching({
     required Future<void> Function() action,
-    bool handleLoading = true,
-    void Function(AppException)? doOnError,
+    FutureOr<void> Function()? doOnSubscribe,
+    FutureOr<void> Function()? doOnSuccessOrError,
+    FutureOr<void> Function(AppException)? doOnError,
     void Function()? doOnEventCompleted,
+    bool handleLoading = true,
+    bool handleError = true,
   }) async {
     if (handleLoading) _loadingController.add(true);
+    await doOnSubscribe?.call();
 
     try {
       await action();
     } on AppException catch (e) {
       Log.e('AppException caught in Bloc/Cubit', errorObject: e);
       if (doOnError != null) {
-        doOnError(e);
-      } else {
+        await doOnError(e);
+      } else if (handleError) {
         _errorController.add(e);
       }
     } on Exception catch (e, stackTrace) {
@@ -46,12 +57,13 @@ mixin BaseBlocMixin<S> on BlocBase<S> {
       final exception = AppUncaughtException(e);
 
       if (doOnError != null) {
-        doOnError(exception as AppException);
-      } else {
-        _errorController.add(exception as AppException);
+        await doOnError(exception);
+      } else if (handleError) {
+        _errorController.add(exception);
       }
     } finally {
       if (handleLoading) _loadingController.add(false);
+      await doOnSuccessOrError?.call();
       doOnEventCompleted?.call();
     }
   }

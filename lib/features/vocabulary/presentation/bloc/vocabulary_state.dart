@@ -40,6 +40,11 @@ abstract class VocabularyState with _$VocabularyState {
     @Default({}) Map<String, bool> answersP1,
     @Default([]) List<String> wrongWordsP1,
     @Default([]) List<String> wrongWordsP2,
+    @Default(0) int cooldownSecondsP1,
+    @Default(0) int cooldownSecondsP2,
+    @Default(false) bool isRematchRequested,
+    @Default(false) bool isOpponentWantRematch,
+    @Default([]) List<bool> rematchReadyPlayers,
   }) = _VocabularyState;
 
   const VocabularyState._();

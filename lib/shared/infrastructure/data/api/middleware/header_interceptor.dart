@@ -4,19 +4,25 @@ import 'package:bufopia/shared/constants/server/server_request_response_constant
 import 'package:bufopia/shared/helper/app_info.dart';
 import 'package:bufopia/shared/infrastructure/data/api/middleware/base_interceptor.dart';
 import 'package:bufopia/shared/services/device/device_auth_service.dart';
+import 'package:bufopia/shared/services/firebase/firebase_auth_service.dart';
 import 'package:dio/dio.dart';
 
 import 'package:injectable/injectable.dart';
 
 @Injectable()
 class HeaderInterceptor extends BaseInterceptor {
-  HeaderInterceptor(this._appInfo, this._deviceAuthService);
+  HeaderInterceptor(
+    this._appInfo,
+    this._deviceAuthService,
+    this._firebaseAuthService,
+  );
 
   Map<String, dynamic> headers = {
     'accept': 'application/json, text/plain, */*',
   };
   final AppInfo _appInfo;
   final DeviceAuthService _deviceAuthService;
+  final FirebaseAuthService _firebaseAuthService;
 
   String? xAntMobile;
 
@@ -40,9 +46,16 @@ class HeaderInterceptor extends BaseInterceptor {
     options.headers.addAll(_userAgentClientHeader());
     options.headers.addAll(_getAppInfoHeaders());
 
-    final secret = await _deviceAuthService.getDeviceSecret();
-    if (secret.isNotEmpty && !options.headers.containsKey('Authorization')) {
-      options.headers['Authorization'] = 'Bearer $secret';
+    if (!options.headers.containsKey('Authorization')) {
+      final idToken = await _firebaseAuthService.getIdToken();
+      if (idToken != null && idToken.isNotEmpty) {
+        options.headers['Authorization'] = 'Bearer $idToken';
+      } else {
+        final secret = await _deviceAuthService.getDeviceSecret();
+        if (secret.isNotEmpty) {
+          options.headers['Authorization'] = 'Bearer $secret';
+        }
+      }
     }
 
     handler.next(options);

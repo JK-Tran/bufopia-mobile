@@ -128,6 +128,15 @@ class _HomeFeedbackDialogState extends State<HomeFeedbackDialog> {
     return 'Người Chơi Bufopia';
   }
 
+  Future<String> _getUserId() async {
+    try {
+      final authState = context.read<AuthBloc>().state;
+      final uid = authState.currentUser?.uid;
+      if (uid != null && uid.trim().isNotEmpty) return uid;
+    } on Object catch (_) {}
+    return sl<DeviceUidService>().getDeviceUid();
+  }
+
   Future<void> _submitWordReport({
     required String issueType,
     required String content,
@@ -139,7 +148,7 @@ class _HomeFeedbackDialogState extends State<HomeFeedbackDialog> {
     setState(() => _isSubmitting = true);
 
     try {
-      final uid = await sl<DeviceUidService>().getDeviceUid();
+      final uid = await _getUserId();
       final userName = _getUserName();
       final word = entry.word;
 
@@ -188,7 +197,7 @@ class _HomeFeedbackDialogState extends State<HomeFeedbackDialog> {
     setState(() => _isSubmitting = true);
 
     try {
-      final uid = await sl<DeviceUidService>().getDeviceUid();
+      final uid = await _getUserId();
       final userName = _getUserName();
 
       await sl<SendFeedbackUseCase>().execute(
