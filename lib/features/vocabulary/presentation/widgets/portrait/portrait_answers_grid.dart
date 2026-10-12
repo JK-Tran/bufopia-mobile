@@ -1,4 +1,5 @@
 import 'package:bufopia/features/vocabulary/presentation/widgets/vocabulary_answer_item.dart';
+import 'package:bufopia/features/vocabulary/presentation/widgets/vocabulary_cooldown_bagde.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -15,6 +16,8 @@ class PortraitAnswersGrid extends StatelessWidget {
     required this.isOpponentCorrect,
     required this.onSelectAnswer,
     super.key,
+    this.cooldownSeconds = 0,
+    this.isPaper = false,
   });
 
   final List<String> options;
@@ -26,6 +29,8 @@ class PortraitAnswersGrid extends StatelessWidget {
   final bool Function(String word) isOpponentSelected;
   final bool? Function(String word) isOpponentCorrect;
   final ValueChanged<String> onSelectAnswer;
+  final int cooldownSeconds;
+  final bool isPaper;
 
   Widget _buildItem(String word) {
     return SizedBox(
@@ -49,26 +54,40 @@ class PortraitAnswersGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     if (options.length < 4) return const SizedBox.shrink();
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
+    return Stack(
+      clipBehavior: Clip.none,
+      alignment: Alignment.topCenter,
       children: [
-        // Hàng 1 (Đáp án 1 & 2)
-        Row(
+        Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Expanded(child: _buildItem(options[0])),
-            SizedBox(width: 12.w),
-            Expanded(child: _buildItem(options[1])),
+            // Hàng 1 (Đáp án 1 & 2)
+            Row(
+              children: [
+                Expanded(child: _buildItem(options[0])),
+                SizedBox(width: 12.w),
+                Expanded(child: _buildItem(options[1])),
+              ],
+            ),
+            SizedBox(height: 12.h),
+            // Hàng 2 (Đáp án 3 & 4)
+            Row(
+              children: [
+                Expanded(child: _buildItem(options[2])),
+                SizedBox(width: 12.w),
+                Expanded(child: _buildItem(options[3])),
+              ],
+            ),
           ],
         ),
-        SizedBox(height: 12.h),
-        // Hàng 2 (Đáp án 3 & 4)
-        Row(
-          children: [
-            Expanded(child: _buildItem(options[2])),
-            SizedBox(width: 12.w),
-            Expanded(child: _buildItem(options[3])),
-          ],
-        ),
+        if (cooldownSeconds > 0)
+          Positioned(
+            top: -12.h,
+            child: VocabularyCooldownBagde(
+              seconds: cooldownSeconds,
+              isPaper: isPaper,
+            ),
+          ),
       ],
     );
   }

@@ -79,8 +79,17 @@ class VocabularyBody extends StatelessWidget {
     if (selectedWord == null) return VocabularyAnswerStatus.normal;
 
     if (selectedWord == word) {
-      final currentEn = state.currentQuestion?.en;
-      return word == currentEn
+      final isPlayerCorrect =
+          isPlayer1 ? state.isP1Correct : state.isP2Correct;
+      if (isPlayerCorrect != null) {
+        return isPlayerCorrect
+            ? VocabularyAnswerStatus.correct
+            : VocabularyAnswerStatus.wrong;
+      }
+      final currentQ = state.currentQuestion;
+      final isCorrect =
+          currentQ != null && (word == currentQ.en || word == currentQ.vi);
+      return isCorrect
           ? VocabularyAnswerStatus.correct
           : VocabularyAnswerStatus.wrong;
     }

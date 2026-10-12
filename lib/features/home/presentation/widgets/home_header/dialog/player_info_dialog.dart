@@ -1,13 +1,13 @@
-import 'dart:async';
-
 import 'package:bufopia/components/components.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
 import 'package:bufopia/features/auth/domain/entities/user.dart';
 import 'package:bufopia/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:bufopia/features/auth/presentation/widgets/dialog/account_conflict_dialog.dart';
 import 'package:bufopia/features/home/presentation/widgets/home_header/dialog/player_avatar_dialog.dart';
 import 'package:bufopia/features/home/presentation/widgets/home_header/dialog/player_edit_name_dialog.dart';
+import 'package:firebase_auth/firebase_auth.dart' as fb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -116,7 +116,29 @@ class _PlayerInfoDialogState extends State<PlayerInfoDialog> {
   Widget build(BuildContext context) {
     final isPaper = context.select<AppBloc, bool>((b) => b.state.isPaperTheme);
 
-    return BlocBuilder<AuthBloc, AuthState>(
+    return BlocConsumer<AuthBloc, AuthState>(
+      listener: (context, state) async {
+        if (state.conflict != null) {
+          final choice = await AccountConflictDialog.show(
+            context,
+            conflict: state.conflict!,
+          );
+          if (!context.mounted) return;
+          if (choice == ConflictResolutionChoice.merge) {
+            context.read<AuthBloc>().add(
+              const AuthEvent.resolveAccountConflict(action: 'merge'),
+            );
+          } else if (choice == ConflictResolutionChoice.overwrite) {
+            context.read<AuthBloc>().add(
+              const AuthEvent.resolveAccountConflict(action: 'overwrite'),
+            );
+          } else {
+            context.read<AuthBloc>().add(
+              const AuthEvent.cancelAccountConflict(),
+            );
+          }
+        }
+      },
       builder: (context, state) {
         final user = state.currentUser ?? const User();
         final currentLevelXp = user.currentLevelXp;
@@ -207,9 +229,105 @@ class _PlayerInfoDialogState extends State<PlayerInfoDialog> {
 
               // ── 4. Thẻ động lực / Danh hiệu ────────────────
               _buildMotivationCard(isPaper),
+
+              SizedBox(height: 8.h),
+
+              // ── 5. Liên kết / Đăng nhập Google ─────────────
+              _buildGoogleAuthButton(state, isPaper),
             ],
           ),
         );
+      },
+    );
+  }
+
+  Widget _buildGoogleAuthButton(AuthState state, bool isPaper) {
+    if (state.isLoading) {
+      return Padding(
+        padding: EdgeInsets.symmetric(vertical: 4.h),
+        child: Center(
+          child: SizedBox(
+            width: 22.w,
+            height: 22.w,
+            child: const CircularProgressIndicator(strokeWidth: 2.5),
+          ),
+        ),
+      );
+    }
+
+    final fbUser = fb.FirebaseAuth.instance.currentUser;
+    final isGoogleLinked = fbUser != null && !fbUser.isAnonymous;
+    final googleEmail = fbUser?.email ?? fbUser?.displayName ?? '';
+
+    if (isGoogleLinked) {
+      return Row(
+        children: [
+          Expanded(
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 6.h),
+              decoration: BoxDecoration(
+                color: isPaper
+                    ? AppColors.paperSurface
+                    : AppColors.lightBackground,
+                borderRadius: BorderRadius.circular(8.r),
+                border: Border.all(
+                  color: isPaper ? AppColors.paperBorder : AppColors.grayLight,
+                  width: 1.w,
+                ),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.check_circle_rounded,
+                    color: isPaper ? AppColors.paperGreen : AppColors.green,
+                    size: 15.w,
+                  ),
+                  SizedBox(width: 4.w),
+                  Expanded(
+                    child: AppText.c1(
+                      'Google: $googleEmail',
+                      overflow: TextOverflow.ellipsis,
+                      color: isPaper
+                          ? AppColors.paperTextDark
+                          : AppColors.grayDark,
+                      fontSize: 10.5.sp,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SizedBox(width: 6.w),
+          AppButton.secondary(
+            text: 'Đăng xuất',
+            fontSize: 11.sp,
+            height: 28.h,
+            padding: EdgeInsets.symmetric(horizontal: 8.w),
+            onPressed: () {
+              context.read<AuthBloc>().add(const AuthEvent.loggedOut());
+              AppSnackBar.showSuccess(context, 'Đã đăng xuất tài khoản!');
+            },
+          ),
+        ],
+      );
+    }
+
+    return AppButton(
+      icon: Icon(
+        Icons.cloud_sync_rounded,
+        size: 16.w,
+        color: AppColors.white,
+      ),
+      text: 'LƯU TIẾN ĐỘ LÊN GOOGLE',
+      backgroundColor: isPaper ? AppColors.paperGreen : AppColors.blue,
+      extrusionColor: isPaper
+          ? AppColors.paperGreenExtrusion
+          : AppColors.blueDeep,
+      fontSize: 11.5.sp,
+      fontWeight: FontWeight.w700,
+      height: 32.h,
+      onPressed: () {
+        context.read<AuthBloc>().add(const AuthEvent.signInWithGoogle());
       },
     );
   }

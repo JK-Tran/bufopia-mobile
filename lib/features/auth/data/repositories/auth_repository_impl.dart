@@ -1,8 +1,10 @@
 import 'dart:convert';
 
 import 'package:bufopia/features/auth/data/datasources/auth_data_source.dart';
+import 'package:bufopia/features/auth/data/mapper/account_import_mapper.dart';
 import 'package:bufopia/features/auth/data/mapper/user_data_mapper.dart';
 import 'package:bufopia/features/auth/data/models/user_data.dart';
+import 'package:bufopia/features/auth/domain/entities/account_import_result.dart';
 import 'package:bufopia/features/auth/domain/entities/user.dart';
 import 'package:bufopia/features/auth/domain/repositories/auth_repository.dart';
 import 'package:bufopia/shared/services/local_storage/app_preferences.dart';
@@ -13,11 +15,13 @@ class AuthRepositoryImpl extends AuthRepository {
   AuthRepositoryImpl(
     this._dataSource,
     this._userDataMapper,
+    this._accountImportMapper,
     this._appPreferences,
   );
 
   final AuthDataSource _dataSource;
   final UserDataMapper _userDataMapper;
+  final AccountImportMapper _accountImportMapper;
   final AppPreferences _appPreferences;
 
   @override
@@ -57,12 +61,49 @@ class AuthRepositoryImpl extends AuthRepository {
     required String uid,
     required String displayName,
     String? avatarUrl,
+    bool termsAccepted = true,
   }) async {
     final response = await _dataSource.updateUserProfile(
       uid: uid,
       displayName: displayName,
       avatarUrl: avatarUrl,
+      termsAccepted: termsAccepted,
     );
     return _userDataMapper.mapToEntity(response);
+  }
+
+  @override
+  Future<String?> getSocketTicket({
+    required String uid,
+    required String path,
+    String? token,
+  }) {
+    return _dataSource.getSocketTicket(
+      uid: uid,
+      path: path,
+      token: token,
+    );
+  }
+
+  @override
+  Future<AccountImportResult?> importAccount({
+    required String idToken,
+    required String sourceUid,
+    String? sourceToken,
+    String? action,
+    String? displayName,
+    int xp = 0,
+    List<Map<String, dynamic>> profiles = const [],
+  }) async {
+    final response = await _dataSource.importAccount(
+      idToken: idToken,
+      sourceUid: sourceUid,
+      sourceToken: sourceToken,
+      action: action,
+      displayName: displayName,
+      xp: xp,
+      profiles: profiles,
+    );
+    return _accountImportMapper.mapToEntity(response);
   }
 }

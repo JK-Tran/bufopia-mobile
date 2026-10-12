@@ -28,21 +28,23 @@ class ChallengeCreate extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isPaper = context.select<AppBloc, bool>((b) => b.state.isPaperTheme);
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
 
     if (createdRoomCode == null) {
       return Padding(
-        padding: EdgeInsets.symmetric(vertical: 4.h),
+        padding: EdgeInsets.symmetric(vertical: isLandscape ? 4.0 : 4.h),
         child: AppButton(
           text: 'TẠO PHÒNG NGAY',
           icon: Icon(
             Icons.sensors_rounded,
-            size: 12.r,
+            size: isLandscape ? 16.0 : 14.r,
             color: AppColors.white,
           ),
           width: double.infinity,
-          height: 30.h,
-          padding: EdgeInsets.symmetric(horizontal: 10.w),
-          spacing: 6,
+          height: isLandscape ? 40.0 : 40.h,
+          padding: EdgeInsets.symmetric(horizontal: 14.w),
+          spacing: 8,
           backgroundColor: isPaper
               ? AppColors.paperGreen
               : AppColors.modeBotButton,
@@ -53,8 +55,8 @@ class ChallengeCreate extends StatelessWidget {
               ? AppColors.paperGreenExtrusion
               : AppColors.modeBotButtonExtrusion,
           extrusionHeight: 2,
-          borderRadius: BorderRadius.circular(10.r),
-          fontSize: 12.sp,
+          borderRadius: BorderRadius.circular(isLandscape ? 10.0 : 10.r),
+          fontSize: isLandscape ? 13.0 : 13.sp,
           fontWeight: FontWeight.w700,
           onPressed: onCreateRoom,
         ),
@@ -67,12 +69,21 @@ class ChallengeCreate extends StatelessWidget {
         ? AppColors.paperGreenDark
         : AppColors.modeBotButtonDark;
 
+    final btnHeight = isLandscape ? 30.0 : 30.h;
+    final btnFontSize = isLandscape ? 11.0 : 10.5.sp;
+    final iconSize = isLandscape ? 13.0 : 13.r;
+    final btnPad = EdgeInsets.symmetric(horizontal: isLandscape ? 12.0 : 10.w);
+    final btnSpacing = isLandscape ? 8.0 : 6.w;
+
     return Container(
       width: double.infinity,
-      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 6.h),
+      padding: EdgeInsets.symmetric(
+        horizontal: isLandscape ? 12.0 : 10.w,
+        vertical: isLandscape ? 10.0 : 8.h,
+      ),
       decoration: BoxDecoration(
         color: isPaper ? AppColors.paperSurface : AppColors.topicEasyBg,
-        borderRadius: BorderRadius.circular(12.r),
+        borderRadius: BorderRadius.circular(isLandscape ? 12.0 : 12.r),
         border: Border.all(
           color: isPaper ? AppColors.paperBorder : AppColors.modeBotShadow,
           width: 1.2,
@@ -86,32 +97,34 @@ class ChallengeCreate extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Container(
-                width: 6.r,
-                height: 6.r,
+                width: isLandscape ? 8.0 : 8.r,
+                height: isLandscape ? 8.0 : 8.r,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   color: statusColor,
                 ),
               ),
-              SizedBox(width: 4.w),
+              SizedBox(width: isLandscape ? 6.0 : 6.w),
               AppText.c1(
                 'CHỜ ĐỐI THỦ VÀO...',
-                fontSize: 10.sp,
+                fontSize: isLandscape ? 11.5 : 11.sp,
                 fontWeight: FontWeight.w700,
                 color: statusColor,
               ),
             ],
           ),
 
-          SizedBox(height: 6.h),
+          SizedBox(height: isLandscape ? 8.0 : 8.h),
 
           // 2. Hàng 6 thẻ số phòng 3D chuẩn Web
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: digits.map((d) => _buildDigitBox(d, isPaper)).toList(),
+            children: digits
+                .map((d) => _buildDigitBox(d, isPaper, isLandscape))
+                .toList(),
           ),
 
-          SizedBox(height: 6.h),
+          SizedBox(height: isLandscape ? 10.0 : 8.h),
 
           // 3. Hàng 3 nút chuẩn mẫu Web: [CHÉP MÃ] [CHÉP LINK] [HỦY]
           Row(
@@ -123,13 +136,14 @@ class ChallengeCreate extends StatelessWidget {
                   text: 'CHÉP MÃ',
                   icon: Icon(
                     Icons.copy_rounded,
-                    size: 10.r,
+                    size: iconSize,
                     color: AppColors.paperTextDark,
                   ),
-                  height: 15.h,
-                  fontSize: 8.sp,
+                  height: btnHeight,
+                  fontSize: btnFontSize,
                   fontWeight: FontWeight.w700,
-                  padding: EdgeInsets.symmetric(horizontal: 8.w),
+                  padding: btnPad,
+                  borderRadius: BorderRadius.circular(isLandscape ? 8.0 : 8.r),
                   backgroundColor: AppColors.paperCardBg,
                   borderColor: AppColors.paperBorder,
                   extrusionColor: AppColors.paperExtrusion,
@@ -148,12 +162,13 @@ class ChallengeCreate extends StatelessWidget {
                   text: 'CHÉP MÃ',
                   icon: Icon(
                     Icons.copy_rounded,
-                    size: 10.r,
+                    size: iconSize,
                     color: AppColors.grayDark,
                   ),
-                  height: 15.h,
-                  fontSize: 8.sp,
-                  padding: EdgeInsets.symmetric(horizontal: 8.w),
+                  height: btnHeight,
+                  fontSize: btnFontSize,
+                  padding: btnPad,
+                  borderRadius: BorderRadius.circular(isLandscape ? 8.0 : 8.r),
                   extrusionHeight: 1.5,
                   onPressed: () {
                     Clipboard.setData(ClipboardData(text: code));
@@ -163,7 +178,7 @@ class ChallengeCreate extends StatelessWidget {
                     );
                   },
                 ),
-              SizedBox(width: 6.w),
+              SizedBox(width: btnSpacing),
 
               // Nút 2: Chép link
               if (isPaper)
@@ -171,13 +186,14 @@ class ChallengeCreate extends StatelessWidget {
                   text: 'CHÉP LINK',
                   icon: Icon(
                     Icons.link_rounded,
-                    size: 10.r,
+                    size: iconSize,
                     color: AppColors.paperTextDark,
                   ),
-                  height: 15.h,
-                  fontSize: 8.sp,
+                  height: btnHeight,
+                  fontSize: btnFontSize,
                   fontWeight: FontWeight.w700,
-                  padding: EdgeInsets.symmetric(horizontal: 8.w),
+                  padding: btnPad,
+                  borderRadius: BorderRadius.circular(isLandscape ? 8.0 : 8.r),
                   backgroundColor: AppColors.paperCardBg,
                   borderColor: AppColors.paperBorder,
                   extrusionColor: AppColors.paperExtrusion,
@@ -200,12 +216,13 @@ class ChallengeCreate extends StatelessWidget {
                   text: 'CHÉP LINK',
                   icon: Icon(
                     Icons.link_rounded,
-                    size: 10.r,
+                    size: iconSize,
                     color: AppColors.grayDark,
                   ),
-                  height: 15.h,
-                  fontSize: 8.sp,
-                  padding: EdgeInsets.symmetric(horizontal: 8.w),
+                  height: btnHeight,
+                  fontSize: btnFontSize,
+                  padding: btnPad,
+                  borderRadius: BorderRadius.circular(isLandscape ? 8.0 : 8.r),
                   extrusionHeight: 1.5,
                   onPressed: () {
                     Clipboard.setData(
@@ -219,25 +236,25 @@ class ChallengeCreate extends StatelessWidget {
                     );
                   },
                 ),
-              SizedBox(width: 6.w),
+              SizedBox(width: btnSpacing),
 
               // Nút 3: Hủy (dùng hệ màu dialogClose chuẩn từ AppColors)
               AppButton(
                 text: 'HỦY',
                 icon: Icon(
                   Icons.close_rounded,
-                  size: 10.r,
+                  size: iconSize,
                   color: AppColors.dialogCloseIcon,
                 ),
                 backgroundColor: AppColors.dialogCloseBg,
                 borderColor: AppColors.dialogCloseBorder,
                 extrusionColor: AppColors.dialogCloseExtrusion,
                 textColor: AppColors.dialogCloseIcon,
-                borderRadius: BorderRadius.circular(10.r),
-                height: 15.h,
-                fontSize: 8.sp,
+                borderRadius: BorderRadius.circular(isLandscape ? 8.0 : 8.r),
+                height: btnHeight,
+                fontSize: btnFontSize,
                 fontWeight: FontWeight.w700,
-                padding: EdgeInsets.symmetric(horizontal: 8.w),
+                padding: btnPad,
                 extrusionHeight: 1.5,
                 onPressed: onCancelRoom,
               ),
@@ -248,30 +265,34 @@ class ChallengeCreate extends StatelessWidget {
     );
   }
 
-  Widget _buildDigitBox(String digit, bool isPaper) {
+  Widget _buildDigitBox(String digit, bool isPaper, bool isLandscape) {
+    final boxWidth = isLandscape ? 44.0 : 40.w;
+    final boxHeight = isLandscape ? 48.0 : 46.h;
+    final fontSize = isLandscape ? 22.0 : 20.sp;
+
     return Container(
-      width: 30.w,
-      height: 15.h,
-      margin: EdgeInsets.symmetric(horizontal: 1.5.w),
+      width: boxWidth,
+      height: boxHeight,
+      margin: EdgeInsets.symmetric(horizontal: isLandscape ? 3.0 : 2.5.w),
       decoration: BoxDecoration(
         color: isPaper ? AppColors.paperCardBg : AppColors.white,
-        borderRadius: BorderRadius.circular(8.r),
+        borderRadius: BorderRadius.circular(isLandscape ? 10.0 : 9.r),
         border: Border.all(
           color: isPaper ? AppColors.paperBorder : AppColors.sky,
-          width: 1.4,
+          width: 1.5,
         ),
         boxShadow: [
           BoxShadow(
             color: isPaper ? AppColors.paperExtrusion : AppColors.skyDark,
-            offset: const Offset(0, 2),
+            offset: const Offset(0, 2.5),
           ),
         ],
       ),
       alignment: Alignment.center,
       child: AppText.t2(
         digit,
-        fontSize: 14.sp,
-        fontWeight: FontWeight.w700,
+        fontSize: fontSize,
+        fontWeight: FontWeight.w800,
         color: isPaper ? AppColors.paperTextDark : AppColors.skyDark,
       ),
     );

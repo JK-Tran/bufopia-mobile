@@ -19,22 +19,30 @@ class ChallengeJoin extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isPaper = context.select<AppBloc, bool>((b) => b.state.isPaperTheme);
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
+
+    final inputHeight = isLandscape ? 38.0 : 38.h;
+    final fontSize = isLandscape ? 12.5 : 12.sp;
+    final iconSize = isLandscape ? 13.0 : 13.r;
 
     return Row(
       children: [
         // Khung nhập mã phòng
         Expanded(
           child: Container(
-            height: 22.h,
-            padding: EdgeInsets.symmetric(horizontal: 8.w),
+            height: inputHeight,
+            padding: EdgeInsets.symmetric(
+              horizontal: isLandscape ? 12.0 : 12.w,
+            ),
             decoration: BoxDecoration(
               color: isPaper
                   ? AppColors.paperSurface
                   : AppColors.lightBackground,
-              borderRadius: BorderRadius.circular(6.r),
+              borderRadius: BorderRadius.circular(isLandscape ? 8.0 : 8.r),
               border: Border.all(
                 color: isPaper ? AppColors.paperBorder : AppColors.blueLight,
-                width: 1.1,
+                width: 1.2,
               ),
             ),
             alignment: Alignment.centerLeft,
@@ -42,14 +50,14 @@ class ChallengeJoin extends StatelessWidget {
               controller: controller,
               keyboardType: TextInputType.text,
               style: TextStyle(
-                fontSize: 10.sp,
+                fontSize: fontSize,
                 fontWeight: FontWeight.w700,
                 color: isPaper ? AppColors.paperTextDark : AppColors.grayDark,
               ),
               decoration: InputDecoration(
                 hintText: 'NHẬP 6 SỐ HOẶC LINK...',
                 hintStyle: TextStyle(
-                  fontSize: 10.sp,
+                  fontSize: fontSize,
                   fontWeight: FontWeight.w700,
                   color: isPaper
                       ? AppColors.paperTextMuted
@@ -64,7 +72,7 @@ class ChallengeJoin extends StatelessWidget {
           ),
         ),
 
-        SizedBox(width: 5.w),
+        SizedBox(width: isLandscape ? 8.0 : 8.w),
 
         // Nút chuẩn AppButton
         if (isPaper)
@@ -72,17 +80,21 @@ class ChallengeJoin extends StatelessWidget {
             text: 'VÀO',
             icon: Icon(
               Icons.arrow_forward_rounded,
-              size: 10.r,
+              size: iconSize,
               color: AppColors.white,
             ),
             iconAfter: true,
-            height: 22.h,
-            fontSize: 10.sp,
+            height: inputHeight,
+            fontSize: fontSize,
             fontWeight: FontWeight.w700,
-            padding: EdgeInsets.symmetric(horizontal: 10.w),
+            padding: EdgeInsets.symmetric(
+              horizontal: isLandscape ? 16.0 : 14.w,
+            ),
+            borderRadius: BorderRadius.circular(isLandscape ? 8.0 : 8.r),
             backgroundColor: AppColors.paperGreen,
             borderColor: AppColors.paperGreenBorder,
             extrusionColor: AppColors.paperGreenExtrusion,
+            extrusionHeight: 2,
             onPressed: onJoin,
           )
         else
@@ -90,13 +102,17 @@ class ChallengeJoin extends StatelessWidget {
             text: 'VÀO',
             icon: Icon(
               Icons.arrow_forward_rounded,
-              size: 10.r,
+              size: iconSize,
               color: AppColors.white,
             ),
             iconAfter: true,
-            height: 22.h,
-            fontSize: 10.sp,
-            padding: EdgeInsets.symmetric(horizontal: 10.w),
+            height: inputHeight,
+            fontSize: fontSize,
+            padding: EdgeInsets.symmetric(
+              horizontal: isLandscape ? 16.0 : 14.w,
+            ),
+            borderRadius: BorderRadius.circular(isLandscape ? 8.0 : 8.r),
+            extrusionHeight: 2,
             onPressed: onJoin,
           ),
       ],

@@ -18,6 +18,7 @@ import 'package:shared_preferences/shared_preferences.dart' as _i460;
 import '../../core/base/default_bloc.dart' as _i192;
 import '../../features/app/bloc/app_bloc.dart' as _i744;
 import '../../features/auth/data/datasources/auth_data_source.dart' as _i970;
+import '../../features/auth/data/mapper/account_import_mapper.dart' as _i344;
 import '../../features/auth/data/mapper/user_data_mapper.dart' as _i702;
 import '../../features/auth/data/repositories/auth_repository_impl.dart'
     as _i153;
@@ -26,8 +27,12 @@ import '../../features/auth/domain/usecases/clear_user_cache_use_case.dart'
     as _i887;
 import '../../features/auth/domain/usecases/get_cached_user_use_case.dart'
     as _i481;
+import '../../features/auth/domain/usecases/get_socket_ticket_use_case.dart'
+    as _i59;
 import '../../features/auth/domain/usecases/get_user_info_use_case.dart'
     as _i923;
+import '../../features/auth/domain/usecases/import_account_use_case.dart'
+    as _i870;
 import '../../features/auth/domain/usecases/save_current_user_use_case.dart'
     as _i546;
 import '../../features/auth/domain/usecases/update_user_profile_use_case.dart'
@@ -110,6 +115,49 @@ import '../../features/vocabulary/domain/usecases/submit_word_profiles_use_case.
     as _i230;
 import '../../features/vocabulary/presentation/bloc/vocabulary_bloc.dart'
     as _i451;
+import '../../features/word_chain/data/datasources/word_chain_data_source.dart'
+    as _i60;
+import '../../features/word_chain/data/mapper/game_state_data_mapper.dart'
+    as _i673;
+import '../../features/word_chain/data/mapper/match_record_data_mapper.dart'
+    as _i64;
+import '../../features/word_chain/data/mapper/reward_data_mapper.dart' as _i31;
+import '../../features/word_chain/data/mapper/session_data_mapper.dart' as _i26;
+import '../../features/word_chain/data/mapper/turn_message_data_mapper.dart'
+    as _i690;
+import '../../features/word_chain/data/mapper/word_data_mapper.dart' as _i189;
+import '../../features/word_chain/data/repositories/word_chain_repository_impl.dart'
+    as _i607;
+import '../../features/word_chain/domain/repositories/word_chain_repository.dart'
+    as _i571;
+import '../../features/word_chain/domain/usecases/connect_chain_matchmake_use_case.dart'
+    as _i440;
+import '../../features/word_chain/domain/usecases/connect_chain_room_use_case.dart'
+    as _i434;
+import '../../features/word_chain/domain/usecases/disconnect_chain_use_case.dart'
+    as _i392;
+import '../../features/word_chain/domain/usecases/get_bot_word_use_case.dart'
+    as _i16;
+import '../../features/word_chain/domain/usecases/get_word_use_case.dart'
+    as _i219;
+import '../../features/word_chain/domain/usecases/observe_chain_game_use_case.dart'
+    as _i966;
+import '../../features/word_chain/domain/usecases/send_chain_away_use_case.dart'
+    as _i881;
+import '../../features/word_chain/domain/usecases/send_chain_chat_use_case.dart'
+    as _i235;
+import '../../features/word_chain/domain/usecases/send_chain_rematch_use_case.dart'
+    as _i443;
+import '../../features/word_chain/domain/usecases/send_chain_surrender_use_case.dart'
+    as _i902;
+import '../../features/word_chain/domain/usecases/send_chain_word_use_case.dart'
+    as _i290;
+import '../../features/word_chain/domain/usecases/submit_practice_word_use_case.dart'
+    as _i964;
+import '../../features/word_chain/domain/usecases/submit_start_session_use_case.dart'
+    as _i975;
+import '../../features/word_chain/presentation/bloc/word_chain_bloc.dart'
+    as _i7;
 import '../helper/app_info.dart' as _i221;
 import '../infrastructure/data/api/client/auth_app_server_api_client.dart'
     as _i695;
@@ -136,10 +184,12 @@ import '../infrastructure/infrastructure.dart' as _i564;
 import '../services/audio/app_audio_service.dart' as _i522;
 import '../services/device/device_auth_service.dart' as _i627;
 import '../services/device/device_uid_service.dart' as _i101;
+import '../services/firebase/firebase_auth_service.dart' as _i491;
 import '../services/local_storage/app_preferences.dart' as _i160;
 import '../services/local_storage/app_preferences_impl.dart' as _i423;
 import '../services/network/network_service.dart' as _i408;
-import '../services/socket/socket_service.dart' as _i717;
+import '../services/socket/duel_socket_service.dart' as _i61;
+import '../services/socket/word_chain_socket_service.dart' as _i981;
 import 'register_module.dart' as _i291;
 
 extension GetItInjectableX on _i174.GetIt {
@@ -175,6 +225,8 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i674.WordProfileDataMapper>(
       () => const _i674.WordProfileDataMapper(),
     );
+    gh.factory<_i26.SessionDataMapper>(() => const _i26.SessionDataMapper());
+    gh.factory<_i189.WordDataMapper>(() => const _i189.WordDataMapper());
     await gh.factoryAsync<_i460.SharedPreferences>(
       () => registerModule.prefs,
       preResolve: true,
@@ -202,6 +254,9 @@ extension GetItInjectableX on _i174.GetIt {
       dispose: (i) => i.dispose(),
     );
     gh.lazySingleton<_i522.AppAudioService>(() => _i522.AppAudioServiceImpl());
+    gh.lazySingleton<_i491.FirebaseAuthService>(
+      () => _i491.FirebaseAuthServiceImpl(),
+    );
     gh.factory<_i32.VocabularyDataMapper>(
       () => _i32.VocabularyDataMapper(
         gh<_i612.TopicDataMapper>(),
@@ -220,8 +275,17 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i533.AccessTokenInterceptor>(
       () => _i533.AccessTokenInterceptor(gh<_i160.AppPreferences>()),
     );
+    gh.factory<_i690.TurnMessageDataMapper>(
+      () => _i690.TurnMessageDataMapper(gh<_i189.WordDataMapper>()),
+    );
+    gh.factory<_i344.AccountImportMapper>(
+      () => _i344.AccountImportMapper(gh<_i702.UserDataMapper>()),
+    );
     gh.factory<_i639.BattleRewardDataMapper>(
       () => _i639.BattleRewardDataMapper(gh<_i702.UserDataMapper>()),
+    );
+    gh.factory<_i31.RewardDataMapper>(
+      () => _i31.RewardDataMapper(gh<_i702.UserDataMapper>()),
     );
     gh.factory<_i477.LeaderboardDataMapper>(
       () =>
@@ -232,6 +296,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i202.HomeBloc>(
       () => _i202.HomeBloc(gh<_i522.AppAudioService>()),
+    );
+    gh.factory<_i673.GameStateDataMapper>(
+      () => _i673.GameStateDataMapper(gh<_i690.TurnMessageDataMapper>()),
     );
     gh.lazySingleton<_i627.DeviceAuthService>(
       () => _i627.DeviceAuthServiceImpl(
@@ -245,13 +312,14 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i522.AppAudioService>(),
       ),
     );
-    gh.lazySingleton<_i717.SocketService>(
-      () => _i717.SocketServiceImpl(gh<_i627.DeviceAuthService>()),
+    gh.factory<_i64.MatchRecordDataMapper>(
+      () => _i64.MatchRecordDataMapper(gh<_i673.GameStateDataMapper>()),
     );
     gh.factory<_i34.HeaderInterceptor>(
       () => _i34.HeaderInterceptor(
         gh<_i221.AppInfo>(),
         gh<_i627.DeviceAuthService>(),
+        gh<_i491.FirebaseAuthService>(),
       ),
     );
     gh.lazySingleton<_i585.RefreshTokenApiClient>(
@@ -281,18 +349,21 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i534.VocabularyDataSource>(
       () => _i534.VocabularyDataSource(gh<_i564.NoneAuthAppServerApiClient>()),
     );
-    gh.lazySingleton<_i787.AuthRepository>(
-      () => _i153.AuthRepositoryImpl(
-        gh<_i970.AuthDataSource>(),
-        gh<_i702.UserDataMapper>(),
-        gh<_i160.AppPreferences>(),
-      ),
+    gh.lazySingleton<_i60.WordChainDataSource>(
+      () => _i60.WordChainDataSource(gh<_i564.NoneAuthAppServerApiClient>()),
     );
     gh.lazySingleton<_i695.AuthAppServerApiClient>(
       () => _i695.AuthAppServerApiClient(
         gh<_i564.HeaderInterceptor>(),
         gh<_i564.AccessTokenInterceptor>(),
         gh<_i564.RefreshTokenInterceptor>(),
+      ),
+    );
+    gh.lazySingleton<_i61.DuelSocketService>(
+      () => _i61.DuelSocketServiceImpl(
+        gh<_i627.DeviceAuthService>(),
+        gh<_i970.AuthDataSource>(),
+        gh<_i491.FirebaseAuthService>(),
       ),
     );
     gh.lazySingleton<_i795.VocabularyRepository>(
@@ -311,6 +382,14 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i694.ChallengeRoomDataSource>(),
         gh<_i1003.SocialStateDataMapper>(),
         gh<_i180.RoomInfoDataMapper>(),
+      ),
+    );
+    gh.lazySingleton<_i787.AuthRepository>(
+      () => _i153.AuthRepositoryImpl(
+        gh<_i970.AuthDataSource>(),
+        gh<_i702.UserDataMapper>(),
+        gh<_i344.AccountImportMapper>(),
+        gh<_i160.AppPreferences>(),
       ),
     );
     gh.lazySingleton<_i655.LeaderboardRepository>(
@@ -358,14 +437,29 @@ extension GetItInjectableX on _i174.GetIt {
       () =>
           _i468.SubmitSocialInviteUseCase(gh<_i629.ChallengeRoomRepository>()),
     );
+    gh.lazySingleton<_i981.WordChainSocketService>(
+      () => _i981.WordChainSocketServiceImpl(
+        gh<_i627.DeviceAuthService>(),
+        gh<_i970.AuthDataSource>(),
+        gh<_i491.FirebaseAuthService>(),
+        gh<_i673.GameStateDataMapper>(),
+        gh<_i31.RewardDataMapper>(),
+      ),
+    );
     gh.lazySingleton<_i887.ClearUserCacheUseCase>(
       () => _i887.ClearUserCacheUseCase(gh<_i787.AuthRepository>()),
     );
     gh.lazySingleton<_i481.GetCachedUserUseCase>(
       () => _i481.GetCachedUserUseCase(gh<_i787.AuthRepository>()),
     );
+    gh.lazySingleton<_i59.GetSocketTicketUseCase>(
+      () => _i59.GetSocketTicketUseCase(gh<_i787.AuthRepository>()),
+    );
     gh.lazySingleton<_i923.GetUserInfoUseCase>(
       () => _i923.GetUserInfoUseCase(gh<_i787.AuthRepository>()),
+    );
+    gh.lazySingleton<_i870.ImportAccountUseCase>(
+      () => _i870.ImportAccountUseCase(gh<_i787.AuthRepository>()),
     );
     gh.lazySingleton<_i546.SaveCurrentUserUseCase>(
       () => _i546.SaveCurrentUserUseCase(gh<_i787.AuthRepository>()),
@@ -382,8 +476,18 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i97.GetRoomInfoUseCase>(),
       ),
     );
-    gh.lazySingleton<_i876.GetLeaderboardUseCase>(
-      () => _i876.GetLeaderboardUseCase(gh<_i655.LeaderboardRepository>()),
+    gh.factory<_i451.VocabularyBloc>(
+      () => _i451.VocabularyBloc(
+        gh<_i367.GetBattleDeckUseCase>(),
+        gh<_i94.SubmitMatchResultUseCase>(),
+        gh<_i783.SubmitBattleRewardUseCase>(),
+        gh<_i230.SubmitWordProfilesUseCase>(),
+        gh<_i101.DeviceUidService>(),
+        gh<_i481.GetCachedUserUseCase>(),
+        gh<_i491.FirebaseAuthService>(),
+        gh<_i61.DuelSocketService>(),
+        gh<_i952.BattleQuestionDataMapper>(),
+      ),
     );
     gh.lazySingleton<_i797.AuthBloc>(
       () => _i797.AuthBloc(
@@ -393,21 +497,80 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i546.SaveCurrentUserUseCase>(),
         gh<_i887.ClearUserCacheUseCase>(),
         gh<_i101.DeviceUidService>(),
+        gh<_i491.FirebaseAuthService>(),
+        gh<_i870.ImportAccountUseCase>(),
         gh<_i408.NetworkService>(),
+      ),
+    );
+    gh.lazySingleton<_i876.GetLeaderboardUseCase>(
+      () => _i876.GetLeaderboardUseCase(gh<_i655.LeaderboardRepository>()),
+    );
+    gh.lazySingleton<_i571.WordChainRepository>(
+      () => _i607.WordChainRepositoryImpl(
+        gh<_i60.WordChainDataSource>(),
+        gh<_i189.WordDataMapper>(),
+        gh<_i26.SessionDataMapper>(),
+        gh<_i31.RewardDataMapper>(),
+        gh<_i981.WordChainSocketService>(),
       ),
     );
     gh.factory<_i957.LeaderboardBloc>(
       () => _i957.LeaderboardBloc(gh<_i876.GetLeaderboardUseCase>()),
     );
-    gh.factory<_i451.VocabularyBloc>(
-      () => _i451.VocabularyBloc(
-        gh<_i367.GetBattleDeckUseCase>(),
-        gh<_i94.SubmitMatchResultUseCase>(),
-        gh<_i783.SubmitBattleRewardUseCase>(),
-        gh<_i230.SubmitWordProfilesUseCase>(),
-        gh<_i101.DeviceUidService>(),
-        gh<_i717.SocketService>(),
-        gh<_i952.BattleQuestionDataMapper>(),
+    gh.lazySingleton<_i440.ConnectChainMatchmakeUseCase>(
+      () => _i440.ConnectChainMatchmakeUseCase(gh<_i571.WordChainRepository>()),
+    );
+    gh.lazySingleton<_i434.ConnectChainRoomUseCase>(
+      () => _i434.ConnectChainRoomUseCase(gh<_i571.WordChainRepository>()),
+    );
+    gh.lazySingleton<_i392.DisconnectChainUseCase>(
+      () => _i392.DisconnectChainUseCase(gh<_i571.WordChainRepository>()),
+    );
+    gh.lazySingleton<_i16.GetBotWordUseCase>(
+      () => _i16.GetBotWordUseCase(gh<_i571.WordChainRepository>()),
+    );
+    gh.lazySingleton<_i219.GetWordUseCase>(
+      () => _i219.GetWordUseCase(gh<_i571.WordChainRepository>()),
+    );
+    gh.lazySingleton<_i966.ObserveChainGameUseCase>(
+      () => _i966.ObserveChainGameUseCase(gh<_i571.WordChainRepository>()),
+    );
+    gh.lazySingleton<_i881.SendChainAwayUseCase>(
+      () => _i881.SendChainAwayUseCase(gh<_i571.WordChainRepository>()),
+    );
+    gh.lazySingleton<_i235.SendChainChatUseCase>(
+      () => _i235.SendChainChatUseCase(gh<_i571.WordChainRepository>()),
+    );
+    gh.lazySingleton<_i443.SendChainRematchUseCase>(
+      () => _i443.SendChainRematchUseCase(gh<_i571.WordChainRepository>()),
+    );
+    gh.lazySingleton<_i902.SendChainSurrenderUseCase>(
+      () => _i902.SendChainSurrenderUseCase(gh<_i571.WordChainRepository>()),
+    );
+    gh.lazySingleton<_i290.SendChainWordUseCase>(
+      () => _i290.SendChainWordUseCase(gh<_i571.WordChainRepository>()),
+    );
+    gh.lazySingleton<_i964.SubmitPracticeWordUseCase>(
+      () => _i964.SubmitPracticeWordUseCase(gh<_i571.WordChainRepository>()),
+    );
+    gh.lazySingleton<_i975.SubmitStartSessionUseCase>(
+      () => _i975.SubmitStartSessionUseCase(gh<_i571.WordChainRepository>()),
+    );
+    gh.factory<_i7.WordChainBloc>(
+      () => _i7.WordChainBloc(
+        gh<_i975.SubmitStartSessionUseCase>(),
+        gh<_i964.SubmitPracticeWordUseCase>(),
+        gh<_i16.GetBotWordUseCase>(),
+        gh<_i219.GetWordUseCase>(),
+        gh<_i440.ConnectChainMatchmakeUseCase>(),
+        gh<_i434.ConnectChainRoomUseCase>(),
+        gh<_i290.SendChainWordUseCase>(),
+        gh<_i235.SendChainChatUseCase>(),
+        gh<_i881.SendChainAwayUseCase>(),
+        gh<_i902.SendChainSurrenderUseCase>(),
+        gh<_i443.SendChainRematchUseCase>(),
+        gh<_i392.DisconnectChainUseCase>(),
+        gh<_i966.ObserveChainGameUseCase>(),
       ),
     );
     return this;

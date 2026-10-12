@@ -15,4 +15,5 @@ export 'app_paper_clip.dart';
 export 'app_pill_switcher.dart';
 export 'app_snack_bar.dart';
 export 'app_streak_badge.dart';
+export 'duel_versus_result_card.dart';
 export 'loading_overlay.dart';

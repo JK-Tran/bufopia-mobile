@@ -7,5 +7,7 @@ abstract class AuthState with _$AuthState {
     @Default(false) bool isLoading,
     User? currentUser,
     String? errorMessage,
+    AccountConflict? conflict,
+    String? pendingIdToken,
   }) = _AuthState;
 }

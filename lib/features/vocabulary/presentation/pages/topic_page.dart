@@ -3,8 +3,10 @@ import 'package:bufopia/components/app_snack_bar.dart';
 import 'package:bufopia/core/router/app_router.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
+import 'package:bufopia/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:bufopia/features/challenge/presentation/widgets/dialog/challenge_room_dialog.dart';
 import 'package:bufopia/features/home/presentation/widgets/home_header/dialog/home_settings_dialog.dart';
+import 'package:bufopia/features/home/presentation/widgets/home_header/dialog/player_edit_name_dialog.dart';
 import 'package:bufopia/features/vocabulary/domain/entities/topic.dart';
 import 'package:bufopia/features/vocabulary/presentation/widgets/dialog/vocabulary_matchmaking_dialog.dart';
 import 'package:bufopia/features/vocabulary/presentation/widgets/topic/dialog/topic_mode_dialog.dart';
@@ -65,7 +67,66 @@ class _TopicPageState extends State<TopicPage> {
     );
   }
 
-  void _startOnlineMatch({required String topic}) {
+  bool _isNameValid(String? name) {
+    if (name == null) return false;
+    final trimmed = name.trim();
+    if (trimmed.length < 2 || trimmed.length > 25) return false;
+    final lower = trimmed.toLowerCase();
+    const invalidNames = [
+      'alex',
+      'player',
+      'bạn',
+      'user',
+      'guest',
+      'người chơi',
+    ];
+    for (final invalid in invalidNames) {
+      if (lower == invalid || lower.startsWith('$invalid ')) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  Future<bool> _ensureValidPlayerName() async {
+    final authState = context.read<AuthBloc>().state;
+    final currentName = authState.currentUser?.displayName.trim();
+
+    if (_isNameValid(currentName)) {
+      return true;
+    }
+
+    AppSnackBar.showWarning(
+      context,
+      'Vui lòng đặt tên hiển thị (2–25 ký tự) trước khi tham gia đấu Online!',
+    );
+
+    final newName = await PlayerEditNameDialog.show(
+      context,
+      initialName: currentName ?? '',
+    );
+
+    if (!mounted) return false;
+
+    if (newName != null && _isNameValid(newName.trim())) {
+      context.read<AuthBloc>().add(
+        AuthEvent.updateProfile(displayName: newName.trim()),
+      );
+      return true;
+    }
+
+    AppSnackBar.showWarning(
+      context,
+      'Tên không hợp lệ. Vui lòng đặt từ 2–25 ký'
+      ' tự và không dùng tên mặc định.',
+    );
+    return false;
+  }
+
+  Future<void> _startOnlineMatch({required String topic}) async {
+    final hasValidName = await _ensureValidPlayerName();
+    if (!hasValidName || !mounted) return;
+
     VocabularyMatchmakingDialog.show(
       context,
       topic: topic,
@@ -88,7 +149,10 @@ class _TopicPageState extends State<TopicPage> {
     );
   }
 
-  void _startIdChallenge({required String topic}) {
+  Future<void> _startIdChallenge({required String topic}) async {
+    final hasValidName = await _ensureValidPlayerName();
+    if (!hasValidName || !mounted) return;
+
     ChallengeRoomDialog.show(
       context,
       onEnterRoom: (code) {

@@ -21,6 +21,8 @@ class ChallengeTabs extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isPaper = context.select<AppBloc, bool>((b) => b.state.isPaperTheme);
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
     final isJoin = currentTab == ChallengeRoomTab.join;
 
     final activeColor = isPaper ? AppColors.paperTextDark : AppColors.grayDark;
@@ -28,12 +30,16 @@ class ChallengeTabs extends StatelessWidget {
         ? AppColors.paperTextMuted
         : AppColors.grayMedium;
 
+    final tabHeight = isLandscape ? 36.0 : 36.h;
+    final fontSize = isLandscape ? 12.0 : 12.sp;
+    final iconSize = isLandscape ? 14.0 : 14.r;
+
     return Container(
-      height: 22.h,
-      padding: EdgeInsets.all(2.r),
+      height: tabHeight,
+      padding: EdgeInsets.all(isLandscape ? 3.0 : 3.r),
       decoration: BoxDecoration(
         color: isPaper ? AppColors.paperSurface : AppColors.lightBackground,
-        borderRadius: BorderRadius.circular(6.r),
+        borderRadius: BorderRadius.circular(isLandscape ? 10.0 : 10.r),
         border: isPaper ? Border.all(color: AppColors.paperBorder) : null,
       ),
       child: Stack(
@@ -49,24 +55,24 @@ class ChallengeTabs extends StatelessWidget {
               child: Container(
                 decoration: BoxDecoration(
                   color: isPaper ? AppColors.paperCardBg : AppColors.white,
-                  borderRadius: BorderRadius.circular(5.r),
+                  borderRadius: BorderRadius.circular(isLandscape ? 8.0 : 8.r),
                   border: Border.all(
                     color: isPaper
                         ? AppColors.paperBorder
                         : AppColors.blueLight,
                   ),
                   boxShadow: isPaper
-                      ? [
+                      ? const [
                           BoxShadow(
                             color: AppColors.paperExtrusion,
-                            offset: Offset(0, 1.h),
+                            offset: Offset(0, 1.5),
                           ),
                         ]
                       : [
                           BoxShadow(
-                            color: AppColors.blue.withValues(alpha: 0.08),
-                            blurRadius: 2.r,
-                            offset: Offset(0, 1.h),
+                            color: AppColors.blue.withValues(alpha: 0.12),
+                            blurRadius: 3,
+                            offset: const Offset(0, 1.5),
                           ),
                         ],
                 ),
@@ -90,14 +96,14 @@ class ChallengeTabs extends StatelessWidget {
                           angle: 0.25,
                           child: Icon(
                             Icons.colorize_rounded,
-                            size: 10.r,
+                            size: iconSize,
                             color: isJoin ? activeColor : inactiveColor,
                           ),
                         ),
-                        SizedBox(width: 4.w),
+                        SizedBox(width: isLandscape ? 6.0 : 6.w),
                         AppText.b2(
                           'NHẬP MÃ',
-                          fontSize: 10.sp,
+                          fontSize: fontSize,
                           fontWeight: FontWeight.w700,
                           color: isJoin ? activeColor : inactiveColor,
                         ),
@@ -118,13 +124,13 @@ class ChallengeTabs extends StatelessWidget {
                       children: [
                         Icon(
                           Icons.sensors_rounded,
-                          size: 10.r,
+                          size: iconSize,
                           color: !isJoin ? activeColor : inactiveColor,
                         ),
-                        SizedBox(width: 4.w),
+                        SizedBox(width: isLandscape ? 6.0 : 6.w),
                         AppText.b2(
                           'TẠO PHÒNG',
-                          fontSize: 10.sp,
+                          fontSize: fontSize,
                           fontWeight: FontWeight.w700,
                           color: !isJoin ? activeColor : inactiveColor,
                         ),

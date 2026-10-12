@@ -1,4 +1,5 @@
 import 'package:bufopia/features/vocabulary/presentation/widgets/vocabulary_answer_item.dart';
+import 'package:bufopia/features/vocabulary/presentation/widgets/vocabulary_cooldown_bagde.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -11,6 +12,8 @@ class LandscapeAnswersGrid extends StatelessWidget {
     required this.getOptionStatus,
     required this.onSelectAnswer,
     super.key,
+    this.cooldownSeconds = 0,
+    this.isPaper = false,
   });
 
   final List<String> options;
@@ -18,6 +21,8 @@ class LandscapeAnswersGrid extends StatelessWidget {
   final bool isRoundLocked;
   final VocabularyAnswerStatus Function(int index, String word) getOptionStatus;
   final void Function(String word) onSelectAnswer;
+  final int cooldownSeconds;
+  final bool isPaper;
 
   @override
   Widget build(BuildContext context) {
@@ -34,76 +39,100 @@ class LandscapeAnswersGrid extends StatelessWidget {
     final status2 = getOptionStatus(2, options[2]);
     final status3 = getOptionStatus(3, options[3]);
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
+    final isLockedByCooldown = cooldownSeconds > 0;
+
+    return Stack(
+      clipBehavior: Clip.none,
+      alignment: Alignment.topCenter,
       children: [
-        Row(
+        Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
-            Expanded(
-              child: SizedBox(
-                height: itemHeight,
-                child: VocabularyAnswerItem(
-                  key: ValueKey('p${isPlayer1 ? 1 : 2}_0_${options[0]}'),
-                  text: options[0],
-                  isPlayer1: isPlayer1,
-                  status: status0,
-                  isDisabled:
-                      isRoundLocked || status0 == VocabularyAnswerStatus.wrong,
-                  onTap: () => onSelectAnswer(options[0]),
+            Row(
+              children: [
+                Expanded(
+                  child: SizedBox(
+                    height: itemHeight,
+                    child: VocabularyAnswerItem(
+                      key: ValueKey('p${isPlayer1 ? 1 : 2}_0_${options[0]}'),
+                      text: options[0],
+                      isPlayer1: isPlayer1,
+                      status: status0,
+                      isDisabled:
+                          isRoundLocked ||
+                          status0 == VocabularyAnswerStatus.wrong ||
+                          isLockedByCooldown,
+                      onTap: () => onSelectAnswer(options[0]),
+                    ),
+                  ),
                 ),
-              ),
+                SizedBox(width: colSpacing),
+                Expanded(
+                  child: SizedBox(
+                    height: itemHeight,
+                    child: VocabularyAnswerItem(
+                      key: ValueKey('p${isPlayer1 ? 1 : 2}_1_${options[1]}'),
+                      text: options[1],
+                      isPlayer1: isPlayer1,
+                      status: status1,
+                      isDisabled:
+                          isRoundLocked ||
+                          status1 == VocabularyAnswerStatus.wrong ||
+                          isLockedByCooldown,
+                      onTap: () => onSelectAnswer(options[1]),
+                    ),
+                  ),
+                ),
+              ],
             ),
-            SizedBox(width: colSpacing),
-            Expanded(
-              child: SizedBox(
-                height: itemHeight,
-                child: VocabularyAnswerItem(
-                  key: ValueKey('p${isPlayer1 ? 1 : 2}_1_${options[1]}'),
-                  text: options[1],
-                  isPlayer1: isPlayer1,
-                  status: status1,
-                  isDisabled:
-                      isRoundLocked || status1 == VocabularyAnswerStatus.wrong,
-                  onTap: () => onSelectAnswer(options[1]),
+            SizedBox(height: rowSpacing),
+            Row(
+              children: [
+                Expanded(
+                  child: SizedBox(
+                    height: itemHeight,
+                    child: VocabularyAnswerItem(
+                      key: ValueKey('p${isPlayer1 ? 1 : 2}_2_${options[2]}'),
+                      text: options[2],
+                      isPlayer1: isPlayer1,
+                      status: status2,
+                      isDisabled:
+                          isRoundLocked ||
+                          status2 == VocabularyAnswerStatus.wrong ||
+                          isLockedByCooldown,
+                      onTap: () => onSelectAnswer(options[2]),
+                    ),
+                  ),
                 ),
-              ),
+                SizedBox(width: colSpacing),
+                Expanded(
+                  child: SizedBox(
+                    height: itemHeight,
+                    child: VocabularyAnswerItem(
+                      key: ValueKey('p${isPlayer1 ? 1 : 2}_3_${options[3]}'),
+                      text: options[3],
+                      isPlayer1: isPlayer1,
+                      status: status3,
+                      isDisabled:
+                          isRoundLocked ||
+                          status3 == VocabularyAnswerStatus.wrong ||
+                          isLockedByCooldown,
+                      onTap: () => onSelectAnswer(options[3]),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ],
         ),
-        SizedBox(height: rowSpacing),
-        Row(
-          children: [
-            Expanded(
-              child: SizedBox(
-                height: itemHeight,
-                child: VocabularyAnswerItem(
-                  key: ValueKey('p${isPlayer1 ? 1 : 2}_2_${options[2]}'),
-                  text: options[2],
-                  isPlayer1: isPlayer1,
-                  status: status2,
-                  isDisabled:
-                      isRoundLocked || status2 == VocabularyAnswerStatus.wrong,
-                  onTap: () => onSelectAnswer(options[2]),
-                ),
-              ),
+        if (cooldownSeconds > 0)
+          Positioned(
+            top: -12,
+            child: VocabularyCooldownBagde(
+              seconds: cooldownSeconds,
+              isPaper: isPaper,
             ),
-            SizedBox(width: colSpacing),
-            Expanded(
-              child: SizedBox(
-                height: itemHeight,
-                child: VocabularyAnswerItem(
-                  key: ValueKey('p${isPlayer1 ? 1 : 2}_3_${options[3]}'),
-                  text: options[3],
-                  isPlayer1: isPlayer1,
-                  status: status3,
-                  isDisabled:
-                      isRoundLocked || status3 == VocabularyAnswerStatus.wrong,
-                  onTap: () => onSelectAnswer(options[3]),
-                ),
-              ),
-            ),
-          ],
-        ),
+          ),
       ],
     );
   }

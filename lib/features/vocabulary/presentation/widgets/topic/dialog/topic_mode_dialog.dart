@@ -264,6 +264,3 @@ class TopicModeDialog extends StatelessWidget {
     );
   }
 }
-
-/// Alias để tương thích ngược
-typedef HomeModeDialog = TopicModeDialog;

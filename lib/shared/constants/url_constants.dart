@@ -47,43 +47,4 @@ class UrlConstants {
         return 'wss://word-duel-worker.lvthanh-work.workers.dev/ws';
     }
   }
-
-  static String matchmakeWsUrl({
-    required String uid,
-    required String token,
-    String topic = 'auto',
-    String? name,
-    String? avatar,
-  }) {
-    final query = <String, String>{
-      'uid': uid,
-      'token': token,
-      'topic': topic,
-      if (name != null && name.isNotEmpty) 'name': name,
-      if (avatar != null && avatar.isNotEmpty) 'avatar': avatar,
-    };
-    final uri = Uri.parse('$webSocketBaseUrl/matchmake').replace(
-      queryParameters: query,
-    );
-    return uri.toString();
-  }
-
-  static String roomWsUrl({
-    required String roomCode,
-    required String uid,
-    required String token,
-    String? name,
-    String? avatar,
-  }) {
-    final query = <String, String>{
-      'uid': uid,
-      'token': token,
-      if (name != null && name.isNotEmpty) 'name': name,
-      if (avatar != null && avatar.isNotEmpty) 'avatar': avatar,
-    };
-    final uri = Uri.parse('$webSocketBaseUrl/room/$roomCode').replace(
-      queryParameters: query,
-    );
-    return uri.toString();
-  }
 }

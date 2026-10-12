@@ -22,7 +22,6 @@ class TopicGrid extends StatelessWidget {
   Widget build(BuildContext context) {
     return GridView.builder(
       physics: const BouncingScrollPhysics(),
-      clipBehavior: Clip.none,
       padding: EdgeInsets.only(top: 10.h, bottom: 24.h),
       itemCount: topics.length,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(

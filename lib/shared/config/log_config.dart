@@ -7,25 +7,25 @@ class LogConfig {
   static const bool isPrettyJson = kDebugMode;
 
   /// bloc observer
-  static const logOnBlocChange = false;
-  static const logOnBlocCreate = false;
-  static const logOnBlocClose = false;
-  static const logOnBlocError = false;
+  static const bool logOnBlocChange = false;
+  static const bool logOnBlocCreate = false;
+  static const bool logOnBlocClose = false;
+  static const bool logOnBlocError = kDebugMode;
   static const bool logOnBlocEvent = kDebugMode;
-  static const logOnBlocTransition = false;
+  static const bool logOnBlocTransition = false;
 
   /// navigator observer
-  static const bool enableNavigatorObserverLog = kDebugMode;
+  static const bool enableNavigatorObserverLog = false;
 
   /// disposeBag
-  static const enableDisposeBagLog = false;
+  static const bool enableDisposeBagLog = false;
 
   /// stream event log
-  static const logOnStreamListen = false;
-  static const logOnStreamData = false;
-  static const logOnStreamError = false;
-  static const logOnStreamDone = false;
-  static const logOnStreamCancel = false;
+  static const bool logOnStreamListen = false;
+  static const bool logOnStreamData = false;
+  static const bool logOnStreamError = false;
+  static const bool logOnStreamDone = false;
+  static const bool logOnStreamCancel = false;
 
   /// log interceptor
   static const bool enableLogInterceptor = kDebugMode;
@@ -34,7 +34,7 @@ class LogConfig {
   static const bool enableLogErrorResponse = kDebugMode;
 
   /// enable log usecase
-  static const bool enableLogUseCaseInput = kDebugMode;
-  static const enableLogUseCaseOutput = false;
+  static const bool enableLogUseCaseInput = false;
+  static const bool enableLogUseCaseOutput = false;
   static const bool enableLogUseCaseError = kDebugMode;
 }
