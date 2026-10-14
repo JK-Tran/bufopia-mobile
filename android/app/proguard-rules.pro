@@ -18,3 +18,9 @@
 
 # Play Core (Deferred Components referenced by Flutter embedding)
 -dontwarn com.google.android.play.core.**
+
+# Google Play Services & Google Sign-In / Credential Manager
+-dontwarn com.google.android.gms.**
+-keep class com.google.android.gms.** { *; }
+-dontwarn androidx.credentials.**
+-keep class androidx.credentials.** { *; }

@@ -27,6 +27,7 @@ void main() {
       sl.registerFactory<NetworkService>(() {
         final service = MockNetworkService();
         when(() => service.isConnected).thenAnswer((_) async => true);
+        when(() => service.isConnectedFast).thenReturn(true);
         when(
           () => service.onConnectivityChanged,
         ).thenAnswer((_) => const Stream.empty());
