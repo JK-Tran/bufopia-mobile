@@ -150,13 +150,17 @@ class _AppNetworkBannerState extends State<AppNetworkBanner>
                         color: AppColors.white,
                       ),
                       SizedBox(width: 6.w),
-                      AppText.c1(
-                        _isOnline
-                            ? 'Đã khôi phục kết nối Internet!'
-                            : 'Không có kết nối Internet. ',
-                        fontSize: 12.sp,
-                        fontWeight: FontWeight.w700,
-                        color: AppColors.white,
+                      Flexible(
+                        child: AppText.c1(
+                          _isOnline
+                              ? 'Đã khôi phục kết nối Internet!'
+                              : 'Không có kết nối Internet. ',
+                          fontSize: 12.sp,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.white,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                     ],
                   ),
