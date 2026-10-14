@@ -12,6 +12,7 @@ class SettingsItem extends StatelessWidget {
     required this.subtitle,
     required this.action,
     this.leadingIcon,
+    this.showTopDivider = true,
     super.key,
   });
 
@@ -19,20 +20,24 @@ class SettingsItem extends StatelessWidget {
   final String subtitle;
   final Widget action;
   final Widget? leadingIcon;
+  final bool showTopDivider;
 
   @override
   Widget build(BuildContext context) {
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
+
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const AppDotted(),
+        if (showTopDivider) const AppDotted(),
         Padding(
-          padding: EdgeInsets.symmetric(vertical: 4.h),
+          padding: EdgeInsets.symmetric(vertical: isLandscape ? 4 : 6.h),
           child: Row(
             children: [
               if (leadingIcon != null) ...[
                 leadingIcon!,
-                SizedBox(width: 6.w),
+                SizedBox(width: isLandscape ? 6 : 6.w),
               ],
               Expanded(
                 child: Column(
@@ -41,14 +46,14 @@ class SettingsItem extends StatelessWidget {
                   children: [
                     AppText.t3(
                       title,
-                      fontSize: 12.sp,
+                      fontSize: isLandscape ? 12 : 12.sp,
                       fontWeight: FontWeight.w700,
                       color: AppColors.paperSectionTitle,
                     ),
-                    SizedBox(height: 2.h),
+                    SizedBox(height: isLandscape ? 2 : 2.h),
                     AppText.c1(
                       subtitle,
-                      fontSize: 10.sp,
+                      fontSize: isLandscape ? 10 : 10.sp,
                       color: AppColors.pillTextUnselected,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
@@ -56,7 +61,7 @@ class SettingsItem extends StatelessWidget {
                   ],
                 ),
               ),
-              SizedBox(width: 8.w),
+              SizedBox(width: isLandscape ? 8 : 8.w),
               action,
             ],
           ),

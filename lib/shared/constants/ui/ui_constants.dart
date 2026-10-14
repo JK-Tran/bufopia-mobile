@@ -15,13 +15,13 @@ class UiConstants {
 
   /// orientation
   static const List<DeviceOrientation> mobileOrientation = [
-    DeviceOrientation.landscapeLeft,
-    DeviceOrientation.landscapeRight,
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
   ];
 
   static const List<DeviceOrientation> tabletOrientation = [
-    DeviceOrientation.landscapeLeft,
-    DeviceOrientation.landscapeRight,
+    DeviceOrientation.portraitUp,
+    DeviceOrientation.portraitDown,
   ];
 
   /// status bar color

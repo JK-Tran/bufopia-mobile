@@ -279,7 +279,7 @@ as String,
 /// @nodoc
 mixin _$GetWordProfilesOutput {
 
- List<WordProfileEntity> get profiles;
+ List<WordProfile> get profiles;
 /// Create a copy of GetWordProfilesOutput
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -315,7 +315,7 @@ abstract mixin class $GetWordProfilesOutputCopyWith<$Res>  {
   factory $GetWordProfilesOutputCopyWith(GetWordProfilesOutput value, $Res Function(GetWordProfilesOutput) _then) = _$GetWordProfilesOutputCopyWithImpl;
 @useResult
 $Res call({
- List<WordProfileEntity> profiles
+ List<WordProfile> profiles
 });
 
 
@@ -335,7 +335,7 @@ class _$GetWordProfilesOutputCopyWithImpl<$Res>
 @pragma('vm:prefer-inline') @override $Res call({Object? profiles = null,}) {
   return _then(GetWordProfilesOutput(
 profiles: null == profiles ? _self.profiles : profiles // ignore: cast_nullable_to_non_nullable
-as List<WordProfileEntity>,
+as List<WordProfile>,
   ));
 }
 
@@ -420,7 +420,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<WordProfileEntity> profiles)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<WordProfile> profiles)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _GetWordProfilesOutput() when $default != null:
 return $default(_that.profiles);case _:
@@ -441,7 +441,7 @@ return $default(_that.profiles);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<WordProfileEntity> profiles)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<WordProfile> profiles)  $default,) {final _that = this;
 switch (_that) {
 case _GetWordProfilesOutput():
 return $default(_that.profiles);case _:
@@ -461,7 +461,7 @@ return $default(_that.profiles);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<WordProfileEntity> profiles)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<WordProfile> profiles)?  $default,) {final _that = this;
 switch (_that) {
 case _GetWordProfilesOutput() when $default != null:
 return $default(_that.profiles);case _:
@@ -476,11 +476,11 @@ return $default(_that.profiles);case _:
 
 
 class _GetWordProfilesOutput extends GetWordProfilesOutput {
-  const _GetWordProfilesOutput({ List<WordProfileEntity> profiles = const []}): _profiles = profiles,super._();
+  const _GetWordProfilesOutput({ List<WordProfile> profiles = const []}): _profiles = profiles,super._();
   
 
- final  List<WordProfileEntity> _profiles;
-@override@JsonKey() List<WordProfileEntity> get profiles {
+ final  List<WordProfile> _profiles;
+@override@JsonKey() List<WordProfile> get profiles {
   if (_profiles is EqualUnmodifiableListView) return _profiles;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_profiles);
@@ -519,7 +519,7 @@ abstract mixin class _$GetWordProfilesOutputCopyWith<$Res> implements $GetWordPr
   factory _$GetWordProfilesOutputCopyWith(_GetWordProfilesOutput value, $Res Function(_GetWordProfilesOutput) _then) = __$GetWordProfilesOutputCopyWithImpl;
 @override @useResult
 $Res call({
- List<WordProfileEntity> profiles
+ List<WordProfile> profiles
 });
 
 
@@ -539,7 +539,7 @@ class __$GetWordProfilesOutputCopyWithImpl<$Res>
 @override @pragma('vm:prefer-inline') $Res call({Object? profiles = null,}) {
   return _then(_GetWordProfilesOutput(
 profiles: null == profiles ? _self._profiles : profiles // ignore: cast_nullable_to_non_nullable
-as List<WordProfileEntity>,
+as List<WordProfile>,
   ));
 }
 

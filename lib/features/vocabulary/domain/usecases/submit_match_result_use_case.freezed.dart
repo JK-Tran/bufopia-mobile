@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$SubmitMatchResultInput {
 
- MatchRecordEntity get match;
+ MatchRecord get match;
 /// Create a copy of SubmitMatchResultInput
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -51,11 +51,11 @@ abstract mixin class $SubmitMatchResultInputCopyWith<$Res>  {
   factory $SubmitMatchResultInputCopyWith(SubmitMatchResultInput value, $Res Function(SubmitMatchResultInput) _then) = _$SubmitMatchResultInputCopyWithImpl;
 @useResult
 $Res call({
- MatchRecordEntity match
+ MatchRecord match
 });
 
 
-$MatchRecordEntityCopyWith<$Res> get match;
+$MatchRecordCopyWith<$Res> get match;
 
 }
 /// @nodoc
@@ -71,16 +71,16 @@ class _$SubmitMatchResultInputCopyWithImpl<$Res>
 @pragma('vm:prefer-inline') @override $Res call({Object? match = null,}) {
   return _then(SubmitMatchResultInput(
 null == match ? _self.match : match // ignore: cast_nullable_to_non_nullable
-as MatchRecordEntity,
+as MatchRecord,
   ));
 }
 /// Create a copy of SubmitMatchResultInput
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$MatchRecordEntityCopyWith<$Res> get match {
+$MatchRecordCopyWith<$Res> get match {
   
-  return $MatchRecordEntityCopyWith<$Res>(_self.match, (value) {
+  return $MatchRecordCopyWith<$Res>(_self.match, (value) {
     return _then(_self.copyWith(match: value));
   });
 }
@@ -165,7 +165,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( MatchRecordEntity match)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( MatchRecord match)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SubmitMatchResultInput() when $default != null:
 return $default(_that.match);case _:
@@ -186,7 +186,7 @@ return $default(_that.match);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( MatchRecordEntity match)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( MatchRecord match)  $default,) {final _that = this;
 switch (_that) {
 case _SubmitMatchResultInput():
 return $default(_that.match);case _:
@@ -206,7 +206,7 @@ return $default(_that.match);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( MatchRecordEntity match)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( MatchRecord match)?  $default,) {final _that = this;
 switch (_that) {
 case _SubmitMatchResultInput() when $default != null:
 return $default(_that.match);case _:
@@ -224,7 +224,7 @@ class _SubmitMatchResultInput extends SubmitMatchResultInput {
   const _SubmitMatchResultInput(this.match): super._();
   
 
-@override final  MatchRecordEntity match;
+@override final  MatchRecord match;
 
 /// Create a copy of SubmitMatchResultInput
 /// with the given fields replaced by the non-null parameter values.
@@ -258,11 +258,11 @@ abstract mixin class _$SubmitMatchResultInputCopyWith<$Res> implements $SubmitMa
   factory _$SubmitMatchResultInputCopyWith(_SubmitMatchResultInput value, $Res Function(_SubmitMatchResultInput) _then) = __$SubmitMatchResultInputCopyWithImpl;
 @override @useResult
 $Res call({
- MatchRecordEntity match
+ MatchRecord match
 });
 
 
-@override $MatchRecordEntityCopyWith<$Res> get match;
+@override $MatchRecordCopyWith<$Res> get match;
 
 }
 /// @nodoc
@@ -278,7 +278,7 @@ class __$SubmitMatchResultInputCopyWithImpl<$Res>
 @override @pragma('vm:prefer-inline') $Res call({Object? match = null,}) {
   return _then(_SubmitMatchResultInput(
 null == match ? _self.match : match // ignore: cast_nullable_to_non_nullable
-as MatchRecordEntity,
+as MatchRecord,
   ));
 }
 
@@ -286,9 +286,9 @@ as MatchRecordEntity,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$MatchRecordEntityCopyWith<$Res> get match {
+$MatchRecordCopyWith<$Res> get match {
   
-  return $MatchRecordEntityCopyWith<$Res>(_self.match, (value) {
+  return $MatchRecordCopyWith<$Res>(_self.match, (value) {
     return _then(_self.copyWith(match: value));
   });
 }

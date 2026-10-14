@@ -693,7 +693,7 @@ as String,
 /// @nodoc
 mixin _$ChallengeRoomState {
 
- ChallengeRoomTab get currentTab; bool get isLoading; bool get isActionLoading; String? get createdRoomCode; RoomInfoEntity? get joinedRoom; SocialStateEntity? get socialState; String? get errorMessage; String? get successMessage; String? get currentUid;
+ ChallengeRoomTab get currentTab; bool get isLoading; bool get isActionLoading; String? get createdRoomCode; RoomInfo? get joinedRoom; SocialState? get socialState; String? get errorMessage; String? get successMessage; String? get currentUid;
 /// Create a copy of ChallengeRoomState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -729,11 +729,11 @@ abstract mixin class $ChallengeRoomStateCopyWith<$Res>  {
   factory $ChallengeRoomStateCopyWith(ChallengeRoomState value, $Res Function(ChallengeRoomState) _then) = _$ChallengeRoomStateCopyWithImpl;
 @useResult
 $Res call({
- ChallengeRoomTab currentTab, bool isLoading, bool isActionLoading, String? createdRoomCode, RoomInfoEntity? joinedRoom, SocialStateEntity? socialState, String? errorMessage, String? successMessage, String? currentUid
+ ChallengeRoomTab currentTab, bool isLoading, bool isActionLoading, String? createdRoomCode, RoomInfo? joinedRoom, SocialState? socialState, String? errorMessage, String? successMessage, String? currentUid
 });
 
 
-$RoomInfoEntityCopyWith<$Res>? get joinedRoom;$SocialStateEntityCopyWith<$Res>? get socialState;
+$RoomInfoCopyWith<$Res>? get joinedRoom;$SocialStateCopyWith<$Res>? get socialState;
 
 }
 /// @nodoc
@@ -753,8 +753,8 @@ as ChallengeRoomTab,isLoading: null == isLoading ? _self.isLoading : isLoading /
 as bool,isActionLoading: null == isActionLoading ? _self.isActionLoading : isActionLoading // ignore: cast_nullable_to_non_nullable
 as bool,createdRoomCode: freezed == createdRoomCode ? _self.createdRoomCode : createdRoomCode // ignore: cast_nullable_to_non_nullable
 as String?,joinedRoom: freezed == joinedRoom ? _self.joinedRoom : joinedRoom // ignore: cast_nullable_to_non_nullable
-as RoomInfoEntity?,socialState: freezed == socialState ? _self.socialState : socialState // ignore: cast_nullable_to_non_nullable
-as SocialStateEntity?,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
+as RoomInfo?,socialState: freezed == socialState ? _self.socialState : socialState // ignore: cast_nullable_to_non_nullable
+as SocialState?,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
 as String?,successMessage: freezed == successMessage ? _self.successMessage : successMessage // ignore: cast_nullable_to_non_nullable
 as String?,currentUid: freezed == currentUid ? _self.currentUid : currentUid // ignore: cast_nullable_to_non_nullable
 as String?,
@@ -764,24 +764,24 @@ as String?,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$RoomInfoEntityCopyWith<$Res>? get joinedRoom {
+$RoomInfoCopyWith<$Res>? get joinedRoom {
     if (_self.joinedRoom == null) {
     return null;
   }
 
-  return $RoomInfoEntityCopyWith<$Res>(_self.joinedRoom!, (value) {
+  return $RoomInfoCopyWith<$Res>(_self.joinedRoom!, (value) {
     return _then(_self.copyWith(joinedRoom: value));
   });
 }/// Create a copy of ChallengeRoomState
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$SocialStateEntityCopyWith<$Res>? get socialState {
+$SocialStateCopyWith<$Res>? get socialState {
     if (_self.socialState == null) {
     return null;
   }
 
-  return $SocialStateEntityCopyWith<$Res>(_self.socialState!, (value) {
+  return $SocialStateCopyWith<$Res>(_self.socialState!, (value) {
     return _then(_self.copyWith(socialState: value));
   });
 }
@@ -866,7 +866,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( ChallengeRoomTab currentTab,  bool isLoading,  bool isActionLoading,  String? createdRoomCode,  RoomInfoEntity? joinedRoom,  SocialStateEntity? socialState,  String? errorMessage,  String? successMessage,  String? currentUid)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( ChallengeRoomTab currentTab,  bool isLoading,  bool isActionLoading,  String? createdRoomCode,  RoomInfo? joinedRoom,  SocialState? socialState,  String? errorMessage,  String? successMessage,  String? currentUid)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ChallengeRoomState() when $default != null:
 return $default(_that.currentTab,_that.isLoading,_that.isActionLoading,_that.createdRoomCode,_that.joinedRoom,_that.socialState,_that.errorMessage,_that.successMessage,_that.currentUid);case _:
@@ -887,7 +887,7 @@ return $default(_that.currentTab,_that.isLoading,_that.isActionLoading,_that.cre
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( ChallengeRoomTab currentTab,  bool isLoading,  bool isActionLoading,  String? createdRoomCode,  RoomInfoEntity? joinedRoom,  SocialStateEntity? socialState,  String? errorMessage,  String? successMessage,  String? currentUid)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( ChallengeRoomTab currentTab,  bool isLoading,  bool isActionLoading,  String? createdRoomCode,  RoomInfo? joinedRoom,  SocialState? socialState,  String? errorMessage,  String? successMessage,  String? currentUid)  $default,) {final _that = this;
 switch (_that) {
 case _ChallengeRoomState():
 return $default(_that.currentTab,_that.isLoading,_that.isActionLoading,_that.createdRoomCode,_that.joinedRoom,_that.socialState,_that.errorMessage,_that.successMessage,_that.currentUid);case _:
@@ -907,7 +907,7 @@ return $default(_that.currentTab,_that.isLoading,_that.isActionLoading,_that.cre
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( ChallengeRoomTab currentTab,  bool isLoading,  bool isActionLoading,  String? createdRoomCode,  RoomInfoEntity? joinedRoom,  SocialStateEntity? socialState,  String? errorMessage,  String? successMessage,  String? currentUid)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( ChallengeRoomTab currentTab,  bool isLoading,  bool isActionLoading,  String? createdRoomCode,  RoomInfo? joinedRoom,  SocialState? socialState,  String? errorMessage,  String? successMessage,  String? currentUid)?  $default,) {final _that = this;
 switch (_that) {
 case _ChallengeRoomState() when $default != null:
 return $default(_that.currentTab,_that.isLoading,_that.isActionLoading,_that.createdRoomCode,_that.joinedRoom,_that.socialState,_that.errorMessage,_that.successMessage,_that.currentUid);case _:
@@ -929,8 +929,8 @@ class _ChallengeRoomState implements ChallengeRoomState {
 @override@JsonKey() final  bool isLoading;
 @override@JsonKey() final  bool isActionLoading;
 @override final  String? createdRoomCode;
-@override final  RoomInfoEntity? joinedRoom;
-@override final  SocialStateEntity? socialState;
+@override final  RoomInfo? joinedRoom;
+@override final  SocialState? socialState;
 @override final  String? errorMessage;
 @override final  String? successMessage;
 @override final  String? currentUid;
@@ -967,11 +967,11 @@ abstract mixin class _$ChallengeRoomStateCopyWith<$Res> implements $ChallengeRoo
   factory _$ChallengeRoomStateCopyWith(_ChallengeRoomState value, $Res Function(_ChallengeRoomState) _then) = __$ChallengeRoomStateCopyWithImpl;
 @override @useResult
 $Res call({
- ChallengeRoomTab currentTab, bool isLoading, bool isActionLoading, String? createdRoomCode, RoomInfoEntity? joinedRoom, SocialStateEntity? socialState, String? errorMessage, String? successMessage, String? currentUid
+ ChallengeRoomTab currentTab, bool isLoading, bool isActionLoading, String? createdRoomCode, RoomInfo? joinedRoom, SocialState? socialState, String? errorMessage, String? successMessage, String? currentUid
 });
 
 
-@override $RoomInfoEntityCopyWith<$Res>? get joinedRoom;@override $SocialStateEntityCopyWith<$Res>? get socialState;
+@override $RoomInfoCopyWith<$Res>? get joinedRoom;@override $SocialStateCopyWith<$Res>? get socialState;
 
 }
 /// @nodoc
@@ -991,8 +991,8 @@ as ChallengeRoomTab,isLoading: null == isLoading ? _self.isLoading : isLoading /
 as bool,isActionLoading: null == isActionLoading ? _self.isActionLoading : isActionLoading // ignore: cast_nullable_to_non_nullable
 as bool,createdRoomCode: freezed == createdRoomCode ? _self.createdRoomCode : createdRoomCode // ignore: cast_nullable_to_non_nullable
 as String?,joinedRoom: freezed == joinedRoom ? _self.joinedRoom : joinedRoom // ignore: cast_nullable_to_non_nullable
-as RoomInfoEntity?,socialState: freezed == socialState ? _self.socialState : socialState // ignore: cast_nullable_to_non_nullable
-as SocialStateEntity?,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
+as RoomInfo?,socialState: freezed == socialState ? _self.socialState : socialState // ignore: cast_nullable_to_non_nullable
+as SocialState?,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
 as String?,successMessage: freezed == successMessage ? _self.successMessage : successMessage // ignore: cast_nullable_to_non_nullable
 as String?,currentUid: freezed == currentUid ? _self.currentUid : currentUid // ignore: cast_nullable_to_non_nullable
 as String?,
@@ -1003,24 +1003,24 @@ as String?,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$RoomInfoEntityCopyWith<$Res>? get joinedRoom {
+$RoomInfoCopyWith<$Res>? get joinedRoom {
     if (_self.joinedRoom == null) {
     return null;
   }
 
-  return $RoomInfoEntityCopyWith<$Res>(_self.joinedRoom!, (value) {
+  return $RoomInfoCopyWith<$Res>(_self.joinedRoom!, (value) {
     return _then(_self.copyWith(joinedRoom: value));
   });
 }/// Create a copy of ChallengeRoomState
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$SocialStateEntityCopyWith<$Res>? get socialState {
+$SocialStateCopyWith<$Res>? get socialState {
     if (_self.socialState == null) {
     return null;
   }
 
-  return $SocialStateEntityCopyWith<$Res>(_self.socialState!, (value) {
+  return $SocialStateCopyWith<$Res>(_self.socialState!, (value) {
     return _then(_self.copyWith(socialState: value));
   });
 }

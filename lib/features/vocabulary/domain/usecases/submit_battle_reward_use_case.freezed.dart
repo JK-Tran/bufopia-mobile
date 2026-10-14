@@ -288,7 +288,7 @@ as int,
 /// @nodoc
 mixin _$SubmitBattleRewardOutput {
 
- BattleRewardEntity get reward;
+ BattleReward get reward;
 /// Create a copy of SubmitBattleRewardOutput
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -324,11 +324,11 @@ abstract mixin class $SubmitBattleRewardOutputCopyWith<$Res>  {
   factory $SubmitBattleRewardOutputCopyWith(SubmitBattleRewardOutput value, $Res Function(SubmitBattleRewardOutput) _then) = _$SubmitBattleRewardOutputCopyWithImpl;
 @useResult
 $Res call({
- BattleRewardEntity reward
+ BattleReward reward
 });
 
 
-$BattleRewardEntityCopyWith<$Res> get reward;
+$BattleRewardCopyWith<$Res> get reward;
 
 }
 /// @nodoc
@@ -344,16 +344,16 @@ class _$SubmitBattleRewardOutputCopyWithImpl<$Res>
 @pragma('vm:prefer-inline') @override $Res call({Object? reward = null,}) {
   return _then(SubmitBattleRewardOutput(
 reward: null == reward ? _self.reward : reward // ignore: cast_nullable_to_non_nullable
-as BattleRewardEntity,
+as BattleReward,
   ));
 }
 /// Create a copy of SubmitBattleRewardOutput
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$BattleRewardEntityCopyWith<$Res> get reward {
+$BattleRewardCopyWith<$Res> get reward {
   
-  return $BattleRewardEntityCopyWith<$Res>(_self.reward, (value) {
+  return $BattleRewardCopyWith<$Res>(_self.reward, (value) {
     return _then(_self.copyWith(reward: value));
   });
 }
@@ -438,7 +438,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( BattleRewardEntity reward)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( BattleReward reward)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _SubmitBattleRewardOutput() when $default != null:
 return $default(_that.reward);case _:
@@ -459,7 +459,7 @@ return $default(_that.reward);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( BattleRewardEntity reward)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( BattleReward reward)  $default,) {final _that = this;
 switch (_that) {
 case _SubmitBattleRewardOutput():
 return $default(_that.reward);case _:
@@ -479,7 +479,7 @@ return $default(_that.reward);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( BattleRewardEntity reward)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( BattleReward reward)?  $default,) {final _that = this;
 switch (_that) {
 case _SubmitBattleRewardOutput() when $default != null:
 return $default(_that.reward);case _:
@@ -497,7 +497,7 @@ class _SubmitBattleRewardOutput extends SubmitBattleRewardOutput {
   const _SubmitBattleRewardOutput({required this.reward}): super._();
   
 
-@override final  BattleRewardEntity reward;
+@override final  BattleReward reward;
 
 /// Create a copy of SubmitBattleRewardOutput
 /// with the given fields replaced by the non-null parameter values.
@@ -531,11 +531,11 @@ abstract mixin class _$SubmitBattleRewardOutputCopyWith<$Res> implements $Submit
   factory _$SubmitBattleRewardOutputCopyWith(_SubmitBattleRewardOutput value, $Res Function(_SubmitBattleRewardOutput) _then) = __$SubmitBattleRewardOutputCopyWithImpl;
 @override @useResult
 $Res call({
- BattleRewardEntity reward
+ BattleReward reward
 });
 
 
-@override $BattleRewardEntityCopyWith<$Res> get reward;
+@override $BattleRewardCopyWith<$Res> get reward;
 
 }
 /// @nodoc
@@ -551,7 +551,7 @@ class __$SubmitBattleRewardOutputCopyWithImpl<$Res>
 @override @pragma('vm:prefer-inline') $Res call({Object? reward = null,}) {
   return _then(_SubmitBattleRewardOutput(
 reward: null == reward ? _self.reward : reward // ignore: cast_nullable_to_non_nullable
-as BattleRewardEntity,
+as BattleReward,
   ));
 }
 
@@ -559,9 +559,9 @@ as BattleRewardEntity,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$BattleRewardEntityCopyWith<$Res> get reward {
+$BattleRewardCopyWith<$Res> get reward {
   
-  return $BattleRewardEntityCopyWith<$Res>(_self.reward, (value) {
+  return $BattleRewardCopyWith<$Res>(_self.reward, (value) {
     return _then(_self.copyWith(reward: value));
   });
 }

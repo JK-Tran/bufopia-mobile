@@ -5,8 +5,8 @@ abstract class VocabularyState with _$VocabularyState {
   const factory VocabularyState({
     @Default(false) bool isLoading,
     String? errorMessage,
-    BattleDeckEntity? deckEntity,
-    @Default([]) List<BattleQuestionEntity> questions,
+    BattleDeck? deckEntity,
+    @Default([]) List<BattleQuestion> questions,
     @Default(0) int currentQuestionIndex,
     @Default(0) int player1Score,
     @Default(0) int player2Score,
@@ -17,7 +17,7 @@ abstract class VocabularyState with _$VocabularyState {
     String? selectedWordP2,
     @Default(false) bool isGameOver,
     @Default(false) bool isSavingReward,
-    BattleRewardEntity? reward,
+    BattleReward? reward,
     @Default([]) List<String> optionsP1,
     @Default([]) List<String> optionsP2,
     @Default(true) bool isBotOpponent,
@@ -38,11 +38,18 @@ abstract class VocabularyState with _$VocabularyState {
     @Default('daily') String topic,
     String? currentUid,
     @Default({}) Map<String, bool> answersP1,
+    @Default([]) List<String> wrongWordsP1,
+    @Default([]) List<String> wrongWordsP2,
+    @Default(0) int cooldownSecondsP1,
+    @Default(0) int cooldownSecondsP2,
+    @Default(false) bool isRematchRequested,
+    @Default(false) bool isOpponentWantRematch,
+    @Default([]) List<bool> rematchReadyPlayers,
   }) = _VocabularyState;
 
   const VocabularyState._();
 
-  BattleQuestionEntity? get currentQuestion {
+  BattleQuestion? get currentQuestion {
     if (questions.isEmpty || currentQuestionIndex >= questions.length) {
       return null;
     }

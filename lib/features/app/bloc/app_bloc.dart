@@ -43,7 +43,7 @@ class AppBloc extends BaseBloc<AppEvent, AppState> {
     await _audioService.setMusicEnabled(enabled: isMusic);
     await _audioService.setSfxEnabled(enabled: isSfx);
 
-    emit(
+    safeEmit(
       state.copyWith(
         isMusicEnabled: isMusic,
         isSfxEnabled: isSfx,
@@ -62,7 +62,7 @@ class AppBloc extends BaseBloc<AppEvent, AppState> {
     final nextState = !state.isMusicEnabled;
     await _appPreferences.saveIsMusicEnabled(isMusicEnabled: nextState);
     await _audioService.setMusicEnabled(enabled: nextState);
-    emit(state.copyWith(isMusicEnabled: nextState));
+    safeEmit(state.copyWith(isMusicEnabled: nextState));
   }
 
   Future<void> _onSfxToggled(
@@ -72,7 +72,7 @@ class AppBloc extends BaseBloc<AppEvent, AppState> {
     final nextState = !state.isSfxEnabled;
     await _appPreferences.saveIsSfxEnabled(isSfxEnabled: nextState);
     await _audioService.setSfxEnabled(enabled: nextState);
-    emit(state.copyWith(isSfxEnabled: nextState));
+    safeEmit(state.copyWith(isSfxEnabled: nextState));
   }
 
   Future<void> _onLanguageChanged(
@@ -80,7 +80,7 @@ class AppBloc extends BaseBloc<AppEvent, AppState> {
     Emitter<AppState> emit,
   ) async {
     await _appPreferences.saveLanguageCode(event.languageCode);
-    emit(state.copyWith(languageCode: event.languageCode));
+    safeEmit(state.copyWith(languageCode: event.languageCode));
   }
 
   Future<void> _onThemeChanged(
@@ -88,7 +88,7 @@ class AppBloc extends BaseBloc<AppEvent, AppState> {
     Emitter<AppState> emit,
   ) async {
     await _appPreferences.saveAppTheme(event.appTheme);
-    emit(state.copyWith(appTheme: event.appTheme));
+    safeEmit(state.copyWith(appTheme: event.appTheme));
   }
 
   Future<void> _onLifecycleChanged(

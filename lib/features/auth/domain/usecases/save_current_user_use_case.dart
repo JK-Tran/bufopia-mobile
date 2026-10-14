@@ -1,4 +1,4 @@
-import 'package:bufopia/features/auth/domain/entities/user_entity.dart';
+import 'package:bufopia/features/auth/domain/entities/user.dart';
 import 'package:bufopia/features/auth/domain/repositories/auth_repository.dart';
 import 'package:injectable/injectable.dart';
 
@@ -8,5 +8,5 @@ class SaveCurrentUserUseCase {
 
   final AuthRepository _repository;
 
-  Future<bool> execute(UserEntity user) => _repository.saveCurrentUser(user);
+  Future<bool> execute(User user) => _repository.saveCurrentUser(user);
 }

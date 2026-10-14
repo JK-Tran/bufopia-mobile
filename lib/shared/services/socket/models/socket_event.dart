@@ -1,3 +1,6 @@
+import 'package:bufopia/features/word_chain/domain/entities/game_state.dart';
+import 'package:bufopia/features/word_chain/domain/entities/reward.dart';
+
 enum SocketConnectionState {
   disconnected,
   connecting,
@@ -321,6 +324,8 @@ class RoomMatchFinishedEvent extends SocketEvent {
   const RoomMatchFinishedEvent({
     this.winner,
     this.scores = const [],
+    this.matchRound = 1,
+    this.continueAt,
   });
 
   factory RoomMatchFinishedEvent.fromJson(Map<String, dynamic> json) {
@@ -329,15 +334,45 @@ class RoomMatchFinishedEvent extends SocketEvent {
         gameState['scores'] as List<dynamic>? ??
         json['scores'] as List<dynamic>? ??
         [];
+    final continueAt =
+        (gameState['continueAt'] as num?)?.toInt() ??
+        (json['continueAt'] as num?)?.toInt();
 
     return RoomMatchFinishedEvent(
       winner: json['winner'],
       scores: scoresRaw.map((e) => (e as num).toInt()).toList(),
+      matchRound:
+          json['matchRound'] as int? ?? gameState['matchRound'] as int? ?? 1,
+      continueAt: continueAt,
     );
   }
 
   final dynamic winner;
   final List<int> scores;
+  final int matchRound;
+  final int? continueAt;
+}
+
+class RoomRematchWaitingEvent extends SocketEvent {
+  const RoomRematchWaitingEvent({
+    required this.matchRound,
+    required this.readyPlayers,
+  });
+
+  factory RoomRematchWaitingEvent.fromJson(Map<String, dynamic> json) {
+    final readyList =
+        (json['readyPlayers'] as List<dynamic>?)
+            ?.map((e) => e == true)
+            .toList() ??
+        const [];
+    return RoomRematchWaitingEvent(
+      matchRound: json['matchRound'] as int? ?? 1,
+      readyPlayers: readyList,
+    );
+  }
+
+  final int matchRound;
+  final List<bool> readyPlayers;
 }
 
 // RoomOpponentStateEvent đã bị xóa — không có trong BE API spec.
@@ -396,4 +431,146 @@ class SocketReconnectingEvent extends SocketEvent {
 
 class SocketReconnectedEvent extends SocketEvent {
   const SocketReconnectedEvent();
+}
+
+// ─── Word Chain Events ──────────────────────────────────────────
+
+/// Server gửi cập nhật trạng thái bàn đấu Word Chain sau mỗi lượt
+class ChainStateEvent extends SocketEvent {
+  const ChainStateEvent({
+    required this.playerIndex,
+    required this.roomCode,
+    required this.state,
+    this.rivalName,
+    this.rivalAvatar,
+    this.serverNow,
+    this.sessionId,
+  });
+
+  final int playerIndex;
+  final String roomCode;
+  final GameState state;
+  final String? rivalName;
+  final String? rivalAvatar;
+  final int? serverNow;
+  final String? sessionId;
+}
+
+/// Server thông báo đang kiểm tra từ điển (đóng băng đồng hồ)
+class ChainWordCheckingEvent extends SocketEvent {
+  const ChainWordCheckingEvent({
+    required this.actor,
+    this.turnId,
+    this.frozenRemaining,
+  });
+
+  factory ChainWordCheckingEvent.fromJson(Map<String, dynamic> json) {
+    return ChainWordCheckingEvent(
+      actor: json['actor'] as int? ?? 0,
+      turnId: json['turnId'] as int?,
+      frozenRemaining: json['frozenRemaining'] as int?,
+    );
+  }
+
+  final int actor;
+  final int? turnId;
+  final int? frozenRemaining;
+}
+
+/// Server đã kiểm tra xong từ điển (tiếp tục đồng hồ)
+class ChainWordCheckedEvent extends SocketEvent {
+  const ChainWordCheckedEvent();
+}
+
+/// Server thông báo từ bị từ chối (sai luật / trùng từ)
+class ChainWordRejectedEvent extends SocketEvent {
+  const ChainWordRejectedEvent({
+    this.penalty = 0,
+    this.lives,
+  });
+
+  factory ChainWordRejectedEvent.fromJson(Map<String, dynamic> json) {
+    return ChainWordRejectedEvent(
+      penalty: json['penalty'] as int? ?? 0,
+      lives: json['lives'] as int?,
+    );
+  }
+
+  final int penalty;
+  final int? lives;
+}
+
+/// Server thông báo từ điển tạm thời không khả dụng
+class ChainDictionaryUnavailableEvent extends SocketEvent {
+  const ChainDictionaryUnavailableEvent();
+}
+
+/// Server cảnh báo người chơi rời ứng dụng (away)
+class ChainAwayWarningEvent extends SocketEvent {
+  const ChainAwayWarningEvent({
+    required this.count,
+    this.playerIndex,
+    this.limit = 3,
+  });
+
+  factory ChainAwayWarningEvent.fromJson(Map<String, dynamic> json) {
+    return ChainAwayWarningEvent(
+      count: json['count'] as int? ?? 1,
+      playerIndex: json['playerIndex'] as int?,
+      limit: json['limit'] as int? ?? 3,
+    );
+  }
+
+  final int count;
+  final int? playerIndex;
+  final int limit;
+}
+
+/// Tin nhắn chat trong phòng Word Chain
+class ChainChatMessageEvent extends SocketEvent {
+  const ChainChatMessageEvent({
+    required this.actor,
+    required this.text,
+    this.id,
+    this.name,
+    this.avatar,
+    this.time,
+  });
+
+  factory ChainChatMessageEvent.fromJson(Map<String, dynamic> json) {
+    final msg = json['message'] as Map<String, dynamic>? ?? json;
+    return ChainChatMessageEvent(
+      actor: msg['actor'] as int? ?? 0,
+      text: msg['text'] as String? ?? '',
+      id: msg['id'],
+      name: msg['name'] as String?,
+      avatar: msg['avatar'] as String?,
+      time: msg['time'] as num?,
+    );
+  }
+
+  final int actor;
+  final String text;
+  final dynamic id;
+  final String? name;
+  final String? avatar;
+  final num? time;
+}
+
+/// Lịch sử chat khi kết nối vào phòng Word Chain
+class ChainChatHistoryEvent extends SocketEvent {
+  const ChainChatHistoryEvent(this.messages);
+
+  final List<ChainChatMessageEvent> messages;
+}
+
+/// Thưởng kết thúc trận Word Chain từ Server
+class ChainSessionRewardEvent extends SocketEvent {
+  const ChainSessionRewardEvent({
+    required this.sessionId,
+    required this.reward,
+  });
+
+  final String sessionId;
+  final Reward reward;
 }

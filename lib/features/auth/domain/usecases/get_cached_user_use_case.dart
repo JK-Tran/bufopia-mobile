@@ -1,4 +1,4 @@
-import 'package:bufopia/features/auth/domain/entities/user_entity.dart';
+import 'package:bufopia/features/auth/domain/entities/user.dart';
 import 'package:bufopia/features/auth/domain/repositories/auth_repository.dart';
 import 'package:injectable/injectable.dart';
 
@@ -8,5 +8,5 @@ class GetCachedUserUseCase {
 
   final AuthRepository _repository;
 
-  UserEntity? execute() => _repository.getCurrentUser();
+  User? execute() => _repository.getCurrentUser();
 }

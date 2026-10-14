@@ -96,7 +96,7 @@ class _PlayerEditNameDialogState extends State<PlayerEditNameDialog> {
                     Expanded(
                       child: AppText.t3(
                         'Đổi tên',
-                        fontWeight: FontWeight.w800,
+                        fontWeight: FontWeight.w700,
                         fontSize: 14.sp,
                         color: AppColors.white,
                       ),
@@ -135,7 +135,7 @@ class _PlayerEditNameDialogState extends State<PlayerEditNameDialog> {
                         textInputAction: TextInputAction.done,
                         onSubmitted: (_) => _submit(),
                         style: TextStyle(
-                          fontSize: 13.sp,
+                          fontSize: 14.sp,
                           fontWeight: FontWeight.w600,
                           color: isPaper
                               ? AppColors.paperTextDark
@@ -173,7 +173,7 @@ class _PlayerEditNameDialogState extends State<PlayerEditNameDialog> {
                         // Huỷ
                         Expanded(
                           child: AppButton.secondary(
-                            fontSize: 14,
+                            fontSize: 14.sp,
                             text: 'Huỷ',
                             onPressed: () => Navigator.of(context).pop(),
                           ),

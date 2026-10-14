@@ -1,4 +1,4 @@
-import 'package:bufopia/features/auth/domain/entities/user_entity.dart';
+import 'package:bufopia/features/auth/domain/entities/user.dart';
 import 'package:bufopia/features/auth/domain/repositories/auth_repository.dart';
 import 'package:bufopia/shared/infrastructure/domain/usecase/future/base_future_use_case.dart';
 import 'package:bufopia/shared/infrastructure/domain/usecase/io/base_input.dart';
@@ -23,7 +23,7 @@ abstract class GetUserInfoInput extends BaseInput with _$GetUserInfoInput {
 
 @freezed
 abstract class GetUserInfoOutput extends BaseOutput with _$GetUserInfoOutput {
-  const factory GetUserInfoOutput(UserEntity? user) = _GetUserInfoOutput;
+  const factory GetUserInfoOutput(User? user) = _GetUserInfoOutput;
 
   const GetUserInfoOutput._();
 }

@@ -7,7 +7,12 @@ abstract class AuthEvent with _$AuthEvent {
     required String displayName,
     String? avatarUrl,
   }) = _UpdateProfile;
-  const factory AuthEvent.loggedIn(UserEntity user) = _LoggedIn;
-  const factory AuthEvent.userUpdated(UserEntity user) = _UserUpdated;
+  const factory AuthEvent.signInWithGoogle() = _SignInWithGoogle;
+  const factory AuthEvent.resolveAccountConflict({
+    required String action,
+  }) = _ResolveAccountConflict;
+  const factory AuthEvent.cancelAccountConflict() = _CancelAccountConflict;
+  const factory AuthEvent.loggedIn(User user) = _LoggedIn;
+  const factory AuthEvent.userUpdated(User user) = _UserUpdated;
   const factory AuthEvent.loggedOut() = _LoggedOut;
 }

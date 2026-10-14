@@ -56,7 +56,7 @@ extension VocabularyEventPatterns on VocabularyEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _InitDeck value)?  initDeck,TResult Function( _SelectAnswer value)?  selectAnswer,TResult Function( _Tick value)?  tick,TResult Function( _NextQuestion value)?  nextQuestion,TResult Function( _BotAnswer value)?  botAnswer,TResult Function( _FinishGame value)?  finishGame,TResult Function( _RestartGame value)?  restartGame,TResult Function( _SocketConnected value)?  socketConnected,TResult Function( _SocketPlayerJoined value)?  socketPlayerJoined,TResult Function( _SocketMatchStart value)?  socketMatchStart,TResult Function( _SocketSyncState value)?  socketSyncState,TResult Function( _SocketAnswerResult value)?  socketAnswerResult,TResult Function( _SocketRoundTimeout value)?  socketRoundTimeout,TResult Function( _SocketNextRound value)?  socketNextRound,TResult Function( _SocketMatchFinished value)?  socketMatchFinished,TResult Function( _SocketOpponentAnswer value)?  socketOpponentAnswer,TResult Function( _SocketRoundSync value)?  socketRoundSync,TResult Function( _SocketOpponentLeft value)?  socketOpponentLeft,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _InitDeck value)?  initDeck,TResult Function( _SelectAnswer value)?  selectAnswer,TResult Function( _Tick value)?  tick,TResult Function( _NextQuestion value)?  nextQuestion,TResult Function( _BotAnswer value)?  botAnswer,TResult Function( _FinishGame value)?  finishGame,TResult Function( _RestartGame value)?  restartGame,TResult Function( _SocketConnected value)?  socketConnected,TResult Function( _SocketPlayerJoined value)?  socketPlayerJoined,TResult Function( _SocketMatchStart value)?  socketMatchStart,TResult Function( _SocketSyncState value)?  socketSyncState,TResult Function( _SocketAnswerResult value)?  socketAnswerResult,TResult Function( _SocketRoundTimeout value)?  socketRoundTimeout,TResult Function( _SocketNextRound value)?  socketNextRound,TResult Function( _SocketMatchFinished value)?  socketMatchFinished,TResult Function( _SocketOpponentAnswer value)?  socketOpponentAnswer,TResult Function( _SocketRoundSync value)?  socketRoundSync,TResult Function( _SocketOpponentLeft value)?  socketOpponentLeft,TResult Function( _SocketRematchWaiting value)?  socketRematchWaiting,TResult Function( _CooldownTick value)?  cooldownTick,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _InitDeck() when initDeck != null:
@@ -77,7 +77,9 @@ return socketNextRound(_that);case _SocketMatchFinished() when socketMatchFinish
 return socketMatchFinished(_that);case _SocketOpponentAnswer() when socketOpponentAnswer != null:
 return socketOpponentAnswer(_that);case _SocketRoundSync() when socketRoundSync != null:
 return socketRoundSync(_that);case _SocketOpponentLeft() when socketOpponentLeft != null:
-return socketOpponentLeft(_that);case _:
+return socketOpponentLeft(_that);case _SocketRematchWaiting() when socketRematchWaiting != null:
+return socketRematchWaiting(_that);case _CooldownTick() when cooldownTick != null:
+return cooldownTick(_that);case _:
   return orElse();
 
 }
@@ -95,7 +97,7 @@ return socketOpponentLeft(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _InitDeck value)  initDeck,required TResult Function( _SelectAnswer value)  selectAnswer,required TResult Function( _Tick value)  tick,required TResult Function( _NextQuestion value)  nextQuestion,required TResult Function( _BotAnswer value)  botAnswer,required TResult Function( _FinishGame value)  finishGame,required TResult Function( _RestartGame value)  restartGame,required TResult Function( _SocketConnected value)  socketConnected,required TResult Function( _SocketPlayerJoined value)  socketPlayerJoined,required TResult Function( _SocketMatchStart value)  socketMatchStart,required TResult Function( _SocketSyncState value)  socketSyncState,required TResult Function( _SocketAnswerResult value)  socketAnswerResult,required TResult Function( _SocketRoundTimeout value)  socketRoundTimeout,required TResult Function( _SocketNextRound value)  socketNextRound,required TResult Function( _SocketMatchFinished value)  socketMatchFinished,required TResult Function( _SocketOpponentAnswer value)  socketOpponentAnswer,required TResult Function( _SocketRoundSync value)  socketRoundSync,required TResult Function( _SocketOpponentLeft value)  socketOpponentLeft,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _InitDeck value)  initDeck,required TResult Function( _SelectAnswer value)  selectAnswer,required TResult Function( _Tick value)  tick,required TResult Function( _NextQuestion value)  nextQuestion,required TResult Function( _BotAnswer value)  botAnswer,required TResult Function( _FinishGame value)  finishGame,required TResult Function( _RestartGame value)  restartGame,required TResult Function( _SocketConnected value)  socketConnected,required TResult Function( _SocketPlayerJoined value)  socketPlayerJoined,required TResult Function( _SocketMatchStart value)  socketMatchStart,required TResult Function( _SocketSyncState value)  socketSyncState,required TResult Function( _SocketAnswerResult value)  socketAnswerResult,required TResult Function( _SocketRoundTimeout value)  socketRoundTimeout,required TResult Function( _SocketNextRound value)  socketNextRound,required TResult Function( _SocketMatchFinished value)  socketMatchFinished,required TResult Function( _SocketOpponentAnswer value)  socketOpponentAnswer,required TResult Function( _SocketRoundSync value)  socketRoundSync,required TResult Function( _SocketOpponentLeft value)  socketOpponentLeft,required TResult Function( _SocketRematchWaiting value)  socketRematchWaiting,required TResult Function( _CooldownTick value)  cooldownTick,}){
 final _that = this;
 switch (_that) {
 case _InitDeck():
@@ -116,7 +118,9 @@ return socketNextRound(_that);case _SocketMatchFinished():
 return socketMatchFinished(_that);case _SocketOpponentAnswer():
 return socketOpponentAnswer(_that);case _SocketRoundSync():
 return socketRoundSync(_that);case _SocketOpponentLeft():
-return socketOpponentLeft(_that);case _:
+return socketOpponentLeft(_that);case _SocketRematchWaiting():
+return socketRematchWaiting(_that);case _CooldownTick():
+return cooldownTick(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -133,7 +137,7 @@ return socketOpponentLeft(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _InitDeck value)?  initDeck,TResult? Function( _SelectAnswer value)?  selectAnswer,TResult? Function( _Tick value)?  tick,TResult? Function( _NextQuestion value)?  nextQuestion,TResult? Function( _BotAnswer value)?  botAnswer,TResult? Function( _FinishGame value)?  finishGame,TResult? Function( _RestartGame value)?  restartGame,TResult? Function( _SocketConnected value)?  socketConnected,TResult? Function( _SocketPlayerJoined value)?  socketPlayerJoined,TResult? Function( _SocketMatchStart value)?  socketMatchStart,TResult? Function( _SocketSyncState value)?  socketSyncState,TResult? Function( _SocketAnswerResult value)?  socketAnswerResult,TResult? Function( _SocketRoundTimeout value)?  socketRoundTimeout,TResult? Function( _SocketNextRound value)?  socketNextRound,TResult? Function( _SocketMatchFinished value)?  socketMatchFinished,TResult? Function( _SocketOpponentAnswer value)?  socketOpponentAnswer,TResult? Function( _SocketRoundSync value)?  socketRoundSync,TResult? Function( _SocketOpponentLeft value)?  socketOpponentLeft,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _InitDeck value)?  initDeck,TResult? Function( _SelectAnswer value)?  selectAnswer,TResult? Function( _Tick value)?  tick,TResult? Function( _NextQuestion value)?  nextQuestion,TResult? Function( _BotAnswer value)?  botAnswer,TResult? Function( _FinishGame value)?  finishGame,TResult? Function( _RestartGame value)?  restartGame,TResult? Function( _SocketConnected value)?  socketConnected,TResult? Function( _SocketPlayerJoined value)?  socketPlayerJoined,TResult? Function( _SocketMatchStart value)?  socketMatchStart,TResult? Function( _SocketSyncState value)?  socketSyncState,TResult? Function( _SocketAnswerResult value)?  socketAnswerResult,TResult? Function( _SocketRoundTimeout value)?  socketRoundTimeout,TResult? Function( _SocketNextRound value)?  socketNextRound,TResult? Function( _SocketMatchFinished value)?  socketMatchFinished,TResult? Function( _SocketOpponentAnswer value)?  socketOpponentAnswer,TResult? Function( _SocketRoundSync value)?  socketRoundSync,TResult? Function( _SocketOpponentLeft value)?  socketOpponentLeft,TResult? Function( _SocketRematchWaiting value)?  socketRematchWaiting,TResult? Function( _CooldownTick value)?  cooldownTick,}){
 final _that = this;
 switch (_that) {
 case _InitDeck() when initDeck != null:
@@ -154,7 +158,9 @@ return socketNextRound(_that);case _SocketMatchFinished() when socketMatchFinish
 return socketMatchFinished(_that);case _SocketOpponentAnswer() when socketOpponentAnswer != null:
 return socketOpponentAnswer(_that);case _SocketRoundSync() when socketRoundSync != null:
 return socketRoundSync(_that);case _SocketOpponentLeft() when socketOpponentLeft != null:
-return socketOpponentLeft(_that);case _:
+return socketOpponentLeft(_that);case _SocketRematchWaiting() when socketRematchWaiting != null:
+return socketRematchWaiting(_that);case _CooldownTick() when cooldownTick != null:
+return cooldownTick(_that);case _:
   return null;
 
 }
@@ -171,7 +177,7 @@ return socketOpponentLeft(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String topic,  String? uid,  bool isBotOpponent,  String? roomCode,  String? initialOpponentName,  String? initialOpponentAvatar)?  initDeck,TResult Function( bool isPlayer1,  String selectedWord)?  selectAnswer,TResult Function()?  tick,TResult Function()?  nextQuestion,TResult Function()?  botAnswer,TResult Function()?  finishGame,TResult Function()?  restartGame,TResult Function( int playerIndex,  String rivalName,  String rivalAvatar)?  socketConnected,TResult Function( String name,  String avatar)?  socketPlayerJoined,TResult Function( List<Map<String, dynamic>> rawDeck,  int playerIndex,  String rivalName,  String rivalAvatar,  int matchRound)?  socketMatchStart,TResult Function( int roundIndex,  int startedAt,  List<int> scores,  List<int> streaks)?  socketSyncState,TResult Function( int playerIndex,  String optionId,  bool isCorrect,  List<int> scores,  int revealTime)?  socketAnswerResult,TResult Function()?  socketRoundTimeout,TResult Function( int roundIndex,  int startedAt,  List<int> scores)?  socketNextRound,TResult Function( dynamic winner,  List<int> scores)?  socketMatchFinished,TResult Function( int questionIndex,  String selectedWord,  bool isCorrect,  int score)?  socketOpponentAnswer,TResult Function( int round)?  socketRoundSync,TResult Function()?  socketOpponentLeft,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String topic,  String? uid,  bool isBotOpponent,  String? roomCode,  String? initialOpponentName,  String? initialOpponentAvatar)?  initDeck,TResult Function( bool isPlayer1,  String selectedWord)?  selectAnswer,TResult Function()?  tick,TResult Function()?  nextQuestion,TResult Function()?  botAnswer,TResult Function()?  finishGame,TResult Function()?  restartGame,TResult Function( int playerIndex,  String rivalName,  String rivalAvatar)?  socketConnected,TResult Function( String name,  String avatar)?  socketPlayerJoined,TResult Function( List<Map<String, dynamic>> rawDeck,  int playerIndex,  String rivalName,  String rivalAvatar,  int matchRound)?  socketMatchStart,TResult Function( int roundIndex,  int startedAt,  List<int> scores,  List<int> streaks)?  socketSyncState,TResult Function( int playerIndex,  String optionId,  bool isCorrect,  List<int> scores,  int revealTime)?  socketAnswerResult,TResult Function()?  socketRoundTimeout,TResult Function( int roundIndex,  int startedAt,  List<int> scores)?  socketNextRound,TResult Function( dynamic winner,  List<int> scores,  int matchRound,  int? continueAt)?  socketMatchFinished,TResult Function( int questionIndex,  String selectedWord,  bool isCorrect,  int score)?  socketOpponentAnswer,TResult Function( int round)?  socketRoundSync,TResult Function( String? message)?  socketOpponentLeft,TResult Function( int matchRound,  List<bool> readyPlayers)?  socketRematchWaiting,TResult Function( bool isPlayer1,  int remainingSeconds)?  cooldownTick,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _InitDeck() when initDeck != null:
 return initDeck(_that.topic,_that.uid,_that.isBotOpponent,_that.roomCode,_that.initialOpponentName,_that.initialOpponentAvatar);case _SelectAnswer() when selectAnswer != null:
@@ -188,10 +194,12 @@ return socketSyncState(_that.roundIndex,_that.startedAt,_that.scores,_that.strea
 return socketAnswerResult(_that.playerIndex,_that.optionId,_that.isCorrect,_that.scores,_that.revealTime);case _SocketRoundTimeout() when socketRoundTimeout != null:
 return socketRoundTimeout();case _SocketNextRound() when socketNextRound != null:
 return socketNextRound(_that.roundIndex,_that.startedAt,_that.scores);case _SocketMatchFinished() when socketMatchFinished != null:
-return socketMatchFinished(_that.winner,_that.scores);case _SocketOpponentAnswer() when socketOpponentAnswer != null:
+return socketMatchFinished(_that.winner,_that.scores,_that.matchRound,_that.continueAt);case _SocketOpponentAnswer() when socketOpponentAnswer != null:
 return socketOpponentAnswer(_that.questionIndex,_that.selectedWord,_that.isCorrect,_that.score);case _SocketRoundSync() when socketRoundSync != null:
 return socketRoundSync(_that.round);case _SocketOpponentLeft() when socketOpponentLeft != null:
-return socketOpponentLeft();case _:
+return socketOpponentLeft(_that.message);case _SocketRematchWaiting() when socketRematchWaiting != null:
+return socketRematchWaiting(_that.matchRound,_that.readyPlayers);case _CooldownTick() when cooldownTick != null:
+return cooldownTick(_that.isPlayer1,_that.remainingSeconds);case _:
   return orElse();
 
 }
@@ -209,7 +217,7 @@ return socketOpponentLeft();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String topic,  String? uid,  bool isBotOpponent,  String? roomCode,  String? initialOpponentName,  String? initialOpponentAvatar)  initDeck,required TResult Function( bool isPlayer1,  String selectedWord)  selectAnswer,required TResult Function()  tick,required TResult Function()  nextQuestion,required TResult Function()  botAnswer,required TResult Function()  finishGame,required TResult Function()  restartGame,required TResult Function( int playerIndex,  String rivalName,  String rivalAvatar)  socketConnected,required TResult Function( String name,  String avatar)  socketPlayerJoined,required TResult Function( List<Map<String, dynamic>> rawDeck,  int playerIndex,  String rivalName,  String rivalAvatar,  int matchRound)  socketMatchStart,required TResult Function( int roundIndex,  int startedAt,  List<int> scores,  List<int> streaks)  socketSyncState,required TResult Function( int playerIndex,  String optionId,  bool isCorrect,  List<int> scores,  int revealTime)  socketAnswerResult,required TResult Function()  socketRoundTimeout,required TResult Function( int roundIndex,  int startedAt,  List<int> scores)  socketNextRound,required TResult Function( dynamic winner,  List<int> scores)  socketMatchFinished,required TResult Function( int questionIndex,  String selectedWord,  bool isCorrect,  int score)  socketOpponentAnswer,required TResult Function( int round)  socketRoundSync,required TResult Function()  socketOpponentLeft,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String topic,  String? uid,  bool isBotOpponent,  String? roomCode,  String? initialOpponentName,  String? initialOpponentAvatar)  initDeck,required TResult Function( bool isPlayer1,  String selectedWord)  selectAnswer,required TResult Function()  tick,required TResult Function()  nextQuestion,required TResult Function()  botAnswer,required TResult Function()  finishGame,required TResult Function()  restartGame,required TResult Function( int playerIndex,  String rivalName,  String rivalAvatar)  socketConnected,required TResult Function( String name,  String avatar)  socketPlayerJoined,required TResult Function( List<Map<String, dynamic>> rawDeck,  int playerIndex,  String rivalName,  String rivalAvatar,  int matchRound)  socketMatchStart,required TResult Function( int roundIndex,  int startedAt,  List<int> scores,  List<int> streaks)  socketSyncState,required TResult Function( int playerIndex,  String optionId,  bool isCorrect,  List<int> scores,  int revealTime)  socketAnswerResult,required TResult Function()  socketRoundTimeout,required TResult Function( int roundIndex,  int startedAt,  List<int> scores)  socketNextRound,required TResult Function( dynamic winner,  List<int> scores,  int matchRound,  int? continueAt)  socketMatchFinished,required TResult Function( int questionIndex,  String selectedWord,  bool isCorrect,  int score)  socketOpponentAnswer,required TResult Function( int round)  socketRoundSync,required TResult Function( String? message)  socketOpponentLeft,required TResult Function( int matchRound,  List<bool> readyPlayers)  socketRematchWaiting,required TResult Function( bool isPlayer1,  int remainingSeconds)  cooldownTick,}) {final _that = this;
 switch (_that) {
 case _InitDeck():
 return initDeck(_that.topic,_that.uid,_that.isBotOpponent,_that.roomCode,_that.initialOpponentName,_that.initialOpponentAvatar);case _SelectAnswer():
@@ -226,10 +234,12 @@ return socketSyncState(_that.roundIndex,_that.startedAt,_that.scores,_that.strea
 return socketAnswerResult(_that.playerIndex,_that.optionId,_that.isCorrect,_that.scores,_that.revealTime);case _SocketRoundTimeout():
 return socketRoundTimeout();case _SocketNextRound():
 return socketNextRound(_that.roundIndex,_that.startedAt,_that.scores);case _SocketMatchFinished():
-return socketMatchFinished(_that.winner,_that.scores);case _SocketOpponentAnswer():
+return socketMatchFinished(_that.winner,_that.scores,_that.matchRound,_that.continueAt);case _SocketOpponentAnswer():
 return socketOpponentAnswer(_that.questionIndex,_that.selectedWord,_that.isCorrect,_that.score);case _SocketRoundSync():
 return socketRoundSync(_that.round);case _SocketOpponentLeft():
-return socketOpponentLeft();case _:
+return socketOpponentLeft(_that.message);case _SocketRematchWaiting():
+return socketRematchWaiting(_that.matchRound,_that.readyPlayers);case _CooldownTick():
+return cooldownTick(_that.isPlayer1,_that.remainingSeconds);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -246,7 +256,7 @@ return socketOpponentLeft();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String topic,  String? uid,  bool isBotOpponent,  String? roomCode,  String? initialOpponentName,  String? initialOpponentAvatar)?  initDeck,TResult? Function( bool isPlayer1,  String selectedWord)?  selectAnswer,TResult? Function()?  tick,TResult? Function()?  nextQuestion,TResult? Function()?  botAnswer,TResult? Function()?  finishGame,TResult? Function()?  restartGame,TResult? Function( int playerIndex,  String rivalName,  String rivalAvatar)?  socketConnected,TResult? Function( String name,  String avatar)?  socketPlayerJoined,TResult? Function( List<Map<String, dynamic>> rawDeck,  int playerIndex,  String rivalName,  String rivalAvatar,  int matchRound)?  socketMatchStart,TResult? Function( int roundIndex,  int startedAt,  List<int> scores,  List<int> streaks)?  socketSyncState,TResult? Function( int playerIndex,  String optionId,  bool isCorrect,  List<int> scores,  int revealTime)?  socketAnswerResult,TResult? Function()?  socketRoundTimeout,TResult? Function( int roundIndex,  int startedAt,  List<int> scores)?  socketNextRound,TResult? Function( dynamic winner,  List<int> scores)?  socketMatchFinished,TResult? Function( int questionIndex,  String selectedWord,  bool isCorrect,  int score)?  socketOpponentAnswer,TResult? Function( int round)?  socketRoundSync,TResult? Function()?  socketOpponentLeft,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String topic,  String? uid,  bool isBotOpponent,  String? roomCode,  String? initialOpponentName,  String? initialOpponentAvatar)?  initDeck,TResult? Function( bool isPlayer1,  String selectedWord)?  selectAnswer,TResult? Function()?  tick,TResult? Function()?  nextQuestion,TResult? Function()?  botAnswer,TResult? Function()?  finishGame,TResult? Function()?  restartGame,TResult? Function( int playerIndex,  String rivalName,  String rivalAvatar)?  socketConnected,TResult? Function( String name,  String avatar)?  socketPlayerJoined,TResult? Function( List<Map<String, dynamic>> rawDeck,  int playerIndex,  String rivalName,  String rivalAvatar,  int matchRound)?  socketMatchStart,TResult? Function( int roundIndex,  int startedAt,  List<int> scores,  List<int> streaks)?  socketSyncState,TResult? Function( int playerIndex,  String optionId,  bool isCorrect,  List<int> scores,  int revealTime)?  socketAnswerResult,TResult? Function()?  socketRoundTimeout,TResult? Function( int roundIndex,  int startedAt,  List<int> scores)?  socketNextRound,TResult? Function( dynamic winner,  List<int> scores,  int matchRound,  int? continueAt)?  socketMatchFinished,TResult? Function( int questionIndex,  String selectedWord,  bool isCorrect,  int score)?  socketOpponentAnswer,TResult? Function( int round)?  socketRoundSync,TResult? Function( String? message)?  socketOpponentLeft,TResult? Function( int matchRound,  List<bool> readyPlayers)?  socketRematchWaiting,TResult? Function( bool isPlayer1,  int remainingSeconds)?  cooldownTick,}) {final _that = this;
 switch (_that) {
 case _InitDeck() when initDeck != null:
 return initDeck(_that.topic,_that.uid,_that.isBotOpponent,_that.roomCode,_that.initialOpponentName,_that.initialOpponentAvatar);case _SelectAnswer() when selectAnswer != null:
@@ -263,10 +273,12 @@ return socketSyncState(_that.roundIndex,_that.startedAt,_that.scores,_that.strea
 return socketAnswerResult(_that.playerIndex,_that.optionId,_that.isCorrect,_that.scores,_that.revealTime);case _SocketRoundTimeout() when socketRoundTimeout != null:
 return socketRoundTimeout();case _SocketNextRound() when socketNextRound != null:
 return socketNextRound(_that.roundIndex,_that.startedAt,_that.scores);case _SocketMatchFinished() when socketMatchFinished != null:
-return socketMatchFinished(_that.winner,_that.scores);case _SocketOpponentAnswer() when socketOpponentAnswer != null:
+return socketMatchFinished(_that.winner,_that.scores,_that.matchRound,_that.continueAt);case _SocketOpponentAnswer() when socketOpponentAnswer != null:
 return socketOpponentAnswer(_that.questionIndex,_that.selectedWord,_that.isCorrect,_that.score);case _SocketRoundSync() when socketRoundSync != null:
 return socketRoundSync(_that.round);case _SocketOpponentLeft() when socketOpponentLeft != null:
-return socketOpponentLeft();case _:
+return socketOpponentLeft(_that.message);case _SocketRematchWaiting() when socketRematchWaiting != null:
+return socketRematchWaiting(_that.matchRound,_that.readyPlayers);case _CooldownTick() when cooldownTick != null:
+return cooldownTick(_that.isPlayer1,_that.remainingSeconds);case _:
   return null;
 
 }
@@ -1088,7 +1100,7 @@ as List<int>,
 
 
 class _SocketMatchFinished implements VocabularyEvent {
-  const _SocketMatchFinished({required this.winner,  List<int> scores = const []}): _scores = scores;
+  const _SocketMatchFinished({required this.winner,  List<int> scores = const [], this.matchRound = 1, this.continueAt}): _scores = scores;
   
 
  final  dynamic winner;
@@ -1099,6 +1111,8 @@ class _SocketMatchFinished implements VocabularyEvent {
   return EqualUnmodifiableListView(_scores);
 }
 
+@JsonKey() final  int matchRound;
+ final  int? continueAt;
 
 /// Create a copy of VocabularyEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -1110,18 +1124,18 @@ _$SocketMatchFinishedCopyWith<_SocketMatchFinished> get copyWith => __$SocketMat
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SocketMatchFinished&&const DeepCollectionEquality().equals(other.winner, winner)&&const DeepCollectionEquality().equals(other.scores, _scores));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SocketMatchFinished&&const DeepCollectionEquality().equals(other.winner, winner)&&const DeepCollectionEquality().equals(other.scores, _scores)&&(identical(other.matchRound, matchRound) || other.matchRound == matchRound)&&(identical(other.continueAt, continueAt) || other.continueAt == continueAt));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,const DeepCollectionEquality().hash(winner),const DeepCollectionEquality().hash(_scores));
+    return Object.hash(runtimeType,const DeepCollectionEquality().hash(winner),const DeepCollectionEquality().hash(_scores),matchRound,continueAt);
 }
 
 @override
 String toString() {
-    return 'VocabularyEvent.socketMatchFinished(winner: $winner, scores: $scores)';
+    return 'VocabularyEvent.socketMatchFinished(winner: $winner, scores: $scores, matchRound: $matchRound, continueAt: $continueAt)';
 }
 
 
@@ -1132,7 +1146,7 @@ abstract mixin class _$SocketMatchFinishedCopyWith<$Res> implements $VocabularyE
   factory _$SocketMatchFinishedCopyWith(_SocketMatchFinished value, $Res Function(_SocketMatchFinished) _then) = __$SocketMatchFinishedCopyWithImpl;
 @useResult
 $Res call({
- dynamic winner, List<int> scores
+ dynamic winner, List<int> scores, int matchRound, int? continueAt
 });
 
 
@@ -1149,11 +1163,13 @@ class __$SocketMatchFinishedCopyWithImpl<$Res>
 
 /// Create a copy of VocabularyEvent
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? winner = freezed,Object? scores = null,}) {
+@pragma('vm:prefer-inline') $Res call({Object? winner = freezed,Object? scores = null,Object? matchRound = null,Object? continueAt = freezed,}) {
   return _then(_SocketMatchFinished(
 winner: freezed == winner ? _self.winner : winner // ignore: cast_nullable_to_non_nullable
 as dynamic,scores: null == scores ? _self._scores : scores // ignore: cast_nullable_to_non_nullable
-as List<int>,
+as List<int>,matchRound: null == matchRound ? _self.matchRound : matchRound // ignore: cast_nullable_to_non_nullable
+as int,continueAt: freezed == continueAt ? _self.continueAt : continueAt // ignore: cast_nullable_to_non_nullable
+as int?,
   ));
 }
 
@@ -1306,38 +1322,220 @@ as int,
 
 
 class _SocketOpponentLeft implements VocabularyEvent {
-  const _SocketOpponentLeft();
+  const _SocketOpponentLeft({this.message});
   
 
+ final  String? message;
 
-
+/// Create a copy of VocabularyEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$SocketOpponentLeftCopyWith<_SocketOpponentLeft> get copyWith => __$SocketOpponentLeftCopyWithImpl<_SocketOpponentLeft>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SocketOpponentLeft);
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SocketOpponentLeft&&(identical(other.message, message) || other.message == message));
 }
 
 
 @override
-int get hashCode => runtimeType.hashCode;
+int get hashCode {
+    return Object.hash(runtimeType,message);
+}
 
 @override
 String toString() {
-    return 'VocabularyEvent.socketOpponentLeft()';
+    return 'VocabularyEvent.socketOpponentLeft(message: $message)';
 }
 
 
 }
 
+/// @nodoc
+abstract mixin class _$SocketOpponentLeftCopyWith<$Res> implements $VocabularyEventCopyWith<$Res> {
+  factory _$SocketOpponentLeftCopyWith(_SocketOpponentLeft value, $Res Function(_SocketOpponentLeft) _then) = __$SocketOpponentLeftCopyWithImpl;
+@useResult
+$Res call({
+ String? message
+});
 
 
+
+
+}
+/// @nodoc
+class __$SocketOpponentLeftCopyWithImpl<$Res>
+    implements _$SocketOpponentLeftCopyWith<$Res> {
+  __$SocketOpponentLeftCopyWithImpl(this._self, this._then);
+
+  final _SocketOpponentLeft _self;
+  final $Res Function(_SocketOpponentLeft) _then;
+
+/// Create a copy of VocabularyEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? message = freezed,}) {
+  return _then(_SocketOpponentLeft(
+message: freezed == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _SocketRematchWaiting implements VocabularyEvent {
+  const _SocketRematchWaiting({required this.matchRound, required  List<bool> readyPlayers}): _readyPlayers = readyPlayers;
+  
+
+ final  int matchRound;
+ final  List<bool> _readyPlayers;
+ List<bool> get readyPlayers {
+  if (_readyPlayers is EqualUnmodifiableListView) return _readyPlayers;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_readyPlayers);
+}
+
+
+/// Create a copy of VocabularyEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$SocketRematchWaitingCopyWith<_SocketRematchWaiting> get copyWith => __$SocketRematchWaitingCopyWithImpl<_SocketRematchWaiting>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SocketRematchWaiting&&(identical(other.matchRound, matchRound) || other.matchRound == matchRound)&&const DeepCollectionEquality().equals(other.readyPlayers, _readyPlayers));
+}
+
+
+@override
+int get hashCode {
+    return Object.hash(runtimeType,matchRound,const DeepCollectionEquality().hash(_readyPlayers));
+}
+
+@override
+String toString() {
+    return 'VocabularyEvent.socketRematchWaiting(matchRound: $matchRound, readyPlayers: $readyPlayers)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$SocketRematchWaitingCopyWith<$Res> implements $VocabularyEventCopyWith<$Res> {
+  factory _$SocketRematchWaitingCopyWith(_SocketRematchWaiting value, $Res Function(_SocketRematchWaiting) _then) = __$SocketRematchWaitingCopyWithImpl;
+@useResult
+$Res call({
+ int matchRound, List<bool> readyPlayers
+});
+
+
+
+
+}
+/// @nodoc
+class __$SocketRematchWaitingCopyWithImpl<$Res>
+    implements _$SocketRematchWaitingCopyWith<$Res> {
+  __$SocketRematchWaitingCopyWithImpl(this._self, this._then);
+
+  final _SocketRematchWaiting _self;
+  final $Res Function(_SocketRematchWaiting) _then;
+
+/// Create a copy of VocabularyEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? matchRound = null,Object? readyPlayers = null,}) {
+  return _then(_SocketRematchWaiting(
+matchRound: null == matchRound ? _self.matchRound : matchRound // ignore: cast_nullable_to_non_nullable
+as int,readyPlayers: null == readyPlayers ? _self._readyPlayers : readyPlayers // ignore: cast_nullable_to_non_nullable
+as List<bool>,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _CooldownTick implements VocabularyEvent {
+  const _CooldownTick({required this.isPlayer1, required this.remainingSeconds});
+  
+
+ final  bool isPlayer1;
+ final  int remainingSeconds;
+
+/// Create a copy of VocabularyEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$CooldownTickCopyWith<_CooldownTick> get copyWith => __$CooldownTickCopyWithImpl<_CooldownTick>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _CooldownTick&&(identical(other.isPlayer1, isPlayer1) || other.isPlayer1 == isPlayer1)&&(identical(other.remainingSeconds, remainingSeconds) || other.remainingSeconds == remainingSeconds));
+}
+
+
+@override
+int get hashCode {
+    return Object.hash(runtimeType,isPlayer1,remainingSeconds);
+}
+
+@override
+String toString() {
+    return 'VocabularyEvent.cooldownTick(isPlayer1: $isPlayer1, remainingSeconds: $remainingSeconds)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$CooldownTickCopyWith<$Res> implements $VocabularyEventCopyWith<$Res> {
+  factory _$CooldownTickCopyWith(_CooldownTick value, $Res Function(_CooldownTick) _then) = __$CooldownTickCopyWithImpl;
+@useResult
+$Res call({
+ bool isPlayer1, int remainingSeconds
+});
+
+
+
+
+}
+/// @nodoc
+class __$CooldownTickCopyWithImpl<$Res>
+    implements _$CooldownTickCopyWith<$Res> {
+  __$CooldownTickCopyWithImpl(this._self, this._then);
+
+  final _CooldownTick _self;
+  final $Res Function(_CooldownTick) _then;
+
+/// Create a copy of VocabularyEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? isPlayer1 = null,Object? remainingSeconds = null,}) {
+  return _then(_CooldownTick(
+isPlayer1: null == isPlayer1 ? _self.isPlayer1 : isPlayer1 // ignore: cast_nullable_to_non_nullable
+as bool,remainingSeconds: null == remainingSeconds ? _self.remainingSeconds : remainingSeconds // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+
+}
 
 /// @nodoc
 mixin _$VocabularyState {
 
- bool get isLoading; String? get errorMessage; BattleDeckEntity? get deckEntity; List<BattleQuestionEntity> get questions; int get currentQuestionIndex; int get player1Score; int get player2Score; int get correctCountP1; int get remainingSeconds; bool get isRoundLocked; String? get selectedWordP1; String? get selectedWordP2; bool get isGameOver; bool get isSavingReward; BattleRewardEntity? get reward; List<String> get optionsP1; List<String> get optionsP2; bool get isBotOpponent; String? get roomCode; String? get opponentName; String? get opponentAvatar; bool get isOpponentConnected; bool get isOpponentLeft; String? get opponentLeftMessage; int get playerIndex; int get matchRound; int get startedAt; String? get selectedOptionIdP1; String? get selectedOptionIdP2; bool? get isP1Correct; bool? get isP2Correct; bool get isWaitingForReady; String get topic; String? get currentUid; Map<String, bool> get answersP1;
+ bool get isLoading; String? get errorMessage; BattleDeck? get deckEntity; List<BattleQuestion> get questions; int get currentQuestionIndex; int get player1Score; int get player2Score; int get correctCountP1; int get remainingSeconds; bool get isRoundLocked; String? get selectedWordP1; String? get selectedWordP2; bool get isGameOver; bool get isSavingReward; BattleReward? get reward; List<String> get optionsP1; List<String> get optionsP2; bool get isBotOpponent; String? get roomCode; String? get opponentName; String? get opponentAvatar; bool get isOpponentConnected; bool get isOpponentLeft; String? get opponentLeftMessage; int get playerIndex; int get matchRound; int get startedAt; String? get selectedOptionIdP1; String? get selectedOptionIdP2; bool? get isP1Correct; bool? get isP2Correct; bool get isWaitingForReady; String get topic; String? get currentUid; Map<String, bool> get answersP1; List<String> get wrongWordsP1; List<String> get wrongWordsP2; int get cooldownSecondsP1; int get cooldownSecondsP2; bool get isRematchRequested; bool get isOpponentWantRematch; List<bool> get rematchReadyPlayers;
 /// Create a copy of VocabularyState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1349,14 +1547,14 @@ $VocabularyStateCopyWith<VocabularyState> get copyWith => _$VocabularyStateCopyW
 @override
 bool operator ==(Object other) {
   final _this = this as VocabularyState;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is VocabularyState&&(identical(other.isLoading, _this.isLoading) || other.isLoading == _this.isLoading)&&(identical(other.errorMessage, _this.errorMessage) || other.errorMessage == _this.errorMessage)&&(identical(other.deckEntity, _this.deckEntity) || other.deckEntity == _this.deckEntity)&&const DeepCollectionEquality().equals(other.questions, _this.questions)&&(identical(other.currentQuestionIndex, _this.currentQuestionIndex) || other.currentQuestionIndex == _this.currentQuestionIndex)&&(identical(other.player1Score, _this.player1Score) || other.player1Score == _this.player1Score)&&(identical(other.player2Score, _this.player2Score) || other.player2Score == _this.player2Score)&&(identical(other.correctCountP1, _this.correctCountP1) || other.correctCountP1 == _this.correctCountP1)&&(identical(other.remainingSeconds, _this.remainingSeconds) || other.remainingSeconds == _this.remainingSeconds)&&(identical(other.isRoundLocked, _this.isRoundLocked) || other.isRoundLocked == _this.isRoundLocked)&&(identical(other.selectedWordP1, _this.selectedWordP1) || other.selectedWordP1 == _this.selectedWordP1)&&(identical(other.selectedWordP2, _this.selectedWordP2) || other.selectedWordP2 == _this.selectedWordP2)&&(identical(other.isGameOver, _this.isGameOver) || other.isGameOver == _this.isGameOver)&&(identical(other.isSavingReward, _this.isSavingReward) || other.isSavingReward == _this.isSavingReward)&&(identical(other.reward, _this.reward) || other.reward == _this.reward)&&const DeepCollectionEquality().equals(other.optionsP1, _this.optionsP1)&&const DeepCollectionEquality().equals(other.optionsP2, _this.optionsP2)&&(identical(other.isBotOpponent, _this.isBotOpponent) || other.isBotOpponent == _this.isBotOpponent)&&(identical(other.roomCode, _this.roomCode) || other.roomCode == _this.roomCode)&&(identical(other.opponentName, _this.opponentName) || other.opponentName == _this.opponentName)&&(identical(other.opponentAvatar, _this.opponentAvatar) || other.opponentAvatar == _this.opponentAvatar)&&(identical(other.isOpponentConnected, _this.isOpponentConnected) || other.isOpponentConnected == _this.isOpponentConnected)&&(identical(other.isOpponentLeft, _this.isOpponentLeft) || other.isOpponentLeft == _this.isOpponentLeft)&&(identical(other.opponentLeftMessage, _this.opponentLeftMessage) || other.opponentLeftMessage == _this.opponentLeftMessage)&&(identical(other.playerIndex, _this.playerIndex) || other.playerIndex == _this.playerIndex)&&(identical(other.matchRound, _this.matchRound) || other.matchRound == _this.matchRound)&&(identical(other.startedAt, _this.startedAt) || other.startedAt == _this.startedAt)&&(identical(other.selectedOptionIdP1, _this.selectedOptionIdP1) || other.selectedOptionIdP1 == _this.selectedOptionIdP1)&&(identical(other.selectedOptionIdP2, _this.selectedOptionIdP2) || other.selectedOptionIdP2 == _this.selectedOptionIdP2)&&(identical(other.isP1Correct, _this.isP1Correct) || other.isP1Correct == _this.isP1Correct)&&(identical(other.isP2Correct, _this.isP2Correct) || other.isP2Correct == _this.isP2Correct)&&(identical(other.isWaitingForReady, _this.isWaitingForReady) || other.isWaitingForReady == _this.isWaitingForReady)&&(identical(other.topic, _this.topic) || other.topic == _this.topic)&&(identical(other.currentUid, _this.currentUid) || other.currentUid == _this.currentUid)&&const DeepCollectionEquality().equals(other.answersP1, _this.answersP1));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is VocabularyState&&(identical(other.isLoading, _this.isLoading) || other.isLoading == _this.isLoading)&&(identical(other.errorMessage, _this.errorMessage) || other.errorMessage == _this.errorMessage)&&(identical(other.deckEntity, _this.deckEntity) || other.deckEntity == _this.deckEntity)&&const DeepCollectionEquality().equals(other.questions, _this.questions)&&(identical(other.currentQuestionIndex, _this.currentQuestionIndex) || other.currentQuestionIndex == _this.currentQuestionIndex)&&(identical(other.player1Score, _this.player1Score) || other.player1Score == _this.player1Score)&&(identical(other.player2Score, _this.player2Score) || other.player2Score == _this.player2Score)&&(identical(other.correctCountP1, _this.correctCountP1) || other.correctCountP1 == _this.correctCountP1)&&(identical(other.remainingSeconds, _this.remainingSeconds) || other.remainingSeconds == _this.remainingSeconds)&&(identical(other.isRoundLocked, _this.isRoundLocked) || other.isRoundLocked == _this.isRoundLocked)&&(identical(other.selectedWordP1, _this.selectedWordP1) || other.selectedWordP1 == _this.selectedWordP1)&&(identical(other.selectedWordP2, _this.selectedWordP2) || other.selectedWordP2 == _this.selectedWordP2)&&(identical(other.isGameOver, _this.isGameOver) || other.isGameOver == _this.isGameOver)&&(identical(other.isSavingReward, _this.isSavingReward) || other.isSavingReward == _this.isSavingReward)&&(identical(other.reward, _this.reward) || other.reward == _this.reward)&&const DeepCollectionEquality().equals(other.optionsP1, _this.optionsP1)&&const DeepCollectionEquality().equals(other.optionsP2, _this.optionsP2)&&(identical(other.isBotOpponent, _this.isBotOpponent) || other.isBotOpponent == _this.isBotOpponent)&&(identical(other.roomCode, _this.roomCode) || other.roomCode == _this.roomCode)&&(identical(other.opponentName, _this.opponentName) || other.opponentName == _this.opponentName)&&(identical(other.opponentAvatar, _this.opponentAvatar) || other.opponentAvatar == _this.opponentAvatar)&&(identical(other.isOpponentConnected, _this.isOpponentConnected) || other.isOpponentConnected == _this.isOpponentConnected)&&(identical(other.isOpponentLeft, _this.isOpponentLeft) || other.isOpponentLeft == _this.isOpponentLeft)&&(identical(other.opponentLeftMessage, _this.opponentLeftMessage) || other.opponentLeftMessage == _this.opponentLeftMessage)&&(identical(other.playerIndex, _this.playerIndex) || other.playerIndex == _this.playerIndex)&&(identical(other.matchRound, _this.matchRound) || other.matchRound == _this.matchRound)&&(identical(other.startedAt, _this.startedAt) || other.startedAt == _this.startedAt)&&(identical(other.selectedOptionIdP1, _this.selectedOptionIdP1) || other.selectedOptionIdP1 == _this.selectedOptionIdP1)&&(identical(other.selectedOptionIdP2, _this.selectedOptionIdP2) || other.selectedOptionIdP2 == _this.selectedOptionIdP2)&&(identical(other.isP1Correct, _this.isP1Correct) || other.isP1Correct == _this.isP1Correct)&&(identical(other.isP2Correct, _this.isP2Correct) || other.isP2Correct == _this.isP2Correct)&&(identical(other.isWaitingForReady, _this.isWaitingForReady) || other.isWaitingForReady == _this.isWaitingForReady)&&(identical(other.topic, _this.topic) || other.topic == _this.topic)&&(identical(other.currentUid, _this.currentUid) || other.currentUid == _this.currentUid)&&const DeepCollectionEquality().equals(other.answersP1, _this.answersP1)&&const DeepCollectionEquality().equals(other.wrongWordsP1, _this.wrongWordsP1)&&const DeepCollectionEquality().equals(other.wrongWordsP2, _this.wrongWordsP2)&&(identical(other.cooldownSecondsP1, _this.cooldownSecondsP1) || other.cooldownSecondsP1 == _this.cooldownSecondsP1)&&(identical(other.cooldownSecondsP2, _this.cooldownSecondsP2) || other.cooldownSecondsP2 == _this.cooldownSecondsP2)&&(identical(other.isRematchRequested, _this.isRematchRequested) || other.isRematchRequested == _this.isRematchRequested)&&(identical(other.isOpponentWantRematch, _this.isOpponentWantRematch) || other.isOpponentWantRematch == _this.isOpponentWantRematch)&&const DeepCollectionEquality().equals(other.rematchReadyPlayers, _this.rematchReadyPlayers));
 }
 
 
 @override
 int get hashCode {
   final _this = this as VocabularyState;
-  return Object.hashAll([runtimeType,_this.isLoading,_this.errorMessage,_this.deckEntity,const DeepCollectionEquality().hash(_this.questions),_this.currentQuestionIndex,_this.player1Score,_this.player2Score,_this.correctCountP1,_this.remainingSeconds,_this.isRoundLocked,_this.selectedWordP1,_this.selectedWordP2,_this.isGameOver,_this.isSavingReward,_this.reward,const DeepCollectionEquality().hash(_this.optionsP1),const DeepCollectionEquality().hash(_this.optionsP2),_this.isBotOpponent,_this.roomCode,_this.opponentName,_this.opponentAvatar,_this.isOpponentConnected,_this.isOpponentLeft,_this.opponentLeftMessage,_this.playerIndex,_this.matchRound,_this.startedAt,_this.selectedOptionIdP1,_this.selectedOptionIdP2,_this.isP1Correct,_this.isP2Correct,_this.isWaitingForReady,_this.topic,_this.currentUid,const DeepCollectionEquality().hash(_this.answersP1)]);
+  return Object.hashAll([runtimeType,_this.isLoading,_this.errorMessage,_this.deckEntity,const DeepCollectionEquality().hash(_this.questions),_this.currentQuestionIndex,_this.player1Score,_this.player2Score,_this.correctCountP1,_this.remainingSeconds,_this.isRoundLocked,_this.selectedWordP1,_this.selectedWordP2,_this.isGameOver,_this.isSavingReward,_this.reward,const DeepCollectionEquality().hash(_this.optionsP1),const DeepCollectionEquality().hash(_this.optionsP2),_this.isBotOpponent,_this.roomCode,_this.opponentName,_this.opponentAvatar,_this.isOpponentConnected,_this.isOpponentLeft,_this.opponentLeftMessage,_this.playerIndex,_this.matchRound,_this.startedAt,_this.selectedOptionIdP1,_this.selectedOptionIdP2,_this.isP1Correct,_this.isP2Correct,_this.isWaitingForReady,_this.topic,_this.currentUid,const DeepCollectionEquality().hash(_this.answersP1),const DeepCollectionEquality().hash(_this.wrongWordsP1),const DeepCollectionEquality().hash(_this.wrongWordsP2),_this.cooldownSecondsP1,_this.cooldownSecondsP2,_this.isRematchRequested,_this.isOpponentWantRematch,const DeepCollectionEquality().hash(_this.rematchReadyPlayers)]);
 }
 
 
@@ -1368,11 +1566,11 @@ abstract mixin class $VocabularyStateCopyWith<$Res>  {
   factory $VocabularyStateCopyWith(VocabularyState value, $Res Function(VocabularyState) _then) = _$VocabularyStateCopyWithImpl;
 @useResult
 $Res call({
- bool isLoading, String? errorMessage, BattleDeckEntity? deckEntity, List<BattleQuestionEntity> questions, int currentQuestionIndex, int player1Score, int player2Score, int correctCountP1, int remainingSeconds, bool isRoundLocked, String? selectedWordP1, String? selectedWordP2, bool isGameOver, bool isSavingReward, BattleRewardEntity? reward, List<String> optionsP1, List<String> optionsP2, bool isBotOpponent, String? roomCode, String? opponentName, String? opponentAvatar, bool isOpponentConnected, bool isOpponentLeft, String? opponentLeftMessage, int playerIndex, int matchRound, int startedAt, String? selectedOptionIdP1, String? selectedOptionIdP2, bool? isP1Correct, bool? isP2Correct, bool isWaitingForReady, String topic, String? currentUid, Map<String, bool> answersP1
+ bool isLoading, String? errorMessage, BattleDeck? deckEntity, List<BattleQuestion> questions, int currentQuestionIndex, int player1Score, int player2Score, int correctCountP1, int remainingSeconds, bool isRoundLocked, String? selectedWordP1, String? selectedWordP2, bool isGameOver, bool isSavingReward, BattleReward? reward, List<String> optionsP1, List<String> optionsP2, bool isBotOpponent, String? roomCode, String? opponentName, String? opponentAvatar, bool isOpponentConnected, bool isOpponentLeft, String? opponentLeftMessage, int playerIndex, int matchRound, int startedAt, String? selectedOptionIdP1, String? selectedOptionIdP2, bool? isP1Correct, bool? isP2Correct, bool isWaitingForReady, String topic, String? currentUid, Map<String, bool> answersP1, List<String> wrongWordsP1, List<String> wrongWordsP2, int cooldownSecondsP1, int cooldownSecondsP2, bool isRematchRequested, bool isOpponentWantRematch, List<bool> rematchReadyPlayers
 });
 
 
-$BattleDeckEntityCopyWith<$Res>? get deckEntity;$BattleRewardEntityCopyWith<$Res>? get reward;
+$BattleDeckCopyWith<$Res>? get deckEntity;$BattleRewardCopyWith<$Res>? get reward;
 
 }
 /// @nodoc
@@ -1385,13 +1583,13 @@ class _$VocabularyStateCopyWithImpl<$Res>
 
 /// Create a copy of VocabularyState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? isLoading = null,Object? errorMessage = freezed,Object? deckEntity = freezed,Object? questions = null,Object? currentQuestionIndex = null,Object? player1Score = null,Object? player2Score = null,Object? correctCountP1 = null,Object? remainingSeconds = null,Object? isRoundLocked = null,Object? selectedWordP1 = freezed,Object? selectedWordP2 = freezed,Object? isGameOver = null,Object? isSavingReward = null,Object? reward = freezed,Object? optionsP1 = null,Object? optionsP2 = null,Object? isBotOpponent = null,Object? roomCode = freezed,Object? opponentName = freezed,Object? opponentAvatar = freezed,Object? isOpponentConnected = null,Object? isOpponentLeft = null,Object? opponentLeftMessage = freezed,Object? playerIndex = null,Object? matchRound = null,Object? startedAt = null,Object? selectedOptionIdP1 = freezed,Object? selectedOptionIdP2 = freezed,Object? isP1Correct = freezed,Object? isP2Correct = freezed,Object? isWaitingForReady = null,Object? topic = null,Object? currentUid = freezed,Object? answersP1 = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? isLoading = null,Object? errorMessage = freezed,Object? deckEntity = freezed,Object? questions = null,Object? currentQuestionIndex = null,Object? player1Score = null,Object? player2Score = null,Object? correctCountP1 = null,Object? remainingSeconds = null,Object? isRoundLocked = null,Object? selectedWordP1 = freezed,Object? selectedWordP2 = freezed,Object? isGameOver = null,Object? isSavingReward = null,Object? reward = freezed,Object? optionsP1 = null,Object? optionsP2 = null,Object? isBotOpponent = null,Object? roomCode = freezed,Object? opponentName = freezed,Object? opponentAvatar = freezed,Object? isOpponentConnected = null,Object? isOpponentLeft = null,Object? opponentLeftMessage = freezed,Object? playerIndex = null,Object? matchRound = null,Object? startedAt = null,Object? selectedOptionIdP1 = freezed,Object? selectedOptionIdP2 = freezed,Object? isP1Correct = freezed,Object? isP2Correct = freezed,Object? isWaitingForReady = null,Object? topic = null,Object? currentUid = freezed,Object? answersP1 = null,Object? wrongWordsP1 = null,Object? wrongWordsP2 = null,Object? cooldownSecondsP1 = null,Object? cooldownSecondsP2 = null,Object? isRematchRequested = null,Object? isOpponentWantRematch = null,Object? rematchReadyPlayers = null,}) {
   return _then(VocabularyState(
 isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
 as String?,deckEntity: freezed == deckEntity ? _self.deckEntity : deckEntity // ignore: cast_nullable_to_non_nullable
-as BattleDeckEntity?,questions: null == questions ? _self.questions : questions // ignore: cast_nullable_to_non_nullable
-as List<BattleQuestionEntity>,currentQuestionIndex: null == currentQuestionIndex ? _self.currentQuestionIndex : currentQuestionIndex // ignore: cast_nullable_to_non_nullable
+as BattleDeck?,questions: null == questions ? _self.questions : questions // ignore: cast_nullable_to_non_nullable
+as List<BattleQuestion>,currentQuestionIndex: null == currentQuestionIndex ? _self.currentQuestionIndex : currentQuestionIndex // ignore: cast_nullable_to_non_nullable
 as int,player1Score: null == player1Score ? _self.player1Score : player1Score // ignore: cast_nullable_to_non_nullable
 as int,player2Score: null == player2Score ? _self.player2Score : player2Score // ignore: cast_nullable_to_non_nullable
 as int,correctCountP1: null == correctCountP1 ? _self.correctCountP1 : correctCountP1 // ignore: cast_nullable_to_non_nullable
@@ -1402,7 +1600,7 @@ as String?,selectedWordP2: freezed == selectedWordP2 ? _self.selectedWordP2 : se
 as String?,isGameOver: null == isGameOver ? _self.isGameOver : isGameOver // ignore: cast_nullable_to_non_nullable
 as bool,isSavingReward: null == isSavingReward ? _self.isSavingReward : isSavingReward // ignore: cast_nullable_to_non_nullable
 as bool,reward: freezed == reward ? _self.reward : reward // ignore: cast_nullable_to_non_nullable
-as BattleRewardEntity?,optionsP1: null == optionsP1 ? _self.optionsP1 : optionsP1 // ignore: cast_nullable_to_non_nullable
+as BattleReward?,optionsP1: null == optionsP1 ? _self.optionsP1 : optionsP1 // ignore: cast_nullable_to_non_nullable
 as List<String>,optionsP2: null == optionsP2 ? _self.optionsP2 : optionsP2 // ignore: cast_nullable_to_non_nullable
 as List<String>,isBotOpponent: null == isBotOpponent ? _self.isBotOpponent : isBotOpponent // ignore: cast_nullable_to_non_nullable
 as bool,roomCode: freezed == roomCode ? _self.roomCode : roomCode // ignore: cast_nullable_to_non_nullable
@@ -1422,31 +1620,38 @@ as bool?,isWaitingForReady: null == isWaitingForReady ? _self.isWaitingForReady 
 as bool,topic: null == topic ? _self.topic : topic // ignore: cast_nullable_to_non_nullable
 as String,currentUid: freezed == currentUid ? _self.currentUid : currentUid // ignore: cast_nullable_to_non_nullable
 as String?,answersP1: null == answersP1 ? _self.answersP1 : answersP1 // ignore: cast_nullable_to_non_nullable
-as Map<String, bool>,
+as Map<String, bool>,wrongWordsP1: null == wrongWordsP1 ? _self.wrongWordsP1 : wrongWordsP1 // ignore: cast_nullable_to_non_nullable
+as List<String>,wrongWordsP2: null == wrongWordsP2 ? _self.wrongWordsP2 : wrongWordsP2 // ignore: cast_nullable_to_non_nullable
+as List<String>,cooldownSecondsP1: null == cooldownSecondsP1 ? _self.cooldownSecondsP1 : cooldownSecondsP1 // ignore: cast_nullable_to_non_nullable
+as int,cooldownSecondsP2: null == cooldownSecondsP2 ? _self.cooldownSecondsP2 : cooldownSecondsP2 // ignore: cast_nullable_to_non_nullable
+as int,isRematchRequested: null == isRematchRequested ? _self.isRematchRequested : isRematchRequested // ignore: cast_nullable_to_non_nullable
+as bool,isOpponentWantRematch: null == isOpponentWantRematch ? _self.isOpponentWantRematch : isOpponentWantRematch // ignore: cast_nullable_to_non_nullable
+as bool,rematchReadyPlayers: null == rematchReadyPlayers ? _self.rematchReadyPlayers : rematchReadyPlayers // ignore: cast_nullable_to_non_nullable
+as List<bool>,
   ));
 }
 /// Create a copy of VocabularyState
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$BattleDeckEntityCopyWith<$Res>? get deckEntity {
+$BattleDeckCopyWith<$Res>? get deckEntity {
     if (_self.deckEntity == null) {
     return null;
   }
 
-  return $BattleDeckEntityCopyWith<$Res>(_self.deckEntity!, (value) {
+  return $BattleDeckCopyWith<$Res>(_self.deckEntity!, (value) {
     return _then(_self.copyWith(deckEntity: value));
   });
 }/// Create a copy of VocabularyState
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$BattleRewardEntityCopyWith<$Res>? get reward {
+$BattleRewardCopyWith<$Res>? get reward {
     if (_self.reward == null) {
     return null;
   }
 
-  return $BattleRewardEntityCopyWith<$Res>(_self.reward!, (value) {
+  return $BattleRewardCopyWith<$Res>(_self.reward!, (value) {
     return _then(_self.copyWith(reward: value));
   });
 }
@@ -1531,10 +1736,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isLoading,  String? errorMessage,  BattleDeckEntity? deckEntity,  List<BattleQuestionEntity> questions,  int currentQuestionIndex,  int player1Score,  int player2Score,  int correctCountP1,  int remainingSeconds,  bool isRoundLocked,  String? selectedWordP1,  String? selectedWordP2,  bool isGameOver,  bool isSavingReward,  BattleRewardEntity? reward,  List<String> optionsP1,  List<String> optionsP2,  bool isBotOpponent,  String? roomCode,  String? opponentName,  String? opponentAvatar,  bool isOpponentConnected,  bool isOpponentLeft,  String? opponentLeftMessage,  int playerIndex,  int matchRound,  int startedAt,  String? selectedOptionIdP1,  String? selectedOptionIdP2,  bool? isP1Correct,  bool? isP2Correct,  bool isWaitingForReady,  String topic,  String? currentUid,  Map<String, bool> answersP1)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isLoading,  String? errorMessage,  BattleDeck? deckEntity,  List<BattleQuestion> questions,  int currentQuestionIndex,  int player1Score,  int player2Score,  int correctCountP1,  int remainingSeconds,  bool isRoundLocked,  String? selectedWordP1,  String? selectedWordP2,  bool isGameOver,  bool isSavingReward,  BattleReward? reward,  List<String> optionsP1,  List<String> optionsP2,  bool isBotOpponent,  String? roomCode,  String? opponentName,  String? opponentAvatar,  bool isOpponentConnected,  bool isOpponentLeft,  String? opponentLeftMessage,  int playerIndex,  int matchRound,  int startedAt,  String? selectedOptionIdP1,  String? selectedOptionIdP2,  bool? isP1Correct,  bool? isP2Correct,  bool isWaitingForReady,  String topic,  String? currentUid,  Map<String, bool> answersP1,  List<String> wrongWordsP1,  List<String> wrongWordsP2,  int cooldownSecondsP1,  int cooldownSecondsP2,  bool isRematchRequested,  bool isOpponentWantRematch,  List<bool> rematchReadyPlayers)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _VocabularyState() when $default != null:
-return $default(_that.isLoading,_that.errorMessage,_that.deckEntity,_that.questions,_that.currentQuestionIndex,_that.player1Score,_that.player2Score,_that.correctCountP1,_that.remainingSeconds,_that.isRoundLocked,_that.selectedWordP1,_that.selectedWordP2,_that.isGameOver,_that.isSavingReward,_that.reward,_that.optionsP1,_that.optionsP2,_that.isBotOpponent,_that.roomCode,_that.opponentName,_that.opponentAvatar,_that.isOpponentConnected,_that.isOpponentLeft,_that.opponentLeftMessage,_that.playerIndex,_that.matchRound,_that.startedAt,_that.selectedOptionIdP1,_that.selectedOptionIdP2,_that.isP1Correct,_that.isP2Correct,_that.isWaitingForReady,_that.topic,_that.currentUid,_that.answersP1);case _:
+return $default(_that.isLoading,_that.errorMessage,_that.deckEntity,_that.questions,_that.currentQuestionIndex,_that.player1Score,_that.player2Score,_that.correctCountP1,_that.remainingSeconds,_that.isRoundLocked,_that.selectedWordP1,_that.selectedWordP2,_that.isGameOver,_that.isSavingReward,_that.reward,_that.optionsP1,_that.optionsP2,_that.isBotOpponent,_that.roomCode,_that.opponentName,_that.opponentAvatar,_that.isOpponentConnected,_that.isOpponentLeft,_that.opponentLeftMessage,_that.playerIndex,_that.matchRound,_that.startedAt,_that.selectedOptionIdP1,_that.selectedOptionIdP2,_that.isP1Correct,_that.isP2Correct,_that.isWaitingForReady,_that.topic,_that.currentUid,_that.answersP1,_that.wrongWordsP1,_that.wrongWordsP2,_that.cooldownSecondsP1,_that.cooldownSecondsP2,_that.isRematchRequested,_that.isOpponentWantRematch,_that.rematchReadyPlayers);case _:
   return orElse();
 
 }
@@ -1552,10 +1757,10 @@ return $default(_that.isLoading,_that.errorMessage,_that.deckEntity,_that.questi
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isLoading,  String? errorMessage,  BattleDeckEntity? deckEntity,  List<BattleQuestionEntity> questions,  int currentQuestionIndex,  int player1Score,  int player2Score,  int correctCountP1,  int remainingSeconds,  bool isRoundLocked,  String? selectedWordP1,  String? selectedWordP2,  bool isGameOver,  bool isSavingReward,  BattleRewardEntity? reward,  List<String> optionsP1,  List<String> optionsP2,  bool isBotOpponent,  String? roomCode,  String? opponentName,  String? opponentAvatar,  bool isOpponentConnected,  bool isOpponentLeft,  String? opponentLeftMessage,  int playerIndex,  int matchRound,  int startedAt,  String? selectedOptionIdP1,  String? selectedOptionIdP2,  bool? isP1Correct,  bool? isP2Correct,  bool isWaitingForReady,  String topic,  String? currentUid,  Map<String, bool> answersP1)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isLoading,  String? errorMessage,  BattleDeck? deckEntity,  List<BattleQuestion> questions,  int currentQuestionIndex,  int player1Score,  int player2Score,  int correctCountP1,  int remainingSeconds,  bool isRoundLocked,  String? selectedWordP1,  String? selectedWordP2,  bool isGameOver,  bool isSavingReward,  BattleReward? reward,  List<String> optionsP1,  List<String> optionsP2,  bool isBotOpponent,  String? roomCode,  String? opponentName,  String? opponentAvatar,  bool isOpponentConnected,  bool isOpponentLeft,  String? opponentLeftMessage,  int playerIndex,  int matchRound,  int startedAt,  String? selectedOptionIdP1,  String? selectedOptionIdP2,  bool? isP1Correct,  bool? isP2Correct,  bool isWaitingForReady,  String topic,  String? currentUid,  Map<String, bool> answersP1,  List<String> wrongWordsP1,  List<String> wrongWordsP2,  int cooldownSecondsP1,  int cooldownSecondsP2,  bool isRematchRequested,  bool isOpponentWantRematch,  List<bool> rematchReadyPlayers)  $default,) {final _that = this;
 switch (_that) {
 case _VocabularyState():
-return $default(_that.isLoading,_that.errorMessage,_that.deckEntity,_that.questions,_that.currentQuestionIndex,_that.player1Score,_that.player2Score,_that.correctCountP1,_that.remainingSeconds,_that.isRoundLocked,_that.selectedWordP1,_that.selectedWordP2,_that.isGameOver,_that.isSavingReward,_that.reward,_that.optionsP1,_that.optionsP2,_that.isBotOpponent,_that.roomCode,_that.opponentName,_that.opponentAvatar,_that.isOpponentConnected,_that.isOpponentLeft,_that.opponentLeftMessage,_that.playerIndex,_that.matchRound,_that.startedAt,_that.selectedOptionIdP1,_that.selectedOptionIdP2,_that.isP1Correct,_that.isP2Correct,_that.isWaitingForReady,_that.topic,_that.currentUid,_that.answersP1);case _:
+return $default(_that.isLoading,_that.errorMessage,_that.deckEntity,_that.questions,_that.currentQuestionIndex,_that.player1Score,_that.player2Score,_that.correctCountP1,_that.remainingSeconds,_that.isRoundLocked,_that.selectedWordP1,_that.selectedWordP2,_that.isGameOver,_that.isSavingReward,_that.reward,_that.optionsP1,_that.optionsP2,_that.isBotOpponent,_that.roomCode,_that.opponentName,_that.opponentAvatar,_that.isOpponentConnected,_that.isOpponentLeft,_that.opponentLeftMessage,_that.playerIndex,_that.matchRound,_that.startedAt,_that.selectedOptionIdP1,_that.selectedOptionIdP2,_that.isP1Correct,_that.isP2Correct,_that.isWaitingForReady,_that.topic,_that.currentUid,_that.answersP1,_that.wrongWordsP1,_that.wrongWordsP2,_that.cooldownSecondsP1,_that.cooldownSecondsP2,_that.isRematchRequested,_that.isOpponentWantRematch,_that.rematchReadyPlayers);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -1572,10 +1777,10 @@ return $default(_that.isLoading,_that.errorMessage,_that.deckEntity,_that.questi
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isLoading,  String? errorMessage,  BattleDeckEntity? deckEntity,  List<BattleQuestionEntity> questions,  int currentQuestionIndex,  int player1Score,  int player2Score,  int correctCountP1,  int remainingSeconds,  bool isRoundLocked,  String? selectedWordP1,  String? selectedWordP2,  bool isGameOver,  bool isSavingReward,  BattleRewardEntity? reward,  List<String> optionsP1,  List<String> optionsP2,  bool isBotOpponent,  String? roomCode,  String? opponentName,  String? opponentAvatar,  bool isOpponentConnected,  bool isOpponentLeft,  String? opponentLeftMessage,  int playerIndex,  int matchRound,  int startedAt,  String? selectedOptionIdP1,  String? selectedOptionIdP2,  bool? isP1Correct,  bool? isP2Correct,  bool isWaitingForReady,  String topic,  String? currentUid,  Map<String, bool> answersP1)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isLoading,  String? errorMessage,  BattleDeck? deckEntity,  List<BattleQuestion> questions,  int currentQuestionIndex,  int player1Score,  int player2Score,  int correctCountP1,  int remainingSeconds,  bool isRoundLocked,  String? selectedWordP1,  String? selectedWordP2,  bool isGameOver,  bool isSavingReward,  BattleReward? reward,  List<String> optionsP1,  List<String> optionsP2,  bool isBotOpponent,  String? roomCode,  String? opponentName,  String? opponentAvatar,  bool isOpponentConnected,  bool isOpponentLeft,  String? opponentLeftMessage,  int playerIndex,  int matchRound,  int startedAt,  String? selectedOptionIdP1,  String? selectedOptionIdP2,  bool? isP1Correct,  bool? isP2Correct,  bool isWaitingForReady,  String topic,  String? currentUid,  Map<String, bool> answersP1,  List<String> wrongWordsP1,  List<String> wrongWordsP2,  int cooldownSecondsP1,  int cooldownSecondsP2,  bool isRematchRequested,  bool isOpponentWantRematch,  List<bool> rematchReadyPlayers)?  $default,) {final _that = this;
 switch (_that) {
 case _VocabularyState() when $default != null:
-return $default(_that.isLoading,_that.errorMessage,_that.deckEntity,_that.questions,_that.currentQuestionIndex,_that.player1Score,_that.player2Score,_that.correctCountP1,_that.remainingSeconds,_that.isRoundLocked,_that.selectedWordP1,_that.selectedWordP2,_that.isGameOver,_that.isSavingReward,_that.reward,_that.optionsP1,_that.optionsP2,_that.isBotOpponent,_that.roomCode,_that.opponentName,_that.opponentAvatar,_that.isOpponentConnected,_that.isOpponentLeft,_that.opponentLeftMessage,_that.playerIndex,_that.matchRound,_that.startedAt,_that.selectedOptionIdP1,_that.selectedOptionIdP2,_that.isP1Correct,_that.isP2Correct,_that.isWaitingForReady,_that.topic,_that.currentUid,_that.answersP1);case _:
+return $default(_that.isLoading,_that.errorMessage,_that.deckEntity,_that.questions,_that.currentQuestionIndex,_that.player1Score,_that.player2Score,_that.correctCountP1,_that.remainingSeconds,_that.isRoundLocked,_that.selectedWordP1,_that.selectedWordP2,_that.isGameOver,_that.isSavingReward,_that.reward,_that.optionsP1,_that.optionsP2,_that.isBotOpponent,_that.roomCode,_that.opponentName,_that.opponentAvatar,_that.isOpponentConnected,_that.isOpponentLeft,_that.opponentLeftMessage,_that.playerIndex,_that.matchRound,_that.startedAt,_that.selectedOptionIdP1,_that.selectedOptionIdP2,_that.isP1Correct,_that.isP2Correct,_that.isWaitingForReady,_that.topic,_that.currentUid,_that.answersP1,_that.wrongWordsP1,_that.wrongWordsP2,_that.cooldownSecondsP1,_that.cooldownSecondsP2,_that.isRematchRequested,_that.isOpponentWantRematch,_that.rematchReadyPlayers);case _:
   return null;
 
 }
@@ -1587,14 +1792,14 @@ return $default(_that.isLoading,_that.errorMessage,_that.deckEntity,_that.questi
 
 
 class _VocabularyState extends VocabularyState {
-  const _VocabularyState({this.isLoading = false, this.errorMessage, this.deckEntity,  List<BattleQuestionEntity> questions = const [], this.currentQuestionIndex = 0, this.player1Score = 0, this.player2Score = 0, this.correctCountP1 = 0, this.remainingSeconds = 10, this.isRoundLocked = false, this.selectedWordP1, this.selectedWordP2, this.isGameOver = false, this.isSavingReward = false, this.reward,  List<String> optionsP1 = const [],  List<String> optionsP2 = const [], this.isBotOpponent = true, this.roomCode, this.opponentName, this.opponentAvatar, this.isOpponentConnected = false, this.isOpponentLeft = false, this.opponentLeftMessage, this.playerIndex = 0, this.matchRound = 1, this.startedAt = 0, this.selectedOptionIdP1, this.selectedOptionIdP2, this.isP1Correct, this.isP2Correct, this.isWaitingForReady = false, this.topic = 'daily', this.currentUid,  Map<String, bool> answersP1 = const {}}): _questions = questions,_optionsP1 = optionsP1,_optionsP2 = optionsP2,_answersP1 = answersP1,super._();
+  const _VocabularyState({this.isLoading = false, this.errorMessage, this.deckEntity,  List<BattleQuestion> questions = const [], this.currentQuestionIndex = 0, this.player1Score = 0, this.player2Score = 0, this.correctCountP1 = 0, this.remainingSeconds = 10, this.isRoundLocked = false, this.selectedWordP1, this.selectedWordP2, this.isGameOver = false, this.isSavingReward = false, this.reward,  List<String> optionsP1 = const [],  List<String> optionsP2 = const [], this.isBotOpponent = true, this.roomCode, this.opponentName, this.opponentAvatar, this.isOpponentConnected = false, this.isOpponentLeft = false, this.opponentLeftMessage, this.playerIndex = 0, this.matchRound = 1, this.startedAt = 0, this.selectedOptionIdP1, this.selectedOptionIdP2, this.isP1Correct, this.isP2Correct, this.isWaitingForReady = false, this.topic = 'daily', this.currentUid,  Map<String, bool> answersP1 = const {},  List<String> wrongWordsP1 = const [],  List<String> wrongWordsP2 = const [], this.cooldownSecondsP1 = 0, this.cooldownSecondsP2 = 0, this.isRematchRequested = false, this.isOpponentWantRematch = false,  List<bool> rematchReadyPlayers = const []}): _questions = questions,_optionsP1 = optionsP1,_optionsP2 = optionsP2,_answersP1 = answersP1,_wrongWordsP1 = wrongWordsP1,_wrongWordsP2 = wrongWordsP2,_rematchReadyPlayers = rematchReadyPlayers,super._();
   
 
 @override@JsonKey() final  bool isLoading;
 @override final  String? errorMessage;
-@override final  BattleDeckEntity? deckEntity;
- final  List<BattleQuestionEntity> _questions;
-@override@JsonKey() List<BattleQuestionEntity> get questions {
+@override final  BattleDeck? deckEntity;
+ final  List<BattleQuestion> _questions;
+@override@JsonKey() List<BattleQuestion> get questions {
   if (_questions is EqualUnmodifiableListView) return _questions;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_questions);
@@ -1610,7 +1815,7 @@ class _VocabularyState extends VocabularyState {
 @override final  String? selectedWordP2;
 @override@JsonKey() final  bool isGameOver;
 @override@JsonKey() final  bool isSavingReward;
-@override final  BattleRewardEntity? reward;
+@override final  BattleReward? reward;
  final  List<String> _optionsP1;
 @override@JsonKey() List<String> get optionsP1 {
   if (_optionsP1 is EqualUnmodifiableListView) return _optionsP1;
@@ -1649,6 +1854,31 @@ class _VocabularyState extends VocabularyState {
   return EqualUnmodifiableMapView(_answersP1);
 }
 
+ final  List<String> _wrongWordsP1;
+@override@JsonKey() List<String> get wrongWordsP1 {
+  if (_wrongWordsP1 is EqualUnmodifiableListView) return _wrongWordsP1;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_wrongWordsP1);
+}
+
+ final  List<String> _wrongWordsP2;
+@override@JsonKey() List<String> get wrongWordsP2 {
+  if (_wrongWordsP2 is EqualUnmodifiableListView) return _wrongWordsP2;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_wrongWordsP2);
+}
+
+@override@JsonKey() final  int cooldownSecondsP1;
+@override@JsonKey() final  int cooldownSecondsP2;
+@override@JsonKey() final  bool isRematchRequested;
+@override@JsonKey() final  bool isOpponentWantRematch;
+ final  List<bool> _rematchReadyPlayers;
+@override@JsonKey() List<bool> get rematchReadyPlayers {
+  if (_rematchReadyPlayers is EqualUnmodifiableListView) return _rematchReadyPlayers;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_rematchReadyPlayers);
+}
+
 
 /// Create a copy of VocabularyState
 /// with the given fields replaced by the non-null parameter values.
@@ -1660,13 +1890,13 @@ _$VocabularyStateCopyWith<_VocabularyState> get copyWith => __$VocabularyStateCo
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _VocabularyState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.deckEntity, deckEntity) || other.deckEntity == deckEntity)&&const DeepCollectionEquality().equals(other.questions, _questions)&&(identical(other.currentQuestionIndex, currentQuestionIndex) || other.currentQuestionIndex == currentQuestionIndex)&&(identical(other.player1Score, player1Score) || other.player1Score == player1Score)&&(identical(other.player2Score, player2Score) || other.player2Score == player2Score)&&(identical(other.correctCountP1, correctCountP1) || other.correctCountP1 == correctCountP1)&&(identical(other.remainingSeconds, remainingSeconds) || other.remainingSeconds == remainingSeconds)&&(identical(other.isRoundLocked, isRoundLocked) || other.isRoundLocked == isRoundLocked)&&(identical(other.selectedWordP1, selectedWordP1) || other.selectedWordP1 == selectedWordP1)&&(identical(other.selectedWordP2, selectedWordP2) || other.selectedWordP2 == selectedWordP2)&&(identical(other.isGameOver, isGameOver) || other.isGameOver == isGameOver)&&(identical(other.isSavingReward, isSavingReward) || other.isSavingReward == isSavingReward)&&(identical(other.reward, reward) || other.reward == reward)&&const DeepCollectionEquality().equals(other.optionsP1, _optionsP1)&&const DeepCollectionEquality().equals(other.optionsP2, _optionsP2)&&(identical(other.isBotOpponent, isBotOpponent) || other.isBotOpponent == isBotOpponent)&&(identical(other.roomCode, roomCode) || other.roomCode == roomCode)&&(identical(other.opponentName, opponentName) || other.opponentName == opponentName)&&(identical(other.opponentAvatar, opponentAvatar) || other.opponentAvatar == opponentAvatar)&&(identical(other.isOpponentConnected, isOpponentConnected) || other.isOpponentConnected == isOpponentConnected)&&(identical(other.isOpponentLeft, isOpponentLeft) || other.isOpponentLeft == isOpponentLeft)&&(identical(other.opponentLeftMessage, opponentLeftMessage) || other.opponentLeftMessage == opponentLeftMessage)&&(identical(other.playerIndex, playerIndex) || other.playerIndex == playerIndex)&&(identical(other.matchRound, matchRound) || other.matchRound == matchRound)&&(identical(other.startedAt, startedAt) || other.startedAt == startedAt)&&(identical(other.selectedOptionIdP1, selectedOptionIdP1) || other.selectedOptionIdP1 == selectedOptionIdP1)&&(identical(other.selectedOptionIdP2, selectedOptionIdP2) || other.selectedOptionIdP2 == selectedOptionIdP2)&&(identical(other.isP1Correct, isP1Correct) || other.isP1Correct == isP1Correct)&&(identical(other.isP2Correct, isP2Correct) || other.isP2Correct == isP2Correct)&&(identical(other.isWaitingForReady, isWaitingForReady) || other.isWaitingForReady == isWaitingForReady)&&(identical(other.topic, topic) || other.topic == topic)&&(identical(other.currentUid, currentUid) || other.currentUid == currentUid)&&const DeepCollectionEquality().equals(other.answersP1, _answersP1));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _VocabularyState&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.deckEntity, deckEntity) || other.deckEntity == deckEntity)&&const DeepCollectionEquality().equals(other.questions, _questions)&&(identical(other.currentQuestionIndex, currentQuestionIndex) || other.currentQuestionIndex == currentQuestionIndex)&&(identical(other.player1Score, player1Score) || other.player1Score == player1Score)&&(identical(other.player2Score, player2Score) || other.player2Score == player2Score)&&(identical(other.correctCountP1, correctCountP1) || other.correctCountP1 == correctCountP1)&&(identical(other.remainingSeconds, remainingSeconds) || other.remainingSeconds == remainingSeconds)&&(identical(other.isRoundLocked, isRoundLocked) || other.isRoundLocked == isRoundLocked)&&(identical(other.selectedWordP1, selectedWordP1) || other.selectedWordP1 == selectedWordP1)&&(identical(other.selectedWordP2, selectedWordP2) || other.selectedWordP2 == selectedWordP2)&&(identical(other.isGameOver, isGameOver) || other.isGameOver == isGameOver)&&(identical(other.isSavingReward, isSavingReward) || other.isSavingReward == isSavingReward)&&(identical(other.reward, reward) || other.reward == reward)&&const DeepCollectionEquality().equals(other.optionsP1, _optionsP1)&&const DeepCollectionEquality().equals(other.optionsP2, _optionsP2)&&(identical(other.isBotOpponent, isBotOpponent) || other.isBotOpponent == isBotOpponent)&&(identical(other.roomCode, roomCode) || other.roomCode == roomCode)&&(identical(other.opponentName, opponentName) || other.opponentName == opponentName)&&(identical(other.opponentAvatar, opponentAvatar) || other.opponentAvatar == opponentAvatar)&&(identical(other.isOpponentConnected, isOpponentConnected) || other.isOpponentConnected == isOpponentConnected)&&(identical(other.isOpponentLeft, isOpponentLeft) || other.isOpponentLeft == isOpponentLeft)&&(identical(other.opponentLeftMessage, opponentLeftMessage) || other.opponentLeftMessage == opponentLeftMessage)&&(identical(other.playerIndex, playerIndex) || other.playerIndex == playerIndex)&&(identical(other.matchRound, matchRound) || other.matchRound == matchRound)&&(identical(other.startedAt, startedAt) || other.startedAt == startedAt)&&(identical(other.selectedOptionIdP1, selectedOptionIdP1) || other.selectedOptionIdP1 == selectedOptionIdP1)&&(identical(other.selectedOptionIdP2, selectedOptionIdP2) || other.selectedOptionIdP2 == selectedOptionIdP2)&&(identical(other.isP1Correct, isP1Correct) || other.isP1Correct == isP1Correct)&&(identical(other.isP2Correct, isP2Correct) || other.isP2Correct == isP2Correct)&&(identical(other.isWaitingForReady, isWaitingForReady) || other.isWaitingForReady == isWaitingForReady)&&(identical(other.topic, topic) || other.topic == topic)&&(identical(other.currentUid, currentUid) || other.currentUid == currentUid)&&const DeepCollectionEquality().equals(other.answersP1, _answersP1)&&const DeepCollectionEquality().equals(other.wrongWordsP1, _wrongWordsP1)&&const DeepCollectionEquality().equals(other.wrongWordsP2, _wrongWordsP2)&&(identical(other.cooldownSecondsP1, cooldownSecondsP1) || other.cooldownSecondsP1 == cooldownSecondsP1)&&(identical(other.cooldownSecondsP2, cooldownSecondsP2) || other.cooldownSecondsP2 == cooldownSecondsP2)&&(identical(other.isRematchRequested, isRematchRequested) || other.isRematchRequested == isRematchRequested)&&(identical(other.isOpponentWantRematch, isOpponentWantRematch) || other.isOpponentWantRematch == isOpponentWantRematch)&&const DeepCollectionEquality().equals(other.rematchReadyPlayers, _rematchReadyPlayers));
 }
 
 
 @override
 int get hashCode {
-    return Object.hashAll([runtimeType,isLoading,errorMessage,deckEntity,const DeepCollectionEquality().hash(_questions),currentQuestionIndex,player1Score,player2Score,correctCountP1,remainingSeconds,isRoundLocked,selectedWordP1,selectedWordP2,isGameOver,isSavingReward,reward,const DeepCollectionEquality().hash(_optionsP1),const DeepCollectionEquality().hash(_optionsP2),isBotOpponent,roomCode,opponentName,opponentAvatar,isOpponentConnected,isOpponentLeft,opponentLeftMessage,playerIndex,matchRound,startedAt,selectedOptionIdP1,selectedOptionIdP2,isP1Correct,isP2Correct,isWaitingForReady,topic,currentUid,const DeepCollectionEquality().hash(_answersP1)]);
+    return Object.hashAll([runtimeType,isLoading,errorMessage,deckEntity,const DeepCollectionEquality().hash(_questions),currentQuestionIndex,player1Score,player2Score,correctCountP1,remainingSeconds,isRoundLocked,selectedWordP1,selectedWordP2,isGameOver,isSavingReward,reward,const DeepCollectionEquality().hash(_optionsP1),const DeepCollectionEquality().hash(_optionsP2),isBotOpponent,roomCode,opponentName,opponentAvatar,isOpponentConnected,isOpponentLeft,opponentLeftMessage,playerIndex,matchRound,startedAt,selectedOptionIdP1,selectedOptionIdP2,isP1Correct,isP2Correct,isWaitingForReady,topic,currentUid,const DeepCollectionEquality().hash(_answersP1),const DeepCollectionEquality().hash(_wrongWordsP1),const DeepCollectionEquality().hash(_wrongWordsP2),cooldownSecondsP1,cooldownSecondsP2,isRematchRequested,isOpponentWantRematch,const DeepCollectionEquality().hash(_rematchReadyPlayers)]);
 }
 
 
@@ -1678,11 +1908,11 @@ abstract mixin class _$VocabularyStateCopyWith<$Res> implements $VocabularyState
   factory _$VocabularyStateCopyWith(_VocabularyState value, $Res Function(_VocabularyState) _then) = __$VocabularyStateCopyWithImpl;
 @override @useResult
 $Res call({
- bool isLoading, String? errorMessage, BattleDeckEntity? deckEntity, List<BattleQuestionEntity> questions, int currentQuestionIndex, int player1Score, int player2Score, int correctCountP1, int remainingSeconds, bool isRoundLocked, String? selectedWordP1, String? selectedWordP2, bool isGameOver, bool isSavingReward, BattleRewardEntity? reward, List<String> optionsP1, List<String> optionsP2, bool isBotOpponent, String? roomCode, String? opponentName, String? opponentAvatar, bool isOpponentConnected, bool isOpponentLeft, String? opponentLeftMessage, int playerIndex, int matchRound, int startedAt, String? selectedOptionIdP1, String? selectedOptionIdP2, bool? isP1Correct, bool? isP2Correct, bool isWaitingForReady, String topic, String? currentUid, Map<String, bool> answersP1
+ bool isLoading, String? errorMessage, BattleDeck? deckEntity, List<BattleQuestion> questions, int currentQuestionIndex, int player1Score, int player2Score, int correctCountP1, int remainingSeconds, bool isRoundLocked, String? selectedWordP1, String? selectedWordP2, bool isGameOver, bool isSavingReward, BattleReward? reward, List<String> optionsP1, List<String> optionsP2, bool isBotOpponent, String? roomCode, String? opponentName, String? opponentAvatar, bool isOpponentConnected, bool isOpponentLeft, String? opponentLeftMessage, int playerIndex, int matchRound, int startedAt, String? selectedOptionIdP1, String? selectedOptionIdP2, bool? isP1Correct, bool? isP2Correct, bool isWaitingForReady, String topic, String? currentUid, Map<String, bool> answersP1, List<String> wrongWordsP1, List<String> wrongWordsP2, int cooldownSecondsP1, int cooldownSecondsP2, bool isRematchRequested, bool isOpponentWantRematch, List<bool> rematchReadyPlayers
 });
 
 
-@override $BattleDeckEntityCopyWith<$Res>? get deckEntity;@override $BattleRewardEntityCopyWith<$Res>? get reward;
+@override $BattleDeckCopyWith<$Res>? get deckEntity;@override $BattleRewardCopyWith<$Res>? get reward;
 
 }
 /// @nodoc
@@ -1695,13 +1925,13 @@ class __$VocabularyStateCopyWithImpl<$Res>
 
 /// Create a copy of VocabularyState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? isLoading = null,Object? errorMessage = freezed,Object? deckEntity = freezed,Object? questions = null,Object? currentQuestionIndex = null,Object? player1Score = null,Object? player2Score = null,Object? correctCountP1 = null,Object? remainingSeconds = null,Object? isRoundLocked = null,Object? selectedWordP1 = freezed,Object? selectedWordP2 = freezed,Object? isGameOver = null,Object? isSavingReward = null,Object? reward = freezed,Object? optionsP1 = null,Object? optionsP2 = null,Object? isBotOpponent = null,Object? roomCode = freezed,Object? opponentName = freezed,Object? opponentAvatar = freezed,Object? isOpponentConnected = null,Object? isOpponentLeft = null,Object? opponentLeftMessage = freezed,Object? playerIndex = null,Object? matchRound = null,Object? startedAt = null,Object? selectedOptionIdP1 = freezed,Object? selectedOptionIdP2 = freezed,Object? isP1Correct = freezed,Object? isP2Correct = freezed,Object? isWaitingForReady = null,Object? topic = null,Object? currentUid = freezed,Object? answersP1 = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? isLoading = null,Object? errorMessage = freezed,Object? deckEntity = freezed,Object? questions = null,Object? currentQuestionIndex = null,Object? player1Score = null,Object? player2Score = null,Object? correctCountP1 = null,Object? remainingSeconds = null,Object? isRoundLocked = null,Object? selectedWordP1 = freezed,Object? selectedWordP2 = freezed,Object? isGameOver = null,Object? isSavingReward = null,Object? reward = freezed,Object? optionsP1 = null,Object? optionsP2 = null,Object? isBotOpponent = null,Object? roomCode = freezed,Object? opponentName = freezed,Object? opponentAvatar = freezed,Object? isOpponentConnected = null,Object? isOpponentLeft = null,Object? opponentLeftMessage = freezed,Object? playerIndex = null,Object? matchRound = null,Object? startedAt = null,Object? selectedOptionIdP1 = freezed,Object? selectedOptionIdP2 = freezed,Object? isP1Correct = freezed,Object? isP2Correct = freezed,Object? isWaitingForReady = null,Object? topic = null,Object? currentUid = freezed,Object? answersP1 = null,Object? wrongWordsP1 = null,Object? wrongWordsP2 = null,Object? cooldownSecondsP1 = null,Object? cooldownSecondsP2 = null,Object? isRematchRequested = null,Object? isOpponentWantRematch = null,Object? rematchReadyPlayers = null,}) {
   return _then(_VocabularyState(
 isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
 as String?,deckEntity: freezed == deckEntity ? _self.deckEntity : deckEntity // ignore: cast_nullable_to_non_nullable
-as BattleDeckEntity?,questions: null == questions ? _self._questions : questions // ignore: cast_nullable_to_non_nullable
-as List<BattleQuestionEntity>,currentQuestionIndex: null == currentQuestionIndex ? _self.currentQuestionIndex : currentQuestionIndex // ignore: cast_nullable_to_non_nullable
+as BattleDeck?,questions: null == questions ? _self._questions : questions // ignore: cast_nullable_to_non_nullable
+as List<BattleQuestion>,currentQuestionIndex: null == currentQuestionIndex ? _self.currentQuestionIndex : currentQuestionIndex // ignore: cast_nullable_to_non_nullable
 as int,player1Score: null == player1Score ? _self.player1Score : player1Score // ignore: cast_nullable_to_non_nullable
 as int,player2Score: null == player2Score ? _self.player2Score : player2Score // ignore: cast_nullable_to_non_nullable
 as int,correctCountP1: null == correctCountP1 ? _self.correctCountP1 : correctCountP1 // ignore: cast_nullable_to_non_nullable
@@ -1712,7 +1942,7 @@ as String?,selectedWordP2: freezed == selectedWordP2 ? _self.selectedWordP2 : se
 as String?,isGameOver: null == isGameOver ? _self.isGameOver : isGameOver // ignore: cast_nullable_to_non_nullable
 as bool,isSavingReward: null == isSavingReward ? _self.isSavingReward : isSavingReward // ignore: cast_nullable_to_non_nullable
 as bool,reward: freezed == reward ? _self.reward : reward // ignore: cast_nullable_to_non_nullable
-as BattleRewardEntity?,optionsP1: null == optionsP1 ? _self._optionsP1 : optionsP1 // ignore: cast_nullable_to_non_nullable
+as BattleReward?,optionsP1: null == optionsP1 ? _self._optionsP1 : optionsP1 // ignore: cast_nullable_to_non_nullable
 as List<String>,optionsP2: null == optionsP2 ? _self._optionsP2 : optionsP2 // ignore: cast_nullable_to_non_nullable
 as List<String>,isBotOpponent: null == isBotOpponent ? _self.isBotOpponent : isBotOpponent // ignore: cast_nullable_to_non_nullable
 as bool,roomCode: freezed == roomCode ? _self.roomCode : roomCode // ignore: cast_nullable_to_non_nullable
@@ -1732,7 +1962,14 @@ as bool?,isWaitingForReady: null == isWaitingForReady ? _self.isWaitingForReady 
 as bool,topic: null == topic ? _self.topic : topic // ignore: cast_nullable_to_non_nullable
 as String,currentUid: freezed == currentUid ? _self.currentUid : currentUid // ignore: cast_nullable_to_non_nullable
 as String?,answersP1: null == answersP1 ? _self._answersP1 : answersP1 // ignore: cast_nullable_to_non_nullable
-as Map<String, bool>,
+as Map<String, bool>,wrongWordsP1: null == wrongWordsP1 ? _self._wrongWordsP1 : wrongWordsP1 // ignore: cast_nullable_to_non_nullable
+as List<String>,wrongWordsP2: null == wrongWordsP2 ? _self._wrongWordsP2 : wrongWordsP2 // ignore: cast_nullable_to_non_nullable
+as List<String>,cooldownSecondsP1: null == cooldownSecondsP1 ? _self.cooldownSecondsP1 : cooldownSecondsP1 // ignore: cast_nullable_to_non_nullable
+as int,cooldownSecondsP2: null == cooldownSecondsP2 ? _self.cooldownSecondsP2 : cooldownSecondsP2 // ignore: cast_nullable_to_non_nullable
+as int,isRematchRequested: null == isRematchRequested ? _self.isRematchRequested : isRematchRequested // ignore: cast_nullable_to_non_nullable
+as bool,isOpponentWantRematch: null == isOpponentWantRematch ? _self.isOpponentWantRematch : isOpponentWantRematch // ignore: cast_nullable_to_non_nullable
+as bool,rematchReadyPlayers: null == rematchReadyPlayers ? _self._rematchReadyPlayers : rematchReadyPlayers // ignore: cast_nullable_to_non_nullable
+as List<bool>,
   ));
 }
 
@@ -1740,24 +1977,24 @@ as Map<String, bool>,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$BattleDeckEntityCopyWith<$Res>? get deckEntity {
+$BattleDeckCopyWith<$Res>? get deckEntity {
     if (_self.deckEntity == null) {
     return null;
   }
 
-  return $BattleDeckEntityCopyWith<$Res>(_self.deckEntity!, (value) {
+  return $BattleDeckCopyWith<$Res>(_self.deckEntity!, (value) {
     return _then(_self.copyWith(deckEntity: value));
   });
 }/// Create a copy of VocabularyState
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$BattleRewardEntityCopyWith<$Res>? get reward {
+$BattleRewardCopyWith<$Res>? get reward {
     if (_self.reward == null) {
     return null;
   }
 
-  return $BattleRewardEntityCopyWith<$Res>(_self.reward!, (value) {
+  return $BattleRewardCopyWith<$Res>(_self.reward!, (value) {
     return _then(_self.copyWith(reward: value));
   });
 }

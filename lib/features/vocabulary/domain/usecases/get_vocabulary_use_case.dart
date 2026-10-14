@@ -1,4 +1,4 @@
-import 'package:bufopia/features/vocabulary/domain/entities/vocabulary_entity.dart';
+import 'package:bufopia/features/vocabulary/domain/entities/vocabulary.dart';
 import 'package:bufopia/features/vocabulary/domain/repositories/vocabulary_repository.dart';
 import 'package:bufopia/shared/infrastructure/domain/usecase/future/base_future_use_case.dart';
 import 'package:bufopia/shared/infrastructure/domain/usecase/io/base_input.dart';
@@ -18,7 +18,7 @@ abstract class GetVocabularyInput extends BaseInput with _$GetVocabularyInput {
 @freezed
 abstract class GetVocabularyOutput extends BaseOutput
     with _$GetVocabularyOutput {
-  const factory GetVocabularyOutput(VocabularyEntity vocabulary) =
+  const factory GetVocabularyOutput(Vocabulary vocabulary) =
       _GetVocabularyOutput;
 
   const GetVocabularyOutput._();

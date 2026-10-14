@@ -3,7 +3,7 @@ import 'package:bufopia/components/app_game_dialog.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
-import 'package:bufopia/features/leaderboard/domain/entities/leaderboard_entity.dart';
+import 'package:bufopia/features/leaderboard/domain/entities/leaderboard.dart';
 import 'package:bufopia/features/leaderboard/presentation/bloc/leaderboard_bloc.dart';
 import 'package:bufopia/features/leaderboard/presentation/widgets/leaderboard_list.dart';
 import 'package:bufopia/features/leaderboard/presentation/widgets/leaderboard_podium.dart';
@@ -11,7 +11,6 @@ import 'package:bufopia/features/leaderboard/presentation/widgets/leaderboard_ta
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:intl/intl.dart';
 
 /// Hop thoai Bang Xep Hang - wrapper [AppGameDialog] chuan 3D Game.
 /// Noi dung duoc chia thanh cac widget con trong thu muc `leaderboard/presentation/widgets/`.
@@ -24,11 +23,11 @@ class LeaderboardDialog extends StatefulWidget {
 
     return AppGameDialog.show<void>(
       context: context,
-      title: 'BANG XEP HANG',
+      title: 'BẢNG XẾP HẠNG',
       icon: Icons.emoji_events_rounded,
-      maxWidth: 520.w,
-      maxHeight: 340.h,
-      footerText: 'Cung hoc, cung dau va chinh phuc vi tri dan dau!',
+      maxWidth: 340.w,
+      maxHeight: 580.h,
+      footerText: '⭐ Cùng học, cùng đấu và chinh phục vị trí dẫn đầu! ⭐',
       padding: EdgeInsets.fromLTRB(10.w, 6.h, 10.w, 8.h),
       backgroundColor: isPaper ? AppColors.paperCardBg : AppColors.white,
       borderColor: isPaper ? AppColors.paperBorder : AppColors.blueLight,
@@ -63,8 +62,6 @@ class LeaderboardDialog extends StatefulWidget {
 }
 
 class _LeaderboardDialogState extends State<LeaderboardDialog> {
-  final NumberFormat _fmt = NumberFormat('#,###');
-
   @override
   void initState() {
     super.initState();
@@ -105,7 +102,7 @@ class _LeaderboardDialogState extends State<LeaderboardDialog> {
             }
 
             final players =
-                state.leaderboard?.players ?? const <LeaderboardPlayerEntity>[];
+                state.leaderboard?.players ?? const <LeaderboardPlayer>[];
             if (players.isEmpty) {
               return _buildEmpty();
             }
@@ -180,11 +177,11 @@ class _LeaderboardDialogState extends State<LeaderboardDialog> {
   // Main content
 
   Widget _buildContent({
-    required List<LeaderboardPlayerEntity> players,
+    required List<LeaderboardPlayer> players,
     required String metric,
     required bool isPaper,
   }) {
-    LeaderboardPlayerEntity? findByRank(int rank) {
+    LeaderboardPlayer? findByRank(int rank) {
       final filtered = players.where((p) => p.rank == rank);
       return filtered.isEmpty ? null : filtered.first;
     }
@@ -207,7 +204,6 @@ class _LeaderboardDialogState extends State<LeaderboardDialog> {
           rank2: rank2,
           rank3: rank3,
           metric: metric,
-          fmt: _fmt,
         ),
 
         SizedBox(height: 4.h),
@@ -216,7 +212,6 @@ class _LeaderboardDialogState extends State<LeaderboardDialog> {
           players: rest,
           metric: metric,
           isPaper: isPaper,
-          fmt: _fmt,
         ),
       ],
     );

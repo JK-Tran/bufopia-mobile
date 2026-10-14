@@ -1,4 +1,4 @@
-export 'domain/entities/leaderboard_entity.dart';
+export 'domain/entities/leaderboard.dart';
 export 'domain/repositories/leaderboard_repository.dart';
 export 'domain/usecases/get_leaderboard_use_case.dart';
 export 'presentation/bloc/leaderboard_bloc.dart';

@@ -1,8 +1,8 @@
-import 'package:bufopia/features/challenge/domain/entities/room_info_entity.dart';
-import 'package:bufopia/features/challenge/domain/entities/social_state_entity.dart';
+import 'package:bufopia/features/challenge/domain/entities/room_info.dart';
+import 'package:bufopia/features/challenge/domain/entities/social_state.dart';
 
 abstract class ChallengeRoomRepository {
-  Future<SocialStateEntity> getSocialState({required String uid});
+  Future<SocialState> getSocialState({required String uid});
 
   Future<bool> submitSocialInvite({
     required String uid,
@@ -20,5 +20,5 @@ abstract class ChallengeRoomRepository {
     required String invitationId,
   });
 
-  Future<RoomInfoEntity?> getRoomInfo({required String roomCode});
+  Future<RoomInfo?> getRoomInfo({required String roomCode});
 }

@@ -65,7 +65,7 @@ class GalleryBottomBar extends StatelessWidget {
             AppText.c1(
               '1 ảnh đã chọn',
               color: AppColors.blueDark,
-              fontWeight: FontWeight.w800,
+              fontWeight: FontWeight.w700,
               fontSize: 12.sp,
             ),
           ] else ...[

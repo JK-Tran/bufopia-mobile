@@ -282,7 +282,7 @@ as int,
 /// @nodoc
 mixin _$GetLeaderboardOutput {
 
- LeaderboardEntity get leaderboard;
+ Leaderboard get leaderboard;
 /// Create a copy of GetLeaderboardOutput
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -318,11 +318,11 @@ abstract mixin class $GetLeaderboardOutputCopyWith<$Res>  {
   factory $GetLeaderboardOutputCopyWith(GetLeaderboardOutput value, $Res Function(GetLeaderboardOutput) _then) = _$GetLeaderboardOutputCopyWithImpl;
 @useResult
 $Res call({
- LeaderboardEntity leaderboard
+ Leaderboard leaderboard
 });
 
 
-$LeaderboardEntityCopyWith<$Res> get leaderboard;
+$LeaderboardCopyWith<$Res> get leaderboard;
 
 }
 /// @nodoc
@@ -338,16 +338,16 @@ class _$GetLeaderboardOutputCopyWithImpl<$Res>
 @pragma('vm:prefer-inline') @override $Res call({Object? leaderboard = null,}) {
   return _then(GetLeaderboardOutput(
 null == leaderboard ? _self.leaderboard : leaderboard // ignore: cast_nullable_to_non_nullable
-as LeaderboardEntity,
+as Leaderboard,
   ));
 }
 /// Create a copy of GetLeaderboardOutput
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$LeaderboardEntityCopyWith<$Res> get leaderboard {
+$LeaderboardCopyWith<$Res> get leaderboard {
   
-  return $LeaderboardEntityCopyWith<$Res>(_self.leaderboard, (value) {
+  return $LeaderboardCopyWith<$Res>(_self.leaderboard, (value) {
     return _then(_self.copyWith(leaderboard: value));
   });
 }
@@ -432,7 +432,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( LeaderboardEntity leaderboard)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( Leaderboard leaderboard)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _GetLeaderboardOutput() when $default != null:
 return $default(_that.leaderboard);case _:
@@ -453,7 +453,7 @@ return $default(_that.leaderboard);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( LeaderboardEntity leaderboard)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( Leaderboard leaderboard)  $default,) {final _that = this;
 switch (_that) {
 case _GetLeaderboardOutput():
 return $default(_that.leaderboard);case _:
@@ -473,7 +473,7 @@ return $default(_that.leaderboard);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( LeaderboardEntity leaderboard)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( Leaderboard leaderboard)?  $default,) {final _that = this;
 switch (_that) {
 case _GetLeaderboardOutput() when $default != null:
 return $default(_that.leaderboard);case _:
@@ -491,7 +491,7 @@ class _GetLeaderboardOutput extends GetLeaderboardOutput {
   const _GetLeaderboardOutput(this.leaderboard): super._();
   
 
-@override final  LeaderboardEntity leaderboard;
+@override final  Leaderboard leaderboard;
 
 /// Create a copy of GetLeaderboardOutput
 /// with the given fields replaced by the non-null parameter values.
@@ -525,11 +525,11 @@ abstract mixin class _$GetLeaderboardOutputCopyWith<$Res> implements $GetLeaderb
   factory _$GetLeaderboardOutputCopyWith(_GetLeaderboardOutput value, $Res Function(_GetLeaderboardOutput) _then) = __$GetLeaderboardOutputCopyWithImpl;
 @override @useResult
 $Res call({
- LeaderboardEntity leaderboard
+ Leaderboard leaderboard
 });
 
 
-@override $LeaderboardEntityCopyWith<$Res> get leaderboard;
+@override $LeaderboardCopyWith<$Res> get leaderboard;
 
 }
 /// @nodoc
@@ -545,7 +545,7 @@ class __$GetLeaderboardOutputCopyWithImpl<$Res>
 @override @pragma('vm:prefer-inline') $Res call({Object? leaderboard = null,}) {
   return _then(_GetLeaderboardOutput(
 null == leaderboard ? _self.leaderboard : leaderboard // ignore: cast_nullable_to_non_nullable
-as LeaderboardEntity,
+as Leaderboard,
   ));
 }
 
@@ -553,9 +553,9 @@ as LeaderboardEntity,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$LeaderboardEntityCopyWith<$Res> get leaderboard {
+$LeaderboardCopyWith<$Res> get leaderboard {
   
-  return $LeaderboardEntityCopyWith<$Res>(_self.leaderboard, (value) {
+  return $LeaderboardCopyWith<$Res>(_self.leaderboard, (value) {
     return _then(_self.copyWith(leaderboard: value));
   });
 }

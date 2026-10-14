@@ -1,9 +1,11 @@
 import 'dart:convert';
 
 import 'package:bufopia/features/auth/data/datasources/auth_data_source.dart';
-import 'package:bufopia/features/auth/data/mapper/user_mapper.dart';
-import 'package:bufopia/features/auth/data/models/user_model.dart';
-import 'package:bufopia/features/auth/domain/entities/user_entity.dart';
+import 'package:bufopia/features/auth/data/mapper/account_import_mapper.dart';
+import 'package:bufopia/features/auth/data/mapper/user_data_mapper.dart';
+import 'package:bufopia/features/auth/data/models/user_data.dart';
+import 'package:bufopia/features/auth/domain/entities/account_import_result.dart';
+import 'package:bufopia/features/auth/domain/entities/user.dart';
 import 'package:bufopia/features/auth/domain/repositories/auth_repository.dart';
 import 'package:bufopia/shared/services/local_storage/app_preferences.dart';
 import 'package:injectable/injectable.dart';
@@ -12,23 +14,25 @@ import 'package:injectable/injectable.dart';
 class AuthRepositoryImpl extends AuthRepository {
   AuthRepositoryImpl(
     this._dataSource,
-    this._userMapper,
+    this._userDataMapper,
+    this._accountImportMapper,
     this._appPreferences,
   );
 
   final AuthDataSource _dataSource;
-  final UserMapper _userMapper;
+  final UserDataMapper _userDataMapper;
+  final AccountImportMapper _accountImportMapper;
   final AppPreferences _appPreferences;
 
   @override
-  UserEntity? getCurrentUser() {
+  User? getCurrentUser() {
     final cached = _appPreferences.currentUser;
     if (cached != null && cached.isNotEmpty) {
       try {
-        final userData = UserModel.fromJson(
+        final userData = UserData.fromJson(
           json.decode(cached) as Map<String, dynamic>,
         );
-        return _userMapper.mapToEntity(userData);
+        return _userDataMapper.mapToEntity(userData);
       } on Exception {
         return null;
       }
@@ -38,31 +42,68 @@ class AuthRepositoryImpl extends AuthRepository {
   }
 
   @override
-  Future<bool> saveCurrentUser(UserEntity user) async {
-    final model = _userMapper.mapToData(user);
-    return _appPreferences.saveCurrentUser(json.encode(model.toJson()));
+  Future<bool> saveCurrentUser(User user) async {
+    final data = _userDataMapper.mapToData(user);
+    return _appPreferences.saveCurrentUser(json.encode(data.toJson()));
   }
 
   @override
   Future<void> clearCurrentUserData() => _appPreferences.clearCurrentUserData();
 
   @override
-  Future<UserEntity> getUserInfo({required String uid}) async {
+  Future<User> getUserInfo({required String uid}) async {
     final response = await _dataSource.getUserInfo(uid: uid);
-    return _userMapper.mapToEntity(response);
+    return _userDataMapper.mapToEntity(response);
   }
 
   @override
-  Future<UserEntity> updateUserProfile({
+  Future<User> updateUserProfile({
     required String uid,
     required String displayName,
     String? avatarUrl,
+    bool termsAccepted = true,
   }) async {
     final response = await _dataSource.updateUserProfile(
       uid: uid,
       displayName: displayName,
       avatarUrl: avatarUrl,
+      termsAccepted: termsAccepted,
     );
-    return _userMapper.mapToEntity(response);
+    return _userDataMapper.mapToEntity(response);
+  }
+
+  @override
+  Future<String?> getSocketTicket({
+    required String uid,
+    required String path,
+    String? token,
+  }) {
+    return _dataSource.getSocketTicket(
+      uid: uid,
+      path: path,
+      token: token,
+    );
+  }
+
+  @override
+  Future<AccountImportResult?> importAccount({
+    required String idToken,
+    required String sourceUid,
+    String? sourceToken,
+    String? action,
+    String? displayName,
+    int xp = 0,
+    List<Map<String, dynamic>> profiles = const [],
+  }) async {
+    final response = await _dataSource.importAccount(
+      idToken: idToken,
+      sourceUid: sourceUid,
+      sourceToken: sourceToken,
+      action: action,
+      displayName: displayName,
+      xp: xp,
+      profiles: profiles,
+    );
+    return _accountImportMapper.mapToEntity(response);
   }
 }

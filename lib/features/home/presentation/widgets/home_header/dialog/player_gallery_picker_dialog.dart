@@ -214,8 +214,8 @@ class _PlayerGalleryPickerDialogState extends State<PlayerGalleryPickerDialog>
       insetPadding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
       child: Container(
         constraints: BoxConstraints(
-          maxWidth: 580.w,
-          maxHeight: 330.h,
+          maxWidth: 340.w,
+          maxHeight: 520.h,
         ),
         decoration: BoxDecoration(
           color: AppColors.white,
@@ -239,6 +239,7 @@ class _PlayerGalleryPickerDialogState extends State<PlayerGalleryPickerDialog>
           child: Column(
             children: [
               _buildHeader(),
+              _buildTabBar(),
               Expanded(
                 child: TabBarView(
                   controller: _tabController,
@@ -286,7 +287,7 @@ class _PlayerGalleryPickerDialogState extends State<PlayerGalleryPickerDialog>
 
   Widget _buildHeader() {
     return Container(
-      height: 42.h,
+      height: 38.h,
       padding: EdgeInsets.symmetric(horizontal: 14.w),
       decoration: const BoxDecoration(
         gradient: LinearGradient(
@@ -308,7 +309,7 @@ class _PlayerGalleryPickerDialogState extends State<PlayerGalleryPickerDialog>
           SizedBox(width: 8.w),
           AppText.t3(
             'Thư viện ảnh',
-            fontWeight: FontWeight.w900,
+            fontWeight: FontWeight.w700,
             fontSize: 16.sp,
             color: AppColors.white,
             shadows: [
@@ -320,37 +321,54 @@ class _PlayerGalleryPickerDialogState extends State<PlayerGalleryPickerDialog>
             ],
           ),
           const Spacer(),
-          Container(
-            padding: EdgeInsets.all(2.w),
-            decoration: BoxDecoration(
-              color: AppColors.black.withValues(alpha: 0.2),
-              borderRadius: BorderRadius.circular(16.w),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                _buildSegmentTab(
-                  index: 0,
-                  icon: Icons.photo_rounded,
-                  label: _currentAlbum != null ? _currentAlbum!.name : 'Ảnh',
-                ),
-                _buildSegmentTab(
-                  index: 1,
-                  icon: Icons.folder_rounded,
-                  label: 'Album',
-                ),
-              ],
-            ),
-          ),
-          SizedBox(width: 10.w),
           AppButton.close(
-            size: 24.w,
+            size: 26.w,
             iconSize: 14.w,
             iconColor: AppColors.blueDark,
             extrusionColor: AppColors.blueDeep.withValues(alpha: 0.5),
             onPressed: () => Navigator.of(context).pop(),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildTabBar() {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 6.h),
+      decoration: const BoxDecoration(
+        color: AppColors.skySurface,
+        border: Border(
+          bottom: BorderSide(
+            color: AppColors.skyBorder,
+          ),
+        ),
+      ),
+      child: Container(
+        padding: EdgeInsets.all(3.w),
+        decoration: BoxDecoration(
+          color: AppColors.blueLight.withValues(alpha: 0.25),
+          borderRadius: BorderRadius.circular(16.w),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: _buildSegmentTab(
+                index: 0,
+                icon: Icons.photo_rounded,
+                label: _currentAlbum != null ? _currentAlbum!.name : 'Ảnh',
+              ),
+            ),
+            SizedBox(width: 4.w),
+            Expanded(
+              child: _buildSegmentTab(
+                index: 1,
+                icon: Icons.folder_rounded,
+                label: 'Album',
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -368,14 +386,14 @@ class _PlayerGalleryPickerDialogState extends State<PlayerGalleryPickerDialog>
       },
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 150),
-        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+        padding: EdgeInsets.symmetric(vertical: 4.h),
         decoration: BoxDecoration(
           color: isSelected ? AppColors.white : Colors.transparent,
           borderRadius: BorderRadius.circular(14.w),
           boxShadow: isSelected
               ? [
                   BoxShadow(
-                    color: AppColors.black.withValues(alpha: 0.15),
+                    color: AppColors.black.withValues(alpha: 0.12),
                     blurRadius: 4.w,
                     offset: Offset(0, 1.h),
                   ),
@@ -383,21 +401,23 @@ class _PlayerGalleryPickerDialogState extends State<PlayerGalleryPickerDialog>
               : null,
         ),
         child: Row(
-          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
               icon,
               size: 14.w,
-              color: isSelected ? AppColors.blueDark : AppColors.white,
+              color: isSelected ? AppColors.blueDark : AppColors.grayDark,
             ),
             SizedBox(width: 4.w),
-            AppText.c1(
-              label,
-              fontWeight: isSelected ? FontWeight.w800 : FontWeight.w600,
-              fontSize: 12.sp,
-              color: isSelected ? AppColors.blueDark : AppColors.white,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
+            Flexible(
+              child: AppText.c1(
+                label,
+                fontWeight: isSelected ? FontWeight.w700 : null,
+                fontSize: 12.sp,
+                color: isSelected ? AppColors.blueDark : AppColors.grayDark,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+              ),
             ),
           ],
         ),

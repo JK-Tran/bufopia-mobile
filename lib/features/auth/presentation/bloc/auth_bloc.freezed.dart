@@ -56,12 +56,15 @@ extension AuthEventPatterns on AuthEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _GetUserInfo value)?  getUserInfo,TResult Function( _UpdateProfile value)?  updateProfile,TResult Function( _LoggedIn value)?  loggedIn,TResult Function( _UserUpdated value)?  userUpdated,TResult Function( _LoggedOut value)?  loggedOut,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _GetUserInfo value)?  getUserInfo,TResult Function( _UpdateProfile value)?  updateProfile,TResult Function( _SignInWithGoogle value)?  signInWithGoogle,TResult Function( _ResolveAccountConflict value)?  resolveAccountConflict,TResult Function( _CancelAccountConflict value)?  cancelAccountConflict,TResult Function( _LoggedIn value)?  loggedIn,TResult Function( _UserUpdated value)?  userUpdated,TResult Function( _LoggedOut value)?  loggedOut,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _GetUserInfo() when getUserInfo != null:
 return getUserInfo(_that);case _UpdateProfile() when updateProfile != null:
-return updateProfile(_that);case _LoggedIn() when loggedIn != null:
+return updateProfile(_that);case _SignInWithGoogle() when signInWithGoogle != null:
+return signInWithGoogle(_that);case _ResolveAccountConflict() when resolveAccountConflict != null:
+return resolveAccountConflict(_that);case _CancelAccountConflict() when cancelAccountConflict != null:
+return cancelAccountConflict(_that);case _LoggedIn() when loggedIn != null:
 return loggedIn(_that);case _UserUpdated() when userUpdated != null:
 return userUpdated(_that);case _LoggedOut() when loggedOut != null:
 return loggedOut(_that);case _:
@@ -82,12 +85,15 @@ return loggedOut(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _GetUserInfo value)  getUserInfo,required TResult Function( _UpdateProfile value)  updateProfile,required TResult Function( _LoggedIn value)  loggedIn,required TResult Function( _UserUpdated value)  userUpdated,required TResult Function( _LoggedOut value)  loggedOut,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _GetUserInfo value)  getUserInfo,required TResult Function( _UpdateProfile value)  updateProfile,required TResult Function( _SignInWithGoogle value)  signInWithGoogle,required TResult Function( _ResolveAccountConflict value)  resolveAccountConflict,required TResult Function( _CancelAccountConflict value)  cancelAccountConflict,required TResult Function( _LoggedIn value)  loggedIn,required TResult Function( _UserUpdated value)  userUpdated,required TResult Function( _LoggedOut value)  loggedOut,}){
 final _that = this;
 switch (_that) {
 case _GetUserInfo():
 return getUserInfo(_that);case _UpdateProfile():
-return updateProfile(_that);case _LoggedIn():
+return updateProfile(_that);case _SignInWithGoogle():
+return signInWithGoogle(_that);case _ResolveAccountConflict():
+return resolveAccountConflict(_that);case _CancelAccountConflict():
+return cancelAccountConflict(_that);case _LoggedIn():
 return loggedIn(_that);case _UserUpdated():
 return userUpdated(_that);case _LoggedOut():
 return loggedOut(_that);case _:
@@ -107,12 +113,15 @@ return loggedOut(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _GetUserInfo value)?  getUserInfo,TResult? Function( _UpdateProfile value)?  updateProfile,TResult? Function( _LoggedIn value)?  loggedIn,TResult? Function( _UserUpdated value)?  userUpdated,TResult? Function( _LoggedOut value)?  loggedOut,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _GetUserInfo value)?  getUserInfo,TResult? Function( _UpdateProfile value)?  updateProfile,TResult? Function( _SignInWithGoogle value)?  signInWithGoogle,TResult? Function( _ResolveAccountConflict value)?  resolveAccountConflict,TResult? Function( _CancelAccountConflict value)?  cancelAccountConflict,TResult? Function( _LoggedIn value)?  loggedIn,TResult? Function( _UserUpdated value)?  userUpdated,TResult? Function( _LoggedOut value)?  loggedOut,}){
 final _that = this;
 switch (_that) {
 case _GetUserInfo() when getUserInfo != null:
 return getUserInfo(_that);case _UpdateProfile() when updateProfile != null:
-return updateProfile(_that);case _LoggedIn() when loggedIn != null:
+return updateProfile(_that);case _SignInWithGoogle() when signInWithGoogle != null:
+return signInWithGoogle(_that);case _ResolveAccountConflict() when resolveAccountConflict != null:
+return resolveAccountConflict(_that);case _CancelAccountConflict() when cancelAccountConflict != null:
+return cancelAccountConflict(_that);case _LoggedIn() when loggedIn != null:
 return loggedIn(_that);case _UserUpdated() when userUpdated != null:
 return userUpdated(_that);case _LoggedOut() when loggedOut != null:
 return loggedOut(_that);case _:
@@ -132,11 +141,14 @@ return loggedOut(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? uid)?  getUserInfo,TResult Function( String displayName,  String? avatarUrl)?  updateProfile,TResult Function( UserEntity user)?  loggedIn,TResult Function( UserEntity user)?  userUpdated,TResult Function()?  loggedOut,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String? uid)?  getUserInfo,TResult Function( String displayName,  String? avatarUrl)?  updateProfile,TResult Function()?  signInWithGoogle,TResult Function( String action)?  resolveAccountConflict,TResult Function()?  cancelAccountConflict,TResult Function( User user)?  loggedIn,TResult Function( User user)?  userUpdated,TResult Function()?  loggedOut,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _GetUserInfo() when getUserInfo != null:
 return getUserInfo(_that.uid);case _UpdateProfile() when updateProfile != null:
-return updateProfile(_that.displayName,_that.avatarUrl);case _LoggedIn() when loggedIn != null:
+return updateProfile(_that.displayName,_that.avatarUrl);case _SignInWithGoogle() when signInWithGoogle != null:
+return signInWithGoogle();case _ResolveAccountConflict() when resolveAccountConflict != null:
+return resolveAccountConflict(_that.action);case _CancelAccountConflict() when cancelAccountConflict != null:
+return cancelAccountConflict();case _LoggedIn() when loggedIn != null:
 return loggedIn(_that.user);case _UserUpdated() when userUpdated != null:
 return userUpdated(_that.user);case _LoggedOut() when loggedOut != null:
 return loggedOut();case _:
@@ -157,11 +169,14 @@ return loggedOut();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? uid)  getUserInfo,required TResult Function( String displayName,  String? avatarUrl)  updateProfile,required TResult Function( UserEntity user)  loggedIn,required TResult Function( UserEntity user)  userUpdated,required TResult Function()  loggedOut,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String? uid)  getUserInfo,required TResult Function( String displayName,  String? avatarUrl)  updateProfile,required TResult Function()  signInWithGoogle,required TResult Function( String action)  resolveAccountConflict,required TResult Function()  cancelAccountConflict,required TResult Function( User user)  loggedIn,required TResult Function( User user)  userUpdated,required TResult Function()  loggedOut,}) {final _that = this;
 switch (_that) {
 case _GetUserInfo():
 return getUserInfo(_that.uid);case _UpdateProfile():
-return updateProfile(_that.displayName,_that.avatarUrl);case _LoggedIn():
+return updateProfile(_that.displayName,_that.avatarUrl);case _SignInWithGoogle():
+return signInWithGoogle();case _ResolveAccountConflict():
+return resolveAccountConflict(_that.action);case _CancelAccountConflict():
+return cancelAccountConflict();case _LoggedIn():
 return loggedIn(_that.user);case _UserUpdated():
 return userUpdated(_that.user);case _LoggedOut():
 return loggedOut();case _:
@@ -181,11 +196,14 @@ return loggedOut();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? uid)?  getUserInfo,TResult? Function( String displayName,  String? avatarUrl)?  updateProfile,TResult? Function( UserEntity user)?  loggedIn,TResult? Function( UserEntity user)?  userUpdated,TResult? Function()?  loggedOut,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String? uid)?  getUserInfo,TResult? Function( String displayName,  String? avatarUrl)?  updateProfile,TResult? Function()?  signInWithGoogle,TResult? Function( String action)?  resolveAccountConflict,TResult? Function()?  cancelAccountConflict,TResult? Function( User user)?  loggedIn,TResult? Function( User user)?  userUpdated,TResult? Function()?  loggedOut,}) {final _that = this;
 switch (_that) {
 case _GetUserInfo() when getUserInfo != null:
 return getUserInfo(_that.uid);case _UpdateProfile() when updateProfile != null:
-return updateProfile(_that.displayName,_that.avatarUrl);case _LoggedIn() when loggedIn != null:
+return updateProfile(_that.displayName,_that.avatarUrl);case _SignInWithGoogle() when signInWithGoogle != null:
+return signInWithGoogle();case _ResolveAccountConflict() when resolveAccountConflict != null:
+return resolveAccountConflict(_that.action);case _CancelAccountConflict() when cancelAccountConflict != null:
+return cancelAccountConflict();case _LoggedIn() when loggedIn != null:
 return loggedIn(_that.user);case _UserUpdated() when userUpdated != null:
 return userUpdated(_that.user);case _LoggedOut() when loggedOut != null:
 return loggedOut();case _:
@@ -337,11 +355,143 @@ as String?,
 /// @nodoc
 
 
+class _SignInWithGoogle implements AuthEvent {
+  const _SignInWithGoogle();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SignInWithGoogle);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+    return 'AuthEvent.signInWithGoogle()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class _ResolveAccountConflict implements AuthEvent {
+  const _ResolveAccountConflict({required this.action});
+  
+
+ final  String action;
+
+/// Create a copy of AuthEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$ResolveAccountConflictCopyWith<_ResolveAccountConflict> get copyWith => __$ResolveAccountConflictCopyWithImpl<_ResolveAccountConflict>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _ResolveAccountConflict&&(identical(other.action, action) || other.action == action));
+}
+
+
+@override
+int get hashCode {
+    return Object.hash(runtimeType,action);
+}
+
+@override
+String toString() {
+    return 'AuthEvent.resolveAccountConflict(action: $action)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$ResolveAccountConflictCopyWith<$Res> implements $AuthEventCopyWith<$Res> {
+  factory _$ResolveAccountConflictCopyWith(_ResolveAccountConflict value, $Res Function(_ResolveAccountConflict) _then) = __$ResolveAccountConflictCopyWithImpl;
+@useResult
+$Res call({
+ String action
+});
+
+
+
+
+}
+/// @nodoc
+class __$ResolveAccountConflictCopyWithImpl<$Res>
+    implements _$ResolveAccountConflictCopyWith<$Res> {
+  __$ResolveAccountConflictCopyWithImpl(this._self, this._then);
+
+  final _ResolveAccountConflict _self;
+  final $Res Function(_ResolveAccountConflict) _then;
+
+/// Create a copy of AuthEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? action = null,}) {
+  return _then(_ResolveAccountConflict(
+action: null == action ? _self.action : action // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _CancelAccountConflict implements AuthEvent {
+  const _CancelAccountConflict();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _CancelAccountConflict);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+    return 'AuthEvent.cancelAccountConflict()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
 class _LoggedIn implements AuthEvent {
   const _LoggedIn(this.user);
   
 
- final  UserEntity user;
+ final  User user;
 
 /// Create a copy of AuthEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -375,11 +525,11 @@ abstract mixin class _$LoggedInCopyWith<$Res> implements $AuthEventCopyWith<$Res
   factory _$LoggedInCopyWith(_LoggedIn value, $Res Function(_LoggedIn) _then) = __$LoggedInCopyWithImpl;
 @useResult
 $Res call({
- UserEntity user
+ User user
 });
 
 
-$UserEntityCopyWith<$Res> get user;
+$UserCopyWith<$Res> get user;
 
 }
 /// @nodoc
@@ -395,7 +545,7 @@ class __$LoggedInCopyWithImpl<$Res>
 @pragma('vm:prefer-inline') $Res call({Object? user = null,}) {
   return _then(_LoggedIn(
 null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
-as UserEntity,
+as User,
   ));
 }
 
@@ -403,9 +553,9 @@ as UserEntity,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$UserEntityCopyWith<$Res> get user {
+$UserCopyWith<$Res> get user {
   
-  return $UserEntityCopyWith<$Res>(_self.user, (value) {
+  return $UserCopyWith<$Res>(_self.user, (value) {
     return _then(_self.copyWith(user: value));
   });
 }
@@ -418,7 +568,7 @@ class _UserUpdated implements AuthEvent {
   const _UserUpdated(this.user);
   
 
- final  UserEntity user;
+ final  User user;
 
 /// Create a copy of AuthEvent
 /// with the given fields replaced by the non-null parameter values.
@@ -452,11 +602,11 @@ abstract mixin class _$UserUpdatedCopyWith<$Res> implements $AuthEventCopyWith<$
   factory _$UserUpdatedCopyWith(_UserUpdated value, $Res Function(_UserUpdated) _then) = __$UserUpdatedCopyWithImpl;
 @useResult
 $Res call({
- UserEntity user
+ User user
 });
 
 
-$UserEntityCopyWith<$Res> get user;
+$UserCopyWith<$Res> get user;
 
 }
 /// @nodoc
@@ -472,7 +622,7 @@ class __$UserUpdatedCopyWithImpl<$Res>
 @pragma('vm:prefer-inline') $Res call({Object? user = null,}) {
   return _then(_UserUpdated(
 null == user ? _self.user : user // ignore: cast_nullable_to_non_nullable
-as UserEntity,
+as User,
   ));
 }
 
@@ -480,9 +630,9 @@ as UserEntity,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$UserEntityCopyWith<$Res> get user {
+$UserCopyWith<$Res> get user {
   
-  return $UserEntityCopyWith<$Res>(_self.user, (value) {
+  return $UserCopyWith<$Res>(_self.user, (value) {
     return _then(_self.copyWith(user: value));
   });
 }
@@ -523,7 +673,7 @@ String toString() {
 /// @nodoc
 mixin _$AuthState {
 
- bool get isLoggedIn; bool get isLoading; UserEntity? get currentUser; String? get errorMessage;
+ bool get isLoggedIn; bool get isLoading; User? get currentUser; String? get errorMessage; AccountConflict? get conflict; String? get pendingIdToken;
 /// Create a copy of AuthState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -535,20 +685,20 @@ $AuthStateCopyWith<AuthState> get copyWith => _$AuthStateCopyWithImpl<AuthState>
 @override
 bool operator ==(Object other) {
   final _this = this as AuthState;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthState&&(identical(other.isLoggedIn, _this.isLoggedIn) || other.isLoggedIn == _this.isLoggedIn)&&(identical(other.isLoading, _this.isLoading) || other.isLoading == _this.isLoading)&&(identical(other.currentUser, _this.currentUser) || other.currentUser == _this.currentUser)&&(identical(other.errorMessage, _this.errorMessage) || other.errorMessage == _this.errorMessage));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthState&&(identical(other.isLoggedIn, _this.isLoggedIn) || other.isLoggedIn == _this.isLoggedIn)&&(identical(other.isLoading, _this.isLoading) || other.isLoading == _this.isLoading)&&(identical(other.currentUser, _this.currentUser) || other.currentUser == _this.currentUser)&&(identical(other.errorMessage, _this.errorMessage) || other.errorMessage == _this.errorMessage)&&(identical(other.conflict, _this.conflict) || other.conflict == _this.conflict)&&(identical(other.pendingIdToken, _this.pendingIdToken) || other.pendingIdToken == _this.pendingIdToken));
 }
 
 
 @override
 int get hashCode {
   final _this = this as AuthState;
-  return Object.hash(runtimeType,_this.isLoggedIn,_this.isLoading,_this.currentUser,_this.errorMessage);
+  return Object.hash(runtimeType,_this.isLoggedIn,_this.isLoading,_this.currentUser,_this.errorMessage,_this.conflict,_this.pendingIdToken);
 }
 
 @override
 String toString() {
   final _this = this as AuthState;
-  return 'AuthState(isLoggedIn: ${_this.isLoggedIn}, isLoading: ${_this.isLoading}, currentUser: ${_this.currentUser}, errorMessage: ${_this.errorMessage})';
+  return 'AuthState(isLoggedIn: ${_this.isLoggedIn}, isLoading: ${_this.isLoading}, currentUser: ${_this.currentUser}, errorMessage: ${_this.errorMessage}, conflict: ${_this.conflict}, pendingIdToken: ${_this.pendingIdToken})';
 }
 
 
@@ -559,11 +709,11 @@ abstract mixin class $AuthStateCopyWith<$Res>  {
   factory $AuthStateCopyWith(AuthState value, $Res Function(AuthState) _then) = _$AuthStateCopyWithImpl;
 @useResult
 $Res call({
- bool isLoggedIn, bool isLoading, UserEntity? currentUser, String? errorMessage
+ bool isLoggedIn, bool isLoading, User? currentUser, String? errorMessage, AccountConflict? conflict, String? pendingIdToken
 });
 
 
-$UserEntityCopyWith<$Res>? get currentUser;
+$UserCopyWith<$Res>? get currentUser;$AccountConflictCopyWith<$Res>? get conflict;
 
 }
 /// @nodoc
@@ -576,12 +726,14 @@ class _$AuthStateCopyWithImpl<$Res>
 
 /// Create a copy of AuthState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? isLoggedIn = null,Object? isLoading = null,Object? currentUser = freezed,Object? errorMessage = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? isLoggedIn = null,Object? isLoading = null,Object? currentUser = freezed,Object? errorMessage = freezed,Object? conflict = freezed,Object? pendingIdToken = freezed,}) {
   return _then(AuthState(
 isLoggedIn: null == isLoggedIn ? _self.isLoggedIn : isLoggedIn // ignore: cast_nullable_to_non_nullable
 as bool,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,currentUser: freezed == currentUser ? _self.currentUser : currentUser // ignore: cast_nullable_to_non_nullable
-as UserEntity?,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
+as User?,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
+as String?,conflict: freezed == conflict ? _self.conflict : conflict // ignore: cast_nullable_to_non_nullable
+as AccountConflict?,pendingIdToken: freezed == pendingIdToken ? _self.pendingIdToken : pendingIdToken // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -589,13 +741,25 @@ as String?,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$UserEntityCopyWith<$Res>? get currentUser {
+$UserCopyWith<$Res>? get currentUser {
     if (_self.currentUser == null) {
     return null;
   }
 
-  return $UserEntityCopyWith<$Res>(_self.currentUser!, (value) {
+  return $UserCopyWith<$Res>(_self.currentUser!, (value) {
     return _then(_self.copyWith(currentUser: value));
+  });
+}/// Create a copy of AuthState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$AccountConflictCopyWith<$Res>? get conflict {
+    if (_self.conflict == null) {
+    return null;
+  }
+
+  return $AccountConflictCopyWith<$Res>(_self.conflict!, (value) {
+    return _then(_self.copyWith(conflict: value));
   });
 }
 }
@@ -679,10 +843,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isLoggedIn,  bool isLoading,  UserEntity? currentUser,  String? errorMessage)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isLoggedIn,  bool isLoading,  User? currentUser,  String? errorMessage,  AccountConflict? conflict,  String? pendingIdToken)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AuthState() when $default != null:
-return $default(_that.isLoggedIn,_that.isLoading,_that.currentUser,_that.errorMessage);case _:
+return $default(_that.isLoggedIn,_that.isLoading,_that.currentUser,_that.errorMessage,_that.conflict,_that.pendingIdToken);case _:
   return orElse();
 
 }
@@ -700,10 +864,10 @@ return $default(_that.isLoggedIn,_that.isLoading,_that.currentUser,_that.errorMe
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isLoggedIn,  bool isLoading,  UserEntity? currentUser,  String? errorMessage)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isLoggedIn,  bool isLoading,  User? currentUser,  String? errorMessage,  AccountConflict? conflict,  String? pendingIdToken)  $default,) {final _that = this;
 switch (_that) {
 case _AuthState():
-return $default(_that.isLoggedIn,_that.isLoading,_that.currentUser,_that.errorMessage);case _:
+return $default(_that.isLoggedIn,_that.isLoading,_that.currentUser,_that.errorMessage,_that.conflict,_that.pendingIdToken);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -720,10 +884,10 @@ return $default(_that.isLoggedIn,_that.isLoading,_that.currentUser,_that.errorMe
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isLoggedIn,  bool isLoading,  UserEntity? currentUser,  String? errorMessage)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isLoggedIn,  bool isLoading,  User? currentUser,  String? errorMessage,  AccountConflict? conflict,  String? pendingIdToken)?  $default,) {final _that = this;
 switch (_that) {
 case _AuthState() when $default != null:
-return $default(_that.isLoggedIn,_that.isLoading,_that.currentUser,_that.errorMessage);case _:
+return $default(_that.isLoggedIn,_that.isLoading,_that.currentUser,_that.errorMessage,_that.conflict,_that.pendingIdToken);case _:
   return null;
 
 }
@@ -735,13 +899,15 @@ return $default(_that.isLoggedIn,_that.isLoading,_that.currentUser,_that.errorMe
 
 
 class _AuthState implements AuthState {
-  const _AuthState({this.isLoggedIn = false, this.isLoading = false, this.currentUser, this.errorMessage});
+  const _AuthState({this.isLoggedIn = false, this.isLoading = false, this.currentUser, this.errorMessage, this.conflict, this.pendingIdToken});
   
 
 @override@JsonKey() final  bool isLoggedIn;
 @override@JsonKey() final  bool isLoading;
-@override final  UserEntity? currentUser;
+@override final  User? currentUser;
 @override final  String? errorMessage;
+@override final  AccountConflict? conflict;
+@override final  String? pendingIdToken;
 
 /// Create a copy of AuthState
 /// with the given fields replaced by the non-null parameter values.
@@ -753,18 +919,18 @@ _$AuthStateCopyWith<_AuthState> get copyWith => __$AuthStateCopyWithImpl<_AuthSt
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _AuthState&&(identical(other.isLoggedIn, isLoggedIn) || other.isLoggedIn == isLoggedIn)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.currentUser, currentUser) || other.currentUser == currentUser)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _AuthState&&(identical(other.isLoggedIn, isLoggedIn) || other.isLoggedIn == isLoggedIn)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.currentUser, currentUser) || other.currentUser == currentUser)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.conflict, conflict) || other.conflict == conflict)&&(identical(other.pendingIdToken, pendingIdToken) || other.pendingIdToken == pendingIdToken));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,isLoggedIn,isLoading,currentUser,errorMessage);
+    return Object.hash(runtimeType,isLoggedIn,isLoading,currentUser,errorMessage,conflict,pendingIdToken);
 }
 
 @override
 String toString() {
-    return 'AuthState(isLoggedIn: $isLoggedIn, isLoading: $isLoading, currentUser: $currentUser, errorMessage: $errorMessage)';
+    return 'AuthState(isLoggedIn: $isLoggedIn, isLoading: $isLoading, currentUser: $currentUser, errorMessage: $errorMessage, conflict: $conflict, pendingIdToken: $pendingIdToken)';
 }
 
 
@@ -775,11 +941,11 @@ abstract mixin class _$AuthStateCopyWith<$Res> implements $AuthStateCopyWith<$Re
   factory _$AuthStateCopyWith(_AuthState value, $Res Function(_AuthState) _then) = __$AuthStateCopyWithImpl;
 @override @useResult
 $Res call({
- bool isLoggedIn, bool isLoading, UserEntity? currentUser, String? errorMessage
+ bool isLoggedIn, bool isLoading, User? currentUser, String? errorMessage, AccountConflict? conflict, String? pendingIdToken
 });
 
 
-@override $UserEntityCopyWith<$Res>? get currentUser;
+@override $UserCopyWith<$Res>? get currentUser;@override $AccountConflictCopyWith<$Res>? get conflict;
 
 }
 /// @nodoc
@@ -792,12 +958,14 @@ class __$AuthStateCopyWithImpl<$Res>
 
 /// Create a copy of AuthState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? isLoggedIn = null,Object? isLoading = null,Object? currentUser = freezed,Object? errorMessage = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? isLoggedIn = null,Object? isLoading = null,Object? currentUser = freezed,Object? errorMessage = freezed,Object? conflict = freezed,Object? pendingIdToken = freezed,}) {
   return _then(_AuthState(
 isLoggedIn: null == isLoggedIn ? _self.isLoggedIn : isLoggedIn // ignore: cast_nullable_to_non_nullable
 as bool,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,currentUser: freezed == currentUser ? _self.currentUser : currentUser // ignore: cast_nullable_to_non_nullable
-as UserEntity?,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
+as User?,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
+as String?,conflict: freezed == conflict ? _self.conflict : conflict // ignore: cast_nullable_to_non_nullable
+as AccountConflict?,pendingIdToken: freezed == pendingIdToken ? _self.pendingIdToken : pendingIdToken // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -806,13 +974,25 @@ as String?,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$UserEntityCopyWith<$Res>? get currentUser {
+$UserCopyWith<$Res>? get currentUser {
     if (_self.currentUser == null) {
     return null;
   }
 
-  return $UserEntityCopyWith<$Res>(_self.currentUser!, (value) {
+  return $UserCopyWith<$Res>(_self.currentUser!, (value) {
     return _then(_self.copyWith(currentUser: value));
+  });
+}/// Create a copy of AuthState
+/// with the given fields replaced by the non-null parameter values.
+@override
+@pragma('vm:prefer-inline')
+$AccountConflictCopyWith<$Res>? get conflict {
+    if (_self.conflict == null) {
+    return null;
+  }
+
+  return $AccountConflictCopyWith<$Res>(_self.conflict!, (value) {
+    return _then(_self.copyWith(conflict: value));
   });
 }
 }

@@ -1,16 +1,17 @@
-import 'package:bufopia/components/app_button.dart';
 import 'package:bufopia/components/app_icon_button.dart';
 import 'package:bufopia/components/app_snack_bar.dart';
 import 'package:bufopia/core/router/app_router.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
+import 'package:bufopia/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:bufopia/features/challenge/presentation/widgets/dialog/challenge_room_dialog.dart';
 import 'package:bufopia/features/home/presentation/widgets/home_header/dialog/home_settings_dialog.dart';
-import 'package:bufopia/features/vocabulary/domain/entities/topic_entity.dart';
+import 'package:bufopia/features/home/presentation/widgets/home_header/dialog/player_edit_name_dialog.dart';
+import 'package:bufopia/features/vocabulary/domain/entities/topic.dart';
 import 'package:bufopia/features/vocabulary/presentation/widgets/dialog/vocabulary_matchmaking_dialog.dart';
+import 'package:bufopia/features/vocabulary/presentation/widgets/topic/dialog/topic_mode_dialog.dart';
 import 'package:bufopia/features/vocabulary/presentation/widgets/topic/topic_grid.dart';
 import 'package:bufopia/features/vocabulary/presentation/widgets/topic/topic_header.dart';
-import 'package:bufopia/features/vocabulary/presentation/widgets/topic/topic_mode_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -31,12 +32,12 @@ class _TopicPageState extends State<TopicPage> {
   void initState() {
     super.initState();
     SystemChrome.setPreferredOrientations([
-      DeviceOrientation.landscapeLeft,
-      DeviceOrientation.landscapeRight,
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
     ]);
   }
 
-  void _onTopicTapped(TopicEntity topic) {
+  void _onTopicTapped(Topic topic) {
     setState(() {
       _selectedTopicId = topic.id;
     });
@@ -66,7 +67,66 @@ class _TopicPageState extends State<TopicPage> {
     );
   }
 
-  void _startOnlineMatch({required String topic}) {
+  bool _isNameValid(String? name) {
+    if (name == null) return false;
+    final trimmed = name.trim();
+    if (trimmed.length < 2 || trimmed.length > 25) return false;
+    final lower = trimmed.toLowerCase();
+    const invalidNames = [
+      'alex',
+      'player',
+      'bạn',
+      'user',
+      'guest',
+      'người chơi',
+    ];
+    for (final invalid in invalidNames) {
+      if (lower == invalid || lower.startsWith('$invalid ')) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  Future<bool> _ensureValidPlayerName() async {
+    final authState = context.read<AuthBloc>().state;
+    final currentName = authState.currentUser?.displayName.trim();
+
+    if (_isNameValid(currentName)) {
+      return true;
+    }
+
+    AppSnackBar.showWarning(
+      context,
+      'Vui lòng đặt tên hiển thị (2–25 ký tự) trước khi tham gia đấu Online!',
+    );
+
+    final newName = await PlayerEditNameDialog.show(
+      context,
+      initialName: currentName ?? '',
+    );
+
+    if (!mounted) return false;
+
+    if (newName != null && _isNameValid(newName.trim())) {
+      context.read<AuthBloc>().add(
+        AuthEvent.updateProfile(displayName: newName.trim()),
+      );
+      return true;
+    }
+
+    AppSnackBar.showWarning(
+      context,
+      'Tên không hợp lệ. Vui lòng đặt từ 2–25 ký'
+      ' tự và không dùng tên mặc định.',
+    );
+    return false;
+  }
+
+  Future<void> _startOnlineMatch({required String topic}) async {
+    final hasValidName = await _ensureValidPlayerName();
+    if (!hasValidName || !mounted) return;
+
     VocabularyMatchmakingDialog.show(
       context,
       topic: topic,
@@ -89,7 +149,10 @@ class _TopicPageState extends State<TopicPage> {
     );
   }
 
-  void _startIdChallenge({required String topic}) {
+  Future<void> _startIdChallenge({required String topic}) async {
+    final hasValidName = await _ensureValidPlayerName();
+    if (!hasValidName || !mounted) return;
+
     ChallengeRoomDialog.show(
       context,
       onEnterRoom: (code) {
@@ -134,78 +197,58 @@ class _TopicPageState extends State<TopicPage> {
             child: Column(
               children: [
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    SizedBox(
-                      width: 104.w,
-                      child: Align(
-                        alignment: Alignment.centerLeft,
-                        child: AppButton(
-                          text: 'Quay lại',
-                          icon: Icon(
-                            Icons.arrow_back_ios_new_rounded,
-                            size: 12.r,
-                            color: isPaper
-                                ? AppColors.paperTextDark
-                                : AppColors.grayDark,
-                          ),
-                          fontSize: 12.sp,
-                          fontWeight: FontWeight.w700,
-                          backgroundColor: isPaper
-                              ? AppColors.paperCardBg
-                              : AppColors.white,
-                          textColor: isPaper
-                              ? AppColors.paperTextDark
-                              : AppColors.grayDark,
-                          borderColor: isPaper
-                              ? AppColors.paperBorder
-                              : AppColors.grayLight,
-                          extrusionColor: isPaper
-                              ? AppColors.paperExtrusion
-                              : AppColors.grayExtrusion,
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 12.w,
-                            vertical: 6.h,
-                          ),
-                          borderRadius: BorderRadius.circular(16.r),
-                          extrusionHeight: 2.5,
-                          onPressed: () {
-                            context.read<AppBloc>().add(
-                              const AppEvent.clickSoundPlayed(),
-                            );
-                            Navigator.of(context).pop();
-                          },
-                        ),
+                    AppIconButton(
+                      icon: Icons.arrow_back_ios_new_rounded,
+                      tooltip: 'Quay lại',
+                      size: 36.r,
+                      iconSize: 18.r,
+                      backgroundColor: isPaper
+                          ? AppColors.paperCardBg
+                          : AppColors.white,
+                      iconColor: isPaper
+                          ? AppColors.paperTextDark
+                          : AppColors.grayDark,
+                      borderColor: isPaper
+                          ? AppColors.paperBorder
+                          : AppColors.grayLight,
+                      extrusionColor: isPaper
+                          ? AppColors.paperExtrusion
+                          : AppColors.grayExtrusion,
+                      extrusionHeight: 2.5,
+                      onPressed: () {
+                        context.read<AppBloc>().add(
+                          const AppEvent.clickSoundPlayed(),
+                        );
+                        Navigator.of(context).pop();
+                      },
+                    ),
+
+                    Expanded(
+                      child: Center(
+                        child: TopicHeader(isPaperTheme: isPaper),
                       ),
                     ),
 
-                    TopicHeader(isPaperTheme: isPaper),
-
-                    SizedBox(
-                      width: 104.w,
-                      child: Align(
-                        alignment: Alignment.centerRight,
-                        child: AppIconButton(
-                          icon: Icons.settings_rounded,
-                          tooltip: 'Cài đặt',
-                          size: 34.r,
-                          iconSize: 18.r,
-                          backgroundColor: isPaper
-                              ? AppColors.paperCardBg
-                              : AppColors.white,
-                          iconColor: isPaper
-                              ? AppColors.paperHeaderIcon
-                              : AppColors.sky,
-                          borderColor: isPaper
-                              ? AppColors.paperBorder
-                              : AppColors.grayLight,
-                          extrusionColor: isPaper
-                              ? AppColors.paperExtrusion
-                              : AppColors.grayExtrusion,
-                          extrusionHeight: 2.5,
-                          onPressed: () => HomeSettingsDialog.show(context),
-                        ),
-                      ),
+                    AppIconButton(
+                      icon: Icons.settings_rounded,
+                      tooltip: 'Cài đặt',
+                      size: 36.r,
+                      iconSize: 18.r,
+                      backgroundColor: isPaper
+                          ? AppColors.paperCardBg
+                          : AppColors.white,
+                      iconColor: isPaper
+                          ? AppColors.paperHeaderIcon
+                          : AppColors.sky,
+                      borderColor: isPaper
+                          ? AppColors.paperBorder
+                          : AppColors.grayLight,
+                      extrusionColor: isPaper
+                          ? AppColors.paperExtrusion
+                          : AppColors.grayExtrusion,
+                      extrusionHeight: 2.5,
+                      onPressed: () => HomeSettingsDialog.show(context),
                     ),
                   ],
                 ),

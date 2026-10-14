@@ -1,5 +1,4 @@
 import 'package:bufopia/components/app_icon_button.dart';
-import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
 import 'package:bufopia/features/home/presentation/widgets/home_header/dialog/home_settings_dialog.dart';
@@ -49,15 +48,15 @@ class HomeHeader extends StatelessWidget {
         ? 'assets/images/background_switch/logo_app.webp'
         : 'assets/images/logo_app.png';
 
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
+    return Column(
+      mainAxisSize: MainAxisSize.min,
       children: [
-        // 1. Cánh trái: Thông tin người chơi
-        Expanded(
-          child: Align(
-            alignment: Alignment.topLeft,
-            child: Padding(
-              padding: EdgeInsets.only(top: 4.h),
+        // 1. Hàng trên: Thông tin người chơi (trái) & Nút hành động (phải)
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            // Cánh trái: Thông tin người chơi
+            Flexible(
               child: HomePlayerInfo(
                 name: userName,
                 level: userLevel,
@@ -71,80 +70,78 @@ class HomeHeader extends StatelessWidget {
                 isPaperTheme: isPaper,
               ),
             ),
-          ),
+
+            SizedBox(width: 8.w),
+
+            // Cánh phải: Nút Bảng xếp hạng + Cài đặt
+            Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                // Nút bảng xếp hạng (trophy vàng)
+                AppIconButton(
+                  icon: Icons.emoji_events_rounded,
+                  tooltip: 'Bảng xếp hạng',
+                  backgroundColor: isPaper
+                      ? AppColors.paperAmberBadgeBg
+                      : const Color(0xFFFEF9C3),
+                  borderColor: isPaper
+                      ? AppColors.paperAmberBadgeBorder
+                      : const Color(0xFFFDE68A),
+                  extrusionColor: isPaper
+                      ? AppColors.paperExtrusion
+                      : const Color(0xFFF59E0B),
+                  iconColor: AppColors.orangeDark,
+                  size: 40.r,
+                  iconSize: 24.r,
+                  onPressed: () {
+                    context.read<AppBloc>().add(
+                      const AppEvent.clickSoundPlayed(),
+                    );
+                    LeaderboardDialog.show(context);
+                  },
+                ),
+                SizedBox(width: 6.w),
+                // Nút Cài đặt
+                AppIconButton(
+                  icon: Icons.settings_rounded,
+                  tooltip: 'Settings',
+                  backgroundColor: isPaper
+                      ? AppColors.paperCardBg
+                      : AppColors.white,
+                  borderColor: isPaper
+                      ? AppColors.paperBorder
+                      : AppColors.white,
+                  extrusionColor: isPaper
+                      ? AppColors.paperExtrusion
+                      : AppColors.grayExtrusion,
+                  iconColor: isPaper
+                      ? AppColors.paperHeaderIcon
+                      : AppColors.indigo,
+                  size: 40.r,
+                  iconSize: 24.r,
+                  onPressed:
+                      onSettingsPressed ??
+                      () => HomeSettingsDialog.show(context),
+                ),
+              ],
+            ),
+          ],
         ),
 
-        // 2. Logo app ở trung tâm
-        Image.asset(
-          logoAsset,
-          height: 80.h,
-          fit: BoxFit.contain,
-          errorBuilder: (context, error, stackTrace) => AppText.h1(
-            'Word Duel',
-            fontSize: 24.sp,
-            fontWeight: FontWeight.w700,
-            color: AppColors.orangeDeep,
-            textAlign: TextAlign.center,
-          ),
-        ),
+        SizedBox(height: 10.h),
 
-        // 3. Cánh phải: Nút Bảng xếp hạng + Cài đặt
-        Expanded(
-          child: Align(
-            alignment: Alignment.topRight,
-            child: Padding(
-              padding: EdgeInsets.only(top: 4.h),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Nút bảng xếp hạng (trophy vàng)
-                  AppIconButton(
-                    icon: Icons.emoji_events_rounded,
-                    tooltip: 'Bảng xếp hạng',
-                    backgroundColor: isPaper
-                        ? AppColors.paperAmberBadgeBg
-                        : const Color(0xFFFEF9C3),
-                    borderColor: isPaper
-                        ? AppColors.paperAmberBadgeBorder
-                        : const Color(0xFFFDE68A),
-                    extrusionColor: isPaper
-                        ? AppColors.paperExtrusion
-                        : const Color(0xFFF59E0B),
-                    iconColor: AppColors.orangeDark,
-                    size: 38.r,
-                    iconSize: 20.r,
-                    onPressed: () {
-                      context.read<AppBloc>().add(
-                        const AppEvent.clickSoundPlayed(),
-                      );
-                      LeaderboardDialog.show(context);
-                    },
-                  ),
-                  SizedBox(width: 6.w),
-                  // Nút Cài đặt
-                  AppIconButton(
-                    icon: Icons.settings_rounded,
-                    tooltip: 'Settings',
-                    backgroundColor: isPaper
-                        ? AppColors.paperCardBg
-                        : AppColors.white,
-                    borderColor: isPaper
-                        ? AppColors.paperBorder
-                        : AppColors.white,
-                    extrusionColor: isPaper
-                        ? AppColors.paperExtrusion
-                        : AppColors.grayExtrusion,
-                    iconColor: isPaper
-                        ? AppColors.paperHeaderIcon
-                        : AppColors.indigo,
-                    size: 38.r,
-                    iconSize: 20.r,
-                    onPressed:
-                        onSettingsPressed ??
-                        () => HomeSettingsDialog.show(context),
-                  ),
-                ],
-              ),
+        // 2. Biển hiệu Logo app ở trung tâm
+        // Tự scale phóng to tối đa theo khung
+        Center(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxWidth: 280.w,
+              maxHeight: 120.h,
+            ),
+            child: Image.asset(
+              logoAsset,
+              width: double.infinity,
+              fit: BoxFit.contain,
             ),
           ),
         ),

@@ -263,6 +263,23 @@ abstract final class AppColors {
   static const Color themePink = Color(0xFFEC4899);
   static const Color themePurpleBorder = Color(0xFFA855F7);
 
+  // --- 14. Feedback & Support Dialog Palette ---
+  static const Color feedbackMossGreen = Color(0xFF3B6E38);
+  static const Color feedbackMossGreenDark = Color(0xFF2A5228);
+  static const Color feedbackSandBorder = Color(0xFFC9BCA7);
+  static const Color feedbackSandExtrusion = Color(0xFFB5A691);
+  static const Color feedbackWarmBeige = Color(0xFFF4ECDF);
+  static const Color feedbackWarmBeigeLight = Color(0xFFFAF5EC);
+  static const Color feedbackWarmBeigeDark = Color(0xFFF1EBD9);
+  static const Color feedbackDisabled = Color(0xFFB5BEB3);
+  static const Color feedbackDisabledBorder = Color(0xFFA1AAA0);
+  static const Color feedbackDisabledExtrusion = Color(0xFF8E978D);
+  static const Color feedbackSuccessBg = Color(0xFFE8F9EE);
+  static const Color feedbackSuccessBorder = Color(0xFFA7F3D0);
+  static const Color feedbackSuccessIcon = Color(0xFF059669);
+  static const Color feedbackTextBrown = Color(0xFF786C59);
+  static const Color feedbackAudioPressed = Color(0xFFE2D6C0);
+
   // --- Dimensions ---
   static const double radiusS = 8;
   static const double radiusM = 16;

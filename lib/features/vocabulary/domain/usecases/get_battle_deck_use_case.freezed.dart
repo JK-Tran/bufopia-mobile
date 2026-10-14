@@ -291,7 +291,7 @@ as String?,
 /// @nodoc
 mixin _$GetBattleDeckOutput {
 
- BattleDeckEntity get deck;
+ BattleDeck get deck;
 /// Create a copy of GetBattleDeckOutput
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -327,11 +327,11 @@ abstract mixin class $GetBattleDeckOutputCopyWith<$Res>  {
   factory $GetBattleDeckOutputCopyWith(GetBattleDeckOutput value, $Res Function(GetBattleDeckOutput) _then) = _$GetBattleDeckOutputCopyWithImpl;
 @useResult
 $Res call({
- BattleDeckEntity deck
+ BattleDeck deck
 });
 
 
-$BattleDeckEntityCopyWith<$Res> get deck;
+$BattleDeckCopyWith<$Res> get deck;
 
 }
 /// @nodoc
@@ -347,16 +347,16 @@ class _$GetBattleDeckOutputCopyWithImpl<$Res>
 @pragma('vm:prefer-inline') @override $Res call({Object? deck = null,}) {
   return _then(GetBattleDeckOutput(
 null == deck ? _self.deck : deck // ignore: cast_nullable_to_non_nullable
-as BattleDeckEntity,
+as BattleDeck,
   ));
 }
 /// Create a copy of GetBattleDeckOutput
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$BattleDeckEntityCopyWith<$Res> get deck {
+$BattleDeckCopyWith<$Res> get deck {
   
-  return $BattleDeckEntityCopyWith<$Res>(_self.deck, (value) {
+  return $BattleDeckCopyWith<$Res>(_self.deck, (value) {
     return _then(_self.copyWith(deck: value));
   });
 }
@@ -441,7 +441,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( BattleDeckEntity deck)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( BattleDeck deck)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _GetBattleDeckOutput() when $default != null:
 return $default(_that.deck);case _:
@@ -462,7 +462,7 @@ return $default(_that.deck);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( BattleDeckEntity deck)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( BattleDeck deck)  $default,) {final _that = this;
 switch (_that) {
 case _GetBattleDeckOutput():
 return $default(_that.deck);case _:
@@ -482,7 +482,7 @@ return $default(_that.deck);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( BattleDeckEntity deck)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( BattleDeck deck)?  $default,) {final _that = this;
 switch (_that) {
 case _GetBattleDeckOutput() when $default != null:
 return $default(_that.deck);case _:
@@ -500,7 +500,7 @@ class _GetBattleDeckOutput extends GetBattleDeckOutput {
   const _GetBattleDeckOutput(this.deck): super._();
   
 
-@override final  BattleDeckEntity deck;
+@override final  BattleDeck deck;
 
 /// Create a copy of GetBattleDeckOutput
 /// with the given fields replaced by the non-null parameter values.
@@ -534,11 +534,11 @@ abstract mixin class _$GetBattleDeckOutputCopyWith<$Res> implements $GetBattleDe
   factory _$GetBattleDeckOutputCopyWith(_GetBattleDeckOutput value, $Res Function(_GetBattleDeckOutput) _then) = __$GetBattleDeckOutputCopyWithImpl;
 @override @useResult
 $Res call({
- BattleDeckEntity deck
+ BattleDeck deck
 });
 
 
-@override $BattleDeckEntityCopyWith<$Res> get deck;
+@override $BattleDeckCopyWith<$Res> get deck;
 
 }
 /// @nodoc
@@ -554,7 +554,7 @@ class __$GetBattleDeckOutputCopyWithImpl<$Res>
 @override @pragma('vm:prefer-inline') $Res call({Object? deck = null,}) {
   return _then(_GetBattleDeckOutput(
 null == deck ? _self.deck : deck // ignore: cast_nullable_to_non_nullable
-as BattleDeckEntity,
+as BattleDeck,
   ));
 }
 
@@ -562,9 +562,9 @@ as BattleDeckEntity,
 /// with the given fields replaced by the non-null parameter values.
 @override
 @pragma('vm:prefer-inline')
-$BattleDeckEntityCopyWith<$Res> get deck {
+$BattleDeckCopyWith<$Res> get deck {
   
-  return $BattleDeckEntityCopyWith<$Res>(_self.deck, (value) {
+  return $BattleDeckCopyWith<$Res>(_self.deck, (value) {
     return _then(_self.copyWith(deck: value));
   });
 }

@@ -1,8 +1,8 @@
 import 'package:bufopia/features/challenge/data/datasources/challenge_room_data_source.dart';
-import 'package:bufopia/features/challenge/data/mapper/room_info_mapper.dart';
-import 'package:bufopia/features/challenge/data/mapper/social_state_mapper.dart';
-import 'package:bufopia/features/challenge/domain/entities/room_info_entity.dart';
-import 'package:bufopia/features/challenge/domain/entities/social_state_entity.dart';
+import 'package:bufopia/features/challenge/data/mapper/room_info_data_mapper.dart';
+import 'package:bufopia/features/challenge/data/mapper/social_state_data_mapper.dart';
+import 'package:bufopia/features/challenge/domain/entities/room_info.dart';
+import 'package:bufopia/features/challenge/domain/entities/social_state.dart';
 import 'package:bufopia/features/challenge/domain/repositories/challenge_room_repository.dart';
 import 'package:injectable/injectable.dart';
 
@@ -15,11 +15,11 @@ class ChallengeRoomRepositoryImpl extends ChallengeRoomRepository {
   );
 
   final ChallengeRoomDataSource _dataSource;
-  final SocialStateMapper _socialStateMapper;
-  final RoomInfoMapper _roomInfoMapper;
+  final SocialStateDataMapper _socialStateMapper;
+  final RoomInfoDataMapper _roomInfoMapper;
 
   @override
-  Future<SocialStateEntity> getSocialState({required String uid}) async {
+  Future<SocialState> getSocialState({required String uid}) async {
     final model = await _dataSource.getSocialState(uid: uid);
     return _socialStateMapper.mapToEntity(model);
   }
@@ -60,7 +60,7 @@ class ChallengeRoomRepositoryImpl extends ChallengeRoomRepository {
   }
 
   @override
-  Future<RoomInfoEntity?> getRoomInfo({required String roomCode}) async {
+  Future<RoomInfo?> getRoomInfo({required String roomCode}) async {
     final model = await _dataSource.getRoomInfo(roomCode: roomCode);
     if (model == null) return null;
     return _roomInfoMapper.mapToEntity(model);

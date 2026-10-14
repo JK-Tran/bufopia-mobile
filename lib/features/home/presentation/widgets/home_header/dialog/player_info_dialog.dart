@@ -1,23 +1,18 @@
-import 'dart:async';
-
 import 'package:bufopia/components/components.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
-import 'package:bufopia/features/auth/domain/entities/user_entity.dart';
+import 'package:bufopia/features/auth/domain/entities/user.dart';
 import 'package:bufopia/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:bufopia/features/auth/presentation/widgets/dialog/account_conflict_dialog.dart';
 import 'package:bufopia/features/home/presentation/widgets/home_header/dialog/player_avatar_dialog.dart';
 import 'package:bufopia/features/home/presentation/widgets/home_header/dialog/player_edit_name_dialog.dart';
+import 'package:firebase_auth/firebase_auth.dart' as fb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-// ─────────────────────────────────────────────────────────────
-// PlayerInfoDialog
-// ─────────────────────────────────────────────────────────────
-
-/// Hộp thoại xem và chỉnh sửa thông tin người chơi (Profile)
 class PlayerInfoDialog extends StatefulWidget {
   const PlayerInfoDialog({super.key});
 
@@ -52,7 +47,7 @@ class _PlayerInfoDialogState extends State<PlayerInfoDialog> {
     _selectedAvatarUrl = user?.avatarUrl;
   }
 
-  void _onSave(UserEntity user, String newName) {
+  void _onSave(User user, String newName) {
     if (newName.isEmpty) return;
     setState(() {
       _isSaving = true;
@@ -107,7 +102,7 @@ class _PlayerInfoDialogState extends State<PlayerInfoDialog> {
   }
 
   /// Mở dialog đổi tên hiển thị
-  Future<void> _openEditNameSheet(UserEntity user) async {
+  Future<void> _openEditNameSheet(User user) async {
     final result = await PlayerEditNameDialog.show(
       context,
       initialName: _displayName,
@@ -121,9 +116,31 @@ class _PlayerInfoDialogState extends State<PlayerInfoDialog> {
   Widget build(BuildContext context) {
     final isPaper = context.select<AppBloc, bool>((b) => b.state.isPaperTheme);
 
-    return BlocBuilder<AuthBloc, AuthState>(
+    return BlocConsumer<AuthBloc, AuthState>(
+      listener: (context, state) async {
+        if (state.conflict != null) {
+          final choice = await AccountConflictDialog.show(
+            context,
+            conflict: state.conflict!,
+          );
+          if (!context.mounted) return;
+          if (choice == ConflictResolutionChoice.merge) {
+            context.read<AuthBloc>().add(
+              const AuthEvent.resolveAccountConflict(action: 'merge'),
+            );
+          } else if (choice == ConflictResolutionChoice.overwrite) {
+            context.read<AuthBloc>().add(
+              const AuthEvent.resolveAccountConflict(action: 'overwrite'),
+            );
+          } else {
+            context.read<AuthBloc>().add(
+              const AuthEvent.cancelAccountConflict(),
+            );
+          }
+        }
+      },
       builder: (context, state) {
-        final user = state.currentUser ?? const UserEntity();
+        final user = state.currentUser ?? const User();
         final currentLevelXp = user.currentLevelXp;
         final neededForNext = user.neededForNext;
         final level = user.level;
@@ -136,7 +153,9 @@ class _PlayerInfoDialogState extends State<PlayerInfoDialog> {
         return AppGameDialog(
           title: 'Hồ sơ người chơi',
           icon: Icons.account_circle_rounded,
-          headerTrailing: _buildIdBadge(uid),
+          maxWidth: 340.w,
+          maxHeight: 560.h,
+          padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
           backgroundColor: isPaper ? AppColors.paperCardBg : AppColors.white,
           borderColor: isPaper ? AppColors.paperBorder : AppColors.blueLight,
           headerGradientColors: isPaper
@@ -160,65 +179,61 @@ class _PlayerInfoDialogState extends State<PlayerInfoDialog> {
           footerTextColor: isPaper
               ? AppColors.paperTextMedium
               : AppColors.skyDark,
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // ── CỘT TRÁI ─────────────────────────────
-              Expanded(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    _buildProfileCard(user, isPaper),
-                    SizedBox(height: 6.h),
-                    Row(
-                      children: [
-                        Expanded(
-                          child: AppStreakBadge.study(streak: user.streak),
-                        ),
-                        SizedBox(width: 6.w),
-                        Expanded(
-                          child: AppStreakBadge.win(
-                            winStreak: user.winStreak,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+              // ── 1. Thẻ thông tin cá nhân & Đổi tên / ID ───
+              _buildProfileCard(user, uid, isPaper),
+
+              SizedBox(height: 8.h),
+
+              // ── 2. Chuỗi học & Chuỗi thắng ─────────────────
+              Row(
+                children: [
+                  Expanded(
+                    child: AppStreakBadge.study(streak: user.streak),
+                  ),
+                  SizedBox(width: 8.w),
+                  Expanded(
+                    child: AppStreakBadge.win(winStreak: user.winStreak),
+                  ),
+                ],
               ),
 
-              SizedBox(width: 10.w),
+              SizedBox(height: 8.h),
 
-              // ── CỘT PHẢI ─────────────────────────────
-              Expanded(
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    AppLevelProgressBar(
-                      level: level,
-                      currentLevelXp: currentLevelXp,
-                      neededForNext: neededForNext,
-                      progressPercent: progressPercent,
-                      progressFraction: progressFraction,
-                      totalXp: user.xp,
-                      backgroundColor: isPaper
-                          ? AppColors.paperSurface
-                          : AppColors.lightBackground,
-                      borderColor: isPaper
-                          ? AppColors.paperBorder
-                          : AppColors.grayLight,
-                      titleColor: isPaper
-                          ? AppColors.paperTextDark
-                          : AppColors.grayDark,
-                      progressColor: isPaper
-                          ? AppColors.paperExpGreen
-                          : AppColors.gold,
-                    ),
-                    SizedBox(height: 6.h),
-                    _buildMotivationCard(isPaper),
-                  ],
-                ),
+              // ── 3. Tiến trình cấp độ & EXP ─────────────────
+              AppLevelProgressBar(
+                level: level,
+                currentLevelXp: currentLevelXp,
+                neededForNext: neededForNext,
+                progressPercent: progressPercent,
+                progressFraction: progressFraction,
+                totalXp: user.xp,
+                backgroundColor: isPaper
+                    ? AppColors.paperSurface
+                    : AppColors.lightBackground,
+                borderColor: isPaper
+                    ? AppColors.paperBorder
+                    : AppColors.grayLight,
+                titleColor: isPaper
+                    ? AppColors.paperTextDark
+                    : AppColors.grayDark,
+                progressColor: isPaper
+                    ? AppColors.paperExpGreen
+                    : AppColors.gold,
               ),
+
+              SizedBox(height: 8.h),
+
+              // ── 4. Thẻ động lực / Danh hiệu ────────────────
+              _buildMotivationCard(isPaper),
+
+              SizedBox(height: 8.h),
+
+              // ── 5. Liên kết / Đăng nhập Google ─────────────
+              _buildGoogleAuthButton(state, isPaper),
             ],
           ),
         );
@@ -226,37 +241,98 @@ class _PlayerInfoDialogState extends State<PlayerInfoDialog> {
     );
   }
 
-  Widget _buildIdBadge(String uid) {
-    return GestureDetector(
-      onTap: () => _copyId(uid),
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
-        decoration: BoxDecoration(
-          color: AppColors.white.withValues(alpha: 0.18),
-          borderRadius: BorderRadius.circular(10.w),
-          border: Border.all(
-            color: AppColors.white.withValues(alpha: 0.35),
-            width: 1.w,
+  Widget _buildGoogleAuthButton(AuthState state, bool isPaper) {
+    if (state.isLoading) {
+      return Padding(
+        padding: EdgeInsets.symmetric(vertical: 4.h),
+        child: Center(
+          child: SizedBox(
+            width: 22.w,
+            height: 22.w,
+            child: const CircularProgressIndicator(strokeWidth: 2.5),
           ),
         ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            AppText.c1(
-              'ID: $uid',
-              color: AppColors.white,
-              fontWeight: FontWeight.w700,
-              fontSize: 10.sp,
+      );
+    }
+
+    final fbUser = fb.FirebaseAuth.instance.currentUser;
+    final isGoogleLinked = fbUser != null && !fbUser.isAnonymous;
+    final googleEmail = fbUser?.email ?? fbUser?.displayName ?? '';
+
+    if (isGoogleLinked) {
+      return Row(
+        children: [
+          Expanded(
+            child: Container(
+              padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 6.h),
+              decoration: BoxDecoration(
+                color: isPaper
+                    ? AppColors.paperSurface
+                    : AppColors.lightBackground,
+                borderRadius: BorderRadius.circular(8.r),
+                border: Border.all(
+                  color: isPaper ? AppColors.paperBorder : AppColors.grayLight,
+                  width: 1.w,
+                ),
+              ),
+              child: Row(
+                children: [
+                  Icon(
+                    Icons.check_circle_rounded,
+                    color: isPaper ? AppColors.paperGreen : AppColors.green,
+                    size: 15.w,
+                  ),
+                  SizedBox(width: 4.w),
+                  Expanded(
+                    child: AppText.c1(
+                      'Google: $googleEmail',
+                      overflow: TextOverflow.ellipsis,
+                      color: isPaper
+                          ? AppColors.paperTextDark
+                          : AppColors.grayDark,
+                      fontSize: 10.5.sp,
+                    ),
+                  ),
+                ],
+              ),
             ),
-            SizedBox(width: 4.w),
-            Icon(Icons.copy_rounded, color: AppColors.white, size: 11.w),
-          ],
-        ),
+          ),
+          SizedBox(width: 6.w),
+          AppButton.secondary(
+            text: 'Đăng xuất',
+            fontSize: 11.sp,
+            height: 28.h,
+            padding: EdgeInsets.symmetric(horizontal: 8.w),
+            onPressed: () {
+              context.read<AuthBloc>().add(const AuthEvent.loggedOut());
+              AppSnackBar.showSuccess(context, 'Đã đăng xuất tài khoản!');
+            },
+          ),
+        ],
+      );
+    }
+
+    return AppButton(
+      icon: Icon(
+        Icons.cloud_sync_rounded,
+        size: 16.w,
+        color: AppColors.white,
       ),
+      text: 'LƯU TIẾN ĐỘ LÊN GOOGLE',
+      backgroundColor: isPaper ? AppColors.paperGreen : AppColors.blue,
+      extrusionColor: isPaper
+          ? AppColors.paperGreenExtrusion
+          : AppColors.blueDeep,
+      fontSize: 11.5.sp,
+      fontWeight: FontWeight.w700,
+      height: 32.h,
+      onPressed: () {
+        context.read<AuthBloc>().add(const AuthEvent.signInWithGoogle());
+      },
     );
   }
 
-  Widget _buildProfileCard(UserEntity user, bool isPaper) {
+  Widget _buildProfileCard(User user, String uid, bool isPaper) {
     final primaryAccent = isPaper ? AppColors.paperGreen : AppColors.blue;
     final cardBg = isPaper ? AppColors.paperSurface : AppColors.lightBackground;
     final cardBorder = isPaper ? AppColors.paperBorder : AppColors.grayLight;
@@ -269,10 +345,10 @@ class _PlayerInfoDialogState extends State<PlayerInfoDialog> {
         : AppColors.blueLight.withValues(alpha: 0.6);
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
       decoration: BoxDecoration(
         color: cardBg,
-        borderRadius: BorderRadius.circular(8.w),
+        borderRadius: BorderRadius.circular(12.w),
         border: Border.all(color: cardBorder, width: 1.w),
       ),
       child: Column(
@@ -280,26 +356,28 @@ class _PlayerInfoDialogState extends State<PlayerInfoDialog> {
         children: [
           Row(
             children: [
+              // Avatar người chơi có badge chỉnh sửa
               AppAvatar(
                 avatarUrl: _selectedAvatarUrl ?? user.avatarUrl,
-                size: 50.w,
+                size: 52.r,
                 borderWidth: 2,
                 showBadge: true,
                 badgeColor: primaryAccent,
                 badgeIconColor: AppColors.white,
-                badgeSize: 18.w,
+                badgeSize: 18.r,
                 onTap: _openAvatarPicker,
               ),
               SizedBox(width: 10.w),
+              // Thông tin Tên hiển thị + ID người chơi
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     AppText.c1(
                       'TÊN HIỂN THỊ',
-                      color: textDark,
+                      color: textMuted,
                       fontWeight: FontWeight.w700,
-                      fontSize: 12.sp,
+                      fontSize: 10.sp,
                     ),
                     SizedBox(height: 4.h),
                     GestureDetector(
@@ -307,7 +385,7 @@ class _PlayerInfoDialogState extends State<PlayerInfoDialog> {
                       child: Container(
                         padding: EdgeInsets.symmetric(
                           horizontal: 8.w,
-                          vertical: 6.h,
+                          vertical: 4.h,
                         ),
                         decoration: BoxDecoration(
                           color: AppColors.white,
@@ -320,9 +398,9 @@ class _PlayerInfoDialogState extends State<PlayerInfoDialog> {
                         child: Row(
                           children: [
                             Expanded(
-                              child: AppText.c1(
+                              child: AppText.t3(
                                 _displayName,
-                                fontSize: 12.sp,
+                                fontSize: 14.sp,
                                 fontWeight: FontWeight.w700,
                                 color: textDark,
                                 overflow: TextOverflow.ellipsis,
@@ -331,8 +409,8 @@ class _PlayerInfoDialogState extends State<PlayerInfoDialog> {
                             SizedBox(width: 4.w),
                             if (_isSaving)
                               SizedBox(
-                                width: 13.w,
-                                height: 13.w,
+                                width: 14.w,
+                                height: 14.w,
                                 child: CircularProgressIndicator(
                                   strokeWidth: 2,
                                   valueColor: AlwaysStoppedAnimation<Color>(
@@ -343,19 +421,22 @@ class _PlayerInfoDialogState extends State<PlayerInfoDialog> {
                             else
                               Icon(
                                 Icons.edit_rounded,
-                                size: 13.w,
+                                size: 14.w,
                                 color: textMuted,
                               ),
                           ],
                         ),
                       ),
                     ),
+                    SizedBox(height: 4.h),
+                    // Badge ID sao chép
+                    _buildIdBadge(uid, isPaper),
                   ],
                 ),
               ),
             ],
           ),
-          SizedBox(height: 6.h),
+          SizedBox(height: 8.h),
           // ── Quick Avatars ────────────────────────
           Row(
             children: [
@@ -374,6 +455,41 @@ class _PlayerInfoDialogState extends State<PlayerInfoDialog> {
     );
   }
 
+  Widget _buildIdBadge(String uid, bool isPaper) {
+    final textMuted = isPaper
+        ? AppColors.paperTextMedium
+        : AppColors.grayMedium;
+    final badgeBg = isPaper
+        ? AppColors.paperBorder.withValues(alpha: 0.3)
+        : AppColors.grayLight.withValues(alpha: 0.5);
+
+    return GestureDetector(
+      onTap: () => _copyId(uid),
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
+        decoration: BoxDecoration(
+          color: badgeBg,
+          borderRadius: BorderRadius.circular(6.w),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Flexible(
+              child: AppText.c1(
+                'ID: $uid',
+                color: textMuted,
+                fontSize: 10.sp,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+            SizedBox(width: 4.w),
+            Icon(Icons.copy_rounded, color: textMuted, size: 10.w),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildPresetThumbnail(String assetPath, bool isPaper) {
     final isSelected = (_selectedAvatarUrl ?? '') == assetPath;
     final primaryAccent = isPaper ? AppColors.paperGreen : AppColors.blue;
@@ -385,8 +501,8 @@ class _PlayerInfoDialogState extends State<PlayerInfoDialog> {
       onTap: () => _onSelectPreset(assetPath),
       child: Container(
         margin: EdgeInsets.only(right: 6.w),
-        width: 26.w,
-        height: 26.w,
+        width: 26.r,
+        height: 26.r,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           border: Border.all(
@@ -398,7 +514,7 @@ class _PlayerInfoDialogState extends State<PlayerInfoDialog> {
               BoxShadow(
                 color: primaryAccent.withValues(alpha: 0.35),
                 blurRadius: 4.w,
-                offset: Offset(0, 1.5.h),
+                offset: Offset(0, 2.h),
               ),
           ],
         ),
@@ -453,7 +569,7 @@ class _PlayerInfoDialogState extends State<PlayerInfoDialog> {
         : AppColors.grayMedium;
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topLeft,
@@ -468,32 +584,35 @@ class _PlayerInfoDialogState extends State<PlayerInfoDialog> {
       ),
       child: Row(
         children: [
+          Container(
+            padding: EdgeInsets.all(6.w),
+            decoration: BoxDecoration(
+              color: iconColor.withValues(alpha: 0.12),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.military_tech_rounded,
+              color: iconColor,
+              size: 24.w,
+            ),
+          ),
+          SizedBox(width: 8.w),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
               children: [
-                Row(
-                  children: [
-                    Icon(
-                      Icons.military_tech_rounded,
-                      color: iconColor,
-                      size: 20.w,
-                    ),
-                    SizedBox(width: 4.w),
-                    AppText.c1(
-                      'Chiến binh từ vựng',
-                      color: titleColor,
-                      fontWeight: FontWeight.w700,
-                      fontSize: 14.sp,
-                    ),
-                  ],
+                AppText.t3(
+                  'Chiến binh từ vựng',
+                  color: titleColor,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 14.sp,
                 ),
                 SizedBox(height: 2.h),
                 AppText.c1(
                   'Thắng trận đấu để nhận thêm điểm XP và nâng cấp danh hiệu!',
                   color: subtitleColor,
                   fontSize: 12.sp,
-                  maxLines: 2,
                 ),
               ],
             ),

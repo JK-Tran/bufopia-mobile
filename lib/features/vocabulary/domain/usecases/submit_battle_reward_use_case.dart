@@ -1,4 +1,4 @@
-import 'package:bufopia/features/vocabulary/domain/entities/battle_reward_entity.dart';
+import 'package:bufopia/features/vocabulary/domain/entities/battle_reward.dart';
 import 'package:bufopia/features/vocabulary/domain/repositories/vocabulary_repository.dart';
 import 'package:bufopia/shared/infrastructure/domain/usecase/future/base_future_use_case.dart';
 import 'package:bufopia/shared/infrastructure/domain/usecase/io/base_input.dart';
@@ -25,7 +25,7 @@ abstract class SubmitBattleRewardInput extends BaseInput
 abstract class SubmitBattleRewardOutput extends BaseOutput
     with _$SubmitBattleRewardOutput {
   const factory SubmitBattleRewardOutput({
-    required BattleRewardEntity reward,
+    required BattleReward reward,
   }) = _SubmitBattleRewardOutput;
 
   const SubmitBattleRewardOutput._();

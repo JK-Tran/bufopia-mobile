@@ -2,7 +2,7 @@ import 'package:bufopia/components/app_paper_clip.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
-import 'package:bufopia/features/vocabulary/domain/entities/topic_entity.dart';
+import 'package:bufopia/features/vocabulary/domain/entities/topic.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -18,7 +18,7 @@ class TopicItem extends StatefulWidget {
     super.key,
   });
 
-  final TopicEntity topic;
+  final Topic topic;
   final bool isSelected;
   final VoidCallback onTap;
   final bool? isPaperTheme;
@@ -63,15 +63,15 @@ class _TopicItemState extends State<TopicItem> {
               // 2. Kẹp ghim vàng bên trái
               Positioned(
                 top: -6.h,
-                left: 16.w,
-                child: AppPaperClip(width: 10.w, height: 20.h),
+                left: 12.w,
+                child: AppPaperClip(width: 9.w, height: 18.h),
               ),
 
               // 3. Kẹp ghim vàng bên phải
               Positioned(
                 top: -6.h,
-                right: 16.w,
-                child: AppPaperClip(width: 10.w, height: 20.h),
+                right: 12.w,
+                child: AppPaperClip(width: 9.w, height: 18.h),
               ),
 
               // 4. Chip trạng thái "Đã chọn" 3D
@@ -98,7 +98,7 @@ class _ItemBody extends StatelessWidget {
     required this.isPaperTheme,
   });
 
-  final TopicEntity topic;
+  final Topic topic;
   final bool isSelected;
   final bool isPressed;
   final bool isPaperTheme;
@@ -108,7 +108,7 @@ class _ItemBody extends StatelessWidget {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 90),
       curve: Curves.easeInOut,
-      padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 4.h),
+      padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 5.h),
       decoration: BoxDecoration(
         gradient: isPaperTheme
             ? const LinearGradient(
@@ -127,7 +127,7 @@ class _ItemBody extends StatelessWidget {
                   AppColors.woodParchmentLight,
                 ],
               ),
-        borderRadius: BorderRadius.circular(12.r),
+        borderRadius: BorderRadius.circular(14.r),
         border: Border.all(
           color: isSelected
               ? (isPaperTheme ? AppColors.paperGreen : AppColors.modeBotButton)
@@ -141,7 +141,7 @@ class _ItemBody extends StatelessWidget {
         children: [
           SizedBox(height: 2.h),
           SizedBox(
-            height: 38.h,
+            height: 44.h,
             child: Center(child: _ItemIllustration(topic: topic)),
           ),
           _ItemInfo(
@@ -221,14 +221,14 @@ class _ItemBody extends StatelessWidget {
 class _ItemIllustration extends StatelessWidget {
   const _ItemIllustration({required this.topic});
 
-  final TopicEntity topic;
+  final Topic topic;
 
   @override
   Widget build(BuildContext context) {
     if (topic.isAuto) {
       return Container(
-        width: 36.r,
-        height: 36.r,
+        width: 38.r,
+        height: 38.r,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           gradient: const LinearGradient(
@@ -258,7 +258,7 @@ class _ItemIllustration extends StatelessWidget {
 
     return Image.asset(
       topic.imagePath!,
-      height: 38.h,
+      height: 44.h,
       fit: BoxFit.contain,
       errorBuilder: (context, error, stackTrace) => Icon(
         Icons.menu_book_rounded,
@@ -286,23 +286,29 @@ class _ItemInfo extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        AppText.t3(
-          name,
-          fontSize: 12.sp,
-          fontWeight: FontWeight.w700,
-          color: isPaperTheme ? AppColors.paperTextDark : AppColors.grayDark,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          textAlign: TextAlign.center,
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          child: AppText.t3(
+            name,
+            fontSize: 12.sp,
+            fontWeight: FontWeight.w700,
+            color: isPaperTheme ? AppColors.paperTextDark : AppColors.grayDark,
+            maxLines: 1,
+            textAlign: TextAlign.center,
+          ),
         ),
         SizedBox(height: 1.h),
-        AppText.c1(
-          subtitle,
-          fontSize: 10.sp,
-          color: isPaperTheme ? AppColors.paperTextMuted : AppColors.grayMedium,
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          textAlign: TextAlign.center,
+        FittedBox(
+          fit: BoxFit.scaleDown,
+          child: AppText.c1(
+            subtitle,
+            fontSize: 10.sp,
+            color: isPaperTheme
+                ? AppColors.paperTextMuted
+                : AppColors.grayMedium,
+            maxLines: 1,
+            textAlign: TextAlign.center,
+          ),
         ),
       ],
     );
@@ -386,7 +392,7 @@ class _ItemBadges extends StatelessWidget {
     required this.isPaperTheme,
   });
 
-  final TopicEntity topic;
+  final Topic topic;
   final bool isPaperTheme;
 
   @override
@@ -404,10 +410,10 @@ class _ItemBadges extends StatelessWidget {
         children: [
           if (topic.difficulty.isNotEmpty)
             Container(
-              padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 2.h),
+              padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
               decoration: BoxDecoration(
                 color: theme.bgColor,
-                borderRadius: BorderRadius.circular(8.r),
+                borderRadius: BorderRadius.circular(6.r),
                 border: Border.all(color: theme.borderColor, width: 1.w),
                 boxShadow: [
                   BoxShadow(
@@ -421,7 +427,7 @@ class _ItemBadges extends StatelessWidget {
               child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  Icon(theme.icon, size: 10.r, color: theme.textColor),
+                  Icon(theme.icon, size: 9.r, color: theme.textColor),
                   SizedBox(width: 2.w),
                   AppText.c1(
                     topic.difficulty,
@@ -434,10 +440,10 @@ class _ItemBadges extends StatelessWidget {
             ),
           SizedBox(width: 3.w),
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 2.h),
+            padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
             decoration: BoxDecoration(
               color: isPaperTheme ? AppColors.paperCardBg : AppColors.white,
-              borderRadius: BorderRadius.circular(8.r),
+              borderRadius: BorderRadius.circular(6.r),
               border: Border.all(
                 color: isPaperTheme
                     ? AppColors.paperBorder
@@ -453,13 +459,28 @@ class _ItemBadges extends StatelessWidget {
                 ),
               ],
             ),
-            child: AppText.c1(
-              topic.displayWordCount,
-              fontSize: 10.sp,
-              color: isPaperTheme
-                  ? AppColors.paperTextMedium
-                  : AppColors.grayMedium,
-              fontWeight: FontWeight.w700,
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.auto_stories_rounded,
+                  size: 9.r,
+                  color: isPaperTheme
+                      ? AppColors.paperTextMedium
+                      : AppColors.grayMedium,
+                ),
+                SizedBox(width: 2.w),
+                AppText.c1(
+                  topic.isAuto
+                      ? 'Đa chủ đề'
+                      : '${topic.wordCount > 0 ? topic.wordCount : 100} từ',
+                  fontSize: 10.sp,
+                  color: isPaperTheme
+                      ? AppColors.paperTextMedium
+                      : AppColors.grayMedium,
+                  fontWeight: FontWeight.w700,
+                ),
+              ],
             ),
           ),
         ],
@@ -484,10 +505,10 @@ class _SelectedChip extends StatelessWidget {
         : AppColors.modeBotButtonExtrusion;
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
+      padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 2.h),
       decoration: BoxDecoration(
         color: chipBg,
-        borderRadius: BorderRadius.circular(8.r),
+        borderRadius: BorderRadius.circular(6.r),
         border: Border.all(color: AppColors.white, width: 1.w),
         boxShadow: [
           BoxShadow(
@@ -504,8 +525,8 @@ class _SelectedChip extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.check_circle_rounded, size: 10.r, color: AppColors.white),
-          SizedBox(width: 3.w),
+          Icon(Icons.check_circle_rounded, size: 9.r, color: AppColors.white),
+          SizedBox(width: 2.w),
           AppText.c1(
             'Đã chọn',
             fontSize: 10.sp,

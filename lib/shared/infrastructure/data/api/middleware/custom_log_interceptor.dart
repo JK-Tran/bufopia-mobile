@@ -34,7 +34,7 @@ class CustomLogInterceptor extends BaseInterceptor {
     if (options.headers.isNotEmpty) {
       log
         ..add('🌐 Request Headers:')
-        ..add('🌐 ${_prettyResponse(options.headers)}');
+        ..add('🌐 ${_prettyResponse(_sanitizeHeaders(options.headers))}');
     }
 
     if (options.data != null) {
@@ -119,5 +119,17 @@ class CustomLogInterceptor extends BaseInterceptor {
     }
 
     return data.toString();
+  }
+
+  Map<String, dynamic> _sanitizeHeaders(Map<String, dynamic> headers) {
+    return headers.map((key, value) {
+      final lowerKey = key.toLowerCase();
+      if ((lowerKey == 'authorization' || lowerKey == 'x-account-token') &&
+          value is String &&
+          value.length > 30) {
+        return MapEntry(key, '${value.substring(0, 18)}...[token]');
+      }
+      return MapEntry(key, value);
+    });
   }
 }

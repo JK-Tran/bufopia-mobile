@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "350275604107",
+    "project_id": "englishdema-967b1",
+    "storage_bucket": "englishdema-967b1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:350275604107:android:6313a2357f28831e020e8e",
+        "android_client_info": {
+          "package_name": "com.app.bufopia"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "350275604107-9l6oeqd36f039kd4vctvhvne1qg5mu39.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.app.bufopia",
+            "certificate_hash": "b98c6c2fea80cbc5b1e68155de77d3966b5f26c3"
+          }
+        },
+        {
+          "client_id": "350275604107-pgh20l2igr49cdt94hj83l5b2mn36ivd.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.app.bufopia",
+            "certificate_hash": "2c0afc7a852eddb8e99183e22a626dc4010781e4"
+          }
+        },
+        {
+          "client_id": "350275604107-mvk43erer1mnqsonr4hck89vpt6jl79g.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDgDhoUiEZpjnU_NksO9qWedNtduow5HR4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "350275604107-mvk43erer1mnqsonr4hck89vpt6jl79g.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

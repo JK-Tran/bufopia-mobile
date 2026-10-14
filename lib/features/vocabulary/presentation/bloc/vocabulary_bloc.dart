@@ -2,20 +2,23 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:bufopia/core/base/base_bloc.dart';
-import 'package:bufopia/features/vocabulary/data/mapper/battle_question_mapper.dart';
-import 'package:bufopia/features/vocabulary/data/models/battle_question_model.dart';
-import 'package:bufopia/features/vocabulary/domain/entities/battle_deck_entity.dart';
-import 'package:bufopia/features/vocabulary/domain/entities/battle_question_entity.dart';
-import 'package:bufopia/features/vocabulary/domain/entities/battle_reward_entity.dart';
-import 'package:bufopia/features/vocabulary/domain/entities/match_record_entity.dart';
-import 'package:bufopia/features/vocabulary/domain/entities/word_profile_entity.dart';
+import 'package:bufopia/features/auth/domain/usecases/get_cached_user_use_case.dart';
+import 'package:bufopia/features/vocabulary/data/mapper/battle_question_data_mapper.dart';
+import 'package:bufopia/features/vocabulary/data/models/battle_question_data.dart';
+import 'package:bufopia/features/vocabulary/domain/entities/battle_deck.dart';
+import 'package:bufopia/features/vocabulary/domain/entities/battle_option.dart';
+import 'package:bufopia/features/vocabulary/domain/entities/battle_question.dart';
+import 'package:bufopia/features/vocabulary/domain/entities/battle_reward.dart';
+import 'package:bufopia/features/vocabulary/domain/entities/match_record.dart';
+import 'package:bufopia/features/vocabulary/domain/entities/word_profile.dart';
 import 'package:bufopia/features/vocabulary/domain/usecases/get_battle_deck_use_case.dart';
 import 'package:bufopia/features/vocabulary/domain/usecases/submit_battle_reward_use_case.dart';
 import 'package:bufopia/features/vocabulary/domain/usecases/submit_match_result_use_case.dart';
 import 'package:bufopia/features/vocabulary/domain/usecases/submit_word_profiles_use_case.dart';
 import 'package:bufopia/shared/services/device/device_uid_service.dart';
+import 'package:bufopia/shared/services/firebase/firebase_auth_service.dart';
+import 'package:bufopia/shared/services/socket/duel_socket_service.dart';
 import 'package:bufopia/shared/services/socket/models/socket_event.dart';
-import 'package:bufopia/shared/services/socket/socket_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
@@ -32,6 +35,8 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
     this._submitBattleRewardUseCase,
     this._submitWordProfilesUseCase,
     this._deviceUidService,
+    this._getCachedUserUseCase,
+    this._firebaseAuthService,
     this._socketService,
     this._questionMapper,
   ) : super(const VocabularyState()) {
@@ -53,6 +58,8 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
     on<_SocketOpponentAnswer>(_onSocketOpponentAnswer);
     on<_SocketRoundSync>(_onSocketRoundSync);
     on<_SocketOpponentLeft>(_onSocketOpponentLeft);
+    on<_SocketRematchWaiting>(_onSocketRematchWaiting);
+    on<_CooldownTick>(_onCooldownTick);
   }
 
   final GetBattleDeckUseCase _getBattleDeckUseCase;
@@ -60,21 +67,121 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
   final SubmitBattleRewardUseCase _submitBattleRewardUseCase;
   final SubmitWordProfilesUseCase _submitWordProfilesUseCase;
   final DeviceUidService _deviceUidService;
-  final SocketService _socketService;
-  final BattleQuestionMapper _questionMapper;
+  final GetCachedUserUseCase _getCachedUserUseCase;
+  final FirebaseAuthService _firebaseAuthService;
+  final DuelSocketService _socketService;
+  final BattleQuestionDataMapper _questionMapper;
+
+  /// Helper giải quyết UID chuẩn:
+  /// ưu tiên providedUid -> cached user -> Firebase UID -> DeviceUid
+  Future<String> _resolveUid(String? providedUid) async {
+    if (providedUid != null && providedUid.isNotEmpty) {
+      return providedUid;
+    }
+    final cachedUser = _getCachedUserUseCase.execute();
+    if (cachedUser != null && cachedUser.uid.isNotEmpty) {
+      return cachedUser.uid;
+    }
+    final fbUid = _firebaseAuthService.currentUid;
+    if (fbUid != null && fbUid.isNotEmpty) {
+      return fbUid;
+    }
+    return _deviceUidService.getDeviceUid();
+  }
 
   Timer? _countdownTimer;
   Timer? _botTimer;
   Timer? _nextRoundTimer;
+  Timer? _pendingAnswerTimer;
+  Timer? _cooldownTimerP1;
+  Timer? _cooldownTimerP2;
+  int _lockedUntilMs = 0;
+  int _rematchContinueAtMs = 0;
+  Timer? _rematchRetryTimer;
   StreamSubscription<SocketEvent>? _socketSubscription;
   final Random _random = Random();
   int _localRoundStartTime = 0;
+
+  void _startCooldownP1([int seconds = 2]) {
+    _cooldownTimerP1?.cancel();
+    add(
+      VocabularyEvent.cooldownTick(
+        isPlayer1: true,
+        remainingSeconds: seconds,
+      ),
+    );
+    var current = seconds;
+    _cooldownTimerP1 = Timer.periodic(const Duration(seconds: 1), (timer) {
+      current--;
+      if (current <= 0) {
+        timer.cancel();
+        add(
+          const VocabularyEvent.cooldownTick(
+            isPlayer1: true,
+            remainingSeconds: 0,
+          ),
+        );
+      } else {
+        add(
+          VocabularyEvent.cooldownTick(
+            isPlayer1: true,
+            remainingSeconds: current,
+          ),
+        );
+      }
+    });
+  }
+
+  void _startCooldownP2([int seconds = 2]) {
+    _cooldownTimerP2?.cancel();
+    add(
+      VocabularyEvent.cooldownTick(
+        isPlayer1: false,
+        remainingSeconds: seconds,
+      ),
+    );
+    var current = seconds;
+    _cooldownTimerP2 = Timer.periodic(const Duration(seconds: 1), (timer) {
+      current--;
+      if (current <= 0) {
+        timer.cancel();
+        add(
+          const VocabularyEvent.cooldownTick(
+            isPlayer1: false,
+            remainingSeconds: 0,
+          ),
+        );
+      } else {
+        add(
+          VocabularyEvent.cooldownTick(
+            isPlayer1: false,
+            remainingSeconds: current,
+          ),
+        );
+      }
+    });
+  }
+
+  void _onCooldownTick(
+    _CooldownTick event,
+    Emitter<VocabularyState> emit,
+  ) {
+    if (event.isPlayer1) {
+      safeEmit(state.copyWith(cooldownSecondsP1: event.remainingSeconds));
+    } else {
+      safeEmit(state.copyWith(cooldownSecondsP2: event.remainingSeconds));
+    }
+  }
 
   @override
   Future<void> close() async {
     _countdownTimer?.cancel();
     _botTimer?.cancel();
     _nextRoundTimer?.cancel();
+    _pendingAnswerTimer?.cancel();
+    _cooldownTimerP1?.cancel();
+    _cooldownTimerP2?.cancel();
+    _rematchRetryTimer?.cancel();
     await _socketSubscription?.cancel();
     _socketSubscription = null;
     if (!state.isBotOpponent && state.roomCode != null) {
@@ -96,10 +203,14 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
         _countdownTimer?.cancel();
         _botTimer?.cancel();
         _nextRoundTimer?.cancel();
+        _pendingAnswerTimer?.cancel();
+        _cooldownTimerP1?.cancel();
+        _cooldownTimerP2?.cancel();
+        _lockedUntilMs = 0;
         await _socketSubscription?.cancel();
         _socketSubscription = null;
 
-        emit(
+        safeEmit(
           state.copyWith(
             isLoading: true,
             errorMessage: null,
@@ -115,11 +226,11 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
           ),
         );
 
-        final uid = event.uid ?? await _deviceUidService.getDeviceUid();
+        final uid = await _resolveUid(event.uid);
 
         // 1. Chế độ Đấu Online (Dùng Backend làm Single Source of Truth)
         if (!event.isBotOpponent && event.roomCode != null) {
-          emit(
+          safeEmit(
             state.copyWith(
               isWaitingForReady: true,
               currentUid: uid,
@@ -198,10 +309,19 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
                   VocabularyEvent.socketMatchFinished(
                     winner: e.winner,
                     scores: e.scores,
+                    matchRound: e.matchRound,
+                    continueAt: e.continueAt,
                   ),
                 );
-              case RoomPlayerLeftEvent _:
-                add(const VocabularyEvent.socketOpponentLeft());
+              case final RoomRematchWaitingEvent e:
+                add(
+                  VocabularyEvent.socketRematchWaiting(
+                    matchRound: e.matchRound,
+                    readyPlayers: e.readyPlayers,
+                  ),
+                );
+              case final RoomPlayerLeftEvent e:
+                add(VocabularyEvent.socketOpponentLeft(message: e.message));
               default:
                 break;
             }
@@ -223,7 +343,7 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
         final questions = deck.deck;
 
         if (questions.isEmpty) {
-          emit(
+          safeEmit(
             state.copyWith(
               isLoading: false,
               errorMessage: 'Không thể tải bộ câu hỏi từ máy chủ',
@@ -235,7 +355,7 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
         final initialOptionsP1 = _shuffleOptions(questions[0]);
         final initialOptionsP2 = _shuffleOptions(questions[0]);
 
-        emit(
+        safeEmit(
           state.copyWith(
             isLoading: false,
             deckEntity: deck,
@@ -259,10 +379,12 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
         );
 
         _startRoundTimer();
-        _scheduleBotAction();
+        if (event.isBotOpponent) {
+          _scheduleBotAction();
+        }
       },
       doOnError: (e) {
-        emit(
+        safeEmit(
           state.copyWith(
             isLoading: false,
             errorMessage: e.toString(),
@@ -280,11 +402,17 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
       return;
     }
 
+    // Trong thời gian phạt Cooldown sau khi chọn sai:
+    // tạm thời khóa không cho nhấn
+    if (event.isPlayer1 && state.cooldownSecondsP1 > 0) return;
+    if (!event.isPlayer1 && state.cooldownSecondsP2 > 0) return;
+
     final currentQ = state.currentQuestion;
     if (currentQ == null) return;
 
     // 1. Chế độ Đấu Online (Gửi optionId lên Backend theo quy tắc SSOT)
-    if (!state.isBotOpponent && event.isPlayer1) {
+    final isOnline = !state.isBotOpponent && state.roomCode != null;
+    if (isOnline && event.isPlayer1) {
       final selectedOpt = currentQ.options.firstWhere(
         (o) => o.en == event.selectedWord || o.vi == event.selectedWord,
         orElse: () => currentQ.options.first,
@@ -296,11 +424,37 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
         optionId: selectedOpt.id,
       );
 
-      emit(
+      // Nếu người chơi vừa trả lời sai cách đây < 2s (server lock 2000ms),
+      // Server sẽ drop request. Ta tự động gửi lại ngay khi hết lock để người
+      // chơi chỉ cần nhấn đúng 1 lần duy nhất!
+      _pendingAnswerTimer?.cancel();
+      final now = DateTime.now().millisecondsSinceEpoch;
+      final remainingLockMs = _lockedUntilMs - now;
+      if (remainingLockMs > 0) {
+        final targetRound = state.currentQuestionIndex;
+        final targetMatchRound = state.matchRound;
+        final targetOptId = selectedOpt.id;
+        _pendingAnswerTimer = Timer(
+          Duration(milliseconds: remainingLockMs + 80),
+          () {
+            if (!state.isGameOver &&
+                !state.isRoundLocked &&
+                state.currentQuestionIndex == targetRound) {
+              _socketService.sendMatchAnswer(
+                matchRound: targetMatchRound,
+                roundIndex: targetRound,
+                optionId: targetOptId,
+              );
+            }
+          },
+        );
+      }
+
+      safeEmit(
         state.copyWith(
           selectedWordP1: event.selectedWord,
           selectedOptionIdP1: selectedOpt.id,
-          isRoundLocked: true,
+          isP1Correct: null,
         ),
       );
       return;
@@ -311,41 +465,75 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
         event.selectedWord == currentQ.en || event.selectedWord == currentQ.vi;
 
     if (event.isPlayer1) {
-      final updatedAnswers = Map<String, bool>.from(state.answersP1);
-      if (updatedAnswers[currentQ.id] != true) {
-        updatedAnswers[currentQ.id] = isCorrect;
-      }
-
-      emit(
-        state.copyWith(
-          selectedWordP1: event.selectedWord,
-          answersP1: updatedAnswers,
-        ),
-      );
       if (isCorrect) {
         _countdownTimer?.cancel();
         _botTimer?.cancel();
-        emit(
+
+        final updatedAnswers = Map<String, bool>.from(state.answersP1);
+        if (updatedAnswers[currentQ.id] != true) {
+          updatedAnswers[currentQ.id] = true;
+        }
+
+        safeEmit(
           state.copyWith(
+            selectedWordP1: event.selectedWord,
+            isP1Correct: true,
             isRoundLocked: true,
             player1Score: state.player1Score + 100,
             correctCountP1: state.correctCountP1 + 1,
+            answersP1: updatedAnswers,
           ),
         );
         _scheduleNextRound();
+      } else {
+        final updatedWrong = List<String>.from(state.wrongWordsP1);
+        if (!updatedWrong.contains(event.selectedWord)) {
+          updatedWrong.add(event.selectedWord);
+        }
+
+        safeEmit(
+          state.copyWith(
+            selectedWordP1: event.selectedWord,
+            isP1Correct: false,
+            wrongWordsP1: updatedWrong,
+            isRoundLocked: false,
+          ),
+        );
+        _startCooldownP1();
       }
     } else {
-      emit(state.copyWith(selectedWordP2: event.selectedWord));
       if (isCorrect) {
         _countdownTimer?.cancel();
         _botTimer?.cancel();
-        emit(
+
+        safeEmit(
           state.copyWith(
+            selectedWordP2: event.selectedWord,
+            isP2Correct: true,
             isRoundLocked: true,
             player2Score: state.player2Score + 100,
           ),
         );
         _scheduleNextRound();
+      } else {
+        final updatedWrong = List<String>.from(state.wrongWordsP2);
+        if (!updatedWrong.contains(event.selectedWord)) {
+          updatedWrong.add(event.selectedWord);
+        }
+
+        safeEmit(
+          state.copyWith(
+            selectedWordP2: event.selectedWord,
+            isP2Correct: false,
+            wrongWordsP2: updatedWrong,
+            isRoundLocked: false,
+          ),
+        );
+        _startCooldownP2();
+
+        if (state.isBotOpponent) {
+          _scheduleBotAction();
+        }
       }
     }
   }
@@ -359,15 +547,16 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
       return;
     }
 
-    if (!state.isBotOpponent) {
+    final isOnline = !state.isBotOpponent && state.roomCode != null;
+    if (isOnline) {
       final elapsedMs =
           DateTime.now().millisecondsSinceEpoch - _localRoundStartTime;
       final remainingSeconds = ((12000 - elapsedMs) / 1000).ceil().clamp(0, 12);
       if (remainingSeconds != state.remainingSeconds) {
-        emit(state.copyWith(remainingSeconds: remainingSeconds));
+        safeEmit(state.copyWith(remainingSeconds: remainingSeconds));
       }
       if (remainingSeconds <= 0) {
-        emit(state.copyWith(remainingSeconds: 0, isRoundLocked: true));
+        safeEmit(state.copyWith(remainingSeconds: 0, isRoundLocked: true));
         _countdownTimer?.cancel();
       }
       return;
@@ -377,10 +566,10 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
         DateTime.now().millisecondsSinceEpoch - _localRoundStartTime;
     final remainingSeconds = ((10000 - elapsedMs) / 1000).ceil().clamp(0, 10);
     if (remainingSeconds != state.remainingSeconds) {
-      emit(state.copyWith(remainingSeconds: remainingSeconds));
+      safeEmit(state.copyWith(remainingSeconds: remainingSeconds));
     }
     if (remainingSeconds <= 0) {
-      emit(state.copyWith(remainingSeconds: 0, isRoundLocked: true));
+      safeEmit(state.copyWith(remainingSeconds: 0, isRoundLocked: true));
       _countdownTimer?.cancel();
       _botTimer?.cancel();
       _scheduleNextRound();
@@ -393,6 +582,8 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
   ) {
     _countdownTimer?.cancel();
     _botTimer?.cancel();
+    _cooldownTimerP1?.cancel();
+    _cooldownTimerP2?.cancel();
 
     final nextIndex = state.currentQuestionIndex + 1;
     if (nextIndex >= state.questions.length) {
@@ -406,20 +597,30 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
     final optionsP1 = _shuffleOptions(nextQuestion);
     final optionsP2 = _shuffleOptions(nextQuestion);
 
-    emit(
+    safeEmit(
       state.copyWith(
         currentQuestionIndex: nextIndex,
         remainingSeconds: 10,
         isRoundLocked: false,
         selectedWordP1: null,
         selectedWordP2: null,
+        selectedOptionIdP1: null,
+        selectedOptionIdP2: null,
+        isP1Correct: null,
+        isP2Correct: null,
         optionsP1: optionsP1,
         optionsP2: optionsP2,
+        wrongWordsP1: const [],
+        wrongWordsP2: const [],
+        cooldownSecondsP1: 0,
+        cooldownSecondsP2: 0,
       ),
     );
 
     _startRoundTimer();
-    _scheduleBotAction();
+    if (state.isBotOpponent) {
+      _scheduleBotAction();
+    }
   }
 
   void _onBotAnswer(
@@ -430,18 +631,23 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
     final currentQ = state.currentQuestion;
     if (currentQ == null || state.optionsP2.isEmpty) return;
 
+    final availableOptions = state.optionsP2
+        .where((w) => !state.wrongWordsP2.contains(w))
+        .toList();
+    if (availableOptions.isEmpty) return;
+
     final shouldPickCorrect = _random.nextDouble() < 0.7;
     String chosenWord;
 
-    if (shouldPickCorrect) {
+    if (shouldPickCorrect && availableOptions.contains(currentQ.en)) {
       chosenWord = currentQ.en;
     } else {
-      final wrongOptions = state.optionsP2
+      final wrongAvailable = availableOptions
           .where((w) => w != currentQ.en)
           .toList();
-      chosenWord = wrongOptions.isNotEmpty
-          ? wrongOptions[_random.nextInt(wrongOptions.length)]
-          : state.optionsP2.first;
+      chosenWord = wrongAvailable.isNotEmpty
+          ? wrongAvailable[_random.nextInt(wrongAvailable.length)]
+          : availableOptions.first;
     }
 
     add(
@@ -462,7 +668,7 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
         _countdownTimer?.cancel();
         _botTimer?.cancel();
 
-        emit(
+        safeEmit(
           state.copyWith(
             isGameOver: true,
             isRoundLocked: true,
@@ -470,70 +676,87 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
           ),
         );
 
-        final uid = state.currentUid ?? await _deviceUidService.getDeviceUid();
+        final uid = await _resolveUid(state.currentUid);
         final isWin = state.player1Score >= state.player2Score;
 
-        // 1. Gọi API nhận thưởng (XP, Level, Streak, Win Streak)
-        final rewardOutput = await _submitBattleRewardUseCase.execute(
-          SubmitBattleRewardInput(
-            uid: uid,
-            isWin: isWin,
-            correctCount: state.correctCountP1,
-            points: state.player1Score,
-          ),
-        );
-
-        // 2. Ghi nhận lịch sử trận đấu vào database
-        final matchId = 'match_${DateTime.now().millisecondsSinceEpoch}_$uid';
-        await _submitMatchResultUseCase.execute(
-          SubmitMatchResultInput(
-            MatchRecordEntity(
-              id: matchId,
+        BattleReward? finalReward;
+        try {
+          // 1. Gọi API nhận thưởng (XP, Level, Streak, Win Streak)
+          final rewardOutput = await _submitBattleRewardUseCase.execute(
+            SubmitBattleRewardInput(
               uid: uid,
-              topicId: state.topic,
-              scores: [state.player1Score, state.player2Score],
-              winner: isWin ? uid : (state.isBotOpponent ? 'bot' : 'player_2'),
-              matchData: {
-                'mode': state.isBotOpponent ? 'bot' : 'local_pvp',
-                'correctCount': state.correctCountP1,
-                'totalRounds': state.questions.length,
-              },
-              createdAt: DateTime.now(),
+              isWin: isWin,
+              correctCount: state.correctCountP1,
+              points: state.player1Score,
             ),
-          ),
-        );
-
-        // 3. Đồng bộ tiến trình học SRS của 15 từ vựng (Phase 3)
-        final nowMs = DateTime.now().millisecondsSinceEpoch;
-        final profiles = state.questions.map((q) {
-          final isP1Correct = state.answersP1[q.id] == true;
-          final interval = isP1Correct ? 6 : 1;
-          return WordProfileEntity(
-            wordId: q.id,
-            familiarity: isP1Correct ? 3 : 1,
-            interval: interval,
-            easeFactor: isP1Correct ? 2.6 : 2.4,
-            nextReview: nowMs + (interval * 24 * 60 * 60 * 1000),
-            lapses: isP1Correct ? 0 : 1,
           );
-        }).toList();
+          finalReward = rewardOutput.reward;
+        } on Object catch (_) {
+          // Fallback reward tính toán cục bộ nếu API trả lỗi
+          finalReward = BattleReward(
+            gainedXp: isWin ? 25 : 10,
+            streak: 2,
+            winStreak: isWin ? 1 : 0,
+          );
+        }
 
-        await _submitWordProfilesUseCase.execute(
-          SubmitWordProfilesInput(
-            uid: uid,
-            profiles: profiles,
-          ),
-        );
-
-        emit(
+        safeEmit(
           state.copyWith(
             isSavingReward: false,
-            reward: rewardOutput.reward,
+            reward: finalReward,
           ),
         );
+
+        // 2. Ghi nhận lịch sử trận đấu vào database (chạy an toàn ngầm)
+        try {
+          final matchId = 'match_${DateTime.now().millisecondsSinceEpoch}_$uid';
+          await _submitMatchResultUseCase.execute(
+            SubmitMatchResultInput(
+              MatchRecord(
+                id: matchId,
+                uid: uid,
+                topicId: state.topic,
+                scores: [state.player1Score, state.player2Score],
+                winner: isWin
+                    ? uid
+                    : (state.isBotOpponent ? 'bot' : 'player_2'),
+                matchData: {
+                  'mode': state.isBotOpponent ? 'bot' : 'local_pvp',
+                  'correctCount': state.correctCountP1,
+                  'totalRounds': state.questions.length,
+                },
+                createdAt: DateTime.now(),
+              ),
+            ),
+          );
+        } on Object catch (_) {}
+
+        // 3. Đồng bộ tiến trình học SRS của 15 từ vựng (Phase 3)
+        try {
+          final nowMs = DateTime.now().millisecondsSinceEpoch;
+          final profiles = state.questions.map((q) {
+            final isP1Correct = state.answersP1[q.id] == true;
+            final interval = isP1Correct ? 6 : 1;
+            return WordProfile(
+              wordId: q.id,
+              familiarity: isP1Correct ? 3 : 1,
+              interval: interval,
+              easeFactor: isP1Correct ? 2.6 : 2.4,
+              nextReview: nowMs + (interval * 24 * 60 * 60 * 1000),
+              lapses: isP1Correct ? 0 : 1,
+            );
+          }).toList();
+
+          await _submitWordProfilesUseCase.execute(
+            SubmitWordProfilesInput(
+              uid: uid,
+              profiles: profiles,
+            ),
+          );
+        } on Object catch (_) {}
       },
       doOnError: (e) {
-        emit(
+        safeEmit(
           state.copyWith(
             isSavingReward: false,
             errorMessage: e.toString(),
@@ -547,6 +770,32 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
     _RestartGame event,
     Emitter<VocabularyState> emit,
   ) {
+    if (!state.isBotOpponent &&
+        state.roomCode != null &&
+        _socketService.isConnected) {
+      safeEmit(
+        state.copyWith(
+          isRematchRequested: true,
+        ),
+      );
+
+      final now = DateTime.now().millisecondsSinceEpoch;
+      final waitMs = _rematchContinueAtMs - now;
+
+      _rematchRetryTimer?.cancel();
+      if (waitMs > 0) {
+        // Tự động bắn gói rematch ngay khi vừa hết 5s cooldown bảng điểm
+        _rematchRetryTimer = Timer(Duration(milliseconds: waitMs + 150), () {
+          if (!isClosed && state.isGameOver && _socketService.isConnected) {
+            _socketService.sendRematch(matchRound: state.matchRound);
+          }
+        });
+      } else {
+        _socketService.sendRematch(matchRound: state.matchRound);
+      }
+      return;
+    }
+
     add(
       VocabularyEvent.initDeck(
         topic: state.topic,
@@ -563,7 +812,7 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
     _SocketConnected event,
     Emitter<VocabularyState> emit,
   ) {
-    emit(
+    safeEmit(
       state.copyWith(
         playerIndex: event.playerIndex,
         opponentName: event.rivalName.isNotEmpty
@@ -574,13 +823,18 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
             : state.opponentAvatar,
       ),
     );
+
+    // Nếu người chơi là chủ phòng (Host - index 0), gửi đề thi cho phòng
+    if (event.playerIndex == 0) {
+      _socketService.sendInitDeck(topicId: state.topic);
+    }
   }
 
   void _onSocketPlayerJoined(
     _SocketPlayerJoined event,
     Emitter<VocabularyState> emit,
   ) {
-    emit(
+    safeEmit(
       state.copyWith(
         opponentName: event.name.isNotEmpty ? event.name : state.opponentName,
         opponentAvatar: event.avatar.isNotEmpty
@@ -594,18 +848,19 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
     _SocketMatchStart event,
     Emitter<VocabularyState> emit,
   ) {
+    _rematchRetryTimer?.cancel();
     try {
       final questions = event.rawDeck
           .map(
             (item) => _questionMapper.mapToEntity(
-              BattleQuestionModel.fromJson(
+              BattleQuestionData.fromJson(
                 Map<String, dynamic>.from(item as Map),
               ),
             ),
           )
           .toList();
 
-      emit(
+      safeEmit(
         state.copyWith(
           isLoading: false,
           questions: questions,
@@ -623,6 +878,15 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
           player2Score: 0,
           correctCountP1: 0,
           isGameOver: false,
+          isRematchRequested: false,
+          isOpponentWantRematch: false,
+          rematchReadyPlayers: const [],
+          answersP1: const {},
+          wrongWordsP1: const [],
+          wrongWordsP2: const [],
+          cooldownSecondsP1: 0,
+          cooldownSecondsP2: 0,
+          isRoundLocked: false,
           errorMessage: null,
         ),
       );
@@ -630,7 +894,7 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
       // Gửi ngay bản tin sẵn sàng lên Backend theo Handshake protocol
       _socketService.sendReady(matchRound: event.matchRound);
     } on Object catch (e) {
-      emit(
+      safeEmit(
         state.copyWith(
           isLoading: false,
           errorMessage: 'Lỗi đồng bộ bộ đề từ máy chủ: $e',
@@ -643,6 +907,10 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
     _SocketSyncState event,
     Emitter<VocabularyState> emit,
   ) {
+    _lockedUntilMs = 0;
+    _pendingAnswerTimer?.cancel();
+    _cooldownTimerP1?.cancel();
+    _cooldownTimerP2?.cancel();
     if (state.questions.isEmpty) return;
 
     final roundIdx = event.roundIndex;
@@ -660,7 +928,7 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
         ? event.scores[1 - state.playerIndex]
         : 0;
 
-    emit(
+    safeEmit(
       state.copyWith(
         isWaitingForReady: false,
         isRoundLocked: false,
@@ -676,6 +944,10 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
         selectedOptionIdP2: null,
         isP1Correct: null,
         isP2Correct: null,
+        wrongWordsP1: const [],
+        wrongWordsP2: const [],
+        cooldownSecondsP1: 0,
+        cooldownSecondsP2: 0,
         remainingSeconds: 12,
       ),
     );
@@ -695,40 +967,85 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
         ? event.scores[1 - state.playerIndex]
         : state.player2Score;
 
+    final currentQ = state.currentQuestion;
+    final answeredWord = currentQ?.options.firstWhere(
+      (o) => o.id == event.optionId,
+      orElse: () => const BattleOption(),
+    );
+    final wordText = (answeredWord?.en.isNotEmpty == true)
+        ? answeredWord!.en
+        : (answeredWord?.vi ?? '');
+
     if (isMe) {
+      if (!event.isCorrect) {
+        _lockedUntilMs = DateTime.now().millisecondsSinceEpoch + 2000;
+        _startCooldownP1();
+      } else {
+        _lockedUntilMs = 0;
+        _pendingAnswerTimer?.cancel();
+        _cooldownTimerP1?.cancel();
+      }
+
       final updatedAnswers = Map<String, bool>.from(state.answersP1);
-      final currentQ = state.currentQuestion;
       if (currentQ != null) {
         updatedAnswers[currentQ.id] = event.isCorrect;
       }
 
-      emit(
+      final wrongList = List<String>.from(state.wrongWordsP1);
+      if (!event.isCorrect &&
+          wordText.isNotEmpty &&
+          !wrongList.contains(wordText)) {
+        wrongList.add(wordText);
+      }
+
+      safeEmit(
         state.copyWith(
           player1Score: myScore,
           player2Score: rivalScore,
           selectedOptionIdP1: event.optionId,
+          selectedWordP1: wordText.isNotEmpty ? wordText : state.selectedWordP1,
           isP1Correct: event.isCorrect,
           correctCountP1: event.isCorrect
               ? state.correctCountP1 + 1
               : state.correctCountP1,
           answersP1: updatedAnswers,
+          wrongWordsP1: wrongList,
+          cooldownSecondsP1: event.isCorrect ? 0 : state.cooldownSecondsP1,
+          isRoundLocked: event.isCorrect || state.isRoundLocked,
         ),
       );
     } else {
-      emit(
+      if (!event.isCorrect) {
+        _startCooldownP2();
+      } else {
+        _cooldownTimerP2?.cancel();
+      }
+
+      final wrongList = List<String>.from(state.wrongWordsP2);
+      if (!event.isCorrect &&
+          wordText.isNotEmpty &&
+          !wrongList.contains(wordText)) {
+        wrongList.add(wordText);
+      }
+
+      safeEmit(
         state.copyWith(
           player1Score: myScore,
           player2Score: rivalScore,
           selectedOptionIdP2: event.optionId,
+          selectedWordP2: wordText.isNotEmpty ? wordText : state.selectedWordP2,
           isP2Correct: event.isCorrect,
+          wrongWordsP2: wrongList,
+          cooldownSecondsP2: event.isCorrect ? 0 : state.cooldownSecondsP2,
+          isRoundLocked: event.isCorrect || state.isRoundLocked,
         ),
       );
     }
 
-    // Nếu trả lời đúng, khóa lượt và dừng timer chờ hiệu ứng reveal 1.35s
+    // Nếu bất kỳ ai trả lời đúng, khóa lượt và dừng timer chờ hiệu ứng reveal
     if (event.isCorrect) {
       _countdownTimer?.cancel();
-      emit(state.copyWith(isRoundLocked: true));
+      safeEmit(state.copyWith(isRoundLocked: true));
     }
   }
 
@@ -737,10 +1054,16 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
     Emitter<VocabularyState> emit,
   ) {
     _countdownTimer?.cancel();
-    emit(
+    _pendingAnswerTimer?.cancel();
+    _cooldownTimerP1?.cancel();
+    _cooldownTimerP2?.cancel();
+    _lockedUntilMs = 0;
+    safeEmit(
       state.copyWith(
         remainingSeconds: 0,
         isRoundLocked: true,
+        cooldownSecondsP1: 0,
+        cooldownSecondsP2: 0,
       ),
     );
   }
@@ -749,6 +1072,11 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
     _SocketNextRound event,
     Emitter<VocabularyState> emit,
   ) {
+    _countdownTimer?.cancel();
+    _pendingAnswerTimer?.cancel();
+    _cooldownTimerP1?.cancel();
+    _cooldownTimerP2?.cancel();
+    _lockedUntilMs = 0;
     final roundIdx = event.roundIndex;
     if (roundIdx >= state.questions.length) return;
 
@@ -764,7 +1092,7 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
         ? event.scores[1 - state.playerIndex]
         : state.player2Score;
 
-    emit(
+    safeEmit(
       state.copyWith(
         currentQuestionIndex: roundIdx,
         startedAt: event.startedAt,
@@ -777,8 +1105,12 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
         isP2Correct: null,
         optionsP1: options,
         optionsP2: options,
+        wrongWordsP1: const [],
+        wrongWordsP2: const [],
         player1Score: myScore,
         player2Score: rivalScore,
+        cooldownSecondsP1: 0,
+        cooldownSecondsP2: 0,
         remainingSeconds: 12,
       ),
     );
@@ -793,6 +1125,9 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
     _countdownTimer?.cancel();
     _botTimer?.cancel();
     _nextRoundTimer?.cancel();
+    _rematchRetryTimer?.cancel();
+    _rematchContinueAtMs =
+        event.continueAt ?? (DateTime.now().millisecondsSinceEpoch + 5000);
 
     final myScore = event.scores.length > state.playerIndex
         ? event.scores[state.playerIndex]
@@ -801,11 +1136,15 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
         ? event.scores[1 - state.playerIndex]
         : state.player2Score;
 
-    emit(
+    safeEmit(
       state.copyWith(
         player1Score: myScore,
         player2Score: rivalScore,
+        matchRound: event.matchRound,
         isRoundLocked: true,
+        isRematchRequested: false,
+        isOpponentWantRematch: false,
+        rematchReadyPlayers: const [],
       ),
     );
 
@@ -818,7 +1157,7 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
   ) {
     if (state.isGameOver || state.questions.isEmpty) return;
 
-    emit(
+    safeEmit(
       state.copyWith(
         selectedWordP2: event.selectedWord,
         player2Score: event.score,
@@ -828,7 +1167,7 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
     if (event.isCorrect) {
       _countdownTimer?.cancel();
       _botTimer?.cancel();
-      emit(state.copyWith(isRoundLocked: true));
+      safeEmit(state.copyWith(isRoundLocked: true));
       _scheduleNextRound();
     }
   }
@@ -842,6 +1181,34 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
     }
   }
 
+  void _onSocketRematchWaiting(
+    _SocketRematchWaiting event,
+    Emitter<VocabularyState> emit,
+  ) {
+    final myIndex = state.playerIndex;
+    final myServerReady =
+        event.readyPlayers.length > myIndex && event.readyPlayers[myIndex];
+    final oppIndex = 1 - myIndex;
+    final oppReady =
+        event.readyPlayers.length > oppIndex && event.readyPlayers[oppIndex];
+
+    // Nếu người chơi đã bấm "Chơi lại", giữ nguyên trạng thái sẵn sàng.
+    if (state.isRematchRequested && !myServerReady) {
+      final now = DateTime.now().millisecondsSinceEpoch;
+      if (_rematchContinueAtMs - now <= 0) {
+        _socketService.sendRematch(matchRound: state.matchRound);
+      }
+    }
+
+    safeEmit(
+      state.copyWith(
+        isRematchRequested: state.isRematchRequested || myServerReady,
+        isOpponentWantRematch: oppReady,
+        rematchReadyPlayers: event.readyPlayers,
+      ),
+    );
+  }
+
   void _onSocketOpponentLeft(
     _SocketOpponentLeft event,
     Emitter<VocabularyState> emit,
@@ -849,14 +1216,16 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
     _countdownTimer?.cancel();
     _botTimer?.cancel();
     _nextRoundTimer?.cancel();
-    _socketSubscription?.cancel();
-    _socketSubscription = null;
-    _socketService.disconnect();
-    emit(
+    _rematchRetryTimer?.cancel();
+    // Giữ socket mở để nhận session_reward trao thưởng từ server.
+    // Socket sẽ được đóng an toàn khi rời màn hình (close()).
+    safeEmit(
       state.copyWith(
         isOpponentLeft: true,
-        opponentLeftMessage: 'Đối thủ đã thoát khỏi trận đấu!',
+        opponentLeftMessage: event.message ?? 'Đối thủ đã thoát khỏi trận đấu!',
         isRoundLocked: true,
+        isRematchRequested: false,
+        isOpponentWantRematch: false,
       ),
     );
   }
@@ -896,7 +1265,7 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
     });
   }
 
-  List<String> _shuffleOptions(BattleQuestionEntity question) {
+  List<String> _shuffleOptions(BattleQuestion question) {
     final list = question.options.map((o) => o.en).toList()..shuffle(_random);
     return list;
   }

@@ -58,7 +58,7 @@ class GalleryPhotosTab extends StatelessWidget {
             controller: scrollController,
             padding: EdgeInsets.all(8.w),
             gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 5,
+              crossAxisCount: 4,
               crossAxisSpacing: 6.w,
               mainAxisSpacing: 6.w,
             ),
@@ -135,9 +135,8 @@ class GalleryPhotosTab extends StatelessWidget {
           ),
           AppButton.primary(
             text: 'Mở thư viện',
-            fontSize: 11.sp,
+            fontSize: 12.sp,
             padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
-
             onPressed: onPickFromSystemGallery,
           ),
         ],
@@ -173,7 +172,7 @@ class GalleryPhotosTab extends StatelessWidget {
           AppText.c1(
             'Máy ảnh',
             color: AppColors.grayDark,
-            fontWeight: FontWeight.w800,
+            fontWeight: FontWeight.w700,
             fontSize: 10.sp,
           ),
         ],

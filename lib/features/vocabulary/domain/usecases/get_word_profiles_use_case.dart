@@ -1,4 +1,4 @@
-import 'package:bufopia/features/vocabulary/domain/entities/word_profile_entity.dart';
+import 'package:bufopia/features/vocabulary/domain/entities/word_profile.dart';
 import 'package:bufopia/features/vocabulary/domain/repositories/vocabulary_repository.dart';
 import 'package:bufopia/shared/infrastructure/domain/usecase/future/base_future_use_case.dart';
 import 'package:bufopia/shared/infrastructure/domain/usecase/io/base_input.dart';
@@ -22,7 +22,7 @@ abstract class GetWordProfilesInput extends BaseInput
 abstract class GetWordProfilesOutput extends BaseOutput
     with _$GetWordProfilesOutput {
   const factory GetWordProfilesOutput({
-    @Default([]) List<WordProfileEntity> profiles,
+    @Default([]) List<WordProfile> profiles,
   }) = _GetWordProfilesOutput;
 
   const GetWordProfilesOutput._();

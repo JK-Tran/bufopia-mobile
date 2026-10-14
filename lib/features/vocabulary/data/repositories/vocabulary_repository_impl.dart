@@ -1,14 +1,17 @@
 import 'package:bufopia/features/vocabulary/data/datasources/vocabulary_data_source.dart';
-import 'package:bufopia/features/vocabulary/data/mapper/battle_deck_mapper.dart';
-import 'package:bufopia/features/vocabulary/data/mapper/battle_reward_mapper.dart';
-import 'package:bufopia/features/vocabulary/data/mapper/match_record_mapper.dart';
-import 'package:bufopia/features/vocabulary/data/mapper/vocabulary_mapper.dart';
-import 'package:bufopia/features/vocabulary/data/mapper/word_profile_mapper.dart';
-import 'package:bufopia/features/vocabulary/domain/entities/battle_deck_entity.dart';
-import 'package:bufopia/features/vocabulary/domain/entities/battle_reward_entity.dart';
-import 'package:bufopia/features/vocabulary/domain/entities/match_record_entity.dart';
-import 'package:bufopia/features/vocabulary/domain/entities/vocabulary_entity.dart';
-import 'package:bufopia/features/vocabulary/domain/entities/word_profile_entity.dart';
+import 'package:bufopia/features/vocabulary/data/mapper/battle_deck_data_mapper.dart';
+import 'package:bufopia/features/vocabulary/data/mapper/battle_reward_data_mapper.dart';
+import 'package:bufopia/features/vocabulary/data/mapper/feedback_data_mapper.dart';
+import 'package:bufopia/features/vocabulary/data/mapper/match_record_data_mapper.dart';
+import 'package:bufopia/features/vocabulary/data/mapper/vocabulary_data_mapper.dart';
+import 'package:bufopia/features/vocabulary/data/mapper/word_profile_data_mapper.dart';
+import 'package:bufopia/features/vocabulary/data/models/feedback_data.dart';
+import 'package:bufopia/features/vocabulary/domain/entities/battle_deck.dart';
+import 'package:bufopia/features/vocabulary/domain/entities/battle_reward.dart';
+import 'package:bufopia/features/vocabulary/domain/entities/feedback.dart';
+import 'package:bufopia/features/vocabulary/domain/entities/match_record.dart';
+import 'package:bufopia/features/vocabulary/domain/entities/vocabulary.dart';
+import 'package:bufopia/features/vocabulary/domain/entities/word_profile.dart';
 import 'package:bufopia/features/vocabulary/domain/repositories/vocabulary_repository.dart';
 import 'package:injectable/injectable.dart';
 
@@ -21,23 +24,25 @@ class VocabularyRepositoryImpl implements VocabularyRepository {
     this._battleRewardMapper,
     this._matchRecordMapper,
     this._wordProfileMapper,
+    this._feedbackMapper,
   );
 
   final VocabularyDataSource _dataSource;
-  final VocabularyMapper _vocabularyMapper;
-  final BattleDeckMapper _battleDeckMapper;
-  final BattleRewardMapper _battleRewardMapper;
-  final MatchRecordMapper _matchRecordMapper;
-  final WordProfileMapper _wordProfileMapper;
+  final VocabularyDataMapper _vocabularyMapper;
+  final BattleDeckDataMapper _battleDeckMapper;
+  final BattleRewardDataMapper _battleRewardMapper;
+  final MatchRecordDataMapper _matchRecordMapper;
+  final WordProfileDataMapper _wordProfileMapper;
+  final FeedbackDataMapper _feedbackMapper;
 
   @override
-  Future<VocabularyEntity> getVocabulary() async {
+  Future<Vocabulary> getVocabulary() async {
     final response = await _dataSource.getVocabulary();
     return _vocabularyMapper.mapToEntity(response);
   }
 
   @override
-  Future<BattleDeckEntity> getDeck({
+  Future<BattleDeck> getDeck({
     required String topic,
     String? uid,
     String? opponentUid,
@@ -55,13 +60,13 @@ class VocabularyRepositoryImpl implements VocabularyRepository {
   }
 
   @override
-  Future<bool> saveMatch(MatchRecordEntity match) async {
+  Future<bool> saveMatch(MatchRecord match) async {
     final model = _matchRecordMapper.mapToModel(match);
     return _dataSource.saveMatch(model);
   }
 
   @override
-  Future<BattleRewardEntity> claimReward({
+  Future<BattleReward> claimReward({
     required String uid,
     required bool isWin,
     required int correctCount,
@@ -77,7 +82,7 @@ class VocabularyRepositoryImpl implements VocabularyRepository {
   }
 
   @override
-  Future<List<WordProfileEntity>> getProfiles(String uid) async {
+  Future<List<WordProfile>> getProfiles(String uid) async {
     final response = await _dataSource.getProfiles(uid);
     return _wordProfileMapper.mapToEntityList(response?.profiles);
   }
@@ -85,9 +90,15 @@ class VocabularyRepositoryImpl implements VocabularyRepository {
   @override
   Future<bool> syncProfiles(
     String uid,
-    List<WordProfileEntity> profiles,
+    List<WordProfile> profiles,
   ) async {
     final models = _wordProfileMapper.mapToModelList(profiles);
     return _dataSource.syncProfiles(uid, models);
+  }
+
+  @override
+  Future<Feedback> sendFeedback(FeedbackData request) async {
+    final response = await _dataSource.sendFeedback(request);
+    return _feedbackMapper.mapToEntity(response);
   }
 }

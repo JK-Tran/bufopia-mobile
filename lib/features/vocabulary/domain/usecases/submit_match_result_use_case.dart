@@ -1,4 +1,4 @@
-import 'package:bufopia/features/vocabulary/domain/entities/match_record_entity.dart';
+import 'package:bufopia/features/vocabulary/domain/entities/match_record.dart';
 import 'package:bufopia/features/vocabulary/domain/repositories/vocabulary_repository.dart';
 import 'package:bufopia/shared/infrastructure/domain/usecase/future/base_future_use_case.dart';
 import 'package:bufopia/shared/infrastructure/domain/usecase/io/base_input.dart';
@@ -11,7 +11,7 @@ part 'submit_match_result_use_case.freezed.dart';
 @freezed
 abstract class SubmitMatchResultInput extends BaseInput
     with _$SubmitMatchResultInput {
-  const factory SubmitMatchResultInput(MatchRecordEntity match) =
+  const factory SubmitMatchResultInput(MatchRecord match) =
       _SubmitMatchResultInput;
 
   const SubmitMatchResultInput._();

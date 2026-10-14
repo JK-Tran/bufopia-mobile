@@ -71,6 +71,8 @@ abstract class VocabularyEvent with _$VocabularyEvent {
   const factory VocabularyEvent.socketMatchFinished({
     required dynamic winner,
     @Default([]) List<int> scores,
+    @Default(1) int matchRound,
+    int? continueAt,
   }) = _SocketMatchFinished;
 
   const factory VocabularyEvent.socketOpponentAnswer({
@@ -84,5 +86,17 @@ abstract class VocabularyEvent with _$VocabularyEvent {
     required int round,
   }) = _SocketRoundSync;
 
-  const factory VocabularyEvent.socketOpponentLeft() = _SocketOpponentLeft;
+  const factory VocabularyEvent.socketOpponentLeft({
+    String? message,
+  }) = _SocketOpponentLeft;
+
+  const factory VocabularyEvent.socketRematchWaiting({
+    required int matchRound,
+    required List<bool> readyPlayers,
+  }) = _SocketRematchWaiting;
+
+  const factory VocabularyEvent.cooldownTick({
+    required bool isPlayer1,
+    required int remainingSeconds,
+  }) = _CooldownTick;
 }

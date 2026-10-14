@@ -172,8 +172,8 @@ class _PlayerPhotoCropDialogState extends State<PlayerPhotoCropDialog> {
           AppText.t3(
             'Căn chỉnh ảnh',
             color: AppColors.white,
-            fontWeight: FontWeight.w900,
-            fontSize: 15.sp,
+            fontWeight: FontWeight.w700,
+            fontSize: 16.sp,
             shadows: [
               Shadow(
                 color: AppColors.black.withValues(alpha: 0.4),
@@ -190,10 +190,10 @@ class _PlayerPhotoCropDialogState extends State<PlayerPhotoCropDialog> {
             icon: Icon(
               Icons.check_rounded,
               color: AppColors.white,
-              size: 15.h,
+              size: 14.w,
             ),
             isLoading: _isSaving,
-            fontSize: 13.sp,
+            fontSize: 12.sp,
             extrusionHeight: 2.h,
             onPressed: _onConfirm,
           ),
@@ -267,21 +267,23 @@ class _PlayerPhotoCropDialogState extends State<PlayerPhotoCropDialog> {
 
   Widget _buildBottomHint() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
+      padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 10.h),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(
             Icons.pinch_rounded,
             color: AppColors.cyan,
-            size: 16.sp,
+            size: 18.w,
           ),
-          SizedBox(width: 6.w),
-          AppText.c1(
-            'Dùng ngón tay kéo & phóng to để căn chỉnh ảnh vào khung vuông',
-            color: AppColors.white.withValues(alpha: 0.8),
-            fontWeight: FontWeight.w600,
-            fontSize: 12.sp,
+          SizedBox(width: 8.w),
+          Expanded(
+            child: AppText.c1(
+              'Dùng ngón tay kéo & phóng to để căn chỉnh ảnh vào khung vuông',
+              color: AppColors.white.withValues(alpha: 0.85),
+              fontSize: 12.sp,
+              maxLines: 2,
+            ),
           ),
         ],
       ),

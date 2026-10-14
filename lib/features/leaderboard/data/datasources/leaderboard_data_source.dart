@@ -1,4 +1,4 @@
-import 'package:bufopia/features/leaderboard/data/models/leaderboard_response_model.dart';
+import 'package:bufopia/features/leaderboard/data/models/leaderboard_data.dart';
 import 'package:bufopia/shared/infrastructure/infrastructure.dart';
 import 'package:bufopia/shared/model/typedef.dart';
 import 'package:injectable/injectable.dart';
@@ -9,7 +9,7 @@ class LeaderboardDataSource {
 
   final NoneAuthAppServerApiClient _noneAuthAppServerApiClient;
 
-  Future<LeaderboardResponseModel?> getLeaderboard({
+  Future<LeaderboardDataResponse?> getLeaderboard({
     String metric = 'xp',
     int limit = 50,
   }) async {
@@ -21,7 +21,7 @@ class LeaderboardDataSource {
         'metric': metric,
         'limit': limit,
       },
-      decoder: (data) => LeaderboardResponseModel.fromJson(data! as JSON),
+      decoder: (data) => LeaderboardDataResponse.fromJson(data! as JSON),
     );
   }
 }

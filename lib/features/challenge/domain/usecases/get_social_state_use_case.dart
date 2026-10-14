@@ -1,4 +1,4 @@
-import 'package:bufopia/features/challenge/domain/entities/social_state_entity.dart';
+import 'package:bufopia/features/challenge/domain/entities/social_state.dart';
 import 'package:bufopia/features/challenge/domain/repositories/challenge_room_repository.dart';
 import 'package:bufopia/shared/infrastructure/domain/usecase/future/base_future_use_case.dart';
 import 'package:bufopia/shared/infrastructure/domain/usecase/io/base_input.dart';
@@ -22,7 +22,7 @@ abstract class GetSocialStateInput extends BaseInput
 abstract class GetSocialStateOutput extends BaseOutput
     with _$GetSocialStateOutput {
   const factory GetSocialStateOutput({
-    required SocialStateEntity socialState,
+    required SocialState socialState,
   }) = _GetSocialStateOutput;
 
   const GetSocialStateOutput._();

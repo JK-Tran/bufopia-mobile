@@ -21,7 +21,7 @@ void main() {
       expect(find.byType(HomeHeader), findsOneWidget);
       expect(find.byType(HomeMenu), findsOneWidget);
       expect(find.text('Nối từ'), findsOneWidget);
-      expect(find.text('Trắc nghiệm từ vựng'), findsOneWidget);
+      expect(find.text('Trắc nghiệm'), findsOneWidget);
       expect(find.text('Góc luyện tập'), findsOneWidget);
     });
   });
