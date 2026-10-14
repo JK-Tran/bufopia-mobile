@@ -81,8 +81,10 @@ class WordChainSocketServiceImpl extends BaseSocketService
   @override
   bool isConnectedToRoom(String roomCode) {
     if (!isConnected || _currentRoomCode == null) return false;
-    final normalized =
-        roomCode.trim().toUpperCase().replaceFirst(RegExp('^ROOM_'), '');
+    final normalized = roomCode.trim().toUpperCase().replaceFirst(
+      RegExp('^ROOM_'),
+      '',
+    );
     return _currentRoomCode == normalized;
   }
 
@@ -136,8 +138,10 @@ class WordChainSocketServiceImpl extends BaseSocketService
     bool relaxed = false,
     String lang = 'en',
   }) async {
-    final normalizedCode =
-        roomCode.trim().toUpperCase().replaceFirst(RegExp('^ROOM_'), '');
+    final normalizedCode = roomCode.trim().toUpperCase().replaceFirst(
+      RegExp('^ROOM_'),
+      '',
+    );
 
     if (isConnectedToRoom(normalizedCode)) {
       Log.d(
@@ -286,8 +290,7 @@ class WordChainSocketServiceImpl extends BaseSocketService
           rivalAvatar: json['rivalAvatar'] as String?,
           serverNow: json['serverNow'] as int?,
           sessionId:
-              json['sessionId'] as String? ??
-              rawState['sessionId'] as String?,
+              json['sessionId'] as String? ?? rawState['sessionId'] as String?,
         );
         _lastChainState = event;
         emitEvent(event);

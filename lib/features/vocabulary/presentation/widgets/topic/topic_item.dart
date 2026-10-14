@@ -303,8 +303,9 @@ class _ItemInfo extends StatelessWidget {
           child: AppText.c1(
             subtitle,
             fontSize: 10.sp,
-            color:
-                isPaperTheme ? AppColors.paperTextMuted : AppColors.grayMedium,
+            color: isPaperTheme
+                ? AppColors.paperTextMuted
+                : AppColors.grayMedium,
             maxLines: 1,
             textAlign: TextAlign.center,
           ),

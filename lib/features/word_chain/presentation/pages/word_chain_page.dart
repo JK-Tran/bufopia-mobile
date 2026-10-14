@@ -244,16 +244,18 @@ class _WordChainPageState extends State<WordChainPage>
                 alignment: Alignment.center,
                 child: Icon(
                   Icons.emoji_events_rounded,
-                  color:
-                      isPaper ? AppColors.paperAmberBadgeText : AppColors.gold,
+                  color: isPaper
+                      ? AppColors.paperAmberBadgeText
+                      : AppColors.gold,
                   size: 28.r,
                 ),
               ),
               SizedBox(height: 8.h),
               AppText.t2(
                 'CHIẾN THẮNG DANH DỰ! 🏆',
-                color:
-                    isPaper ? AppColors.paperStreakFlame : AppColors.orangeDark,
+                color: isPaper
+                    ? AppColors.paperStreakFlame
+                    : AppColors.orangeDark,
                 fontWeight: FontWeight.w700,
                 fontSize: 16.sp,
               ),
@@ -269,8 +271,10 @@ class _WordChainPageState extends State<WordChainPage>
               if (reward != null && reward.gainedXp > 0) ...[
                 SizedBox(height: 8.h),
                 Container(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 14.w, vertical: 4.h),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 14.w,
+                    vertical: 4.h,
+                  ),
                   decoration: BoxDecoration(
                     color: isPaper
                         ? AppColors.paperAmberBadgeBg
@@ -418,12 +422,8 @@ class _WordChainPageState extends State<WordChainPage>
             final isWinner = state.gameState.winner == state.myPlayerIndex;
             final myIdx = state.myPlayerIndex;
             final allMsgs = state.gameState.messages;
-            final p1Msgs = allMsgs
-                .where((m) => m.actor == myIdx)
-                .toList();
-            final p2Msgs = allMsgs
-                .where((m) => m.actor != myIdx)
-                .toList();
+            final p1Msgs = allMsgs.where((m) => m.actor == myIdx).toList();
+            final p2Msgs = allMsgs.where((m) => m.actor != myIdx).toList();
             final p1Words = p1Msgs.length;
             final p2Words = p2Msgs.length;
             final p1Mistakes = state.gameState.mistakes.isNotEmpty
@@ -448,8 +448,7 @@ class _WordChainPageState extends State<WordChainPage>
                 : 3;
 
             String computeFastestTime(int actorIndex) {
-              final msgs =
-                  allMsgs.where((m) => m.actor == actorIndex).toList();
+              final msgs = allMsgs.where((m) => m.actor == actorIndex).toList();
               if (msgs.isEmpty) return '—';
 
               double? minSeconds;

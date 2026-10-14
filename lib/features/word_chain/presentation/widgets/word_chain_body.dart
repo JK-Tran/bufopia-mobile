@@ -143,7 +143,8 @@ class _WordChainBodyState extends State<WordChainBody> {
         ? state.gameState.messages.last.entry.word
         : null;
 
-    final isWaitingForRival = state.mode != WordChainGameMode.bot &&
+    final isWaitingForRival =
+        state.mode != WordChainGameMode.bot &&
         state.gameState.status == 'waiting';
     final showLoadingOverlay = state.isLoading || isWaitingForRival;
 
@@ -160,172 +161,174 @@ class _WordChainBodyState extends State<WordChainBody> {
           child: Stack(
             alignment: Alignment.center,
             children: [
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
-              decoration: BoxDecoration(
-                color: boardBg,
-                borderRadius: BorderRadius.circular(20.r),
-                border: Border.all(
-                  color: boardBorder,
-                  width: 2.w,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: isPaper
-                        ? AppColors.paperExtrusion.withValues(alpha: 0.45)
-                        : AppColors.black.withValues(alpha: 0.12),
-                    offset: Offset(0, 4.h),
-                    blurRadius: 12.r,
-                  ),
-                ],
-              ),
-              child: Column(
-                children: [
-                  // 1. Header trên cùng
-                  BlocBuilder<ChatBloc, ChatState>(
-                    buildWhen: (prev, current) =>
-                        prev.unreadCount != current.unreadCount,
-                    builder: (context, chatState) {
-                      return WordChainHeader(
-                        mode: state.mode,
-                        roomCode: state.roomCode,
-                        relaxed: state.relaxed,
-                        unreadChatCount: chatState.unreadCount,
-                        onBackPressed: widget.onBackPressed,
-                        onChatPressed: _handleOpenChat,
-                        onSurrenderPressed: _handleOpenSurrender,
-                        onRematch: (state.mode == WordChainGameMode.bot ||
-                                state.isGameOver)
-                            ? () {
-                                context.read<WordChainBloc>().add(
-                                  const WordChainEvent.requestRematch(),
-                                );
-                              }
-                            : null,
-                      );
-                    },
-                  ),
-
-                  // 2. Score Board (P1 vs P2, Mạng sống, Đếm ngược)
-                  WordChainScoreBoard(
-                    player1Name: widget.myName,
-                    player1Lives: myLives,
-                    player1Avatar: widget.myAvatar,
-                    player2Name: state.rivalName,
-                    player2Lives: rivalLives,
-                    player2Avatar: state.rivalAvatar,
-                    remainingSeconds: state.remainingSeconds,
-                    isMyTurn: state.isMyTurn,
-                    relaxed: state.relaxed,
-                  ),
-
-                  // Đường kẻ phân cách nét đứt
-                  Container(
-                    margin: EdgeInsets.symmetric(
-                      horizontal: 10.w,
-                      vertical: 4.h,
-                    ),
-                    height: 1.h,
-                    color: dividerColor,
-                  ),
-
-                  // 3. Danh sách từ vựng đã nối
-                  Expanded(
-                    child: WordChainMessageList(
-                      messages: state.gameState.messages,
-                      myPlayerIndex: state.myPlayerIndex,
-                      myName: widget.myName,
-                      myAvatar: widget.myAvatar,
-                      rivalName: state.rivalName,
-                      rivalAvatar: state.rivalAvatar,
-                      scrollController: _scrollController,
-                      onPlayAudio: widget.onPlayAudio,
-                    ),
-                  ),
-
-                  // 4. Banner phản hồi / nhắc lượt
-                  WordChainTurnBanner(
-                    isMyTurn: state.isMyTurn,
-                    requiredLetter: state.gameState.requiredLetter,
-                    rivalName: state.rivalName,
-                    rejectedReason: state.rejectedReason,
-                    lastCorrectWord:
-                        state.gameState.messages.isNotEmpty && state.isMyTurn
-                        ? lastMessageWord
-                        : null,
-                  ),
-
-                  // 5. Khung nhập từ dưới đáy
-                  WordChainInputBar(
-                    controller: _inputController,
-                    isMyTurn: state.isMyTurn,
-                    isCheckingWord: state.isCheckingWord,
-                    isGameOver: state.isGameOver,
-                    requiredLetter: state.gameState.requiredLetter,
-                    onChanged: (val) {
-                      context.read<WordChainBloc>().add(
-                        WordChainEvent.inputWordChanged(val),
-                      );
-                    },
-                    onSubmit: () {
-                      context.read<WordChainBloc>().add(
-                        const WordChainEvent.submitWord(),
-                      );
-                    },
-                  ),
-                ],
-              ),
-            ),
-
-            // 6. Loading / Waiting Indicator khi đang kết nối hoặc chờ đối thủ sẵn sàng
-            if (showLoadingOverlay)
               Container(
-                margin: EdgeInsets.symmetric(horizontal: 24.w),
-                padding: EdgeInsets.symmetric(
-                  horizontal: 24.w,
-                  vertical: 20.h,
-                ),
+                margin: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
                 decoration: BoxDecoration(
-                  color: isPaper
-                      ? AppColors.paperCardBg
-                      : AppColors.purple.withValues(alpha: 0.95),
-                  borderRadius: BorderRadius.circular(16.r),
-                  border: isPaper
-                      ? Border.all(color: AppColors.paperBorder, width: 1.5.w)
-                      : null,
+                  color: boardBg,
+                  borderRadius: BorderRadius.circular(20.r),
+                  border: Border.all(
+                    color: boardBorder,
+                    width: 2.w,
+                  ),
                   boxShadow: [
                     BoxShadow(
                       color: isPaper
-                          ? AppColors.paperExtrusion
-                          : AppColors.black.withValues(alpha: 0.2),
-                      blurRadius: isPaper ? 2.r : 8.r,
-                      offset: Offset(0, isPaper ? 3.h : 4.h),
+                          ? AppColors.paperExtrusion.withValues(alpha: 0.45)
+                          : AppColors.black.withValues(alpha: 0.12),
+                      offset: Offset(0, 4.h),
+                      blurRadius: 12.r,
                     ),
                   ],
                 ),
                 child: Column(
-                  mainAxisSize: MainAxisSize.min,
                   children: [
-                    CircularProgressIndicator(
-                      color: isPaper ? AppColors.paperGreen : AppColors.gold,
+                    // 1. Header trên cùng
+                    BlocBuilder<ChatBloc, ChatState>(
+                      buildWhen: (prev, current) =>
+                          prev.unreadCount != current.unreadCount,
+                      builder: (context, chatState) {
+                        return WordChainHeader(
+                          mode: state.mode,
+                          roomCode: state.roomCode,
+                          relaxed: state.relaxed,
+                          unreadChatCount: chatState.unreadCount,
+                          onBackPressed: widget.onBackPressed,
+                          onChatPressed: _handleOpenChat,
+                          onSurrenderPressed: _handleOpenSurrender,
+                          onRematch:
+                              (state.mode == WordChainGameMode.bot ||
+                                  state.isGameOver)
+                              ? () {
+                                  context.read<WordChainBloc>().add(
+                                    const WordChainEvent.requestRematch(),
+                                  );
+                                }
+                              : null,
+                        );
+                      },
                     ),
-                    SizedBox(height: 14.h),
-                    AppText.b2(
-                      isWaitingForRival
-                          ? 'ĐANG CHỜ ĐỐI THỦ SẴN SÀNG...'
-                          : 'ĐANG TẢI DỮ LIỆU...',
-                      color:
-                          isPaper ? AppColors.paperTextDark : AppColors.white,
-                      fontWeight: FontWeight.w700,
-                      textAlign: TextAlign.center,
+
+                    // 2. Score Board (P1 vs P2, Mạng sống, Đếm ngược)
+                    WordChainScoreBoard(
+                      player1Name: widget.myName,
+                      player1Lives: myLives,
+                      player1Avatar: widget.myAvatar,
+                      player2Name: state.rivalName,
+                      player2Lives: rivalLives,
+                      player2Avatar: state.rivalAvatar,
+                      remainingSeconds: state.remainingSeconds,
+                      isMyTurn: state.isMyTurn,
+                      relaxed: state.relaxed,
+                    ),
+
+                    // Đường kẻ phân cách nét đứt
+                    Container(
+                      margin: EdgeInsets.symmetric(
+                        horizontal: 10.w,
+                        vertical: 4.h,
+                      ),
+                      height: 1.h,
+                      color: dividerColor,
+                    ),
+
+                    // 3. Danh sách từ vựng đã nối
+                    Expanded(
+                      child: WordChainMessageList(
+                        messages: state.gameState.messages,
+                        myPlayerIndex: state.myPlayerIndex,
+                        myName: widget.myName,
+                        myAvatar: widget.myAvatar,
+                        rivalName: state.rivalName,
+                        rivalAvatar: state.rivalAvatar,
+                        scrollController: _scrollController,
+                        onPlayAudio: widget.onPlayAudio,
+                      ),
+                    ),
+
+                    // 4. Banner phản hồi / nhắc lượt
+                    WordChainTurnBanner(
+                      isMyTurn: state.isMyTurn,
+                      requiredLetter: state.gameState.requiredLetter,
+                      rivalName: state.rivalName,
+                      rejectedReason: state.rejectedReason,
+                      lastCorrectWord:
+                          state.gameState.messages.isNotEmpty && state.isMyTurn
+                          ? lastMessageWord
+                          : null,
+                    ),
+
+                    // 5. Khung nhập từ dưới đáy
+                    WordChainInputBar(
+                      controller: _inputController,
+                      isMyTurn: state.isMyTurn,
+                      isCheckingWord: state.isCheckingWord,
+                      isGameOver: state.isGameOver,
+                      requiredLetter: state.gameState.requiredLetter,
+                      onChanged: (val) {
+                        context.read<WordChainBloc>().add(
+                          WordChainEvent.inputWordChanged(val),
+                        );
+                      },
+                      onSubmit: () {
+                        context.read<WordChainBloc>().add(
+                          const WordChainEvent.submitWord(),
+                        );
+                      },
                     ),
                   ],
                 ),
               ),
-          ],
+
+              // 6. Loading / Waiting Indicator khi đang kết nối hoặc chờ đối thủ sẵn sàng
+              if (showLoadingOverlay)
+                Container(
+                  margin: EdgeInsets.symmetric(horizontal: 24.w),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 24.w,
+                    vertical: 20.h,
+                  ),
+                  decoration: BoxDecoration(
+                    color: isPaper
+                        ? AppColors.paperCardBg
+                        : AppColors.purple.withValues(alpha: 0.95),
+                    borderRadius: BorderRadius.circular(16.r),
+                    border: isPaper
+                        ? Border.all(color: AppColors.paperBorder, width: 1.5.w)
+                        : null,
+                    boxShadow: [
+                      BoxShadow(
+                        color: isPaper
+                            ? AppColors.paperExtrusion
+                            : AppColors.black.withValues(alpha: 0.2),
+                        blurRadius: isPaper ? 2.r : 8.r,
+                        offset: Offset(0, isPaper ? 3.h : 4.h),
+                      ),
+                    ],
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      CircularProgressIndicator(
+                        color: isPaper ? AppColors.paperGreen : AppColors.gold,
+                      ),
+                      SizedBox(height: 14.h),
+                      AppText.b2(
+                        isWaitingForRival
+                            ? 'ĐANG CHỜ ĐỐI THỦ SẴN SÀNG...'
+                            : 'ĐANG TẢI DỮ LIỆU...',
+                        color: isPaper
+                            ? AppColors.paperTextDark
+                            : AppColors.white,
+                        fontWeight: FontWeight.w700,
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+            ],
+          ),
         ),
       ),
-    ),
-  );
-}
+    );
+  }
 }

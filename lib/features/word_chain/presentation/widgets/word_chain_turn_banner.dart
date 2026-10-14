@@ -108,9 +108,7 @@ class WordChainTurnBanner extends StatelessWidget {
             : AppColors.white.withValues(alpha: 0.8),
         borderRadius: BorderRadius.circular(12.r),
         border: Border.all(
-          color: isPaper
-              ? AppColors.paperBorder
-              : AppColors.classicBorder,
+          color: isPaper ? AppColors.paperBorder : AppColors.classicBorder,
           width: 1.w,
         ),
       ),
@@ -137,12 +135,10 @@ class WordChainTurnBanner extends StatelessWidget {
             child: AppText.c1(
               isMyTurn
                   ? (letter.isNotEmpty
-                      ? 'Đến lượt bạn — hãy nhập từ bắt đầu bằng $letter'
-                      : 'Đến lượt bạn — hãy nhập một từ bất kỳ để bắt đầu')
+                        ? 'Đến lượt bạn — hãy nhập từ bắt đầu bằng $letter'
+                        : 'Đến lượt bạn — hãy nhập một từ bất kỳ để bắt đầu')
                   : '$rivalName đang nghĩ từ nối...',
-              color: isPaper
-                  ? AppColors.paperTextDark
-                  : AppColors.grayDark,
+              color: isPaper ? AppColors.paperTextDark : AppColors.grayDark,
               fontSize: 10.sp,
               fontWeight: FontWeight.w600,
             ),

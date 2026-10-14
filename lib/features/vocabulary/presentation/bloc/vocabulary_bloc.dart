@@ -709,8 +709,7 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
 
         // 2. Ghi nhận lịch sử trận đấu vào database (chạy an toàn ngầm)
         try {
-          final matchId =
-              'match_${DateTime.now().millisecondsSinceEpoch}_$uid';
+          final matchId = 'match_${DateTime.now().millisecondsSinceEpoch}_$uid';
           await _submitMatchResultUseCase.execute(
             SubmitMatchResultInput(
               MatchRecord(
@@ -718,8 +717,9 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
                 uid: uid,
                 topicId: state.topic,
                 scores: [state.player1Score, state.player2Score],
-                winner:
-                    isWin ? uid : (state.isBotOpponent ? 'bot' : 'player_2'),
+                winner: isWin
+                    ? uid
+                    : (state.isBotOpponent ? 'bot' : 'player_2'),
                 matchData: {
                   'mode': state.isBotOpponent ? 'bot' : 'local_pvp',
                   'correctCount': state.correctCountP1,

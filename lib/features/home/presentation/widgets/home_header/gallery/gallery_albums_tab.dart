@@ -138,9 +138,7 @@ class _AlbumTileItem extends StatelessWidget {
                         children: [
                           AppText.b2(
                             album.name,
-                            fontWeight: isSelected
-                                ? FontWeight.w700
-                                : null,
+                            fontWeight: isSelected ? FontWeight.w700 : null,
                             fontSize: 14.sp,
                             color: isSelected
                                 ? AppColors.blue

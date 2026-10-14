@@ -87,8 +87,9 @@ class DuelSocketServiceImpl extends BaseSocketService
         name: logTag,
       );
     }
-    final effectiveTicket =
-        (ticket != null && ticket.isNotEmpty) ? ticket : effectiveToken;
+    final effectiveTicket = (ticket != null && ticket.isNotEmpty)
+        ? ticket
+        : effectiveToken;
 
     final url = SocketUrlBuilder.matchmakeWsUrl(
       uid: uid,
@@ -120,8 +121,9 @@ class DuelSocketServiceImpl extends BaseSocketService
     } on Object catch (e) {
       Log.e('Failed to get room socket ticket: $e', name: logTag);
     }
-    final effectiveTicket =
-        (ticket != null && ticket.isNotEmpty) ? ticket : effectiveToken;
+    final effectiveTicket = (ticket != null && ticket.isNotEmpty)
+        ? ticket
+        : effectiveToken;
 
     final url = SocketUrlBuilder.roomWsUrl(
       roomCode: roomCode,

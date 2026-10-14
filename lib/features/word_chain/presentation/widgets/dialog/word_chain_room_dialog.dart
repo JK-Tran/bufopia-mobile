@@ -150,8 +150,8 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
     return (currentUser?.uid.isNotEmpty == true)
         ? currentUser!.uid
         : (cachedUid?.isNotEmpty == true)
-            ? cachedUid!
-            : fbUid ?? 'guest_${DateTime.now().millisecondsSinceEpoch % 10000}';
+        ? cachedUid!
+        : fbUid ?? 'guest_${DateTime.now().millisecondsSinceEpoch % 10000}';
   }
 
   String _getMyName() {
@@ -275,8 +275,7 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
       if (!mounted) return;
 
       if (event is ChainStateEvent) {
-        final isMyRoom =
-            event.roomCode.isEmpty || event.roomCode == randomCode;
+        final isMyRoom = event.roomCode.isEmpty || event.roomCode == randomCode;
 
         if (isMyRoom) {
           // A. BE xác nhận Host seat sẵn sàng (status == 'waiting')
@@ -408,8 +407,8 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
 
     if (!mounted) return;
 
-    final roomToEnter = (acceptedRoomCode != null &&
-            acceptedRoomCode.isNotEmpty)
+    final roomToEnter =
+        (acceptedRoomCode != null && acceptedRoomCode.isNotEmpty)
         ? acceptedRoomCode
         : inv.roomCode;
 
@@ -524,8 +523,9 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
   Widget _buildTabs(bool isPaper, bool isLandscape) {
     final isJoin = _currentTab == WordChainRoomTab.join;
     final activeColor = isPaper ? AppColors.paperTextDark : AppColors.grayDark;
-    final inactiveColor =
-        isPaper ? AppColors.paperTextMuted : AppColors.grayMedium;
+    final inactiveColor = isPaper
+        ? AppColors.paperTextMuted
+        : AppColors.grayMedium;
     final tabHeight = isLandscape ? 36.0 : 36.h;
     final fontSize = isLandscape ? 12.0 : 12.sp;
     final iconSize = isLandscape ? 14.0 : 14.r;
@@ -550,11 +550,11 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
               child: Container(
                 decoration: BoxDecoration(
                   color: isPaper ? AppColors.paperCardBg : AppColors.white,
-                  borderRadius:
-                      BorderRadius.circular(isLandscape ? 8.0 : 8.r),
+                  borderRadius: BorderRadius.circular(isLandscape ? 8.0 : 8.r),
                   border: Border.all(
-                    color:
-                        isPaper ? AppColors.paperBorder : AppColors.blueLight,
+                    color: isPaper
+                        ? AppColors.paperBorder
+                        : AppColors.blueLight,
                   ),
                   boxShadow: isPaper
                       ? const [
@@ -763,8 +763,9 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
           height: isLandscape ? 40.0 : 40.h,
           padding: EdgeInsets.symmetric(horizontal: 14.w),
           spacing: 8,
-          backgroundColor:
-              isPaper ? AppColors.paperGreen : AppColors.modeBotButton,
+          backgroundColor: isPaper
+              ? AppColors.paperGreen
+              : AppColors.modeBotButton,
           borderColor: isPaper
               ? AppColors.paperGreenBorder
               : AppColors.white.withValues(alpha: 0.35),
@@ -880,8 +881,7 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
                   fontSize: btnFontSize,
                   fontWeight: FontWeight.w700,
                   padding: btnPad,
-                  borderRadius:
-                      BorderRadius.circular(isLandscape ? 8.0 : 8.r),
+                  borderRadius: BorderRadius.circular(isLandscape ? 8.0 : 8.r),
                   backgroundColor: AppColors.paperCardBg,
                   borderColor: AppColors.paperBorder,
                   extrusionColor: AppColors.paperExtrusion,
@@ -906,8 +906,7 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
                   height: btnHeight,
                   fontSize: btnFontSize,
                   padding: btnPad,
-                  borderRadius:
-                      BorderRadius.circular(isLandscape ? 8.0 : 8.r),
+                  borderRadius: BorderRadius.circular(isLandscape ? 8.0 : 8.r),
                   extrusionHeight: 1.5,
                   onPressed: () {
                     Clipboard.setData(ClipboardData(text: code));
@@ -932,8 +931,7 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
                   fontSize: btnFontSize,
                   fontWeight: FontWeight.w700,
                   padding: btnPad,
-                  borderRadius:
-                      BorderRadius.circular(isLandscape ? 8.0 : 8.r),
+                  borderRadius: BorderRadius.circular(isLandscape ? 8.0 : 8.r),
                   backgroundColor: AppColors.paperCardBg,
                   borderColor: AppColors.paperBorder,
                   extrusionColor: AppColors.paperExtrusion,
@@ -962,8 +960,7 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
                   height: btnHeight,
                   fontSize: btnFontSize,
                   padding: btnPad,
-                  borderRadius:
-                      BorderRadius.circular(isLandscape ? 8.0 : 8.r),
+                  borderRadius: BorderRadius.circular(isLandscape ? 8.0 : 8.r),
                   extrusionHeight: 1.5,
                   onPressed: () {
                     Clipboard.setData(
@@ -991,8 +988,7 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
                 borderColor: AppColors.dialogCloseBorder,
                 extrusionColor: AppColors.dialogCloseExtrusion,
                 textColor: AppColors.dialogCloseIcon,
-                borderRadius:
-                    BorderRadius.circular(isLandscape ? 8.0 : 8.r),
+                borderRadius: BorderRadius.circular(isLandscape ? 8.0 : 8.r),
                 height: btnHeight,
                 fontSize: btnFontSize,
                 fontWeight: FontWeight.w700,
@@ -1129,8 +1125,9 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
                     padding: EdgeInsets.symmetric(
                       horizontal: isLandscape ? 12.0 : 10.w,
                     ),
-                    borderRadius:
-                        BorderRadius.circular(isLandscape ? 7.0 : 6.r),
+                    borderRadius: BorderRadius.circular(
+                      isLandscape ? 7.0 : 6.r,
+                    ),
                     backgroundColor: isPaper
                         ? AppColors.paperGreen
                         : AppColors.modeBotButton,
@@ -1244,8 +1241,9 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
                           fontSize: btnFontSize,
                           fontWeight: FontWeight.w700,
                           padding: btnPad,
-                          borderRadius:
-                              BorderRadius.circular(isLandscape ? 8.0 : 7.r),
+                          borderRadius: BorderRadius.circular(
+                            isLandscape ? 8.0 : 7.r,
+                          ),
                           backgroundColor: AppColors.paperGreen,
                           borderColor: AppColors.paperGreenBorder,
                           extrusionColor: AppColors.paperGreenExtrusion,
@@ -1257,8 +1255,9 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
                           height: btnHeight,
                           fontSize: btnFontSize,
                           padding: btnPad,
-                          borderRadius:
-                              BorderRadius.circular(isLandscape ? 8.0 : 7.r),
+                          borderRadius: BorderRadius.circular(
+                            isLandscape ? 8.0 : 7.r,
+                          ),
                           onPressed: () => _handleInviteRival(rival),
                         )
                     else if (isCooldownActive)
@@ -1267,8 +1266,9 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
                         height: btnHeight,
                         fontSize: btnFontSize,
                         padding: btnPad,
-                        borderRadius:
-                            BorderRadius.circular(isLandscape ? 8.0 : 7.r),
+                        borderRadius: BorderRadius.circular(
+                          isLandscape ? 8.0 : 7.r,
+                        ),
                       )
                     else if (isPaper)
                       AppButton(
@@ -1277,8 +1277,9 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
                         fontSize: btnFontSize,
                         fontWeight: FontWeight.w700,
                         padding: btnPad,
-                        borderRadius:
-                            BorderRadius.circular(isLandscape ? 8.0 : 7.r),
+                        borderRadius: BorderRadius.circular(
+                          isLandscape ? 8.0 : 7.r,
+                        ),
                         backgroundColor: AppColors.paperSurface,
                         borderColor: AppColors.paperBorder,
                         extrusionColor: AppColors.paperExtrusion,
@@ -1290,8 +1291,9 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
                         height: btnHeight,
                         fontSize: btnFontSize,
                         padding: btnPad,
-                        borderRadius:
-                            BorderRadius.circular(isLandscape ? 8.0 : 7.r),
+                        borderRadius: BorderRadius.circular(
+                          isLandscape ? 8.0 : 7.r,
+                        ),
                       ),
                   ],
                 ),

@@ -23,9 +23,7 @@ class PrivacyHeader extends StatelessWidget {
     final iconColor = isClassic
         ? AppColors.classicButtonEmerald
         : AppColors.paperGreen;
-    final tagBg = isClassic
-        ? AppColors.topicEasyBg
-        : AppColors.paperBadgeBg;
+    final tagBg = isClassic ? AppColors.topicEasyBg : AppColors.paperBadgeBg;
     final tagBorder = isClassic
         ? AppColors.modeBotBorder
         : AppColors.paperBadgeBorder;

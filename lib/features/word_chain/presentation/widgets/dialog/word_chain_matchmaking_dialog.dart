@@ -36,7 +36,8 @@ class WordChainMatchmakingDialog extends StatefulWidget {
     String roomCode,
     String rivalName,
     String rivalAvatar,
-  ) onMatched;
+  )
+  onMatched;
 
   static Future<void> show(
     BuildContext context, {
@@ -44,7 +45,8 @@ class WordChainMatchmakingDialog extends StatefulWidget {
       String roomCode,
       String rivalName,
       String rivalAvatar,
-    ) onMatched,
+    )
+    onMatched,
     bool relaxed = false,
     String language = 'en',
   }) {
@@ -122,8 +124,8 @@ class _WordChainMatchmakingDialogState extends State<WordChainMatchmakingDialog>
     final currentUid = (currentUser?.uid.isNotEmpty == true)
         ? currentUser!.uid
         : (cachedUid?.isNotEmpty == true)
-            ? cachedUid!
-            : fbUid;
+        ? cachedUid!
+        : fbUid;
     final fallbackUid =
         'guest_${DateTime.now().millisecondsSinceEpoch % 10000}';
     final uid = currentUid ?? fallbackUid;
@@ -361,16 +363,17 @@ class _WordChainMatchmakingDialogState extends State<WordChainMatchmakingDialog>
                   color: _isMatched
                       ? AppColors.radarGreen
                       : (isPaper
-                          ? AppColors.paperGreen
-                          : AppColors.radarGreenLight),
+                            ? AppColors.paperGreen
+                            : AppColors.radarGreenLight),
                   boxShadow: [
                     BoxShadow(
-                      color: (_isMatched
-                              ? AppColors.radarGreen
-                              : (isPaper
-                                  ? AppColors.paperGreen
-                                  : AppColors.radarGreenLight))
-                          .withValues(alpha: 0.6),
+                      color:
+                          (_isMatched
+                                  ? AppColors.radarGreen
+                                  : (isPaper
+                                        ? AppColors.paperGreen
+                                        : AppColors.radarGreenLight))
+                              .withValues(alpha: 0.6),
                       blurRadius: 6.r,
                       spreadRadius: 1.r,
                     ),
@@ -382,17 +385,15 @@ class _WordChainMatchmakingDialogState extends State<WordChainMatchmakingDialog>
             AppText.t3(
               _isMatched
                   ? (_matchedEvent != null
-                      ? '🎉 ĐÃ TÌM THẤY: '
-                          '${_matchedEvent!.rivalName.toUpperCase()}!'
-                      : '🎉 ĐÃ TÌM THẤY ĐỐI THỦ!')
+                        ? '🎉 ĐÃ TÌM THẤY: '
+                              '${_matchedEvent!.rivalName.toUpperCase()}!'
+                        : '🎉 ĐÃ TÌM THẤY ĐỐI THỦ!')
                   : 'ĐANG TÌM ĐỐI THỦ...',
               fontWeight: FontWeight.w700,
               fontSize: 12.sp,
               color: _isMatched
                   ? AppColors.radarGreen
-                  : (isPaper
-                      ? AppColors.paperGreenDark
-                      : AppColors.radarGreen),
+                  : (isPaper ? AppColors.paperGreenDark : AppColors.radarGreen),
             ),
           ],
         ),
@@ -537,12 +538,13 @@ class _RadarScannerWidget extends StatelessWidget {
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: (isMatched
-                          ? AppColors.radarGreen
-                          : (isPaperTheme
-                              ? AppColors.paperGreen
-                              : AppColors.radarGreenLight))
-                      .withValues(alpha: 0.35),
+                  color:
+                      (isMatched
+                              ? AppColors.radarGreen
+                              : (isPaperTheme
+                                    ? AppColors.paperGreen
+                                    : AppColors.radarGreenLight))
+                          .withValues(alpha: 0.35),
                   blurRadius: 8.r,
                   spreadRadius: 1.r,
                 ),
@@ -552,8 +554,9 @@ class _RadarScannerWidget extends StatelessWidget {
               size: 34.r,
               avatarUrl: avatarUrl,
               borderWidth: 2.w,
-              borderColor:
-                  isPaperTheme ? AppColors.paperBorder : AppColors.white,
+              borderColor: isPaperTheme
+                  ? AppColors.paperBorder
+                  : AppColors.white,
             ),
           ),
 

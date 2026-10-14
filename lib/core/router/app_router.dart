@@ -83,7 +83,8 @@ class AppRouter {
           final roomCode = extra?['roomCode'] as String? ?? chainRoomQuery;
           final relaxed = extra?['relaxed'] as bool? ?? false;
           final language = extra?['language'] as String? ?? 'vi';
-          final mode = extra?['mode'] as WordChainGameMode? ??
+          final mode =
+              extra?['mode'] as WordChainGameMode? ??
               (roomCode != null && roomCode.isNotEmpty
                   ? WordChainGameMode.room
                   : WordChainGameMode.bot);

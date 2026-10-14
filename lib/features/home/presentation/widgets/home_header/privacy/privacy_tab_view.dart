@@ -48,9 +48,7 @@ class _PrivacyIntro extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bg = isClassic
-        ? AppColors.lightBackground
-        : AppColors.paperSurface;
+    final bg = isClassic ? AppColors.lightBackground : AppColors.paperSurface;
     final border = isClassic ? AppColors.grayLight : AppColors.paperBorder;
     final iconCircleBg = isClassic
         ? AppColors.topicEasyBg
@@ -61,9 +59,7 @@ class _PrivacyIntro extends StatelessWidget {
     final iconColor = isClassic
         ? AppColors.classicButtonEmerald
         : AppColors.paperGreen;
-    final titleColor = isClassic
-        ? AppColors.grayDark
-        : AppColors.paperTextDark;
+    final titleColor = isClassic ? AppColors.grayDark : AppColors.paperTextDark;
     final introColor = isClassic
         ? AppColors.grayMedium
         : AppColors.paperTextMedium;

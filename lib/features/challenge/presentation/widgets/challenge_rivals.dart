@@ -113,8 +113,9 @@ class ChallengeRivals extends StatelessWidget {
                             fontSize: btnFontSize,
                             fontWeight: FontWeight.w700,
                             padding: btnPad,
-                            borderRadius:
-                                BorderRadius.circular(isLandscape ? 8.0 : 7.r),
+                            borderRadius: BorderRadius.circular(
+                              isLandscape ? 8.0 : 7.r,
+                            ),
                             backgroundColor: AppColors.paperGreen,
                             borderColor: AppColors.paperGreenBorder,
                             extrusionColor: AppColors.paperGreenExtrusion,
@@ -126,8 +127,9 @@ class ChallengeRivals extends StatelessWidget {
                             height: btnHeight,
                             fontSize: btnFontSize,
                             padding: btnPad,
-                            borderRadius:
-                                BorderRadius.circular(isLandscape ? 8.0 : 7.r),
+                            borderRadius: BorderRadius.circular(
+                              isLandscape ? 8.0 : 7.r,
+                            ),
                             onPressed: () => onInviteRival(rival.uid),
                           )
                       else if (isPaper)
@@ -137,8 +139,9 @@ class ChallengeRivals extends StatelessWidget {
                           fontSize: btnFontSize,
                           fontWeight: FontWeight.w700,
                           padding: btnPad,
-                          borderRadius:
-                              BorderRadius.circular(isLandscape ? 8.0 : 7.r),
+                          borderRadius: BorderRadius.circular(
+                            isLandscape ? 8.0 : 7.r,
+                          ),
                           backgroundColor: AppColors.paperSurface,
                           borderColor: AppColors.paperBorder,
                           extrusionColor: AppColors.paperExtrusion,
@@ -150,8 +153,9 @@ class ChallengeRivals extends StatelessWidget {
                           height: btnHeight,
                           fontSize: btnFontSize,
                           padding: btnPad,
-                          borderRadius:
-                              BorderRadius.circular(isLandscape ? 8.0 : 7.r),
+                          borderRadius: BorderRadius.circular(
+                            isLandscape ? 8.0 : 7.r,
+                          ),
                         ),
                     ],
                   ),

@@ -17,7 +17,8 @@ class AccountImportMapper
       return const AccountImportResult();
     }
 
-    final isConflict = data.status == 'conflict' ||
+    final isConflict =
+        data.status == 'conflict' ||
         data.code == 'account_exists_conflict' ||
         data.conflict != null;
     AccountConflict? conflict;
@@ -35,10 +36,12 @@ class AccountImportMapper
             ((guest['matches'] ?? guest['level']) as num?)?.toInt() ?? 0,
         cloudMatches:
             ((cloud['matches'] ?? cloud['level']) as num?)?.toInt() ?? 0,
-        guestLastActive: guest['last_active'] as String? ??
+        guestLastActive:
+            guest['last_active'] as String? ??
             guest['displayName'] as String? ??
             '',
-        cloudLastActive: cloud['last_active'] as String? ??
+        cloudLastActive:
+            cloud['last_active'] as String? ??
             cloud['displayName'] as String? ??
             '',
       );

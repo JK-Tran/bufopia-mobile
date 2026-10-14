@@ -36,8 +36,9 @@ class AccountConflictDialog extends StatelessWidget {
     final cardBg = isPaper ? AppColors.paperSurface : AppColors.lightBackground;
     final cardBorder = isPaper ? AppColors.paperBorder : AppColors.grayLight;
     final textDark = isPaper ? AppColors.paperTextDark : AppColors.grayDark;
-    final textMuted =
-        isPaper ? AppColors.paperTextMedium : AppColors.grayMedium;
+    final textMuted = isPaper
+        ? AppColors.paperTextMedium
+        : AppColors.grayMedium;
 
     return AppGameDialog(
       title: 'Xung đột tài khoản',

@@ -35,7 +35,6 @@ class VocabularyBody extends StatelessWidget {
   static const String _paperBgPath =
       'assets/images/background_switch/app_background_1.webp';
 
-
   VocabularyAnswerStatus _getAnswerStatus({
     required VocabularyState state,
     required bool isPlayer1,
@@ -79,8 +78,7 @@ class VocabularyBody extends StatelessWidget {
     if (selectedWord == null) return VocabularyAnswerStatus.normal;
 
     if (selectedWord == word) {
-      final isPlayerCorrect =
-          isPlayer1 ? state.isP1Correct : state.isP2Correct;
+      final isPlayerCorrect = isPlayer1 ? state.isP1Correct : state.isP2Correct;
       if (isPlayerCorrect != null) {
         return isPlayerCorrect
             ? VocabularyAnswerStatus.correct
@@ -176,12 +174,12 @@ class VocabularyBody extends StatelessWidget {
               player2Name: player2Name,
               player2Avatar: player2Avatar,
               onBackPressed: onBackPressed,
-              getAnswerStatus: ({
-                required isPlayer1,
-                required index,
-                required word,
-              }) =>
-                  _getAnswerStatus(
+              getAnswerStatus:
+                  ({
+                    required isPlayer1,
+                    required index,
+                    required word,
+                  }) => _getAnswerStatus(
                     state: state,
                     isPlayer1: isPlayer1,
                     index: index,

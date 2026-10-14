@@ -23,9 +23,7 @@ class PrivacyContent extends StatelessWidget {
     final titleColor = isClassic
         ? AppColors.orangeDeep
         : AppColors.paperStreakText;
-    final textColor = isClassic
-        ? AppColors.grayDark
-        : AppColors.paperTextDark;
+    final textColor = isClassic ? AppColors.grayDark : AppColors.paperTextDark;
     final bulletColor = isClassic
         ? AppColors.classicButtonEmerald
         : AppColors.paperGreen;

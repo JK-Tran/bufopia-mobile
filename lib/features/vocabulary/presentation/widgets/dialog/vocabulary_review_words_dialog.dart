@@ -92,7 +92,7 @@ class _VocabularyReviewWordsDialogState
       final uid = cachedUid?.isNotEmpty == true
           ? cachedUid!
           : (sl<FirebaseAuthService>().currentUid ??
-              await sl<DeviceUidService>().getDeviceUid());
+                await sl<DeviceUidService>().getDeviceUid());
       final useCase = sl<GetWordProfilesUseCase>();
       final output = await useCase.execute(GetWordProfilesInput(uid: uid));
 

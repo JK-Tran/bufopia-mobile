@@ -83,8 +83,7 @@ abstract class WordChainEvent with _$WordChainEvent {
       _WordChainOpponentLeft;
 
   /// Lỗi xảy ra trong quá trình kết nối / chơi
-  const factory WordChainEvent.errorOccurred(String message) =
-      _ErrorOccurred;
+  const factory WordChainEvent.errorOccurred(String message) = _ErrorOccurred;
 
   // ── 4. Sự kiện đếm giờ & Bot solo ──────────────────────────────
   /// Đếm ngược đồng hồ mỗi giây (trong chế độ có tính giờ)

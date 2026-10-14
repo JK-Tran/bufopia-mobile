@@ -128,10 +128,10 @@ class _FeedbackTabState extends State<FeedbackTab> {
                   boxShadow: [
                     BoxShadow(
                       color: isSelected
-                          ? AppColors.feedbackMossGreenDark
-                              .withValues(alpha: 0.25)
-                          : AppColors.feedbackSandBorder
-                              .withValues(alpha: 0.2),
+                          ? AppColors.feedbackMossGreenDark.withValues(
+                              alpha: 0.25,
+                            )
+                          : AppColors.feedbackSandBorder.withValues(alpha: 0.2),
                       offset: const Offset(0, 1),
                     ),
                   ],

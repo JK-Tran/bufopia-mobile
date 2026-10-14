@@ -34,9 +34,7 @@ class PrivacyTabBar extends StatelessWidget {
     final barBg = isClassic
         ? AppColors.lightBackground
         : AppColors.paperBadgeBg;
-    final barBorder = isClassic
-        ? AppColors.grayLight
-        : AppColors.paperBorder;
+    final barBorder = isClassic ? AppColors.grayLight : AppColors.paperBorder;
     final sliderBg = isClassic ? AppColors.white : AppColors.paperCardBg;
     final sliderBorder = isClassic
         ? AppColors.grayExtrusion

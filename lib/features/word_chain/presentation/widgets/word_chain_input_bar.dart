@@ -41,12 +41,8 @@ class WordChainInputBar extends StatelessWidget {
     final inputBorder = isPaper
         ? AppColors.paperBorder
         : AppColors.classicBorder;
-    final textColor = isPaper
-        ? AppColors.paperTextDark
-        : AppColors.grayDark;
-    final hintColor = isPaper
-        ? AppColors.paperTextMuted
-        : AppColors.grayMedium;
+    final textColor = isPaper ? AppColors.paperTextDark : AppColors.grayDark;
+    final hintColor = isPaper ? AppColors.paperTextMuted : AppColors.grayMedium;
 
     return Padding(
       padding: EdgeInsets.fromLTRB(10.w, 4.h, 10.w, 10.h),

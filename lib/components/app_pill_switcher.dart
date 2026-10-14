@@ -58,7 +58,8 @@ class AppPillSwitcher<T> extends StatelessWidget {
     final isLandscape =
         MediaQuery.of(context).orientation == Orientation.landscape;
 
-    final resolvedWidth = width ??
+    final resolvedWidth =
+        width ??
         (total == 2
             ? (isLandscape ? 136.0 : 140.w)
             : (isLandscape ? 126.0 : 126.w));

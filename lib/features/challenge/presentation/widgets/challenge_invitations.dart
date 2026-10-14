@@ -102,8 +102,9 @@ class ChallengeInvitations extends StatelessWidget {
                       padding: EdgeInsets.symmetric(
                         horizontal: isLandscape ? 14.0 : 12.w,
                       ),
-                      borderRadius:
-                          BorderRadius.circular(isLandscape ? 8.0 : 7.r),
+                      borderRadius: BorderRadius.circular(
+                        isLandscape ? 8.0 : 7.r,
+                      ),
                       backgroundColor: AppColors.paperGreen,
                       borderColor: AppColors.paperGreenBorder,
                       extrusionColor: AppColors.paperGreenExtrusion,
@@ -117,8 +118,9 @@ class ChallengeInvitations extends StatelessWidget {
                       padding: EdgeInsets.symmetric(
                         horizontal: isLandscape ? 14.0 : 12.w,
                       ),
-                      borderRadius:
-                          BorderRadius.circular(isLandscape ? 8.0 : 7.r),
+                      borderRadius: BorderRadius.circular(
+                        isLandscape ? 8.0 : 7.r,
+                      ),
                       onPressed: () => onAcceptInvitation(inv.id),
                     ),
                 ],

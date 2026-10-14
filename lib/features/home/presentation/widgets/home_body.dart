@@ -68,11 +68,11 @@ class HomeBody extends StatelessWidget {
                           neededForNext: (user?.neededForNext ?? 0) > 0
                               ? user!.neededForNext
                               : 100,
-                          xpProgress:
-                              ((user?.progressPercent ?? 0) / 100).clamp(
-                            0.0,
-                            1.0,
-                          ),
+                          xpProgress: ((user?.progressPercent ?? 0) / 100)
+                              .clamp(
+                                0.0,
+                                1.0,
+                              ),
                           avatarUrl: user?.avatarUrl,
                           onProfilePressed: () =>
                               PlayerInfoDialog.show(context),

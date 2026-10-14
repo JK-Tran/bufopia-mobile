@@ -154,8 +154,7 @@ class WordChainResultDialog extends StatelessWidget {
     // Xây dựng danh sách badges cho Player 2
     final p2Badges = <Widget>[
       DuelBadgeChip.rival(),
-      if (!isWinner)
-        DuelBadgeChip.rival(text: 'Dẫn đầu lượt luyện'),
+      if (!isWinner) DuelBadgeChip.rival(text: 'Dẫn đầu lượt luyện'),
     ];
 
     final p1Card = DuelPlayerSummaryCard(
@@ -226,8 +225,8 @@ class WordChainResultDialog extends StatelessWidget {
                       isWinner ? '🎉 CHIẾN THẮNG!' : '😢 KẾT THÚC VÁN ĐẤU',
                       color: isWinner
                           ? (isPaper
-                              ? AppColors.paperGreenDark
-                              : AppColors.green)
+                                ? AppColors.paperGreenDark
+                                : AppColors.green)
                           : AppColors.red,
                       fontWeight: FontWeight.w800,
                       fontSize: 18.sp,
