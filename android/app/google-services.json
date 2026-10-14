@@ -22,6 +22,14 @@
           }
         },
         {
+          "client_id": "350275604107-fjk5in274n4jvr7kmhndkig5tr0gi7mf.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.app.bufopia",
+            "certificate_hash": "d9f14a5dd61cc7716471e9b3b3f7fbbff7d5b240"
+          }
+        },
+        {
           "client_id": "350275604107-pgh20l2igr49cdt94hj83l5b2mn36ivd.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {

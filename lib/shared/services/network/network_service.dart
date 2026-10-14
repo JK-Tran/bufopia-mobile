@@ -1,13 +1,16 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:injectable/injectable.dart';
-import 'package:internet_connection_checker/internet_connection_checker.dart';
 import 'package:rxdart/rxdart.dart';
 
 /// Interface kiểm tra và theo dõi trạng thái kết nối mạng
 /// chuẩn Clean Architecture
 abstract class NetworkService {
+  /// Trạng thái kết nối nhanh trong bộ nhớ (O(1)), không làm nghẽn API
+  bool get isConnectedFast;
+
   /// Kiểm tra tức thời thiết bị có thực sự ra được Internet hay không
   Future<bool> get isConnected;
 
@@ -21,54 +24,38 @@ abstract class NetworkService {
 
 @LazySingleton(as: NetworkService)
 class NetworkInfoImpl implements NetworkService {
-  NetworkInfoImpl()
-    : _connectivity = Connectivity(),
-      _connectionChecker = InternetConnectionChecker.createInstance(
-        checkTimeout: const Duration(seconds: 2),
-        checkInterval: const Duration(seconds: 3),
-      ) {
+  NetworkInfoImpl(this._connectivity) {
     _initStream();
   }
 
+  /// Named constructor hỗ trợ inject custom connectivity cho unit test
   NetworkInfoImpl.withClients({
     required this._connectivity,
-    required this._connectionChecker,
   }) {
     _initStream();
   }
 
   final Connectivity _connectivity;
-  final InternetConnectionChecker _connectionChecker;
+
+  static const String _checkHost = 'google.com';
+  static const Duration _checkTimeout = Duration(seconds: 3);
 
   final BehaviorSubject<bool> _connectivitySubject =
       BehaviorSubject<bool>.seeded(true);
   StreamSubscription<dynamic>? _connectivitySubscription;
-  StreamSubscription<dynamic>? _checkerSubscription;
-  Timer? _pollingTimer;
 
   void _initStream() {
-    // 1. Kiểm tra trạng thái thực tế ngay khi khởi tạo
     _checkAndEmit();
 
-    // 2. Lắng nghe thay đổi phần cứng mạng từ Connectivity Plus
+    // Event-driven: Chỉ kiểm tra khi phần cứng mạng thay đổi (Wi-Fi/4G/Airplane)
+    // Debounce 500ms để triệt tiêu hiện tượng nhảy sóng chập chờn
     _connectivitySubscription = _connectivity.onConnectivityChanged
-        .debounceTime(const Duration(milliseconds: 300))
+        .debounceTime(const Duration(milliseconds: 500))
         .listen((_) => _checkAndEmit());
-
-    // 3. Lắng nghe thay đổi trạng thái từ InternetConnectionChecker
-    _checkerSubscription = _connectionChecker.onStatusChange.listen((status) {
-      final isOnline = status == InternetConnectionStatus.connected;
-      _updateStatus(isOnline);
-    });
   }
 
   Future<void> _checkAndEmit() async {
-    final results = await _connectivity.checkConnectivity();
-    if (results.contains(ConnectivityResult.none)) {
-      _updateStatus(false);
-      return;
-    }
-    final hasInternet = await _connectionChecker.hasConnection;
+    final hasInternet = await isConnected;
     _updateStatus(hasInternet);
   }
 
@@ -78,38 +65,27 @@ class NetworkInfoImpl implements NetworkService {
     if (_connectivitySubject.value != isOnline) {
       _connectivitySubject.add(isOnline);
     }
-
-    // Nếu đang mất mạng, kích hoạt polling kiểm tra mỗi 2s để nhận diện
-    // ngay lập tức khi mạng được bật lại (đặc biệt hiệu quả trên máy ảo)
-    if (!isOnline) {
-      _startPolling();
-    } else {
-      _stopPolling();
-    }
-  }
-
-  void _startPolling() {
-    _pollingTimer?.cancel();
-    _pollingTimer = Timer.periodic(const Duration(seconds: 2), (_) async {
-      final hasInternet = await _connectionChecker.hasConnection;
-      if (hasInternet) {
-        _updateStatus(true);
-      }
-    });
-  }
-
-  void _stopPolling() {
-    _pollingTimer?.cancel();
-    _pollingTimer = null;
   }
 
   @override
+  bool get isConnectedFast => _connectivitySubject.value;
+
+  @override
   Future<bool> get isConnected async {
-    final results = await _connectivity.checkConnectivity();
-    if (results.contains(ConnectivityResult.none)) {
+    try {
+      final results = await _connectivity.checkConnectivity();
+      if (results.contains(ConnectivityResult.none) || results.isEmpty) {
+        return false;
+      }
+
+      // DNS lookup chuẩn của OS: tương thích 100% Android 10-15 & Private DNS
+      final lookup = await InternetAddress.lookup(
+        _checkHost,
+      ).timeout(_checkTimeout);
+      return lookup.isNotEmpty && lookup[0].rawAddress.isNotEmpty;
+    } on Object {
       return false;
     }
-    return _connectionChecker.hasConnection;
   }
 
   @override
@@ -119,11 +95,8 @@ class NetworkInfoImpl implements NetworkService {
   @override
   @disposeMethod
   void dispose() {
-    _stopPolling();
     _connectivitySubscription?.cancel();
     _connectivitySubscription = null;
-    _checkerSubscription?.cancel();
-    _checkerSubscription = null;
     _connectivitySubject.close();
   }
 }

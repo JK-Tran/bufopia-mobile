@@ -18,7 +18,7 @@ class ConnectivityInterceptor extends BaseInterceptor {
     RequestOptions options,
     RequestInterceptorHandler handler,
   ) async {
-    final isConnected = await _networkInfo.isConnected;
+    final isConnected = _networkInfo.isConnectedFast;
     if (!isConnected) {
       return handler.reject(
         DioException(
