@@ -557,6 +557,13 @@ class ChainChatMessageEvent extends SocketEvent {
   final num? time;
 }
 
+/// Lịch sử chat khi kết nối vào phòng Word Chain
+class ChainChatHistoryEvent extends SocketEvent {
+  const ChainChatHistoryEvent(this.messages);
+
+  final List<ChainChatMessageEvent> messages;
+}
+
 /// Thưởng kết thúc trận Word Chain từ Server
 class ChainSessionRewardEvent extends SocketEvent {
   const ChainSessionRewardEvent({

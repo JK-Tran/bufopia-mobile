@@ -14,7 +14,6 @@ import 'package:bufopia/features/word_chain/domain/usecases/get_bot_word_use_cas
 import 'package:bufopia/features/word_chain/domain/usecases/get_word_use_case.dart';
 import 'package:bufopia/features/word_chain/domain/usecases/observe_chain_game_use_case.dart';
 import 'package:bufopia/features/word_chain/domain/usecases/send_chain_away_use_case.dart';
-import 'package:bufopia/features/word_chain/domain/usecases/send_chain_chat_use_case.dart';
 import 'package:bufopia/features/word_chain/domain/usecases/send_chain_rematch_use_case.dart';
 import 'package:bufopia/features/word_chain/domain/usecases/send_chain_surrender_use_case.dart';
 import 'package:bufopia/features/word_chain/domain/usecases/send_chain_word_use_case.dart';
@@ -40,7 +39,6 @@ class WordChainBloc extends BaseBloc<WordChainEvent, WordChainState> {
     this._connectChainMatchmakeUseCase,
     this._connectChainRoomUseCase,
     this._sendChainWordUseCase,
-    this._sendChainChatUseCase,
     this._sendChainAwayUseCase,
     this._sendChainSurrenderUseCase,
     this._sendChainRematchUseCase,
@@ -52,7 +50,6 @@ class WordChainBloc extends BaseBloc<WordChainEvent, WordChainState> {
     on<_JoinRoom>(_onJoinRoom);
     on<_InputWordChanged>(_onInputWordChanged);
     on<_SubmitWord>(_onSubmitWord);
-    on<_SendChat>(_onSendChat);
     on<_Surrender>(_onSurrender);
     on<_AppAway>(_onAppAway);
     on<_RequestRematch>(_onRequestRematch);
@@ -75,7 +72,6 @@ class WordChainBloc extends BaseBloc<WordChainEvent, WordChainState> {
   final ConnectChainMatchmakeUseCase _connectChainMatchmakeUseCase;
   final ConnectChainRoomUseCase _connectChainRoomUseCase;
   final SendChainWordUseCase _sendChainWordUseCase;
-  final SendChainChatUseCase _sendChainChatUseCase;
   final SendChainAwayUseCase _sendChainAwayUseCase;
   final SendChainSurrenderUseCase _sendChainSurrenderUseCase;
   final SendChainRematchUseCase _sendChainRematchUseCase;
@@ -208,7 +204,7 @@ class WordChainBloc extends BaseBloc<WordChainEvent, WordChainState> {
     _StartOnlineMatchmake event,
     Emitter<WordChainState> emit,
   ) async {
-    emit(
+    safeEmit(
       state.copyWith(
         isLoading: true,
         mode: WordChainGameMode.online,
@@ -235,7 +231,7 @@ class WordChainBloc extends BaseBloc<WordChainEvent, WordChainState> {
         ),
       );
     } on Object catch (e) {
-      emit(
+      safeEmit(
         state.copyWith(
           isLoading: false,
           errorMessage: 'Lỗi kết nối tìm trận: $e',
@@ -248,7 +244,7 @@ class WordChainBloc extends BaseBloc<WordChainEvent, WordChainState> {
     _JoinRoom event,
     Emitter<WordChainState> emit,
   ) async {
-    emit(
+    safeEmit(
       state.copyWith(
         isLoading: true,
         mode: WordChainGameMode.room,
@@ -277,7 +273,7 @@ class WordChainBloc extends BaseBloc<WordChainEvent, WordChainState> {
         ),
       );
     } on Object catch (e) {
-      emit(
+      safeEmit(
         state.copyWith(
           isLoading: false,
           errorMessage: 'Lỗi vào phòng thi đấu: $e',
@@ -290,7 +286,7 @@ class WordChainBloc extends BaseBloc<WordChainEvent, WordChainState> {
     _InputWordChanged event,
     Emitter<WordChainState> emit,
   ) {
-    emit(state.copyWith(inputWord: event.word, rejectedReason: null));
+    safeEmit(state.copyWith(inputWord: event.word, rejectedReason: null));
   }
 
   static String _normalizeWord(String input) {
@@ -327,7 +323,7 @@ class WordChainBloc extends BaseBloc<WordChainEvent, WordChainState> {
 
     // 1. Kiểm tra định dạng từ: 2 - 32 ký tự chữ cái tiếng Anh
     if (!RegExp(r'^[a-z]{2,32}$').hasMatch(word)) {
-      emit(
+      safeEmit(
         state.copyWith(
           rejectedReason:
               'Từ phải gồm từ 2 đến 32 chữ cái và chỉ chứa ký tự chữ cái!',
@@ -340,7 +336,7 @@ class WordChainBloc extends BaseBloc<WordChainEvent, WordChainState> {
 
     // 2. Kiểm tra chữ cái bắt đầu nếu ván đấu đã có chữ cái yêu cầu
     if (requiredLetter.isNotEmpty && !word.startsWith(requiredLetter)) {
-      emit(
+      safeEmit(
         state.copyWith(
           rejectedReason:
               'Từ phải bắt đầu bằng chữ "${requiredLetter.toUpperCase()}"',
@@ -354,7 +350,7 @@ class WordChainBloc extends BaseBloc<WordChainEvent, WordChainState> {
       (used) => used.trim().toLowerCase() == word,
     );
     if (isUsed) {
-      emit(
+      safeEmit(
         state.copyWith(
           rejectedReason: 'Từ "$word" đã được dùng trước đó!',
         ),
@@ -646,7 +642,7 @@ class WordChainBloc extends BaseBloc<WordChainEvent, WordChainState> {
     final isNewMatchActive =
         newGameState.status == 'active' || newGameState.status == 'playing';
 
-    emit(
+    safeEmit(
       state.copyWith(
         isLoading: false,
         isCheckingWord: false,
@@ -714,14 +710,14 @@ class WordChainBloc extends BaseBloc<WordChainEvent, WordChainState> {
     _WordCheckingChanged event,
     Emitter<WordChainState> emit,
   ) {
-    emit(state.copyWith(isCheckingWord: event.isChecking));
+    safeEmit(state.copyWith(isCheckingWord: event.isChecking));
   }
 
   void _onWordRejected(
     _WordRejected event,
     Emitter<WordChainState> emit,
   ) {
-    emit(
+    safeEmit(
       state.copyWith(
         isCheckingWord: false,
         rejectedReason: event.penalty > 0
@@ -736,7 +732,7 @@ class WordChainBloc extends BaseBloc<WordChainEvent, WordChainState> {
     _RewardReceived event,
     Emitter<WordChainState> emit,
   ) {
-    emit(
+    safeEmit(
       state.copyWith(
         reward: event.reward,
         sessionId: (event.sessionId != null && event.sessionId!.isNotEmpty)
@@ -755,7 +751,7 @@ class WordChainBloc extends BaseBloc<WordChainEvent, WordChainState> {
     final readyList = event.readyPlayers;
     final isMyPending = readyList.length > mySeat && readyList[mySeat];
     final isRivalReady = readyList.length > rivalSeat && readyList[rivalSeat];
-    emit(
+    safeEmit(
       state.copyWith(
         isRematchPending: isMyPending,
         isRivalRematchReady: isRivalReady,
@@ -767,14 +763,14 @@ class WordChainBloc extends BaseBloc<WordChainEvent, WordChainState> {
     _ConnectionStateChanged event,
     Emitter<WordChainState> emit,
   ) {
-    emit(state.copyWith(connectionState: event.connectionState));
+    safeEmit(state.copyWith(connectionState: event.connectionState));
   }
 
   void _onErrorOccurred(
     _ErrorOccurred event,
     Emitter<WordChainState> emit,
   ) {
-    emit(
+    safeEmit(
       state.copyWith(
         isLoading: false,
         isCheckingWord: false,
@@ -798,12 +794,12 @@ class WordChainBloc extends BaseBloc<WordChainEvent, WordChainState> {
       final currentServerTime = now + (_serverTimeOffset ?? 0);
       final remainingMs = state.gameState.deadline! - currentServerTime;
       final remaining = (remainingMs / 1000).ceil().clamp(0, 20);
-      emit(state.copyWith(remainingSeconds: remaining));
+      safeEmit(state.copyWith(remainingSeconds: remaining));
       return;
     }
 
     if (state.remainingSeconds > 0) {
-      emit(state.copyWith(remainingSeconds: state.remainingSeconds - 1));
+      safeEmit(state.copyWith(remainingSeconds: state.remainingSeconds - 1));
     } else {
       if (state.mode == WordChainGameMode.bot && state.isMyTurn) {
         // Hết giờ trong lượt chơi với Bot: trừ mạng
@@ -840,7 +836,7 @@ class WordChainBloc extends BaseBloc<WordChainEvent, WordChainState> {
     _botThinkingTimer?.cancel();
     // Giữ socket mở để nhận session_reward trao thưởng từ server.
     // Socket sẽ được đóng an toàn khi rời màn hình (close()).
-    emit(
+    safeEmit(
       state.copyWith(
         isOpponentLeft: true,
         opponentLeftMessage: event.message ?? 'Đối thủ đã thoát khỏi trận đấu!',
@@ -848,22 +844,6 @@ class WordChainBloc extends BaseBloc<WordChainEvent, WordChainState> {
         isLoading: false,
       ),
     );
-  }
-
-  FutureOr<void> _onSendChat(
-    _SendChat event,
-    Emitter<WordChainState> emit,
-  ) {
-    if (state.mode != WordChainGameMode.bot) {
-      return runBlocCatching(
-        handleLoading: false,
-        action: () async {
-          await _sendChainChatUseCase.execute(
-            SendChainChatInput(event.message),
-          );
-        },
-      );
-    }
   }
 
   FutureOr<void> _onSurrender(
@@ -935,7 +915,7 @@ class WordChainBloc extends BaseBloc<WordChainEvent, WordChainState> {
       final sessionId = state.sessionId.isNotEmpty
           ? state.sessionId
           : (state.roomCode ?? state.gameState.revision.toString());
-      emit(state.copyWith(isRematchPending: true));
+      safeEmit(state.copyWith(isRematchPending: true));
       return runBlocCatching(
         handleLoading: false,
         action: () async {

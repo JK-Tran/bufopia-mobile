@@ -5,16 +5,15 @@ class WordChainSocialState {
     this.invitations = const [],
   });
 
-  final List<WordChainRival> recent;
-  final List<WordChainInvitation> invitations;
-
   factory WordChainSocialState.fromJson(Map<String, dynamic> json) {
     return WordChainSocialState(
-      recent: (json['recent'] as List<dynamic>?)
+      recent:
+          (json['recent'] as List<dynamic>?)
               ?.map((e) => WordChainRival.fromJson(e as Map<String, dynamic>))
               .toList() ??
           const [],
-      invitations: (json['invitations'] as List<dynamic>?)
+      invitations:
+          (json['invitations'] as List<dynamic>?)
               ?.map(
                 (e) => WordChainInvitation.fromJson(e as Map<String, dynamic>),
               )
@@ -22,6 +21,9 @@ class WordChainSocialState {
           const [],
     );
   }
+
+  final List<WordChainRival> recent;
+  final List<WordChainInvitation> invitations;
 }
 
 class WordChainRival {
@@ -32,11 +34,6 @@ class WordChainRival {
     this.playedAt,
   });
 
-  final String uid;
-  final String name;
-  final String? avatar;
-  final int? playedAt;
-
   factory WordChainRival.fromJson(Map<String, dynamic> json) {
     return WordChainRival(
       uid: json['uid']?.toString() ?? '',
@@ -45,6 +42,11 @@ class WordChainRival {
       playedAt: (json['playedAt'] as num?)?.toInt(),
     );
   }
+
+  final String uid;
+  final String name;
+  final String? avatar;
+  final int? playedAt;
 }
 
 class WordChainInvitation {
@@ -52,24 +54,12 @@ class WordChainInvitation {
     required this.id,
     required this.fromUid,
     required this.fromName,
-    this.fromAvatar,
     required this.roomCode,
+    this.fromAvatar,
     this.activity = 'chain',
     this.language = 'vi',
     this.expiresAt = 0,
   });
-
-  final String id;
-  final String fromUid;
-  final String fromName;
-  final String? fromAvatar;
-  final String roomCode;
-  final String activity;
-  final String language;
-  final int expiresAt;
-
-  bool get isExpired =>
-      expiresAt > 0 && expiresAt <= DateTime.now().millisecondsSinceEpoch;
 
   factory WordChainInvitation.fromJson(Map<String, dynamic> json) {
     return WordChainInvitation(
@@ -83,4 +73,16 @@ class WordChainInvitation {
       expiresAt: (json['expiresAt'] as num?)?.toInt() ?? 0,
     );
   }
+
+  final String id;
+  final String fromUid;
+  final String fromName;
+  final String? fromAvatar;
+  final String roomCode;
+  final String activity;
+  final String language;
+  final int expiresAt;
+
+  bool get isExpired =>
+      expiresAt > 0 && expiresAt <= DateTime.now().millisecondsSinceEpoch;
 }

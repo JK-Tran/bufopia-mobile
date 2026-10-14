@@ -124,8 +124,8 @@ class WordChainScoreBoard extends StatelessWidget {
                         bottom: 0,
                         child: Container(
                           padding: EdgeInsets.symmetric(
-                            horizontal: 4.w,
-                            vertical: 1.h,
+                            horizontal: 5.w,
+                            vertical: 1.5.h,
                           ),
                           decoration: BoxDecoration(
                             color: activeBorderColor,
@@ -134,7 +134,7 @@ class WordChainScoreBoard extends StatelessWidget {
                           child: AppText.c1(
                             'LƯỢT',
                             color: AppColors.white,
-                            fontSize: 7.sp,
+                            fontSize: 8.sp,
                             fontWeight: FontWeight.w800,
                           ),
                         ),
@@ -272,8 +272,8 @@ class WordChainScoreBoard extends StatelessWidget {
                         bottom: 0,
                         child: Container(
                           padding: EdgeInsets.symmetric(
-                            horizontal: 4.w,
-                            vertical: 1.h,
+                            horizontal: 5.w,
+                            vertical: 1.5.h,
                           ),
                           decoration: BoxDecoration(
                             color: activeBorderColor,
@@ -282,7 +282,7 @@ class WordChainScoreBoard extends StatelessWidget {
                           child: AppText.c1(
                             'LƯỢT',
                             color: AppColors.white,
-                            fontSize: 7.sp,
+                            fontSize: 8.sp,
                             fontWeight: FontWeight.w800,
                           ),
                         ),

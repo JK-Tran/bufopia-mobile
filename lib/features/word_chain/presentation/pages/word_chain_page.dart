@@ -8,6 +8,7 @@ import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
 import 'package:bufopia/features/auth/domain/entities/user.dart';
 import 'package:bufopia/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:bufopia/features/chat/chat.dart';
 import 'package:bufopia/features/word_chain/presentation/bloc/word_chain_bloc.dart';
 import 'package:bufopia/features/word_chain/presentation/widgets/dialog/word_chain_result_dialog.dart';
 import 'package:bufopia/features/word_chain/presentation/widgets/dialog/word_chain_surrender_dialog.dart';
@@ -416,10 +417,11 @@ class _WordChainPageState extends State<WordChainPage>
             _isResultDialogShown = true;
             final isWinner = state.gameState.winner == state.myPlayerIndex;
             final myIdx = state.myPlayerIndex;
-            final p1Msgs = state.gameState.messages
+            final allMsgs = state.gameState.messages;
+            final p1Msgs = allMsgs
                 .where((m) => m.actor == myIdx)
                 .toList();
-            final p2Msgs = state.gameState.messages
+            final p2Msgs = allMsgs
                 .where((m) => m.actor != myIdx)
                 .toList();
             final p1Words = p1Msgs.length;
@@ -430,18 +432,62 @@ class _WordChainPageState extends State<WordChainPage>
             final p2Mistakes = state.gameState.mistakes.length > 1
                 ? state.gameState.mistakes[1 - myIdx]
                 : 0;
-            final p1Acc = (p1Words + p1Mistakes) == 0
-                ? '100%'
-                : '${((p1Words / (p1Words + p1Mistakes)) * 100).toInt()}%';
-            final p2Acc = (p2Words + p2Mistakes) == 0
-                ? '100%'
-                : '${((p2Words / (p2Words + p2Mistakes)) * 100).toInt()}%';
+            final p1Total = p1Words + p1Mistakes;
+            final p2Total = p2Words + p2Mistakes;
+            final p1Acc = p1Total == 0
+                ? '0%'
+                : '${((p1Words / p1Total) * 100).toInt()}%';
+            final p2Acc = p2Total == 0
+                ? '0%'
+                : '${((p2Words / p2Total) * 100).toInt()}%';
             final p1Lives = state.gameState.lives.isNotEmpty
                 ? (state.gameState.lives[myIdx] ?? 3)
                 : 3;
             final p2Lives = state.gameState.lives.length > 1
                 ? (state.gameState.lives[1 - myIdx] ?? 3)
                 : 3;
+
+            String computeFastestTime(int actorIndex) {
+              final msgs =
+                  allMsgs.where((m) => m.actor == actorIndex).toList();
+              if (msgs.isEmpty) return '—';
+
+              double? minSeconds;
+              for (var i = 0; i < allMsgs.length; i++) {
+                final m = allMsgs[i];
+                if (m.actor != actorIndex) continue;
+                if (m.time <= 0) continue;
+
+                if (m.time < 120) {
+                  final s = m.time.toDouble();
+                  if (minSeconds == null || s < minSeconds) {
+                    minSeconds = s;
+                  }
+                } else {
+                  final prevTime = (i > 0 && allMsgs[i - 1].time > 0)
+                      ? allMsgs[i - 1].time
+                      : state.gameState.turnStartedAt;
+                  if (prevTime > 0 && m.time > prevTime) {
+                    final s = (m.time - prevTime) / 1000.0;
+                    if (s > 0.3 && s < 60) {
+                      if (minSeconds == null || s < minSeconds) {
+                        minSeconds = s;
+                      }
+                    }
+                  }
+                }
+              }
+
+              if (minSeconds != null && minSeconds > 0) {
+                return '${minSeconds.toStringAsFixed(1)}s';
+              }
+              return '—';
+            }
+
+            final p1Fastest = computeFastestTime(myIdx);
+            final p2Fastest = computeFastestTime(1 - myIdx);
+            final p1Streak = p1Words.toString();
+            final p2Streak = p2Words.toString();
 
             WordChainResultDialog.show(
               context,
@@ -457,8 +503,12 @@ class _WordChainPageState extends State<WordChainPage>
               player2Lives: p2Lives,
               p1CorrectCount: p1Words,
               p2CorrectCount: p2Words,
+              p1FastestTime: p1Fastest,
+              p2FastestTime: p2Fastest,
               p1Accuracy: p1Acc,
               p2Accuracy: p2Acc,
+              p1Streak: p1Streak,
+              p2Streak: p2Streak,
               onRematch: () {
                 _lastMessageCount = 0;
                 _bloc.add(const WordChainEvent.requestRematch());
@@ -491,16 +541,39 @@ class _WordChainPageState extends State<WordChainPage>
 
                 // Nội dung bàn chơi Word Chain
                 SafeArea(
-                  child: BlocBuilder<WordChainBloc, WordChainState>(
-                    builder: (context, state) {
-                      return WordChainBody(
-                        state: state,
-                        myName: myName,
-                        myAvatar: myAvatar,
-                        onBackPressed: _handleBack,
-                        onPlayAudio: _handlePlayAudio,
+                  child: BlocProvider<ChatBloc>(
+                    create: (ctx) {
+                      final bloc = GetIt.instance.get<ChatBloc>();
+                      final wordChainState = ctx.read<WordChainBloc>().state;
+                      bloc.add(
+                        ChatEvent.playerIndexUpdated(
+                          myPlayerIndex: wordChainState.myPlayerIndex,
+                        ),
                       );
+                      return bloc;
                     },
+                    child: BlocListener<WordChainBloc, WordChainState>(
+                      listenWhen: (prev, current) =>
+                          prev.myPlayerIndex != current.myPlayerIndex,
+                      listener: (context, state) {
+                        context.read<ChatBloc>().add(
+                          ChatEvent.playerIndexUpdated(
+                            myPlayerIndex: state.myPlayerIndex,
+                          ),
+                        );
+                      },
+                      child: BlocBuilder<WordChainBloc, WordChainState>(
+                        builder: (context, state) {
+                          return WordChainBody(
+                            state: state,
+                            myName: myName,
+                            myAvatar: myAvatar,
+                            onBackPressed: _handleBack,
+                            onPlayAudio: _handlePlayAudio,
+                          );
+                        },
+                      ),
+                    ),
                   ),
                 ),
               ],

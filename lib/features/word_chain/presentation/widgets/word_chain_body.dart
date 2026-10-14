@@ -1,8 +1,8 @@
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
+import 'package:bufopia/features/chat/chat.dart';
 import 'package:bufopia/features/word_chain/presentation/bloc/word_chain_bloc.dart';
-import 'package:bufopia/features/word_chain/presentation/widgets/dialog/word_chain_chat_dialog.dart';
 import 'package:bufopia/features/word_chain/presentation/widgets/dialog/word_chain_surrender_dialog.dart';
 import 'package:bufopia/features/word_chain/presentation/widgets/word_chain_header.dart';
 import 'package:bufopia/features/word_chain/presentation/widgets/word_chain_input_bar.dart';
@@ -45,6 +45,15 @@ class _WordChainBodyState extends State<WordChainBody> {
     super.initState();
     _inputController = TextEditingController(text: widget.state.inputWord);
     _scrollController = ScrollController();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        context.read<ChatBloc>().add(
+          ChatEvent.playerIndexUpdated(
+            myPlayerIndex: widget.state.myPlayerIndex,
+          ),
+        );
+      }
+    });
   }
 
   @override
@@ -52,6 +61,13 @@ class _WordChainBodyState extends State<WordChainBody> {
     super.didUpdateWidget(oldWidget);
     if (widget.state.inputWord != _inputController.text) {
       _inputController.text = widget.state.inputWord;
+    }
+    if (oldWidget.state.myPlayerIndex != widget.state.myPlayerIndex) {
+      context.read<ChatBloc>().add(
+        ChatEvent.playerIndexUpdated(
+          myPlayerIndex: widget.state.myPlayerIndex,
+        ),
+      );
     }
     // Tự động cuộn xuống dưới khi có tin nhắn mới
     if (widget.state.gameState.messages.length >
@@ -80,12 +96,13 @@ class _WordChainBodyState extends State<WordChainBody> {
   }
 
   void _handleOpenChat() {
-    WordChainChatDialog.show(
+    ChatDialog.show(
       context,
       rivalName: widget.state.rivalName,
-      onSendMessage: (msg) {
-        context.read<WordChainBloc>().add(WordChainEvent.sendChat(msg));
-      },
+      rivalAvatar: widget.state.rivalAvatar,
+      isBotMode: widget.state.mode == WordChainGameMode.bot,
+      isWaiting: widget.state.gameState.status == 'waiting',
+      myPlayerIndex: widget.state.myPlayerIndex,
     );
   }
 
@@ -130,12 +147,19 @@ class _WordChainBodyState extends State<WordChainBody> {
         state.gameState.status == 'waiting';
     final showLoadingOverlay = state.isLoading || isWaitingForRival;
 
-    return Center(
-      child: ConstrainedBox(
-        constraints: BoxConstraints(maxWidth: 580.w),
-        child: Stack(
-          alignment: Alignment.center,
-          children: [
+    return BlocListener<ChatBloc, ChatState>(
+      listenWhen: (prev, current) =>
+          prev.unreadCount < current.unreadCount && current.unreadCount > 0,
+      listener: (context, chatState) {
+        // Phát âm thanh khi có tin nhắn mới từ đối thủ
+        context.read<AppBloc>().add(const AppEvent.clickSoundPlayed());
+      },
+      child: Center(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: 580.w),
+          child: Stack(
+            alignment: Alignment.center,
+            children: [
             Container(
               margin: EdgeInsets.symmetric(horizontal: 10.w, vertical: 8.h),
               decoration: BoxDecoration(
@@ -158,16 +182,26 @@ class _WordChainBodyState extends State<WordChainBody> {
               child: Column(
                 children: [
                   // 1. Header trên cùng
-                  WordChainHeader(
-                    mode: state.mode,
-                    roomCode: state.roomCode,
-                    relaxed: state.relaxed,
-                    onBackPressed: widget.onBackPressed,
-                    onChatPressed: _handleOpenChat,
-                    onSurrenderPressed: _handleOpenSurrender,
-                    onRematch: () {
-                      context.read<WordChainBloc>().add(
-                        const WordChainEvent.requestRematch(),
+                  BlocBuilder<ChatBloc, ChatState>(
+                    buildWhen: (prev, current) =>
+                        prev.unreadCount != current.unreadCount,
+                    builder: (context, chatState) {
+                      return WordChainHeader(
+                        mode: state.mode,
+                        roomCode: state.roomCode,
+                        relaxed: state.relaxed,
+                        unreadChatCount: chatState.unreadCount,
+                        onBackPressed: widget.onBackPressed,
+                        onChatPressed: _handleOpenChat,
+                        onSurrenderPressed: _handleOpenSurrender,
+                        onRematch: (state.mode == WordChainGameMode.bot ||
+                                state.isGameOver)
+                            ? () {
+                                context.read<WordChainBloc>().add(
+                                  const WordChainEvent.requestRematch(),
+                                );
+                              }
+                            : null,
                       );
                     },
                   ),
@@ -291,6 +325,7 @@ class _WordChainBodyState extends State<WordChainBody> {
           ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 }

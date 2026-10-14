@@ -1,5 +1,4 @@
 import 'package:bufopia/components/app_button.dart';
-import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
 import 'package:bufopia/features/word_chain/presentation/bloc/word_chain_bloc.dart';
@@ -14,6 +13,7 @@ class WordChainHeader extends StatelessWidget {
     this.mode = WordChainGameMode.bot,
     this.roomCode,
     this.relaxed = false,
+    this.unreadChatCount = 0,
     this.onBackPressed,
     this.onChatPressed,
     this.onSurrenderPressed,
@@ -23,10 +23,35 @@ class WordChainHeader extends StatelessWidget {
   final WordChainGameMode mode;
   final String? roomCode;
   final bool relaxed;
+  final int unreadChatCount;
   final VoidCallback? onBackPressed;
   final VoidCallback? onChatPressed;
   final VoidCallback? onSurrenderPressed;
   final VoidCallback? onRematch;
+
+  String _getSubtitleText() {
+    if (relaxed) return 'Thư giãn';
+    switch (mode) {
+      case WordChainGameMode.bot:
+        return 'Đấu với máy';
+      case WordChainGameMode.online:
+      case WordChainGameMode.room:
+        return 'Nối từ tự do - Học qua ngữ cảnh';
+    }
+  }
+
+  Color _getStatusDotColor(bool isPaper) {
+    if (relaxed) {
+      return AppColors.blue;
+    }
+    switch (mode) {
+      case WordChainGameMode.bot:
+        return AppColors.gold;
+      case WordChainGameMode.online:
+      case WordChainGameMode.room:
+        return isPaper ? AppColors.paperGreenDark : AppColors.green;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,28 +67,31 @@ class WordChainHeader extends StatelessWidget {
         ? AppColors.paperExtrusion
         : AppColors.grayExtrusion;
 
+    final dotColor = _getStatusDotColor(isPaper);
+    final subtitleText = _getSubtitleText();
+
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
       child: Row(
         children: [
           // 1. Nút quay lại tròn 3D
-          if (onBackPressed != null)
+          if (onBackPressed != null) ...[
             AppButton(
               onPressed: onBackPressed,
               shape: BoxShape.circle,
-              width: 36.r,
-              height: 36.r,
+              width: 32.r,
+              height: 32.r,
               backgroundColor: btnBg,
               borderColor: btnBorder,
               extrusionColor: btnExtrusion,
               child: Icon(
                 Icons.arrow_back_rounded,
-                size: 18.r,
+                size: 16.r,
                 color: titleColor,
               ),
             ),
-
-          SizedBox(width: 10.w),
+            SizedBox(width: 8.w),
+          ],
 
           // 2. Tiêu đề phòng nối từ + chế độ chơi
           Expanded(
@@ -71,35 +99,49 @@ class WordChainHeader extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
+                Text(
+                  'Phòng nối từ',
+                  style: TextStyle(
+                    color: titleColor,
+                    fontSize: 13.5.sp,
+                    fontWeight: FontWeight.w800,
+                    letterSpacing: -0.2,
+                  ),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
+                SizedBox(height: 1.5.h),
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
+                    Container(
+                      width: 5.r,
+                      height: 5.r,
+                      decoration: BoxDecoration(
+                        color: dotColor,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    SizedBox(width: 4.w),
                     Flexible(
-                      child: AppText.t2(
-                        'Phòng nối từ',
-                        color: titleColor,
-                        fontSize: 15.sp,
-                        fontWeight: FontWeight.w700,
+                      child: Text(
+                        subtitleText,
+                        style: TextStyle(
+                          color: subtitleColor,
+                          fontSize: 10.sp,
+                          fontWeight: FontWeight.w500,
+                        ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
                   ],
                 ),
-                SizedBox(height: 2.h),
-                Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    AppText.c1(
-                      'Nối từ tự do - Học qua ngữ cảnh ',
-                      color: subtitleColor,
-                      fontSize: 10.sp,
-                    ),
-                  ],
-                ),
               ],
             ),
           ),
+
+          SizedBox(width: 6.w),
 
           // 3. Các nút chức năng góc phải (Làm mới, Chat, Đầu hàng)
           Row(
@@ -109,14 +151,14 @@ class WordChainHeader extends StatelessWidget {
                 AppButton(
                   onPressed: onRematch,
                   shape: BoxShape.circle,
-                  width: 34.r,
-                  height: 34.r,
+                  width: 32.r,
+                  height: 32.r,
                   backgroundColor: btnBg,
                   borderColor: btnBorder,
                   extrusionColor: btnExtrusion,
                   child: Icon(
                     Icons.refresh_rounded,
-                    size: 17.r,
+                    size: 16.r,
                     color: isPaper
                         ? AppColors.paperGreenDark
                         : AppColors.primary,
@@ -125,19 +167,76 @@ class WordChainHeader extends StatelessWidget {
                 SizedBox(width: 6.w),
               ],
               if (onChatPressed != null && mode != WordChainGameMode.bot) ...[
-                AppButton(
-                  onPressed: onChatPressed,
-                  shape: BoxShape.circle,
-                  width: 34.r,
-                  height: 34.r,
-                  backgroundColor: btnBg,
-                  borderColor: btnBorder,
-                  extrusionColor: btnExtrusion,
-                  child: Icon(
-                    Icons.chat_bubble_outline_rounded,
-                    size: 16.r,
-                    color: titleColor,
-                  ),
+                Stack(
+                  clipBehavior: Clip.none,
+                  children: [
+                    AppButton(
+                      onPressed: onChatPressed,
+                      shape: BoxShape.circle,
+                      width: 32.r,
+                      height: 32.r,
+                      backgroundColor: isPaper
+                          ? AppColors.paperCardBg
+                          : const Color(0xFFFFFBEB),
+                      borderColor: const Color(0xFFF59E0B),
+                      extrusionColor: isPaper
+                          ? AppColors.paperExtrusion
+                          : const Color(0xFFD97706),
+                      child: Icon(
+                        Icons.chat_bubble_outline_rounded,
+                        size: 15.r,
+                        color: const Color(0xFF92400E),
+                      ),
+                    ),
+                    if (unreadChatCount > 0)
+                      Positioned(
+                        top: -3.r,
+                        right: -3.r,
+                        child: Container(
+                          padding: EdgeInsets.symmetric(
+                            horizontal: unreadChatCount > 9 ? 4.w : 0,
+                          ),
+                          constraints: BoxConstraints(
+                            minWidth: 16.r,
+                            minHeight: 16.r,
+                          ),
+                          decoration: BoxDecoration(
+                            color: const Color(0xFFDC2626),
+                            shape: unreadChatCount > 9
+                                ? BoxShape.rectangle
+                                : BoxShape.circle,
+                            borderRadius: unreadChatCount > 9
+                                ? BorderRadius.circular(8.r)
+                                : null,
+                            border: Border.all(
+                              color: isPaper
+                                  ? AppColors.paperCardBg
+                                  : AppColors.white,
+                              width: 1.5.w,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: const Color(
+                                  0xFFDC2626,
+                                ).withValues(alpha: 0.35),
+                                blurRadius: 3.r,
+                                offset: Offset(0, 1.h),
+                              ),
+                            ],
+                          ),
+                          alignment: Alignment.center,
+                          child: Text(
+                            unreadChatCount > 99 ? '99+' : '$unreadChatCount',
+                            style: TextStyle(
+                              color: AppColors.white,
+                              fontSize: 8.5.sp,
+                              fontWeight: FontWeight.w800,
+                              height: 1,
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
                 SizedBox(width: 6.w),
               ],
@@ -145,18 +244,18 @@ class WordChainHeader extends StatelessWidget {
                 AppButton(
                   onPressed: onSurrenderPressed,
                   shape: BoxShape.circle,
-                  width: 34.r,
-                  height: 34.r,
+                  width: 32.r,
+                  height: 32.r,
                   backgroundColor: isPaper
                       ? AppColors.paperCardBg
-                      : AppColors.red.withValues(alpha: 0.1),
-                  borderColor: AppColors.red.withValues(alpha: 0.35),
+                      : AppColors.red.withValues(alpha: 0.08),
+                  borderColor: AppColors.red.withValues(alpha: 0.3),
                   extrusionColor: isPaper
                       ? AppColors.paperExtrusion
-                      : AppColors.redDark.withValues(alpha: 0.3),
+                      : AppColors.redDark.withValues(alpha: 0.25),
                   child: Icon(
                     Icons.flag_outlined,
-                    size: 16.r,
+                    size: 15.r,
                     color: AppColors.red,
                   ),
                 ),

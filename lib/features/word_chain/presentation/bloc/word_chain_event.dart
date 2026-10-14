@@ -37,9 +37,6 @@ abstract class WordChainEvent with _$WordChainEvent {
   /// Bấm nút gửi từ
   const factory WordChainEvent.submitWord() = _SubmitWord;
 
-  /// Gửi emoji hoặc tin nhắn chat
-  const factory WordChainEvent.sendChat(String message) = _SendChat;
-
   /// Đầu hàng / Thoát trận
   const factory WordChainEvent.surrender() = _Surrender;
 

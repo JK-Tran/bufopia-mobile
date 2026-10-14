@@ -56,7 +56,7 @@ extension WordChainEventPatterns on WordChainEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _StartBotGame value)?  startBotGame,TResult Function( _StartOnlineMatchmake value)?  startOnlineMatchmake,TResult Function( _JoinRoom value)?  joinRoom,TResult Function( _InputWordChanged value)?  inputWordChanged,TResult Function( _SubmitWord value)?  submitWord,TResult Function( _SendChat value)?  sendChat,TResult Function( _Surrender value)?  surrender,TResult Function( _AppAway value)?  appAway,TResult Function( _RequestRematch value)?  requestRematch,TResult Function( _ChainStateUpdated value)?  chainStateUpdated,TResult Function( _WordCheckingChanged value)?  wordCheckingChanged,TResult Function( _WordRejected value)?  wordRejected,TResult Function( _RewardReceived value)?  rewardReceived,TResult Function( _RematchWaiting value)?  rematchWaiting,TResult Function( _ConnectionStateChanged value)?  connectionStateChanged,TResult Function( _WordChainOpponentLeft value)?  opponentLeft,TResult Function( _ErrorOccurred value)?  errorOccurred,TResult Function( _Tick value)?  tick,TResult Function( _BotTurn value)?  botTurn,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _StartBotGame value)?  startBotGame,TResult Function( _StartOnlineMatchmake value)?  startOnlineMatchmake,TResult Function( _JoinRoom value)?  joinRoom,TResult Function( _InputWordChanged value)?  inputWordChanged,TResult Function( _SubmitWord value)?  submitWord,TResult Function( _Surrender value)?  surrender,TResult Function( _AppAway value)?  appAway,TResult Function( _RequestRematch value)?  requestRematch,TResult Function( _ChainStateUpdated value)?  chainStateUpdated,TResult Function( _WordCheckingChanged value)?  wordCheckingChanged,TResult Function( _WordRejected value)?  wordRejected,TResult Function( _RewardReceived value)?  rewardReceived,TResult Function( _RematchWaiting value)?  rematchWaiting,TResult Function( _ConnectionStateChanged value)?  connectionStateChanged,TResult Function( _WordChainOpponentLeft value)?  opponentLeft,TResult Function( _ErrorOccurred value)?  errorOccurred,TResult Function( _Tick value)?  tick,TResult Function( _BotTurn value)?  botTurn,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _StartBotGame() when startBotGame != null:
@@ -64,8 +64,7 @@ return startBotGame(_that);case _StartOnlineMatchmake() when startOnlineMatchmak
 return startOnlineMatchmake(_that);case _JoinRoom() when joinRoom != null:
 return joinRoom(_that);case _InputWordChanged() when inputWordChanged != null:
 return inputWordChanged(_that);case _SubmitWord() when submitWord != null:
-return submitWord(_that);case _SendChat() when sendChat != null:
-return sendChat(_that);case _Surrender() when surrender != null:
+return submitWord(_that);case _Surrender() when surrender != null:
 return surrender(_that);case _AppAway() when appAway != null:
 return appAway(_that);case _RequestRematch() when requestRematch != null:
 return requestRematch(_that);case _ChainStateUpdated() when chainStateUpdated != null:
@@ -96,7 +95,7 @@ return botTurn(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _StartBotGame value)  startBotGame,required TResult Function( _StartOnlineMatchmake value)  startOnlineMatchmake,required TResult Function( _JoinRoom value)  joinRoom,required TResult Function( _InputWordChanged value)  inputWordChanged,required TResult Function( _SubmitWord value)  submitWord,required TResult Function( _SendChat value)  sendChat,required TResult Function( _Surrender value)  surrender,required TResult Function( _AppAway value)  appAway,required TResult Function( _RequestRematch value)  requestRematch,required TResult Function( _ChainStateUpdated value)  chainStateUpdated,required TResult Function( _WordCheckingChanged value)  wordCheckingChanged,required TResult Function( _WordRejected value)  wordRejected,required TResult Function( _RewardReceived value)  rewardReceived,required TResult Function( _RematchWaiting value)  rematchWaiting,required TResult Function( _ConnectionStateChanged value)  connectionStateChanged,required TResult Function( _WordChainOpponentLeft value)  opponentLeft,required TResult Function( _ErrorOccurred value)  errorOccurred,required TResult Function( _Tick value)  tick,required TResult Function( _BotTurn value)  botTurn,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _StartBotGame value)  startBotGame,required TResult Function( _StartOnlineMatchmake value)  startOnlineMatchmake,required TResult Function( _JoinRoom value)  joinRoom,required TResult Function( _InputWordChanged value)  inputWordChanged,required TResult Function( _SubmitWord value)  submitWord,required TResult Function( _Surrender value)  surrender,required TResult Function( _AppAway value)  appAway,required TResult Function( _RequestRematch value)  requestRematch,required TResult Function( _ChainStateUpdated value)  chainStateUpdated,required TResult Function( _WordCheckingChanged value)  wordCheckingChanged,required TResult Function( _WordRejected value)  wordRejected,required TResult Function( _RewardReceived value)  rewardReceived,required TResult Function( _RematchWaiting value)  rematchWaiting,required TResult Function( _ConnectionStateChanged value)  connectionStateChanged,required TResult Function( _WordChainOpponentLeft value)  opponentLeft,required TResult Function( _ErrorOccurred value)  errorOccurred,required TResult Function( _Tick value)  tick,required TResult Function( _BotTurn value)  botTurn,}){
 final _that = this;
 switch (_that) {
 case _StartBotGame():
@@ -104,8 +103,7 @@ return startBotGame(_that);case _StartOnlineMatchmake():
 return startOnlineMatchmake(_that);case _JoinRoom():
 return joinRoom(_that);case _InputWordChanged():
 return inputWordChanged(_that);case _SubmitWord():
-return submitWord(_that);case _SendChat():
-return sendChat(_that);case _Surrender():
+return submitWord(_that);case _Surrender():
 return surrender(_that);case _AppAway():
 return appAway(_that);case _RequestRematch():
 return requestRematch(_that);case _ChainStateUpdated():
@@ -135,7 +133,7 @@ return botTurn(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _StartBotGame value)?  startBotGame,TResult? Function( _StartOnlineMatchmake value)?  startOnlineMatchmake,TResult? Function( _JoinRoom value)?  joinRoom,TResult? Function( _InputWordChanged value)?  inputWordChanged,TResult? Function( _SubmitWord value)?  submitWord,TResult? Function( _SendChat value)?  sendChat,TResult? Function( _Surrender value)?  surrender,TResult? Function( _AppAway value)?  appAway,TResult? Function( _RequestRematch value)?  requestRematch,TResult? Function( _ChainStateUpdated value)?  chainStateUpdated,TResult? Function( _WordCheckingChanged value)?  wordCheckingChanged,TResult? Function( _WordRejected value)?  wordRejected,TResult? Function( _RewardReceived value)?  rewardReceived,TResult? Function( _RematchWaiting value)?  rematchWaiting,TResult? Function( _ConnectionStateChanged value)?  connectionStateChanged,TResult? Function( _WordChainOpponentLeft value)?  opponentLeft,TResult? Function( _ErrorOccurred value)?  errorOccurred,TResult? Function( _Tick value)?  tick,TResult? Function( _BotTurn value)?  botTurn,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _StartBotGame value)?  startBotGame,TResult? Function( _StartOnlineMatchmake value)?  startOnlineMatchmake,TResult? Function( _JoinRoom value)?  joinRoom,TResult? Function( _InputWordChanged value)?  inputWordChanged,TResult? Function( _SubmitWord value)?  submitWord,TResult? Function( _Surrender value)?  surrender,TResult? Function( _AppAway value)?  appAway,TResult? Function( _RequestRematch value)?  requestRematch,TResult? Function( _ChainStateUpdated value)?  chainStateUpdated,TResult? Function( _WordCheckingChanged value)?  wordCheckingChanged,TResult? Function( _WordRejected value)?  wordRejected,TResult? Function( _RewardReceived value)?  rewardReceived,TResult? Function( _RematchWaiting value)?  rematchWaiting,TResult? Function( _ConnectionStateChanged value)?  connectionStateChanged,TResult? Function( _WordChainOpponentLeft value)?  opponentLeft,TResult? Function( _ErrorOccurred value)?  errorOccurred,TResult? Function( _Tick value)?  tick,TResult? Function( _BotTurn value)?  botTurn,}){
 final _that = this;
 switch (_that) {
 case _StartBotGame() when startBotGame != null:
@@ -143,8 +141,7 @@ return startBotGame(_that);case _StartOnlineMatchmake() when startOnlineMatchmak
 return startOnlineMatchmake(_that);case _JoinRoom() when joinRoom != null:
 return joinRoom(_that);case _InputWordChanged() when inputWordChanged != null:
 return inputWordChanged(_that);case _SubmitWord() when submitWord != null:
-return submitWord(_that);case _SendChat() when sendChat != null:
-return sendChat(_that);case _Surrender() when surrender != null:
+return submitWord(_that);case _Surrender() when surrender != null:
 return surrender(_that);case _AppAway() when appAway != null:
 return appAway(_that);case _RequestRematch() when requestRematch != null:
 return requestRematch(_that);case _ChainStateUpdated() when chainStateUpdated != null:
@@ -174,15 +171,14 @@ return botTurn(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String uid,  bool relaxed,  String language)?  startBotGame,TResult Function( String uid,  String name,  String? avatar,  bool relaxed,  String language)?  startOnlineMatchmake,TResult Function( String roomCode,  String uid,  String name,  String? avatar,  bool relaxed,  String language)?  joinRoom,TResult Function( String word)?  inputWordChanged,TResult Function()?  submitWord,TResult Function( String message)?  sendChat,TResult Function()?  surrender,TResult Function()?  appAway,TResult Function()?  requestRematch,TResult Function( ChainStateUpdate update)?  chainStateUpdated,TResult Function( bool isChecking)?  wordCheckingChanged,TResult Function( int penalty)?  wordRejected,TResult Function( Reward reward,  String? sessionId)?  rewardReceived,TResult Function( List<bool> readyPlayers)?  rematchWaiting,TResult Function( SocketConnectionState connectionState)?  connectionStateChanged,TResult Function( String? message)?  opponentLeft,TResult Function( String message)?  errorOccurred,TResult Function()?  tick,TResult Function()?  botTurn,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String uid,  bool relaxed,  String language)?  startBotGame,TResult Function( String uid,  String name,  String? avatar,  bool relaxed,  String language)?  startOnlineMatchmake,TResult Function( String roomCode,  String uid,  String name,  String? avatar,  bool relaxed,  String language)?  joinRoom,TResult Function( String word)?  inputWordChanged,TResult Function()?  submitWord,TResult Function()?  surrender,TResult Function()?  appAway,TResult Function()?  requestRematch,TResult Function( ChainStateUpdate update)?  chainStateUpdated,TResult Function( bool isChecking)?  wordCheckingChanged,TResult Function( int penalty)?  wordRejected,TResult Function( Reward reward,  String? sessionId)?  rewardReceived,TResult Function( List<bool> readyPlayers)?  rematchWaiting,TResult Function( SocketConnectionState connectionState)?  connectionStateChanged,TResult Function( String? message)?  opponentLeft,TResult Function( String message)?  errorOccurred,TResult Function()?  tick,TResult Function()?  botTurn,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _StartBotGame() when startBotGame != null:
 return startBotGame(_that.uid,_that.relaxed,_that.language);case _StartOnlineMatchmake() when startOnlineMatchmake != null:
 return startOnlineMatchmake(_that.uid,_that.name,_that.avatar,_that.relaxed,_that.language);case _JoinRoom() when joinRoom != null:
 return joinRoom(_that.roomCode,_that.uid,_that.name,_that.avatar,_that.relaxed,_that.language);case _InputWordChanged() when inputWordChanged != null:
 return inputWordChanged(_that.word);case _SubmitWord() when submitWord != null:
-return submitWord();case _SendChat() when sendChat != null:
-return sendChat(_that.message);case _Surrender() when surrender != null:
+return submitWord();case _Surrender() when surrender != null:
 return surrender();case _AppAway() when appAway != null:
 return appAway();case _RequestRematch() when requestRematch != null:
 return requestRematch();case _ChainStateUpdated() when chainStateUpdated != null:
@@ -213,15 +209,14 @@ return botTurn();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String uid,  bool relaxed,  String language)  startBotGame,required TResult Function( String uid,  String name,  String? avatar,  bool relaxed,  String language)  startOnlineMatchmake,required TResult Function( String roomCode,  String uid,  String name,  String? avatar,  bool relaxed,  String language)  joinRoom,required TResult Function( String word)  inputWordChanged,required TResult Function()  submitWord,required TResult Function( String message)  sendChat,required TResult Function()  surrender,required TResult Function()  appAway,required TResult Function()  requestRematch,required TResult Function( ChainStateUpdate update)  chainStateUpdated,required TResult Function( bool isChecking)  wordCheckingChanged,required TResult Function( int penalty)  wordRejected,required TResult Function( Reward reward,  String? sessionId)  rewardReceived,required TResult Function( List<bool> readyPlayers)  rematchWaiting,required TResult Function( SocketConnectionState connectionState)  connectionStateChanged,required TResult Function( String? message)  opponentLeft,required TResult Function( String message)  errorOccurred,required TResult Function()  tick,required TResult Function()  botTurn,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String uid,  bool relaxed,  String language)  startBotGame,required TResult Function( String uid,  String name,  String? avatar,  bool relaxed,  String language)  startOnlineMatchmake,required TResult Function( String roomCode,  String uid,  String name,  String? avatar,  bool relaxed,  String language)  joinRoom,required TResult Function( String word)  inputWordChanged,required TResult Function()  submitWord,required TResult Function()  surrender,required TResult Function()  appAway,required TResult Function()  requestRematch,required TResult Function( ChainStateUpdate update)  chainStateUpdated,required TResult Function( bool isChecking)  wordCheckingChanged,required TResult Function( int penalty)  wordRejected,required TResult Function( Reward reward,  String? sessionId)  rewardReceived,required TResult Function( List<bool> readyPlayers)  rematchWaiting,required TResult Function( SocketConnectionState connectionState)  connectionStateChanged,required TResult Function( String? message)  opponentLeft,required TResult Function( String message)  errorOccurred,required TResult Function()  tick,required TResult Function()  botTurn,}) {final _that = this;
 switch (_that) {
 case _StartBotGame():
 return startBotGame(_that.uid,_that.relaxed,_that.language);case _StartOnlineMatchmake():
 return startOnlineMatchmake(_that.uid,_that.name,_that.avatar,_that.relaxed,_that.language);case _JoinRoom():
 return joinRoom(_that.roomCode,_that.uid,_that.name,_that.avatar,_that.relaxed,_that.language);case _InputWordChanged():
 return inputWordChanged(_that.word);case _SubmitWord():
-return submitWord();case _SendChat():
-return sendChat(_that.message);case _Surrender():
+return submitWord();case _Surrender():
 return surrender();case _AppAway():
 return appAway();case _RequestRematch():
 return requestRematch();case _ChainStateUpdated():
@@ -251,15 +246,14 @@ return botTurn();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String uid,  bool relaxed,  String language)?  startBotGame,TResult? Function( String uid,  String name,  String? avatar,  bool relaxed,  String language)?  startOnlineMatchmake,TResult? Function( String roomCode,  String uid,  String name,  String? avatar,  bool relaxed,  String language)?  joinRoom,TResult? Function( String word)?  inputWordChanged,TResult? Function()?  submitWord,TResult? Function( String message)?  sendChat,TResult? Function()?  surrender,TResult? Function()?  appAway,TResult? Function()?  requestRematch,TResult? Function( ChainStateUpdate update)?  chainStateUpdated,TResult? Function( bool isChecking)?  wordCheckingChanged,TResult? Function( int penalty)?  wordRejected,TResult? Function( Reward reward,  String? sessionId)?  rewardReceived,TResult? Function( List<bool> readyPlayers)?  rematchWaiting,TResult? Function( SocketConnectionState connectionState)?  connectionStateChanged,TResult? Function( String? message)?  opponentLeft,TResult? Function( String message)?  errorOccurred,TResult? Function()?  tick,TResult? Function()?  botTurn,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String uid,  bool relaxed,  String language)?  startBotGame,TResult? Function( String uid,  String name,  String? avatar,  bool relaxed,  String language)?  startOnlineMatchmake,TResult? Function( String roomCode,  String uid,  String name,  String? avatar,  bool relaxed,  String language)?  joinRoom,TResult? Function( String word)?  inputWordChanged,TResult? Function()?  submitWord,TResult? Function()?  surrender,TResult? Function()?  appAway,TResult? Function()?  requestRematch,TResult? Function( ChainStateUpdate update)?  chainStateUpdated,TResult? Function( bool isChecking)?  wordCheckingChanged,TResult? Function( int penalty)?  wordRejected,TResult? Function( Reward reward,  String? sessionId)?  rewardReceived,TResult? Function( List<bool> readyPlayers)?  rematchWaiting,TResult? Function( SocketConnectionState connectionState)?  connectionStateChanged,TResult? Function( String? message)?  opponentLeft,TResult? Function( String message)?  errorOccurred,TResult? Function()?  tick,TResult? Function()?  botTurn,}) {final _that = this;
 switch (_that) {
 case _StartBotGame() when startBotGame != null:
 return startBotGame(_that.uid,_that.relaxed,_that.language);case _StartOnlineMatchmake() when startOnlineMatchmake != null:
 return startOnlineMatchmake(_that.uid,_that.name,_that.avatar,_that.relaxed,_that.language);case _JoinRoom() when joinRoom != null:
 return joinRoom(_that.roomCode,_that.uid,_that.name,_that.avatar,_that.relaxed,_that.language);case _InputWordChanged() when inputWordChanged != null:
 return inputWordChanged(_that.word);case _SubmitWord() when submitWord != null:
-return submitWord();case _SendChat() when sendChat != null:
-return sendChat(_that.message);case _Surrender() when surrender != null:
+return submitWord();case _Surrender() when surrender != null:
 return surrender();case _AppAway() when appAway != null:
 return appAway();case _RequestRematch() when requestRematch != null:
 return requestRematch();case _ChainStateUpdated() when chainStateUpdated != null:
@@ -605,74 +599,6 @@ String toString() {
 
 
 
-
-/// @nodoc
-
-
-class _SendChat implements WordChainEvent {
-  const _SendChat(this.message);
-  
-
- final  String message;
-
-/// Create a copy of WordChainEvent
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$SendChatCopyWith<_SendChat> get copyWith => __$SendChatCopyWithImpl<_SendChat>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _SendChat&&(identical(other.message, message) || other.message == message));
-}
-
-
-@override
-int get hashCode {
-    return Object.hash(runtimeType,message);
-}
-
-@override
-String toString() {
-    return 'WordChainEvent.sendChat(message: $message)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class _$SendChatCopyWith<$Res> implements $WordChainEventCopyWith<$Res> {
-  factory _$SendChatCopyWith(_SendChat value, $Res Function(_SendChat) _then) = __$SendChatCopyWithImpl;
-@useResult
-$Res call({
- String message
-});
-
-
-
-
-}
-/// @nodoc
-class __$SendChatCopyWithImpl<$Res>
-    implements _$SendChatCopyWith<$Res> {
-  __$SendChatCopyWithImpl(this._self, this._then);
-
-  final _SendChat _self;
-  final $Res Function(_SendChat) _then;
-
-/// Create a copy of WordChainEvent
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
-  return _then(_SendChat(
-null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
-as String,
-  ));
-}
-
-
-}
 
 /// @nodoc
 

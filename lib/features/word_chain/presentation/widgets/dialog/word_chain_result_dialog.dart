@@ -24,14 +24,14 @@ class WordChainResultDialog extends StatelessWidget {
     this.player2Name = 'Đối thủ',
     this.player2Avatar,
     this.player2Lives = 3,
-    this.p1CorrectCount = 1,
-    this.p2CorrectCount = 1,
-    this.p1FastestTime = '3.9s',
-    this.p2FastestTime = '6.9s',
-    this.p1Accuracy = '100%',
-    this.p2Accuracy = '100%',
-    this.p1Streak = '1',
-    this.p2Streak = '1',
+    this.p1CorrectCount = 0,
+    this.p2CorrectCount = 0,
+    this.p1FastestTime = '—',
+    this.p2FastestTime = '—',
+    this.p1Accuracy = '0%',
+    this.p2Accuracy = '0%',
+    this.p1Streak = '0',
+    this.p2Streak = '0',
   });
 
   final bool isWinner;
@@ -68,14 +68,14 @@ class WordChainResultDialog extends StatelessWidget {
     String player2Name = 'Đối thủ',
     String? player2Avatar,
     int player2Lives = 3,
-    int p1CorrectCount = 1,
-    int p2CorrectCount = 1,
-    String p1FastestTime = '3.9s',
-    String p2FastestTime = '6.9s',
-    String p1Accuracy = '100%',
-    String p2Accuracy = '100%',
-    String p1Streak = '1',
-    String p2Streak = '1',
+    int p1CorrectCount = 0,
+    int p2CorrectCount = 0,
+    String p1FastestTime = '—',
+    String p2FastestTime = '—',
+    String p1Accuracy = '0%',
+    String p2Accuracy = '0%',
+    String p1Streak = '0',
+    String p2Streak = '0',
   }) {
     return showDialog<void>(
       context: context,
@@ -136,9 +136,9 @@ class WordChainResultDialog extends StatelessWidget {
     final isPaper = context.select<AppBloc, bool>((b) => b.state.isPaperTheme);
 
     // Xây dựng danh sách badges cho Player 1
-    final gainedXp = (reward != null && reward!.gainedXp > 0)
+    final gainedXp = reward != null
         ? reward!.gainedXp
-        : (isWinner ? 45 : 15);
+        : (p1CorrectCount > 0 ? (isWinner ? 45 : 15) : 0);
     final streakDays = (reward != null && reward!.streak > 0)
         ? reward!.streak
         : 2;
@@ -147,13 +147,15 @@ class WordChainResultDialog extends StatelessWidget {
       DuelBadgeChip.xp(gainedXp),
       DuelBadgeChip.streak(streakDays),
     ];
-    if (isWinner) {
+    if (isWinner && p1CorrectCount > 0) {
       p1Badges.add(DuelBadgeChip.winStreak(1));
     }
 
     // Xây dựng danh sách badges cho Player 2
     final p2Badges = <Widget>[
       DuelBadgeChip.rival(),
+      if (!isWinner)
+        DuelBadgeChip.rival(text: 'Dẫn đầu lượt luyện'),
     ];
 
     final p1Card = DuelPlayerSummaryCard(
@@ -195,9 +197,9 @@ class WordChainResultDialog extends StatelessWidget {
         insetPadding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 16.h),
         child: Center(
           child: ConstrainedBox(
-            constraints: BoxConstraints(maxWidth: 680.w),
+            constraints: BoxConstraints(maxWidth: 420.w),
             child: Container(
-              padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 14.h),
+              padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 12.h),
               decoration: BoxDecoration(
                 color: isPaper ? AppColors.paperCardBg : Colors.white,
                 borderRadius: BorderRadius.circular(24.r),
@@ -215,64 +217,69 @@ class WordChainResultDialog extends StatelessWidget {
                   ),
                 ],
               ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  // Tiêu đề trận đấu
-                  AppText.h1(
-                    isWinner ? '🎉 CHIẾN THẮNG!' : '😢 KẾT THÚC VÁN ĐẤU',
-                    color: isWinner
-                        ? (isPaper ? AppColors.paperGreenDark : AppColors.green)
-                        : AppColors.red,
-                    fontWeight: FontWeight.w800,
-                    fontSize: 18.sp,
-                  ),
-                  SizedBox(height: 3.h),
-                  Text(
-                    _getReasonText(),
-                    style: TextStyle(
-                      color: isPaper
-                          ? AppColors.paperTextMedium
-                          : const Color(0xFF757575),
-                      fontSize: 11.sp,
-                      fontWeight: FontWeight.w600,
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Tiêu đề trận đấu
+                    AppText.h1(
+                      isWinner ? '🎉 CHIẾN THẮNG!' : '😢 KẾT THÚC VÁN ĐẤU',
+                      color: isWinner
+                          ? (isPaper
+                              ? AppColors.paperGreenDark
+                              : AppColors.green)
+                          : AppColors.red,
+                      fontWeight: FontWeight.w800,
+                      fontSize: 18.sp,
                     ),
-                  ),
-                  SizedBox(height: 14.h),
-
-                  // Khối đối đầu VS chuẩn giao diện Web
-                  DuelVersusResultView(
-                    player1Card: p1Card,
-                    player2Card: p2Card,
-                    isPaper: isPaper,
-                  ),
-
-                  SizedBox(height: 18.h),
-
-                  // Hàng nút: Về trang chủ & Chơi lại
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      AppButton.secondary(
-                        text: 'VỀ TRANG CHỦ',
-                        icon: const Icon(
-                          Icons.home_rounded,
-                          size: 16,
-                          color: Color(0xFF616161),
-                        ),
-                        width: 130.w,
-                        height: 38.h,
-                        fontSize: 12.sp,
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                          onBackHome();
-                        },
+                    SizedBox(height: 3.h),
+                    Text(
+                      _getReasonText(),
+                      style: TextStyle(
+                        color: isPaper
+                            ? AppColors.paperTextMedium
+                            : const Color(0xFF757575),
+                        fontSize: 11.sp,
+                        fontWeight: FontWeight.w600,
                       ),
-                      SizedBox(width: 12.w),
-                      _buildRematchButton(context),
-                    ],
-                  ),
-                ],
+                    ),
+                    SizedBox(height: 12.h),
+
+                    // Khối đối đầu VS bố cục dọc chuẩn mobile
+                    DuelVersusResultView(
+                      player1Card: p1Card,
+                      player2Card: p2Card,
+                      isPaper: isPaper,
+                      isVertical: true,
+                    ),
+
+                    SizedBox(height: 16.h),
+
+                    // Hàng nút: Về trang chủ & Chơi lại
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        AppButton.secondary(
+                          text: 'VỀ TRANG CHỦ',
+                          icon: const Icon(
+                            Icons.home_rounded,
+                            size: 16,
+                            color: Color(0xFF616161),
+                          ),
+                          width: 130.w,
+                          height: 38.h,
+                          fontSize: 12.sp,
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                            onBackHome();
+                          },
+                        ),
+                        SizedBox(width: 12.w),
+                        _buildRematchButton(context),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ),
           ),

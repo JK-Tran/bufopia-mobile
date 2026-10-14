@@ -60,6 +60,18 @@ import '../../features/challenge/domain/usecases/submit_social_invite_use_case.d
     as _i468;
 import '../../features/challenge/presentation/bloc/challenge_room_bloc.dart'
     as _i632;
+import '../../features/chat/data/datasources/chat_data_source.dart' as _i799;
+import '../../features/chat/data/mapper/chat_data_mapper.dart' as _i541;
+import '../../features/chat/data/repositories/chat_repository_impl.dart'
+    as _i504;
+import '../../features/chat/domain/repositories/chat_repository.dart' as _i420;
+import '../../features/chat/domain/usecases/get_chat_history_use_case.dart'
+    as _i129;
+import '../../features/chat/domain/usecases/get_chat_stream_use_case.dart'
+    as _i677;
+import '../../features/chat/domain/usecases/submit_chat_use_case.dart'
+    as _i1025;
+import '../../features/chat/presentation/bloc/chat_bloc.dart' as _i65;
 import '../../features/home/presentation/bloc/home_bloc.dart' as _i202;
 import '../../features/leaderboard/data/datasources/leaderboard_data_source.dart'
     as _i183;
@@ -208,6 +220,7 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i1003.SocialStateDataMapper>(
       () => const _i1003.SocialStateDataMapper(),
     );
+    gh.factory<_i541.ChatDataMapper>(() => const _i541.ChatDataMapper());
     gh.factory<_i502.LeaderboardPlayerDataMapper>(
       () => const _i502.LeaderboardPlayerDataMapper(),
     );
@@ -505,6 +518,10 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i876.GetLeaderboardUseCase>(
       () => _i876.GetLeaderboardUseCase(gh<_i655.LeaderboardRepository>()),
     );
+    gh.lazySingleton<_i799.ChatDataSource>(
+      () => _i799.ChatDataSourceImpl(gh<_i981.WordChainSocketService>()),
+      dispose: (i) => i.dispose(),
+    );
     gh.lazySingleton<_i571.WordChainRepository>(
       () => _i607.WordChainRepositoryImpl(
         gh<_i60.WordChainDataSource>(),
@@ -565,12 +582,33 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i440.ConnectChainMatchmakeUseCase>(),
         gh<_i434.ConnectChainRoomUseCase>(),
         gh<_i290.SendChainWordUseCase>(),
-        gh<_i235.SendChainChatUseCase>(),
         gh<_i881.SendChainAwayUseCase>(),
         gh<_i902.SendChainSurrenderUseCase>(),
         gh<_i443.SendChainRematchUseCase>(),
         gh<_i392.DisconnectChainUseCase>(),
         gh<_i966.ObserveChainGameUseCase>(),
+      ),
+    );
+    gh.lazySingleton<_i420.ChatRepository>(
+      () => _i504.ChatRepositoryImpl(
+        gh<_i799.ChatDataSource>(),
+        gh<_i541.ChatDataMapper>(),
+      ),
+    );
+    gh.lazySingleton<_i129.GetChatHistoryUseCase>(
+      () => _i129.GetChatHistoryUseCase(gh<_i420.ChatRepository>()),
+    );
+    gh.lazySingleton<_i677.GetChatStreamUseCase>(
+      () => _i677.GetChatStreamUseCase(gh<_i420.ChatRepository>()),
+    );
+    gh.lazySingleton<_i1025.SubmitChatUseCase>(
+      () => _i1025.SubmitChatUseCase(gh<_i420.ChatRepository>()),
+    );
+    gh.factory<_i65.ChatBloc>(
+      () => _i65.ChatBloc(
+        gh<_i1025.SubmitChatUseCase>(),
+        gh<_i677.GetChatStreamUseCase>(),
+        gh<_i129.GetChatHistoryUseCase>(),
       ),
     );
     return this;

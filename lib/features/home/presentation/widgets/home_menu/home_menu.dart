@@ -32,7 +32,7 @@ class HomeMenu extends StatelessWidget {
       HomeMenuItemData(
         title: 'Trắc nghiệm',
         subtitle: 'Chọn chủ đề hoặc đấu ngẫu nhiên',
-        buttonText: 'CHỌN ĐỀ',
+        buttonText: 'CHƠI NGAY',
         buttonColor: AppColors.menuChainGreen,
         buttonExtrusionColor: AppColors.menuChainGreenExtrusion,
         titleColor: AppColors.menuChainGreenTitle,
@@ -61,8 +61,8 @@ class HomeMenu extends StatelessWidget {
 
       // 3. Góc luyện tập (Ô dưới trái)
       HomeMenuItemData(
-        title: 'Luyện tập',
-        subtitle: 'Ôn từ yếu và rèn phản xạ ngôn ngữ',
+        title: 'Đoán từ khuyết',
+        subtitle: 'Đoán từ bí ẩn điền vào ô trống',
         buttonText: 'LUYỆN TẬP',
         buttonColor: AppColors.menuReviewPurple,
         buttonExtrusionColor: AppColors.menuReviewPurpleExtrusion,
@@ -77,8 +77,8 @@ class HomeMenu extends StatelessWidget {
 
       // 4. Sắp ra mắt (Ô dưới phải)
       HomeMenuItemData(
-        title: 'Chế độ mới',
-        subtitle: 'Tính năng mới đang được hoàn thiện',
+        title: 'Góc luyện tập',
+        subtitle: 'Ôn tập và nơi lưu trữ kiến thức ',
         buttonText: 'SẮP RA MẮT',
         buttonColor: AppColors.grayMedium,
         buttonExtrusionColor: AppColors.grayDark,

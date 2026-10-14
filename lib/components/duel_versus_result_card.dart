@@ -80,7 +80,7 @@ class DuelBadgeChip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 7.w, vertical: 3.h),
+      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.5.h),
       decoration: BoxDecoration(
         color: backgroundColor ?? const Color(0xFFF5F5F5),
         borderRadius: BorderRadius.circular(16.r),
@@ -103,16 +103,16 @@ class DuelBadgeChip extends StatelessWidget {
           if (icon != null) ...[
             Icon(
               icon,
-              size: 12.r,
+              size: 13.r,
               color: iconColor ?? const Color(0xFFFFA000),
             ),
-            SizedBox(width: 3.w),
+            SizedBox(width: 3.5.w),
           ],
           Text(
             label,
             style: TextStyle(
               color: textColor ?? const Color(0xFF424242),
-              fontSize: 9.5.sp,
+              fontSize: 10.5.sp,
               fontWeight: FontWeight.w800,
               letterSpacing: 0.1,
             ),
@@ -134,10 +134,10 @@ class DuelPlayerSummaryCard extends StatelessWidget {
     this.scoreText,
     this.lives = 3,
     this.maxLives = 3,
-    this.correctCount = '1 từ',
-    this.fastestTime = '3.9s',
-    this.accuracy = '100%',
-    this.streak = '1',
+    this.correctCount = '0 từ',
+    this.fastestTime = '—',
+    this.accuracy = '0%',
+    this.streak = '0',
     this.badges = const [],
     this.isPaper = false,
     this.width,
@@ -224,8 +224,8 @@ class DuelPlayerSummaryCard extends StatelessWidget {
         final cardContent = Container(
           width: width,
           padding: EdgeInsets.symmetric(
-            horizontal: isCompact ? 8.w : 14.w,
-            vertical: isCompact ? 8.h : 12.h,
+            horizontal: isCompact ? 8.w : 12.w,
+            vertical: isCompact ? 8.h : 10.h,
           ),
           decoration: BoxDecoration(
             color: cardBg,
@@ -415,21 +415,15 @@ class DuelPlayerSummaryCard extends StatelessWidget {
               ),
               SizedBox(height: isCompact ? 6.h : 8.h),
 
-              // 5. Danh sách huy hiệu chân thẻ (Badges row)
+              // 5. Danh sách huy hiệu chân thẻ (Badges)
               if (badges.isNotEmpty)
                 Center(
-                  child: FittedBox(
-                    fit: BoxFit.scaleDown,
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        for (int i = 0; i < badges.length; i++) ...[
-                          if (i > 0) SizedBox(width: 4.w),
-                          badges[i],
-                        ],
-                      ],
-                    ),
+                  child: Wrap(
+                    alignment: WrapAlignment.center,
+                    crossAxisAlignment: WrapCrossAlignment.center,
+                    spacing: 4.w,
+                    runSpacing: 4.h,
+                    children: badges,
                   ),
                 ),
             ],
@@ -500,11 +494,13 @@ class DuelVersusResultView extends StatelessWidget {
     required this.player2Card,
     super.key,
     this.isPaper = false,
+    this.isVertical,
   });
 
   final DuelPlayerSummaryCard player1Card;
   final DuelPlayerSummaryCard player2Card;
   final bool isPaper;
+  final bool? isVertical;
 
   Widget _buildVsBadge({required bool isCompact}) {
     final size = isCompact ? 28.r : 38.r;
@@ -543,7 +539,45 @@ class DuelVersusResultView extends StatelessWidget {
   Widget build(BuildContext context) {
     return LayoutBuilder(
       builder: (context, constraints) {
+        final useVertical = isVertical ?? (constraints.maxWidth < 520);
         final isCompact = constraints.maxWidth < 560;
+
+        if (useVertical) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              player1Card,
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 6.h),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        height: 1.h,
+                        color: isPaper
+                            ? AppColors.paperBorder.withValues(alpha: 0.6)
+                            : const Color(0xFFE0E0E0),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 10.w),
+                      child: _buildVsBadge(isCompact: true),
+                    ),
+                    Expanded(
+                      child: Container(
+                        height: 1.h,
+                        color: isPaper
+                            ? AppColors.paperBorder.withValues(alpha: 0.6)
+                            : const Color(0xFFE0E0E0),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              player2Card,
+            ],
+          );
+        }
 
         return Row(
           children: [
