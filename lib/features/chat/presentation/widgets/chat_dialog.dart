@@ -180,7 +180,7 @@ class _ChatDialogState extends State<ChatDialog> {
                         child: AppText.t2(
                           'Trò chuyện với $rivalDisplayName',
                           color: titleColor,
-                          fontSize: 15.sp,
+                          fontSize: 16.sp,
                           fontWeight: FontWeight.w700,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -222,8 +222,7 @@ class _ChatDialogState extends State<ChatDialog> {
                             'Tin nhắn ở đây không được tính là từ nối. '
                             'Đồng hồ ván đấu vẫn tiếp tục đếm.',
                             color: noteColor,
-                            fontSize: 11.sp,
-                            fontWeight: FontWeight.w500,
+                            fontSize: 12.sp,
                           ),
                         ),
                       ],
@@ -328,7 +327,7 @@ class _ChatDialogState extends State<ChatDialog> {
                             onSubmitted: (_) => _handleSend(),
                             style: TextStyle(
                               color: titleColor,
-                              fontSize: 13.sp,
+                              fontSize: 14.sp,
                             ),
                             decoration: InputDecoration(
                               counterText: '',
@@ -469,14 +468,14 @@ class _ChatDialogState extends State<ChatDialog> {
                   AppText.b1(
                     msg.text,
                     color: textColor,
-                    fontSize: 13.sp,
+                    fontSize: 14.sp,
                   ),
                   if (timeStr.isNotEmpty) ...[
                     SizedBox(height: 2.h),
                     AppText.c1(
                       timeStr,
                       color: timeColor,
-                      fontSize: 9.sp,
+                      fontSize: 10.sp,
                     ),
                   ],
                 ],

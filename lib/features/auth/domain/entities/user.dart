@@ -16,6 +16,9 @@ abstract class User with _$User {
     @Default(0) int currentLevelXp,
     @Default(100) int neededForNext,
     @Default(0.0) double progressPercent,
+    @Default(false) bool persisted,
+    @Default(false) bool nameConfigured,
+    @Default(false) bool nameResetRequired,
     DateTime? createdAt,
     DateTime? updatedAt,
   }) = _User;

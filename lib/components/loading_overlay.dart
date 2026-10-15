@@ -1,3 +1,4 @@
+import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class LoadingOverlay extends StatelessWidget {
@@ -6,7 +7,7 @@ class LoadingOverlay extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.black.withValues(alpha: .3),
+      color: AppColors.black.withValues(alpha: 0.3),
       alignment: Alignment.center,
       child: const CircularProgressIndicator(),
     );

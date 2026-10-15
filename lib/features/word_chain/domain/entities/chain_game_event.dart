@@ -14,11 +14,11 @@ abstract class ChainGameEvent with _$ChainGameEvent {
   const factory ChainGameEvent.wordRejected({required int penalty}) =
       _ChainGameEventWordRejected;
   const factory ChainGameEvent.reward({
-    required Reward reward,
+    @Default(Reward()) Reward reward,
     String? sessionId,
   }) = _ChainGameEventReward;
   const factory ChainGameEvent.rematchWaiting({
-    required List<bool> readyPlayers,
+    @Default([]) List<bool> readyPlayers,
   }) = _ChainGameEventRematchWaiting;
   const factory ChainGameEvent.opponentLeft([String? message]) =
       _ChainGameEventOpponentLeft;

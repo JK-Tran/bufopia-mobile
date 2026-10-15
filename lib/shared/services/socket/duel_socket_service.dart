@@ -62,6 +62,9 @@ class DuelSocketServiceImpl extends BaseSocketService
     super.firebaseAuthService,
   );
 
+  Map<String, dynamic>? _lastMatchmakeArgs;
+  Map<String, dynamic>? _lastRoomArgs;
+
   @override
   String get logTag => 'DuelSocketService';
 
@@ -73,7 +76,14 @@ class DuelSocketServiceImpl extends BaseSocketService
     String? name,
     String? avatar,
   }) async {
-    final effectiveToken = await resolveToken(token);
+    _lastMatchmakeArgs = {
+      'uid': uid,
+      'topic': topic,
+      'name': name,
+      'avatar': avatar,
+    };
+    _lastRoomArgs = null;
+    var effectiveToken = await resolveToken(token);
     String? ticket;
     try {
       ticket = await authDataSource.getSocketTicket(
@@ -87,13 +97,42 @@ class DuelSocketServiceImpl extends BaseSocketService
         name: logTag,
       );
     }
-    final effectiveTicket = (ticket != null && ticket.isNotEmpty)
-        ? ticket
-        : effectiveToken;
+
+    if (ticket == null || ticket.isEmpty) {
+      Log.d(
+        'Retrying getSocketTicket with force-refreshed token '
+        'for duel matchmake...',
+        name: logTag,
+      );
+      try {
+        effectiveToken = await resolveToken(null, forceRefresh: true);
+        ticket = await authDataSource.getSocketTicket(
+          uid: uid,
+          path: '/ws/matchmake',
+          token: effectiveToken,
+        );
+      } on Object catch (e) {
+        Log.e(
+          'Retry getSocketTicket failed for duel matchmake: $e',
+          name: logTag,
+        );
+      }
+    }
+
+    if (ticket == null || ticket.isEmpty) {
+      Log.e('Unable to obtain socket ticket for duel matchmake', name: logTag);
+      emitEvent(
+        const SocketErrorEvent(
+          message: 'Không thể khởi tạo vé kết nối máy chủ. Vui lòng thử lại.',
+        ),
+      );
+      updateState(SocketConnectionState.disconnected);
+      return;
+    }
 
     final url = SocketUrlBuilder.matchmakeWsUrl(
       uid: uid,
-      ticket: effectiveTicket,
+      ticket: ticket,
       topic: topic,
       name: name,
       avatar: avatar,
@@ -110,7 +149,15 @@ class DuelSocketServiceImpl extends BaseSocketService
     String? name,
     String? avatar,
   }) async {
-    final effectiveToken = await resolveToken(token);
+    _lastRoomArgs = {
+      'roomCode': roomCode,
+      'uid': uid,
+      'topic': topic,
+      'name': name,
+      'avatar': avatar,
+    };
+    _lastMatchmakeArgs = null;
+    var effectiveToken = await resolveToken(token);
     String? ticket;
     try {
       ticket = await authDataSource.getSocketTicket(
@@ -121,19 +168,81 @@ class DuelSocketServiceImpl extends BaseSocketService
     } on Object catch (e) {
       Log.e('Failed to get room socket ticket: $e', name: logTag);
     }
-    final effectiveTicket = (ticket != null && ticket.isNotEmpty)
-        ? ticket
-        : effectiveToken;
+
+    if (ticket == null || ticket.isEmpty) {
+      Log.d(
+        'Retrying getSocketTicket with force-refreshed token '
+        'for duel room $roomCode...',
+        name: logTag,
+      );
+      try {
+        effectiveToken = await resolveToken(null, forceRefresh: true);
+        ticket = await authDataSource.getSocketTicket(
+          uid: uid,
+          path: '/ws/room/$roomCode',
+          token: effectiveToken,
+        );
+      } on Object catch (e) {
+        Log.e('Retry getSocketTicket failed for duel room: $e', name: logTag);
+      }
+    }
+
+    if (ticket == null || ticket.isEmpty) {
+      Log.e(
+        'Unable to obtain socket ticket for duel room $roomCode',
+        name: logTag,
+      );
+      emitEvent(
+        const SocketErrorEvent(
+          message: 'Không thể khởi tạo vé kết nối phòng đấu. Vui lòng thử lại.',
+        ),
+      );
+      updateState(SocketConnectionState.disconnected);
+      return;
+    }
 
     final url = SocketUrlBuilder.roomWsUrl(
       roomCode: roomCode,
       uid: uid,
-      ticket: effectiveTicket,
+      ticket: ticket,
       topic: topic,
       name: name,
       avatar: avatar,
     );
     await connectUrl(url);
+  }
+
+  @override
+  Future<void> reconnect() async {
+    if (_lastRoomArgs != null) {
+      final args = _lastRoomArgs!;
+      await connectRoom(
+        roomCode: args['roomCode'] as String,
+        uid: args['uid'] as String,
+        topic: args['topic'] as String? ?? 'auto',
+        name: args['name'] as String?,
+        avatar: args['avatar'] as String?,
+      );
+      return;
+    }
+    if (_lastMatchmakeArgs != null) {
+      final args = _lastMatchmakeArgs!;
+      await connectMatchmake(
+        uid: args['uid'] as String,
+        topic: args['topic'] as String? ?? 'auto',
+        name: args['name'] as String?,
+        avatar: args['avatar'] as String?,
+      );
+      return;
+    }
+    await super.reconnect();
+  }
+
+  @override
+  Future<void> disconnect() async {
+    _lastMatchmakeArgs = null;
+    _lastRoomArgs = null;
+    await super.disconnect();
   }
 
   @override

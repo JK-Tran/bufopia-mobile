@@ -1,5 +1,5 @@
 import 'package:bufopia/components/app_button.dart';
-import 'package:bufopia/components/duel_versus_result_card.dart';
+import 'package:bufopia/components/app_result_card.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
@@ -66,17 +66,17 @@ class VocabularyResultDialog extends StatelessWidget {
         : 2;
 
     final p1Badges = <Widget>[
-      DuelBadgeChip.xp(gainedXp),
-      DuelBadgeChip.streak(streakDays),
+      AppResultBadgeChip.xp(gainedXp),
+      AppResultBadgeChip.streak(streakDays),
     ];
     if (reward != null && reward.winStreak > 0) {
-      p1Badges.add(DuelBadgeChip.winStreak(reward.winStreak));
+      p1Badges.add(AppResultBadgeChip.winStreak(reward.winStreak));
     }
 
     final p2Badges = <Widget>[
-      DuelBadgeChip.rival(text: p2Subtitle),
+      AppResultBadgeChip.rival(text: p2Subtitle),
       if (!isTie && !isP1Winner)
-        DuelBadgeChip.rival(text: 'Dẫn đầu lượt luyện'),
+        AppResultBadgeChip.rival(text: 'Dẫn đầu lượt luyện'),
     ];
 
     final totalQ = state.questions.isNotEmpty ? state.questions.length : 15;
@@ -88,7 +88,7 @@ class VocabularyResultDialog extends StatelessWidget {
         ? '100%'
         : '${((p2Correct / totalQ) * 100).toInt()}%';
 
-    final p1Card = DuelPlayerSummaryCard(
+    final p1Card = AppResultPlayerCard(
       name: player1Name,
       isLeader: isP1Winner,
       scoreText: '${state.player1Score} điểm',
@@ -99,7 +99,7 @@ class VocabularyResultDialog extends StatelessWidget {
       isPaper: isPaper,
     );
 
-    final p2Card = DuelPlayerSummaryCard(
+    final p2Card = AppResultPlayerCard(
       name: player2Name,
       avatarUrl: state.opponentAvatar,
       nameColor: const Color(0xFF1E88E5),
@@ -176,7 +176,7 @@ class VocabularyResultDialog extends StatelessWidget {
               SizedBox(height: sectionSpacing),
 
               // Khối thẻ đối đầu VS chuẩn giao diện Web
-              DuelVersusResultView(
+              AppResultCard(
                 player1Card: p1Card,
                 player2Card: p2Card,
                 isPaper: isPaper,
@@ -281,7 +281,7 @@ class VocabularyResultDialog extends StatelessWidget {
                         AppText.b2(
                           state.opponentLeftMessage ??
                               'Đối thủ đã thoát khỏi phòng',
-                          fontSize: isLandscape ? 11.0 : 11.sp,
+                          fontSize: isLandscape ? 12.0 : 12.sp,
                           fontWeight: FontWeight.w600,
                           color: AppColors.red,
                         ),
@@ -316,7 +316,7 @@ class VocabularyResultDialog extends StatelessWidget {
                         SizedBox(width: 6.w),
                         AppText.b2(
                           'Đang đợi đối thủ đồng ý tái đấu...',
-                          fontSize: isLandscape ? 11.0 : 11.sp,
+                          fontSize: isLandscape ? 12.0 : 12.sp,
                           fontWeight: FontWeight.w600,
                           color: AppColors.orange,
                         ),
@@ -348,7 +348,7 @@ class VocabularyResultDialog extends StatelessWidget {
                         SizedBox(width: 4.w),
                         AppText.b2(
                           'Đối thủ muốn tái đấu cùng bạn!',
-                          fontSize: isLandscape ? 11.0 : 11.sp,
+                          fontSize: isLandscape ? 12.0 : 12.sp,
                           fontWeight: FontWeight.w700,
                           color: AppColors.green,
                         ),
@@ -366,7 +366,6 @@ class VocabularyResultDialog extends StatelessWidget {
                         text: state.isOpponentLeft ? 'Về trang chủ' : 'Thoát',
                         height: btnHeight,
                         fontSize: btnFontSize,
-                        fontWeight: FontWeight.w700,
                         backgroundColor: isPaper
                             ? AppColors.paperSurface
                             : AppColors.white,
@@ -396,7 +395,6 @@ class VocabularyResultDialog extends StatelessWidget {
                               isLoading: state.isRematchRequested,
                               height: btnHeight,
                               fontSize: btnFontSize,
-                              fontWeight: FontWeight.w700,
                               backgroundColor: AppColors.paperGreen,
                               borderColor: AppColors.paperGreenBorder,
                               extrusionColor: AppColors.paperGreenExtrusion,

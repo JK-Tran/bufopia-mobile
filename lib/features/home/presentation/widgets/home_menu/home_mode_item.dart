@@ -78,7 +78,7 @@ class HomeModeItem extends StatelessWidget {
                 AppText.c1(
                   badgeText,
                   fontSize: 8.sp,
-                  fontWeight: FontWeight.w800,
+                  fontWeight: FontWeight.w700,
                   color: AppColors.white,
                 ),
               ],
@@ -101,7 +101,7 @@ class HomeModeItem extends StatelessWidget {
           // 3. Title
           AppText.t3(
             title,
-            fontSize: 11.sp,
+            fontSize: 12.sp,
             fontWeight: FontWeight.w700,
             color: AppColors.grayDark,
             textAlign: TextAlign.center,
@@ -141,7 +141,7 @@ class HomeModeItem extends StatelessWidget {
                   SizedBox(width: 3.w),
                   AppText.c1(
                     buttonText,
-                    fontSize: 9.sp,
+                    fontSize: 10.sp,
                     fontWeight: FontWeight.w700,
                     color: AppColors.white,
                     letterSpacing: 0.3,

@@ -22,6 +22,9 @@ class UserDataMapper extends BaseDataMapper<UserData, User> {
       currentLevelXp: data?.currentLevelXp ?? 0,
       neededForNext: data?.neededForNext ?? 100,
       progressPercent: data?.progressPercent ?? 0.0,
+      persisted: data?.persisted ?? false,
+      nameConfigured: data?.nameConfigured ?? false,
+      nameResetRequired: data?.nameResetRequired ?? false,
       createdAt: DateTimeUtils.parseOccurredAt(data?.createdAt),
       updatedAt: DateTimeUtils.parseOccurredAt(data?.updatedAt),
     );
@@ -40,6 +43,9 @@ class UserDataMapper extends BaseDataMapper<UserData, User> {
       currentLevelXp: entity?.currentLevelXp,
       neededForNext: entity?.neededForNext,
       progressPercent: entity?.progressPercent,
+      persisted: entity?.persisted,
+      nameConfigured: entity?.nameConfigured,
+      nameResetRequired: entity?.nameResetRequired,
       createdAt: entity?.createdAt?.toIso8601String(),
       updatedAt: entity?.updatedAt?.toIso8601String(),
     );

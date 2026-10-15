@@ -1,4 +1,5 @@
 import 'package:bufopia/components/app_button.dart';
+import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
 import 'package:bufopia/features/word_chain/presentation/bloc/word_chain_bloc.dart';
@@ -99,24 +100,22 @@ class WordChainHeader extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
+                AppText.t3(
                   'Phòng nối từ',
-                  style: TextStyle(
-                    color: titleColor,
-                    fontSize: 13.5.sp,
-                    fontWeight: FontWeight.w800,
-                    letterSpacing: -0.2,
-                  ),
+                  color: titleColor,
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: -0.2,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                SizedBox(height: 1.5.h),
+                SizedBox(height: 2.h),
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Container(
-                      width: 5.r,
-                      height: 5.r,
+                      width: 6.r,
+                      height: 6.r,
                       decoration: BoxDecoration(
                         color: dotColor,
                         shape: BoxShape.circle,
@@ -124,13 +123,11 @@ class WordChainHeader extends StatelessWidget {
                     ),
                     SizedBox(width: 4.w),
                     Flexible(
-                      child: Text(
+                      child: AppText.c1(
                         subtitleText,
-                        style: TextStyle(
-                          color: subtitleColor,
-                          fontSize: 10.sp,
-                          fontWeight: FontWeight.w500,
-                        ),
+                        color: subtitleColor,
+                        fontSize: 10.sp,
+                        fontWeight: FontWeight.w500,
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -225,14 +222,11 @@ class WordChainHeader extends StatelessWidget {
                             ],
                           ),
                           alignment: Alignment.center,
-                          child: Text(
+                          child: AppText.c1(
                             unreadChatCount > 99 ? '99+' : '$unreadChatCount',
-                            style: TextStyle(
-                              color: AppColors.white,
-                              fontSize: 8.5.sp,
-                              fontWeight: FontWeight.w800,
-                              height: 1,
-                            ),
+                            color: AppColors.white,
+                            fontSize: 10.sp,
+                            fontWeight: FontWeight.w700,
                           ),
                         ),
                       ),

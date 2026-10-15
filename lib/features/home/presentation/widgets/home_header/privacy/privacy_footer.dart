@@ -31,7 +31,6 @@ class PrivacyFooter extends StatelessWidget {
         backgroundColor: bg,
         extrusionColor: extrusion,
         fontSize: 12,
-        fontWeight: FontWeight.w700,
         borderRadius: BorderRadius.circular(10.r),
         padding: EdgeInsets.symmetric(vertical: 6.h),
         onPressed: onConfirm,

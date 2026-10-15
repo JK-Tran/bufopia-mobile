@@ -431,10 +431,10 @@ as int,
 
 
 class _ChainGameEventReward implements ChainGameEvent {
-  const _ChainGameEventReward({required this.reward, this.sessionId});
+  const _ChainGameEventReward({this.reward = const Reward(), this.sessionId});
   
 
- final  Reward reward;
+@JsonKey() final  Reward reward;
  final  String? sessionId;
 
 /// Create a copy of ChainGameEvent
@@ -510,11 +510,11 @@ $RewardCopyWith<$Res> get reward {
 
 
 class _ChainGameEventRematchWaiting implements ChainGameEvent {
-  const _ChainGameEventRematchWaiting({required  List<bool> readyPlayers}): _readyPlayers = readyPlayers;
+  const _ChainGameEventRematchWaiting({ List<bool> readyPlayers = const []}): _readyPlayers = readyPlayers;
   
 
  final  List<bool> _readyPlayers;
- List<bool> get readyPlayers {
+@JsonKey() List<bool> get readyPlayers {
   if (_readyPlayers is EqualUnmodifiableListView) return _readyPlayers;
   // ignore: implicit_dynamic_type
   return EqualUnmodifiableListView(_readyPlayers);

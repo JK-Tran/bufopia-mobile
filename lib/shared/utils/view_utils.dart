@@ -1,4 +1,4 @@
-import 'package:bufopia/components/app_snack_bar.dart';
+import 'package:bufopia/components/app_toast.dart';
 import 'package:bufopia/shared/constants/duration_constants.dart';
 import 'package:bufopia/shared/utils/object_utils.dart';
 import 'package:flutter/material.dart';
@@ -7,16 +7,33 @@ import 'package:flutter/services.dart';
 class ViewUtils {
   const ViewUtils._();
 
+  static void showAppToast(
+    BuildContext context,
+    String message, {
+    AppToastType type = AppToastType.info,
+    Duration? duration,
+    Color? backgroundColor,
+  }) {
+    AppToast.show(
+      context,
+      message: message,
+      type: type,
+      duration: duration ?? DurationConstants.defaultSnackBarDuration,
+    );
+  }
+
+  /// @deprecated Sử dụng [showAppToast] thay thế
   static void showAppSnackBar(
     BuildContext context,
     String message, {
     Duration? duration,
     Color? backgroundColor,
   }) {
-    AppSnackBar.show(
+    showAppToast(
       context,
-      message: message,
-      duration: duration ?? DurationConstants.defaultSnackBarDuration,
+      message,
+      duration: duration,
+      backgroundColor: backgroundColor,
     );
   }
 

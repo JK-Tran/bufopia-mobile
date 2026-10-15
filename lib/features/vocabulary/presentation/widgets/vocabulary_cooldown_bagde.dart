@@ -1,3 +1,4 @@
+import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -83,15 +84,12 @@ class _VocabularyCooldownBagdeState extends State<VocabularyCooldownBagde>
             ),
           ],
         ),
-        child: Text(
+        child: AppText.c1(
           'Wait ${widget.seconds}s',
-          style: TextStyle(
-            fontSize: fontSize,
-            fontWeight: FontWeight.w800,
-            color: const Color(0xFF9E3A1A),
-            height: 1.1,
-            letterSpacing: 0.2,
-          ),
+          fontSize: fontSize,
+          fontWeight: FontWeight.w700,
+          color: const Color(0xFF9E3A1A),
+          letterSpacing: 0.2,
         ),
       ),
     );

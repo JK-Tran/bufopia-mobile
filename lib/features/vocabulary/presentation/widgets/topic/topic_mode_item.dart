@@ -23,6 +23,7 @@ class TopicModeItem extends StatelessWidget {
     required this.cardBorderColor,
     required this.cardShadowColor,
     this.isPaperTheme,
+    this.isLocked = false,
     this.onTap,
     super.key,
   });
@@ -39,6 +40,7 @@ class TopicModeItem extends StatelessWidget {
   final Color cardBorderColor;
   final Color cardShadowColor;
   final bool? isPaperTheme;
+  final bool isLocked;
   final VoidCallback? onTap;
 
   @override
@@ -47,9 +49,21 @@ class TopicModeItem extends StatelessWidget {
         isPaperTheme ??
         context.select<AppBloc, bool>((b) => b.state.isPaperTheme);
 
+    final effectiveBadgeColor = isLocked
+        ? (isPaper ? AppColors.paperAmberBadgeText : AppColors.orange)
+        : badgeColor;
+    final effectiveBadgeIcon = isLocked ? Icons.lock_rounded : badgeIcon;
+    final effectiveBadgeText = isLocked ? 'CẦN ĐĂNG NHẬP' : badgeText;
+    final effectiveButtonText = isLocked ? 'MỞ KHÓA' : buttonText;
+    final effectiveButtonIcon = isLocked ? Icons.lock_rounded : buttonIcon;
+
     return AppCard(
       backgroundColor: isPaper ? AppColors.paperCardBg : AppColors.white,
-      borderColor: isPaper ? AppColors.paperBorder : cardBorderColor,
+      borderColor: isLocked
+          ? (isPaper
+                ? AppColors.paperAmberBadgeBorder
+                : AppColors.orange.withValues(alpha: 0.5))
+          : (isPaper ? AppColors.paperBorder : cardBorderColor),
       borderWidth: 1.5.w,
       borderRadius: BorderRadius.circular(14.r),
       extrusionColor: isPaper ? AppColors.paperExtrusion : cardShadowColor,
@@ -72,26 +86,28 @@ class TopicModeItem extends StatelessWidget {
               vertical: 2.5.h,
             ),
             decoration: BoxDecoration(
-              color: isPaper ? badgeColor.withValues(alpha: 0.12) : badgeColor,
+              color: isPaper
+                  ? effectiveBadgeColor.withValues(alpha: 0.12)
+                  : effectiveBadgeColor,
               borderRadius: BorderRadius.circular(6.r),
               border: isPaper
-                  ? Border.all(color: badgeColor, width: 1.w)
+                  ? Border.all(color: effectiveBadgeColor, width: 1.w)
                   : null,
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(
-                  badgeIcon,
+                  effectiveBadgeIcon,
                   size: 11.r,
-                  color: isPaper ? badgeColor : AppColors.white,
+                  color: isPaper ? effectiveBadgeColor : AppColors.white,
                 ),
                 SizedBox(width: 3.w),
                 AppText.c1(
-                  badgeText,
+                  effectiveBadgeText,
                   fontSize: 10.sp,
                   fontWeight: FontWeight.w700,
-                  color: isPaper ? badgeColor : AppColors.white,
+                  color: isPaper ? effectiveBadgeColor : AppColors.white,
                 ),
               ],
             ),
@@ -108,7 +124,7 @@ class TopicModeItem extends StatelessWidget {
             errorBuilder: (context, error, stackTrace) => Icon(
               Icons.sports_esports_rounded,
               size: 36.r,
-              color: badgeColor,
+              color: effectiveBadgeColor,
             ),
           ),
 
@@ -131,11 +147,11 @@ class TopicModeItem extends StatelessWidget {
 
           // 4. Action Button with 3D Effect
           IgnorePointer(
-            child: isPaper
+            child: isLocked
                 ? AppButton(
-                    text: buttonText,
+                    text: effectiveButtonText,
                     icon: Icon(
-                      buttonIcon,
+                      effectiveButtonIcon,
                       size: 12.r,
                       color: AppColors.white,
                     ),
@@ -144,32 +160,55 @@ class TopicModeItem extends StatelessWidget {
                     padding: EdgeInsets.symmetric(horizontal: 6.w),
                     spacing: 3,
                     fontSize: 12.sp,
-                    fontWeight: FontWeight.w700,
-                    backgroundColor: AppColors.paperGreen,
-                    borderColor: AppColors.paperGreenBorder,
-                    extrusionColor: AppColors.paperGreenExtrusion,
+                    backgroundColor: isPaper
+                        ? const Color(0xFF8C98A4)
+                        : AppColors.neutralDisabled,
+                    extrusionColor: isPaper
+                        ? const Color(0xFF63707D)
+                        : AppColors.neutralDisabledExtrusion,
+                    borderColor: isPaper
+                        ? const Color(0xFFB0BAC3)
+                        : AppColors.neutralDisabled,
                     extrusionHeight: 2,
                     borderRadius: BorderRadius.circular(10.r),
                   )
-                : AppButton(
-                    text: buttonText,
-                    icon: Icon(
-                      buttonIcon,
-                      size: 12.r,
-                      color: AppColors.white,
-                    ),
-                    height: 28.h,
-                    width: double.infinity,
-                    padding: EdgeInsets.symmetric(horizontal: 6.w),
-                    spacing: 3,
-                    fontSize: 12.sp,
-                    fontWeight: FontWeight.w700,
-                    gradient: buttonGradient,
-                    borderColor: AppColors.white.withValues(alpha: 0.35),
-                    extrusionColor: buttonExtrusionColor,
-                    extrusionHeight: 2,
-                    borderRadius: BorderRadius.circular(10.r),
-                  ),
+                : (isPaper
+                      ? AppButton(
+                          text: buttonText,
+                          icon: Icon(
+                            buttonIcon,
+                            size: 12.r,
+                            color: AppColors.white,
+                          ),
+                          height: 28.h,
+                          width: double.infinity,
+                          padding: EdgeInsets.symmetric(horizontal: 6.w),
+                          spacing: 2,
+                          fontSize: 12.sp,
+                          backgroundColor: AppColors.paperGreen,
+                          borderColor: AppColors.paperGreenBorder,
+                          extrusionColor: AppColors.paperGreenExtrusion,
+                          extrusionHeight: 2,
+                          borderRadius: BorderRadius.circular(10.r),
+                        )
+                      : AppButton(
+                          text: buttonText,
+                          icon: Icon(
+                            buttonIcon,
+                            size: 12.r,
+                            color: AppColors.white,
+                          ),
+                          height: 28.h,
+                          width: double.infinity,
+                          padding: EdgeInsets.symmetric(horizontal: 6.w),
+                          spacing: 3,
+                          fontSize: 12.sp,
+                          gradient: buttonGradient,
+                          borderColor: AppColors.white.withValues(alpha: 0.35),
+                          extrusionColor: buttonExtrusionColor,
+                          extrusionHeight: 2,
+                          borderRadius: BorderRadius.circular(10.r),
+                        )),
           ),
         ],
       ),

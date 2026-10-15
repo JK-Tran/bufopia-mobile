@@ -4,7 +4,7 @@ import 'dart:math' as math;
 import 'package:bufopia/components/app_avatar.dart';
 import 'package:bufopia/components/app_button.dart';
 import 'package:bufopia/components/app_game_dialog.dart';
-import 'package:bufopia/components/app_snack_bar.dart';
+import 'package:bufopia/components/app_toast.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
@@ -259,7 +259,7 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
           _isCreatingRoom = false;
           _createdRoomCode = null;
         });
-        AppSnackBar.showError(
+        AppToast.showError(
           context,
           'Chưa nhận được xác nhận tạo phòng. Hãy thử lại.',
         );
@@ -301,7 +301,7 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
           _createdRoomCode = null;
           _isRoomCreated = false;
         });
-        AppSnackBar.showError(context, event.message);
+        AppToast.showError(context, event.message);
       }
     });
 
@@ -327,7 +327,7 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
       _createdRoomCode = null;
     });
 
-    AppSnackBar.showWarning(context, 'Đã hủy phòng thi đấu.');
+    AppToast.showWarning(context, 'Đã hủy phòng thi đấu.');
   }
 
   // ── 3. Xử lý Vào phòng (Guest - Nhập mã hoặc link) ───────────────
@@ -341,7 +341,7 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
     final validCode = match?.group(0);
 
     if (validCode == null || validCode.length < 6) {
-      AppSnackBar.showWarning(
+      AppToast.showWarning(
         context,
         'Vui lòng nhập đúng mã phòng gồm 6 chữ số!',
       );
@@ -378,12 +378,12 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
 
     if (!mounted) return;
     if (ok) {
-      AppSnackBar.showSuccess(
+      AppToast.showSuccess(
         context,
         'Đã mời ${rival.name}. Lời mời có hiệu lực trong 2 phút.',
       );
     } else {
-      AppSnackBar.showWarning(
+      AppToast.showWarning(
         context,
         'Chờ 10 giây trước khi gửi tiếp lời mời.',
       );
@@ -711,7 +711,6 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
             iconAfter: true,
             height: inputHeight,
             fontSize: fontSize,
-            fontWeight: FontWeight.w700,
             padding: EdgeInsets.symmetric(
               horizontal: isLandscape ? 16.0 : 14.w,
             ),
@@ -733,7 +732,6 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
             iconAfter: true,
             height: inputHeight,
             fontSize: fontSize,
-            fontWeight: FontWeight.w700,
             padding: EdgeInsets.symmetric(
               horizontal: isLandscape ? 16.0 : 14.w,
             ),
@@ -774,8 +772,7 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
               : AppColors.modeBotButtonExtrusion,
           extrusionHeight: 2,
           borderRadius: BorderRadius.circular(isLandscape ? 10.0 : 10.r),
-          fontSize: isLandscape ? 13.0 : 13.sp,
-          fontWeight: FontWeight.w700,
+          fontSize: isLandscape ? 12.0 : 12.sp,
           onPressed: _isCreatingRoom ? null : _handleCreateRoom,
         ),
       );
@@ -788,7 +785,7 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
         : AppColors.modeBotButtonDark;
 
     final btnHeight = isLandscape ? 30.0 : 30.h;
-    final btnFontSize = isLandscape ? 11.0 : 10.5.sp;
+    final btnFontSize = isLandscape ? 12.0 : 12.sp;
     final iconSize = isLandscape ? 13.0 : 13.r;
     final btnPad = EdgeInsets.symmetric(
       horizontal: isLandscape ? 12.0 : 10.w,
@@ -836,7 +833,7 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
               SizedBox(width: isLandscape ? 6.0 : 6.w),
               AppText.c1(
                 'CHỜ ĐỐI THỦ VÀO PHÒNG...',
-                fontSize: isLandscape ? 11.5 : 11.sp,
+                fontSize: isLandscape ? 12.0 : 12.sp,
                 fontWeight: FontWeight.w700,
                 color: statusColor,
               ),
@@ -849,7 +846,7 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
           GestureDetector(
             onTap: () {
               Clipboard.setData(ClipboardData(text: code));
-              AppSnackBar.showSuccess(
+              AppToast.showSuccess(
                 context,
                 'Đã sao chép mã phòng $code',
               );
@@ -879,7 +876,6 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
                   ),
                   height: btnHeight,
                   fontSize: btnFontSize,
-                  fontWeight: FontWeight.w700,
                   padding: btnPad,
                   borderRadius: BorderRadius.circular(isLandscape ? 8.0 : 8.r),
                   backgroundColor: AppColors.paperCardBg,
@@ -889,7 +885,7 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
                   extrusionHeight: 1.5,
                   onPressed: () {
                     Clipboard.setData(ClipboardData(text: code));
-                    AppSnackBar.showSuccess(
+                    AppToast.showSuccess(
                       context,
                       'Đã sao chép mã phòng $code',
                     );
@@ -910,7 +906,7 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
                   extrusionHeight: 1.5,
                   onPressed: () {
                     Clipboard.setData(ClipboardData(text: code));
-                    AppSnackBar.showSuccess(
+                    AppToast.showSuccess(
                       context,
                       'Đã sao chép mã phòng $code',
                     );
@@ -929,7 +925,6 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
                   ),
                   height: btnHeight,
                   fontSize: btnFontSize,
-                  fontWeight: FontWeight.w700,
                   padding: btnPad,
                   borderRadius: BorderRadius.circular(isLandscape ? 8.0 : 8.r),
                   backgroundColor: AppColors.paperCardBg,
@@ -943,7 +938,7 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
                         text: 'https://bufopia.pages.dev/?chain_room=$code',
                       ),
                     );
-                    AppSnackBar.showSuccess(
+                    AppToast.showSuccess(
                       context,
                       'Đã sao chép liên kết vào phòng!',
                     );
@@ -968,7 +963,7 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
                         text: 'https://bufopia.pages.dev/?chain_room=$code',
                       ),
                     );
-                    AppSnackBar.showSuccess(
+                    AppToast.showSuccess(
                       context,
                       'Đã sao chép liên kết vào phòng!',
                     );
@@ -991,7 +986,6 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
                 borderRadius: BorderRadius.circular(isLandscape ? 8.0 : 8.r),
                 height: btnHeight,
                 fontSize: btnFontSize,
-                fontWeight: FontWeight.w700,
                 padding: btnPad,
                 extrusionHeight: 1.5,
                 onPressed: _handleCancelRoom,
@@ -1007,7 +1001,7 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
     final boxW = isLandscape ? 34.0 : 32.w;
     final boxH = isLandscape ? 40.0 : 38.h;
     final boxRadius = BorderRadius.circular(isLandscape ? 8.0 : 7.r);
-    final fontSize = isLandscape ? 20.0 : 19.sp;
+    final fontSize = isLandscape ? 20.0 : 20.sp;
 
     return Container(
       width: boxW,
@@ -1038,7 +1032,7 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
         child: AppText.t1(
           digit,
           fontSize: fontSize,
-          fontWeight: FontWeight.w900,
+          fontWeight: FontWeight.w700,
           color: isPaper ? AppColors.paperTextDark : AppColors.blueDark,
         ),
       ),
@@ -1047,10 +1041,10 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
 
   Widget _buildInvitationsSection(bool isPaper, bool isLandscape) {
     final titleFontSize = isLandscape ? 12.0 : 12.sp;
-    final emptyFontSize = isLandscape ? 11.5 : 11.sp;
+    final emptyFontSize = isLandscape ? 12.0 : 12.sp;
     final textFontSize = isLandscape ? 12.0 : 12.sp;
     final btnHeight = isLandscape ? 28.0 : 28.h;
-    final btnFontSize = isLandscape ? 11.0 : 11.sp;
+    final btnFontSize = isLandscape ? 12.0 : 12.sp;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -1121,7 +1115,6 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
                     text: 'VÀO',
                     height: btnHeight,
                     fontSize: btnFontSize,
-                    fontWeight: FontWeight.w700,
                     padding: EdgeInsets.symmetric(
                       horizontal: isLandscape ? 12.0 : 10.w,
                     ),
@@ -1157,12 +1150,12 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
 
   Widget _buildRivalsSection(bool isPaper, bool isLandscape) {
     final titleFontSize = isLandscape ? 12.0 : 12.sp;
-    final emptyFontSize = isLandscape ? 11.5 : 11.sp;
-    final nameFontSize = isLandscape ? 13.0 : 12.5.sp;
-    final subFontSize = isLandscape ? 10.5 : 10.sp;
+    final emptyFontSize = isLandscape ? 12.0 : 12.sp;
+    final nameFontSize = isLandscape ? 12.0 : 12.sp;
+    final subFontSize = isLandscape ? 10.0 : 10.sp;
     final avatarSize = isLandscape ? 34.0 : 32.w;
     final btnHeight = isLandscape ? 28.0 : 28.h;
-    final btnFontSize = isLandscape ? 11.5 : 11.sp;
+    final btnFontSize = isLandscape ? 12.0 : 12.sp;
     final btnPad = EdgeInsets.symmetric(
       horizontal: isLandscape ? 14.0 : 12.w,
     );
@@ -1239,7 +1232,6 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
                           text: 'Mời',
                           height: btnHeight,
                           fontSize: btnFontSize,
-                          fontWeight: FontWeight.w700,
                           padding: btnPad,
                           borderRadius: BorderRadius.circular(
                             isLandscape ? 8.0 : 7.r,
@@ -1275,7 +1267,6 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
                         text: 'Mời',
                         height: btnHeight,
                         fontSize: btnFontSize,
-                        fontWeight: FontWeight.w700,
                         padding: btnPad,
                         borderRadius: BorderRadius.circular(
                           isLandscape ? 8.0 : 7.r,

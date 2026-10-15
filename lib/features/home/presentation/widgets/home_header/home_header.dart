@@ -11,7 +11,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class HomeHeader extends StatelessWidget {
   const HomeHeader({
     super.key,
-    this.userName = 'Alex',
+    this.userName = 'Bunny',
     this.userLevel = 1,
     this.userXp = 0,
     this.xpProgress = 0.0,

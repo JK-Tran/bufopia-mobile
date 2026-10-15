@@ -27,7 +27,7 @@ abstract class BaseSocketService {
   WebSocketChannel? _channel;
   // Subscription is managed across connection lifecycles and cancelled
   // in disconnect().
-  // ignore: cancel_subscriptions
+
   StreamSubscription<dynamic>? _channelSubscription;
   Timer? _heartbeatTimer;
 
@@ -54,11 +54,16 @@ abstract class BaseSocketService {
 
   /// Helper giải quyết token xác thực:
   /// (ưu tiên token truyền vào -> Firebase token -> Device secret)
-  Future<String> resolveToken(String? token) async {
-    if (token != null && token.isNotEmpty) {
+  Future<String> resolveToken(
+    String? token, {
+    bool forceRefresh = false,
+  }) async {
+    if (token != null && token.isNotEmpty && !forceRefresh) {
       return token;
     }
-    final idToken = await firebaseAuthService.getIdToken();
+    final idToken = await firebaseAuthService.getIdToken(
+      forceRefresh: forceRefresh,
+    );
     if (idToken != null && idToken.isNotEmpty) {
       return idToken;
     }
@@ -150,8 +155,9 @@ abstract class BaseSocketService {
 
   Future<void> _handleIncomingMessage(dynamic raw) async {
     try {
-      final isPong = raw is String && raw.contains('"pong"');
-      if (!isPong) {
+      final isHeartbeat =
+          raw is String && (raw.contains('"pong"') || raw.contains('"ping"'));
+      if (!isHeartbeat) {
         Log.d('WebSocket Received: $raw', name: logTag);
       }
       final Map<String, dynamic> json;
@@ -175,6 +181,9 @@ abstract class BaseSocketService {
       final type = json['type'] as String? ?? '';
       switch (type) {
         case 'pong':
+          return;
+        case 'ping':
+          sendRaw({'type': 'pong'});
           return;
         case 'error':
           final message = json['message'] as String? ?? 'Lỗi từ máy chủ';
@@ -235,8 +244,8 @@ abstract class BaseSocketService {
         name: logTag,
       );
       _reconnectTimer = Timer(Duration(seconds: delaySeconds), () {
-        if (!_isManuallyClosed && _lastConnectedUrl != null) {
-          connectUrl(_lastConnectedUrl!, isReconnecting: true);
+        if (!_isManuallyClosed) {
+          reconnect();
         }
       });
     } else {
@@ -246,6 +255,14 @@ abstract class BaseSocketService {
           message: 'Không thể kết nối lại với máy chủ. Vui lòng thử lại sau.',
         ),
       );
+    }
+  }
+
+  /// Hook thực hiện kết nối lại. Các lớp con có thể override để xin vé mới
+  /// (ticket) trước khi mở lại WebSocket connection.
+  Future<void> reconnect() async {
+    if (!_isManuallyClosed && _lastConnectedUrl != null) {
+      await connectUrl(_lastConnectedUrl!, isReconnecting: true);
     }
   }
 
@@ -334,6 +351,10 @@ abstract class BaseSocketService {
   }
 
   Future<void> dispose() async {
+    try {
+      await _channelSubscription?.cancel();
+    } on Object catch (_) {}
+    _channelSubscription = null;
     await disconnect();
     await _eventController.close();
     await _stateController.close();

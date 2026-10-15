@@ -1,4 +1,3 @@
-import 'package:bufopia/features/vocabulary/data/models/feedback_data.dart';
 import 'package:bufopia/features/vocabulary/domain/entities/feedback.dart';
 import 'package:bufopia/features/vocabulary/domain/repositories/vocabulary_repository.dart';
 import 'package:bufopia/shared/infrastructure/domain/usecase/future/base_future_use_case.dart';
@@ -40,14 +39,12 @@ class SendFeedbackUseCase
   @override
   Future<SendFeedbackOutput> buildUseCase(SendFeedbackInput input) async {
     final feedback = await _repository.sendFeedback(
-      FeedbackData(
-        uid: input.uid,
-        userName: input.userName,
-        category: input.category,
-        message: input.message,
-        contact: input.contact,
-        page: input.page,
-      ),
+      uid: input.uid,
+      userName: input.userName,
+      category: input.category,
+      message: input.message,
+      contact: input.contact,
+      page: input.page,
     );
     return SendFeedbackOutput(feedback);
   }

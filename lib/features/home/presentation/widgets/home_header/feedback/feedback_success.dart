@@ -90,7 +90,6 @@ class FeedbackSuccess extends StatelessWidget {
                   child: AppButton(
                     text: isWordReport ? 'XEM TỪ KHÁC' : 'GÓP Ý KHÁC',
                     fontSize: 12.sp,
-                    fontWeight: FontWeight.w700,
                     height: 38.h,
                     backgroundColor: AppColors.white,
                     textColor: AppColors.paperBadgeText,
@@ -105,7 +104,6 @@ class FeedbackSuccess extends StatelessWidget {
                   child: AppButton(
                     text: 'HOÀN TẤT',
                     fontSize: 12.sp,
-                    fontWeight: FontWeight.w700,
                     height: 38.h,
                     backgroundColor: AppColors.feedbackMossGreen,
                     borderColor: AppColors.feedbackMossGreenDark,

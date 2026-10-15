@@ -86,9 +86,9 @@ class _ChallengeRoomViewState extends State<ChallengeRoomView> {
     return BlocConsumer<ChallengeRoomBloc, ChallengeRoomState>(
       listener: (context, state) {
         if (state.errorMessage != null) {
-          AppSnackBar.showError(context, state.errorMessage!);
+          AppToast.showError(context, state.errorMessage!);
         } else if (state.successMessage != null) {
-          AppSnackBar.showSuccess(context, state.successMessage!);
+          AppToast.showSuccess(context, state.successMessage!);
         }
       },
       builder: (context, state) {

@@ -2,6 +2,8 @@ import 'package:bufopia/components/app_button.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
+import 'package:bufopia/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:bufopia/features/auth/presentation/widgets/dialog/app_login_prompt_dialog.dart';
 import 'package:bufopia/features/word_chain/presentation/widgets/word_chain_mode_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -60,6 +62,7 @@ class WordChainModeDialog extends StatelessWidget {
     final isPaper =
         isPaperTheme ??
         context.select<AppBloc, bool>((b) => b.state.isPaperTheme);
+    final isGuest = context.select<AuthBloc, bool>((b) => b.state.isGuest);
 
     final isLandscape =
         MediaQuery.of(context).orientation == Orientation.landscape;
@@ -216,6 +219,11 @@ class WordChainModeDialog extends StatelessWidget {
                     title: 'Luyện cùng online',
                     description: 'Ghép trận ngẫu nhiên cùng người chơi',
                     isPaperTheme: isPaper,
+                    isLocked: isGuest,
+                    onLockedTap: () => AppLoginPromptDialog.show(
+                      context,
+                      featureName: 'chế độ Nối Từ Online',
+                    ),
                     onTimedPressed: () {
                       Navigator.of(context).pop();
                       onOnlineTimed?.call();
@@ -235,6 +243,11 @@ class WordChainModeDialog extends StatelessWidget {
                     title: 'Mời bạn',
                     description: 'Tạo phòng riêng so tài cùng bạn bè',
                     isPaperTheme: isPaper,
+                    isLocked: isGuest,
+                    onLockedTap: () => AppLoginPromptDialog.show(
+                      context,
+                      featureName: 'chế độ Mời Bạn Phòng Riêng',
+                    ),
                     onTimedPressed: () {
                       Navigator.of(context).pop();
                       onInviteTimed?.call();

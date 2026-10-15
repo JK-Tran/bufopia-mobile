@@ -1,5 +1,5 @@
 import 'package:bufopia/components/app_button.dart';
-import 'package:bufopia/components/duel_versus_result_card.dart';
+import 'package:bufopia/components/app_result_card.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
@@ -144,20 +144,20 @@ class WordChainResultDialog extends StatelessWidget {
         : 2;
 
     final p1Badges = <Widget>[
-      DuelBadgeChip.xp(gainedXp),
-      DuelBadgeChip.streak(streakDays),
+      AppResultBadgeChip.xp(gainedXp),
+      AppResultBadgeChip.streak(streakDays),
     ];
     if (isWinner && p1CorrectCount > 0) {
-      p1Badges.add(DuelBadgeChip.winStreak(1));
+      p1Badges.add(AppResultBadgeChip.winStreak(1));
     }
 
     // Xây dựng danh sách badges cho Player 2
     final p2Badges = <Widget>[
-      DuelBadgeChip.rival(),
-      if (!isWinner) DuelBadgeChip.rival(text: 'Dẫn đầu lượt luyện'),
+      AppResultBadgeChip.rival(),
+      if (!isWinner) AppResultBadgeChip.rival(text: 'Dẫn đầu lượt luyện'),
     ];
 
-    final p1Card = DuelPlayerSummaryCard(
+    final p1Card = AppResultPlayerCard(
       name: player1Name,
       avatarUrl: player1Avatar,
       isLeader: isWinner,
@@ -170,7 +170,7 @@ class WordChainResultDialog extends StatelessWidget {
       isPaper: isPaper,
     );
 
-    final p2Card = DuelPlayerSummaryCard(
+    final p2Card = AppResultPlayerCard(
       name: player2Name,
       avatarUrl: player2Avatar,
       nameColor: const Color(0xFF1E88E5),
@@ -228,24 +228,21 @@ class WordChainResultDialog extends StatelessWidget {
                                 ? AppColors.paperGreenDark
                                 : AppColors.green)
                           : AppColors.red,
-                      fontWeight: FontWeight.w800,
+                      fontWeight: FontWeight.w700,
                       fontSize: 18.sp,
                     ),
                     SizedBox(height: 3.h),
-                    Text(
+                    AppText.c1(
                       _getReasonText(),
-                      style: TextStyle(
-                        color: isPaper
-                            ? AppColors.paperTextMedium
-                            : const Color(0xFF757575),
-                        fontSize: 11.sp,
-                        fontWeight: FontWeight.w600,
-                      ),
+                      color: isPaper
+                          ? AppColors.paperTextMedium
+                          : AppColors.grayMedium,
+                      fontSize: 12.sp,
                     ),
                     SizedBox(height: 12.h),
 
                     // Khối đối đầu VS bố cục dọc chuẩn mobile
-                    DuelVersusResultView(
+                    AppResultCard(
                       player1Card: p1Card,
                       player2Card: p2Card,
                       isPaper: isPaper,

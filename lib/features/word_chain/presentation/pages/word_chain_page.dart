@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:bufopia/components/app_button.dart';
 import 'package:bufopia/components/app_game_dialog.dart';
-import 'package:bufopia/components/app_snack_bar.dart';
+import 'package:bufopia/components/app_toast.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
@@ -172,7 +172,7 @@ class _WordChainPageState extends State<WordChainPage>
         if (Navigator.of(context).canPop()) {
           Navigator.of(context).pop();
         }
-        AppSnackBar.showWarning(
+        AppToast.showWarning(
           context,
           'Đối thủ đã thoát khỏi trận đấu!',
           title: 'TRẬN ĐẤU KẾT THÚC',
@@ -303,7 +303,7 @@ class _WordChainPageState extends State<WordChainPage>
                         color: isPaper
                             ? AppColors.paperAmberBadgeText
                             : AppColors.orangeDark,
-                        fontWeight: FontWeight.w800,
+                        fontWeight: FontWeight.w700,
                         fontSize: 14.sp,
                       ),
                     ],
@@ -322,7 +322,6 @@ class _WordChainPageState extends State<WordChainPage>
                   width: 180.w,
                   height: 38.h,
                   fontSize: 12.sp,
-                  fontWeight: FontWeight.w700,
                   backgroundColor: AppColors.paperGreen,
                   borderColor: AppColors.paperGreenBorder,
                   extrusionColor: AppColors.paperGreenExtrusion,
@@ -389,7 +388,7 @@ class _WordChainPageState extends State<WordChainPage>
               state.errorMessage!.isNotEmpty &&
               state.errorMessage != _lastErrorMessage) {
             _lastErrorMessage = state.errorMessage;
-            AppSnackBar.showError(context, state.errorMessage!);
+            AppToast.showError(context, state.errorMessage!);
           } else if (state.errorMessage == null) {
             _lastErrorMessage = null;
           }

@@ -5,15 +5,20 @@ import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-enum AppSnackBarType {
+enum AppToastType {
   success,
   error,
   warning,
   info,
 }
 
-class AppSnackBar {
-  const AppSnackBar._();
+/// Alias tương thích ngược cho AppToastType
+typedef AppSnackBarType = AppToastType;
+
+/// Hệ thống thông báo In-game Toast / Top HUD Banner nổi ở tầng cao nhất
+/// Dành cho các thông báo tức thời: tìm trận, mất kết nối, sao chép...
+class AppToast {
+  const AppToast._();
 
   static OverlayEntry? _currentEntry;
 
@@ -22,7 +27,7 @@ class AppSnackBar {
   static void show(
     BuildContext context, {
     required String message,
-    AppSnackBarType type = AppSnackBarType.info,
+    AppToastType type = AppToastType.info,
     String? title,
     Duration duration = const Duration(seconds: 2),
     String? actionLabel,
@@ -73,7 +78,7 @@ class AppSnackBar {
     show(
       context,
       message: message,
-      type: AppSnackBarType.success,
+      type: AppToastType.success,
       title: title,
       duration: duration,
       actionLabel: actionLabel,
@@ -95,7 +100,7 @@ class AppSnackBar {
     show(
       context,
       message: message,
-      type: AppSnackBarType.error,
+      type: AppToastType.error,
       title: title,
       duration: duration,
       actionLabel: actionLabel,
@@ -117,7 +122,7 @@ class AppSnackBar {
     show(
       context,
       message: message,
-      type: AppSnackBarType.warning,
+      type: AppToastType.warning,
       title: title,
       duration: duration,
       actionLabel: actionLabel,
@@ -150,7 +155,7 @@ class AppSnackBar {
   /// Tạo instance của SnackBar tiêu chuẩn nếu cần dùng cho Scaffold
   static SnackBar create({
     required String message,
-    AppSnackBarType type = AppSnackBarType.info,
+    AppToastType type = AppToastType.info,
     String? title,
     Duration duration = const Duration(seconds: 2),
     String? actionLabel,
@@ -210,7 +215,7 @@ class AppSnackBar {
                     AppText.t3(
                       title,
                       color: AppColors.white,
-                      fontWeight: FontWeight.w900,
+                      fontWeight: FontWeight.w700,
                       fontSize: 12.sp,
                     ),
                     SizedBox(height: 2.h),
@@ -242,7 +247,7 @@ class AppSnackBar {
                   child: AppText.c1(
                     actionLabel,
                     color: style.backgroundColor,
-                    fontWeight: FontWeight.w800,
+                    fontWeight: FontWeight.w700,
                     fontSize: 10.sp,
                   ),
                 ),
@@ -254,28 +259,28 @@ class AppSnackBar {
     );
   }
 
-  static _SnackBarConfig _getStyle(AppSnackBarType type) {
+  static _ToastConfig _getStyle(AppToastType type) {
     switch (type) {
-      case AppSnackBarType.success:
-        return const _SnackBarConfig(
+      case AppToastType.success:
+        return const _ToastConfig(
           backgroundColor: AppColors.green,
           extrusionColor: AppColors.greenDark,
           icon: Icons.check_circle_rounded,
         );
-      case AppSnackBarType.error:
-        return const _SnackBarConfig(
+      case AppToastType.error:
+        return const _ToastConfig(
           backgroundColor: AppColors.redDark,
           extrusionColor: AppColors.redDeep,
           icon: Icons.error_rounded,
         );
-      case AppSnackBarType.warning:
-        return const _SnackBarConfig(
+      case AppToastType.warning:
+        return const _ToastConfig(
           backgroundColor: AppColors.orangeDark,
           extrusionColor: AppColors.orangeDeep,
           icon: Icons.warning_rounded,
         );
-      case AppSnackBarType.info:
-        return const _SnackBarConfig(
+      case AppToastType.info:
+        return const _ToastConfig(
           backgroundColor: AppColors.blueDark,
           extrusionColor: AppColors.blueDeep,
           icon: Icons.info_rounded,
@@ -284,8 +289,11 @@ class AppSnackBar {
   }
 }
 
-class _SnackBarConfig {
-  const _SnackBarConfig({
+/// Alias tương thích ngược cho AppToast
+typedef AppSnackBar = AppToast;
+
+class _ToastConfig {
+  const _ToastConfig({
     required this.backgroundColor,
     required this.extrusionColor,
     required this.icon,
@@ -310,7 +318,7 @@ class _AppToastNotification extends StatefulWidget {
   });
 
   final String message;
-  final AppSnackBarType type;
+  final AppToastType type;
   final Duration duration;
   final VoidCallback onDismiss;
   final String? title;
@@ -372,7 +380,7 @@ class _AppToastNotificationState extends State<_AppToastNotification>
 
   @override
   Widget build(BuildContext context) {
-    final style = AppSnackBar._getStyle(widget.type);
+    final style = AppToast._getStyle(widget.type);
 
     return SafeArea(
       child: Align(
@@ -439,7 +447,7 @@ class _AppToastNotificationState extends State<_AppToastNotification>
                                 AppText.t3(
                                   widget.title!,
                                   color: AppColors.white,
-                                  fontWeight: FontWeight.w900,
+                                  fontWeight: FontWeight.w700,
                                   fontSize: 12.sp,
                                 ),
                                 SizedBox(height: 1.h),
@@ -447,7 +455,7 @@ class _AppToastNotificationState extends State<_AppToastNotification>
                               AppText.b2(
                                 widget.message,
                                 color: AppColors.white,
-                                fontWeight: FontWeight.w800,
+                                fontWeight: FontWeight.w700,
                                 fontSize: 12.sp,
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
@@ -475,7 +483,7 @@ class _AppToastNotificationState extends State<_AppToastNotification>
                               child: AppText.c1(
                                 widget.actionLabel!,
                                 color: style.backgroundColor,
-                                fontWeight: FontWeight.w800,
+                                fontWeight: FontWeight.w700,
                                 fontSize: 10.sp,
                               ),
                             ),

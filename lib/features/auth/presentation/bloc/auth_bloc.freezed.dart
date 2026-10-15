@@ -673,7 +673,7 @@ String toString() {
 /// @nodoc
 mixin _$AuthState {
 
- bool get isLoggedIn; bool get isLoading; User? get currentUser; String? get errorMessage; AccountConflict? get conflict; String? get pendingIdToken;
+ bool get isLoggedIn; bool get isGoogleLinked; bool get isLoading; User? get currentUser; String? get errorMessage; AccountConflict? get conflict; String? get pendingIdToken;
 /// Create a copy of AuthState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -685,20 +685,20 @@ $AuthStateCopyWith<AuthState> get copyWith => _$AuthStateCopyWithImpl<AuthState>
 @override
 bool operator ==(Object other) {
   final _this = this as AuthState;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthState&&(identical(other.isLoggedIn, _this.isLoggedIn) || other.isLoggedIn == _this.isLoggedIn)&&(identical(other.isLoading, _this.isLoading) || other.isLoading == _this.isLoading)&&(identical(other.currentUser, _this.currentUser) || other.currentUser == _this.currentUser)&&(identical(other.errorMessage, _this.errorMessage) || other.errorMessage == _this.errorMessage)&&(identical(other.conflict, _this.conflict) || other.conflict == _this.conflict)&&(identical(other.pendingIdToken, _this.pendingIdToken) || other.pendingIdToken == _this.pendingIdToken));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AuthState&&(identical(other.isLoggedIn, _this.isLoggedIn) || other.isLoggedIn == _this.isLoggedIn)&&(identical(other.isGoogleLinked, _this.isGoogleLinked) || other.isGoogleLinked == _this.isGoogleLinked)&&(identical(other.isLoading, _this.isLoading) || other.isLoading == _this.isLoading)&&(identical(other.currentUser, _this.currentUser) || other.currentUser == _this.currentUser)&&(identical(other.errorMessage, _this.errorMessage) || other.errorMessage == _this.errorMessage)&&(identical(other.conflict, _this.conflict) || other.conflict == _this.conflict)&&(identical(other.pendingIdToken, _this.pendingIdToken) || other.pendingIdToken == _this.pendingIdToken));
 }
 
 
 @override
 int get hashCode {
   final _this = this as AuthState;
-  return Object.hash(runtimeType,_this.isLoggedIn,_this.isLoading,_this.currentUser,_this.errorMessage,_this.conflict,_this.pendingIdToken);
+  return Object.hash(runtimeType,_this.isLoggedIn,_this.isGoogleLinked,_this.isLoading,_this.currentUser,_this.errorMessage,_this.conflict,_this.pendingIdToken);
 }
 
 @override
 String toString() {
   final _this = this as AuthState;
-  return 'AuthState(isLoggedIn: ${_this.isLoggedIn}, isLoading: ${_this.isLoading}, currentUser: ${_this.currentUser}, errorMessage: ${_this.errorMessage}, conflict: ${_this.conflict}, pendingIdToken: ${_this.pendingIdToken})';
+  return 'AuthState(isLoggedIn: ${_this.isLoggedIn}, isGoogleLinked: ${_this.isGoogleLinked}, isLoading: ${_this.isLoading}, currentUser: ${_this.currentUser}, errorMessage: ${_this.errorMessage}, conflict: ${_this.conflict}, pendingIdToken: ${_this.pendingIdToken})';
 }
 
 
@@ -709,7 +709,7 @@ abstract mixin class $AuthStateCopyWith<$Res>  {
   factory $AuthStateCopyWith(AuthState value, $Res Function(AuthState) _then) = _$AuthStateCopyWithImpl;
 @useResult
 $Res call({
- bool isLoggedIn, bool isLoading, User? currentUser, String? errorMessage, AccountConflict? conflict, String? pendingIdToken
+ bool isLoggedIn, bool isGoogleLinked, bool isLoading, User? currentUser, String? errorMessage, AccountConflict? conflict, String? pendingIdToken
 });
 
 
@@ -726,9 +726,10 @@ class _$AuthStateCopyWithImpl<$Res>
 
 /// Create a copy of AuthState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? isLoggedIn = null,Object? isLoading = null,Object? currentUser = freezed,Object? errorMessage = freezed,Object? conflict = freezed,Object? pendingIdToken = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? isLoggedIn = null,Object? isGoogleLinked = null,Object? isLoading = null,Object? currentUser = freezed,Object? errorMessage = freezed,Object? conflict = freezed,Object? pendingIdToken = freezed,}) {
   return _then(AuthState(
 isLoggedIn: null == isLoggedIn ? _self.isLoggedIn : isLoggedIn // ignore: cast_nullable_to_non_nullable
+as bool,isGoogleLinked: null == isGoogleLinked ? _self.isGoogleLinked : isGoogleLinked // ignore: cast_nullable_to_non_nullable
 as bool,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,currentUser: freezed == currentUser ? _self.currentUser : currentUser // ignore: cast_nullable_to_non_nullable
 as User?,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable
@@ -843,10 +844,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isLoggedIn,  bool isLoading,  User? currentUser,  String? errorMessage,  AccountConflict? conflict,  String? pendingIdToken)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isLoggedIn,  bool isGoogleLinked,  bool isLoading,  User? currentUser,  String? errorMessage,  AccountConflict? conflict,  String? pendingIdToken)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AuthState() when $default != null:
-return $default(_that.isLoggedIn,_that.isLoading,_that.currentUser,_that.errorMessage,_that.conflict,_that.pendingIdToken);case _:
+return $default(_that.isLoggedIn,_that.isGoogleLinked,_that.isLoading,_that.currentUser,_that.errorMessage,_that.conflict,_that.pendingIdToken);case _:
   return orElse();
 
 }
@@ -864,10 +865,10 @@ return $default(_that.isLoggedIn,_that.isLoading,_that.currentUser,_that.errorMe
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isLoggedIn,  bool isLoading,  User? currentUser,  String? errorMessage,  AccountConflict? conflict,  String? pendingIdToken)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isLoggedIn,  bool isGoogleLinked,  bool isLoading,  User? currentUser,  String? errorMessage,  AccountConflict? conflict,  String? pendingIdToken)  $default,) {final _that = this;
 switch (_that) {
 case _AuthState():
-return $default(_that.isLoggedIn,_that.isLoading,_that.currentUser,_that.errorMessage,_that.conflict,_that.pendingIdToken);case _:
+return $default(_that.isLoggedIn,_that.isGoogleLinked,_that.isLoading,_that.currentUser,_that.errorMessage,_that.conflict,_that.pendingIdToken);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -884,10 +885,10 @@ return $default(_that.isLoggedIn,_that.isLoading,_that.currentUser,_that.errorMe
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isLoggedIn,  bool isLoading,  User? currentUser,  String? errorMessage,  AccountConflict? conflict,  String? pendingIdToken)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isLoggedIn,  bool isGoogleLinked,  bool isLoading,  User? currentUser,  String? errorMessage,  AccountConflict? conflict,  String? pendingIdToken)?  $default,) {final _that = this;
 switch (_that) {
 case _AuthState() when $default != null:
-return $default(_that.isLoggedIn,_that.isLoading,_that.currentUser,_that.errorMessage,_that.conflict,_that.pendingIdToken);case _:
+return $default(_that.isLoggedIn,_that.isGoogleLinked,_that.isLoading,_that.currentUser,_that.errorMessage,_that.conflict,_that.pendingIdToken);case _:
   return null;
 
 }
@@ -898,11 +899,12 @@ return $default(_that.isLoggedIn,_that.isLoading,_that.currentUser,_that.errorMe
 /// @nodoc
 
 
-class _AuthState implements AuthState {
-  const _AuthState({this.isLoggedIn = false, this.isLoading = false, this.currentUser, this.errorMessage, this.conflict, this.pendingIdToken});
+class _AuthState extends AuthState {
+  const _AuthState({this.isLoggedIn = false, this.isGoogleLinked = false, this.isLoading = false, this.currentUser, this.errorMessage, this.conflict, this.pendingIdToken}): super._();
   
 
 @override@JsonKey() final  bool isLoggedIn;
+@override@JsonKey() final  bool isGoogleLinked;
 @override@JsonKey() final  bool isLoading;
 @override final  User? currentUser;
 @override final  String? errorMessage;
@@ -919,18 +921,18 @@ _$AuthStateCopyWith<_AuthState> get copyWith => __$AuthStateCopyWithImpl<_AuthSt
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _AuthState&&(identical(other.isLoggedIn, isLoggedIn) || other.isLoggedIn == isLoggedIn)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.currentUser, currentUser) || other.currentUser == currentUser)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.conflict, conflict) || other.conflict == conflict)&&(identical(other.pendingIdToken, pendingIdToken) || other.pendingIdToken == pendingIdToken));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _AuthState&&(identical(other.isLoggedIn, isLoggedIn) || other.isLoggedIn == isLoggedIn)&&(identical(other.isGoogleLinked, isGoogleLinked) || other.isGoogleLinked == isGoogleLinked)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.currentUser, currentUser) || other.currentUser == currentUser)&&(identical(other.errorMessage, errorMessage) || other.errorMessage == errorMessage)&&(identical(other.conflict, conflict) || other.conflict == conflict)&&(identical(other.pendingIdToken, pendingIdToken) || other.pendingIdToken == pendingIdToken));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,isLoggedIn,isLoading,currentUser,errorMessage,conflict,pendingIdToken);
+    return Object.hash(runtimeType,isLoggedIn,isGoogleLinked,isLoading,currentUser,errorMessage,conflict,pendingIdToken);
 }
 
 @override
 String toString() {
-    return 'AuthState(isLoggedIn: $isLoggedIn, isLoading: $isLoading, currentUser: $currentUser, errorMessage: $errorMessage, conflict: $conflict, pendingIdToken: $pendingIdToken)';
+    return 'AuthState(isLoggedIn: $isLoggedIn, isGoogleLinked: $isGoogleLinked, isLoading: $isLoading, currentUser: $currentUser, errorMessage: $errorMessage, conflict: $conflict, pendingIdToken: $pendingIdToken)';
 }
 
 
@@ -941,7 +943,7 @@ abstract mixin class _$AuthStateCopyWith<$Res> implements $AuthStateCopyWith<$Re
   factory _$AuthStateCopyWith(_AuthState value, $Res Function(_AuthState) _then) = __$AuthStateCopyWithImpl;
 @override @useResult
 $Res call({
- bool isLoggedIn, bool isLoading, User? currentUser, String? errorMessage, AccountConflict? conflict, String? pendingIdToken
+ bool isLoggedIn, bool isGoogleLinked, bool isLoading, User? currentUser, String? errorMessage, AccountConflict? conflict, String? pendingIdToken
 });
 
 
@@ -958,9 +960,10 @@ class __$AuthStateCopyWithImpl<$Res>
 
 /// Create a copy of AuthState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? isLoggedIn = null,Object? isLoading = null,Object? currentUser = freezed,Object? errorMessage = freezed,Object? conflict = freezed,Object? pendingIdToken = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? isLoggedIn = null,Object? isGoogleLinked = null,Object? isLoading = null,Object? currentUser = freezed,Object? errorMessage = freezed,Object? conflict = freezed,Object? pendingIdToken = freezed,}) {
   return _then(_AuthState(
 isLoggedIn: null == isLoggedIn ? _self.isLoggedIn : isLoggedIn // ignore: cast_nullable_to_non_nullable
+as bool,isGoogleLinked: null == isGoogleLinked ? _self.isGoogleLinked : isGoogleLinked // ignore: cast_nullable_to_non_nullable
 as bool,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
 as bool,currentUser: freezed == currentUser ? _self.currentUser : currentUser // ignore: cast_nullable_to_non_nullable
 as User?,errorMessage: freezed == errorMessage ? _self.errorMessage : errorMessage // ignore: cast_nullable_to_non_nullable

@@ -1,5 +1,5 @@
 import 'package:bufopia/components/app_game_dialog.dart';
-import 'package:bufopia/components/app_snack_bar.dart';
+import 'package:bufopia/components/app_toast.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
 import 'package:bufopia/features/auth/presentation/bloc/auth_bloc.dart';
@@ -181,7 +181,7 @@ class _HomeFeedbackDialogState extends State<HomeFeedbackDialog> {
     } on Object catch (_) {
       if (mounted) {
         setState(() => _isSubmitting = false);
-        AppSnackBar.showError(
+        AppToast.showError(
           context,
           'Lỗi kết nối máy chủ, vui lòng thử lại sau',
         );
@@ -223,7 +223,7 @@ class _HomeFeedbackDialogState extends State<HomeFeedbackDialog> {
     } on Object catch (_) {
       if (mounted) {
         setState(() => _isSubmitting = false);
-        AppSnackBar.showError(
+        AppToast.showError(
           context,
           'Lỗi kết nối máy chủ, vui lòng thử lại sau',
         );

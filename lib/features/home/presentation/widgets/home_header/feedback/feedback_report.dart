@@ -479,7 +479,6 @@ class _FeedbackReportState extends State<FeedbackReport> {
                         color: AppColors.white,
                       ),
                 fontSize: 12.sp,
-                fontWeight: FontWeight.w700,
                 backgroundColor: _canSubmit
                     ? AppColors.feedbackMossGreen
                     : AppColors.feedbackDisabled,

@@ -1,6 +1,8 @@
 import 'package:bufopia/components/app_game_dialog.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
+import 'package:bufopia/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:bufopia/features/auth/presentation/widgets/dialog/app_login_prompt_dialog.dart';
 import 'package:bufopia/features/vocabulary/presentation/widgets/topic/topic_mode_item.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -84,11 +86,12 @@ class TopicModeDialog extends StatelessWidget {
     final isPaper =
         isPaperTheme ??
         context.select<AppBloc, bool>((b) => b.state.isPaperTheme);
+    final isGuest = context.select<AuthBloc, bool>((b) => b.state.isGuest);
 
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        // Hàng 1: Bot & PvP
+        // Hàng 1: Bot & PvP (Luôn mở cho mọi tài khoản kể cả khách)
         Row(
           children: [
             // Mode 1: Bot
@@ -132,7 +135,7 @@ class TopicModeDialog extends StatelessWidget {
             ),
             SizedBox(width: 8.w),
 
-            // Mode 2: PvP
+            // Mode 2: PvP (Chơi 2 người trên cùng 1 máy)
             Expanded(
               child: TopicModeItem(
                 badgeText: '2 NGƯỜI',
@@ -175,12 +178,13 @@ class TopicModeDialog extends StatelessWidget {
         ),
         SizedBox(height: 8.h),
 
-        // Hàng 2: Online & ID
+        // Hàng 2: Online & ID (Yêu cầu đăng nhập Google)
         Row(
           children: [
             // Mode 3: Online
             Expanded(
               child: TopicModeItem(
+                isLocked: isGuest,
                 badgeText: 'GHÉP CẶP',
                 badgeIcon: Icons.sensors_rounded,
                 badgeColor: isPaper
@@ -212,6 +216,13 @@ class TopicModeDialog extends StatelessWidget {
                     : AppColors.modeOnlineShadow,
                 isPaperTheme: isPaper,
                 onTap: () {
+                  if (isGuest) {
+                    AppLoginPromptDialog.show(
+                      context,
+                      featureName: 'chế độ Ghép Online',
+                    );
+                    return;
+                  }
                   Navigator.of(context).pop();
                   onOnlineMatch?.call();
                 },
@@ -219,9 +230,10 @@ class TopicModeDialog extends StatelessWidget {
             ),
             SizedBox(width: 8.w),
 
-            // Mode 4: ID
+            // Mode 4: ID Challenge (Tạo / Vào phòng riêng)
             Expanded(
               child: TopicModeItem(
+                isLocked: isGuest,
                 badgeText: '1 VS 1',
                 badgeIcon: Icons.tag_rounded,
                 badgeColor: isPaper
@@ -253,6 +265,13 @@ class TopicModeDialog extends StatelessWidget {
                     : AppColors.modeIdShadow,
                 isPaperTheme: isPaper,
                 onTap: () {
+                  if (isGuest) {
+                    AppLoginPromptDialog.show(
+                      context,
+                      featureName: 'chế độ Thách Đấu Phòng Riêng',
+                    );
+                    return;
+                  }
                   Navigator.of(context).pop();
                   onIdChallenge?.call();
                 },

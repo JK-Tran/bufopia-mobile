@@ -97,8 +97,24 @@ class VocabularyRepositoryImpl implements VocabularyRepository {
   }
 
   @override
-  Future<Feedback> sendFeedback(FeedbackData request) async {
-    final response = await _dataSource.sendFeedback(request);
+  Future<Feedback> sendFeedback({
+    required String uid,
+    required String userName,
+    required String category,
+    required String message,
+    String? contact,
+    String? page,
+  }) async {
+    final response = await _dataSource.sendFeedback(
+      FeedbackData(
+        uid: uid,
+        userName: userName,
+        category: category,
+        message: message,
+        contact: contact,
+        page: page,
+      ),
+    );
     return _feedbackMapper.mapToEntity(response);
   }
 }

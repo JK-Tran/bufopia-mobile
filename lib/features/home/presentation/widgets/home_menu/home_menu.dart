@@ -91,7 +91,7 @@ class HomeMenu extends StatelessWidget {
         isLocked: true,
         onTap:
             onNewMode ??
-            () => ViewUtils.showAppSnackBar(
+            () => ViewUtils.showAppToast(
               context,
               'Tính năng đang được phát triển, hãy đón chờ nhé!',
             ),

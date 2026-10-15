@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:bufopia/components/components.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
+import 'package:bufopia/features/home/presentation/widgets/home_header/dialog/player_photo_crop_dialog.dart';
 import 'package:bufopia/features/home/presentation/widgets/home_header/gallery/gallery_albums_tab.dart';
 import 'package:bufopia/features/home/presentation/widgets/home_header/gallery/gallery_bottom_bar.dart';
 import 'package:bufopia/features/home/presentation/widgets/home_header/gallery/gallery_photos_tab.dart';

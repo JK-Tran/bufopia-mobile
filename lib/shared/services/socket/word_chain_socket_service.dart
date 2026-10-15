@@ -68,6 +68,8 @@ class WordChainSocketServiceImpl extends BaseSocketService
 
   String? _currentRoomCode;
   ChainStateEvent? _lastChainState;
+  Map<String, dynamic>? _lastMatchmakeArgs;
+  Map<String, dynamic>? _lastRoomArgs;
 
   @override
   String get logTag => 'WordChainSocketService';
@@ -99,7 +101,15 @@ class WordChainSocketServiceImpl extends BaseSocketService
   }) async {
     _currentRoomCode = null;
     _lastChainState = null;
-    final effectiveToken = await resolveToken(token);
+    _lastMatchmakeArgs = {
+      'uid': uid,
+      'name': name,
+      'avatar': avatar,
+      'relaxed': relaxed,
+      'lang': lang,
+    };
+    _lastRoomArgs = null;
+    var effectiveToken = await resolveToken(token);
     String? ticket;
     try {
       ticket = await authDataSource.getSocketTicket(
@@ -113,14 +123,41 @@ class WordChainSocketServiceImpl extends BaseSocketService
         name: logTag,
       );
     }
-    final effectiveTicket = (ticket != null && ticket.isNotEmpty)
-        ? ticket
-        : effectiveToken;
+
+    // Nếu lấy vé thất bại (vd: token cũ hết hạn sau khi đăng nhập Google),
+    // thử force refresh token và lấy lại vé
+    if (ticket == null || ticket.isEmpty) {
+      Log.d(
+        'Retrying getSocketTicket with force-refreshed token...',
+        name: logTag,
+      );
+      try {
+        effectiveToken = await resolveToken(null, forceRefresh: true);
+        ticket = await authDataSource.getSocketTicket(
+          uid: uid,
+          path: '/ws/chain-matchmake',
+          token: effectiveToken,
+        );
+      } on Object catch (e) {
+        Log.e('Retry getSocketTicket failed: $e', name: logTag);
+      }
+    }
+
+    if (ticket == null || ticket.isEmpty) {
+      Log.e('Unable to obtain socket ticket for chain matchmake', name: logTag);
+      emitEvent(
+        const SocketErrorEvent(
+          message: 'Không thể khởi tạo vé kết nối máy chủ. Vui lòng thử lại.',
+        ),
+      );
+      updateState(SocketConnectionState.disconnected);
+      return;
+    }
 
     final url = SocketUrlBuilder.chainMatchmakeWsUrl(
       uid: uid,
       name: name,
-      ticket: effectiveTicket,
+      ticket: ticket,
       relaxed: relaxed,
       lang: lang,
       avatar: avatar,
@@ -156,8 +193,17 @@ class WordChainSocketServiceImpl extends BaseSocketService
 
     _currentRoomCode = normalizedCode;
     _lastChainState = null;
+    _lastRoomArgs = {
+      'roomCode': normalizedCode,
+      'uid': uid,
+      'name': name,
+      'avatar': avatar,
+      'relaxed': relaxed,
+      'lang': lang,
+    };
+    _lastMatchmakeArgs = null;
 
-    final effectiveToken = await resolveToken(token);
+    var effectiveToken = await resolveToken(token);
     String? ticket;
     try {
       ticket = await authDataSource.getSocketTicket(
@@ -168,15 +214,44 @@ class WordChainSocketServiceImpl extends BaseSocketService
     } on Object catch (e) {
       Log.e('Failed to get chain room socket ticket: $e', name: logTag);
     }
-    final effectiveTicket = (ticket != null && ticket.isNotEmpty)
-        ? ticket
-        : effectiveToken;
+
+    if (ticket == null || ticket.isEmpty) {
+      Log.d(
+        'Retrying getSocketTicket with force-refreshed token '
+        'for room $normalizedCode...',
+        name: logTag,
+      );
+      try {
+        effectiveToken = await resolveToken(null, forceRefresh: true);
+        ticket = await authDataSource.getSocketTicket(
+          uid: uid,
+          path: '/ws/chain/$normalizedCode',
+          token: effectiveToken,
+        );
+      } on Object catch (e) {
+        Log.e('Retry getSocketTicket failed for room: $e', name: logTag);
+      }
+    }
+
+    if (ticket == null || ticket.isEmpty) {
+      Log.e(
+        'Unable to obtain socket ticket for chain room $normalizedCode',
+        name: logTag,
+      );
+      emitEvent(
+        const SocketErrorEvent(
+          message: 'Không thể khởi tạo vé kết nối phòng đấu. Vui lòng thử lại.',
+        ),
+      );
+      updateState(SocketConnectionState.disconnected);
+      return;
+    }
 
     final url = SocketUrlBuilder.chainRoomWsUrl(
       roomCode: normalizedCode,
       uid: uid,
       name: name,
-      ticket: effectiveTicket,
+      ticket: ticket,
       relaxed: relaxed,
       lang: lang,
       avatar: avatar,
@@ -185,9 +260,39 @@ class WordChainSocketServiceImpl extends BaseSocketService
   }
 
   @override
+  Future<void> reconnect() async {
+    if (_lastRoomArgs != null) {
+      final args = _lastRoomArgs!;
+      await connectRoom(
+        roomCode: args['roomCode'] as String,
+        uid: args['uid'] as String,
+        name: args['name'] as String,
+        avatar: args['avatar'] as String?,
+        relaxed: args['relaxed'] as bool? ?? false,
+        lang: args['lang'] as String? ?? 'en',
+      );
+      return;
+    }
+    if (_lastMatchmakeArgs != null) {
+      final args = _lastMatchmakeArgs!;
+      await connectMatchmake(
+        uid: args['uid'] as String,
+        name: args['name'] as String,
+        avatar: args['avatar'] as String?,
+        relaxed: args['relaxed'] as bool? ?? false,
+        lang: args['lang'] as String? ?? 'en',
+      );
+      return;
+    }
+    await super.reconnect();
+  }
+
+  @override
   Future<void> disconnect() async {
     _currentRoomCode = null;
     _lastChainState = null;
+    _lastMatchmakeArgs = null;
+    _lastRoomArgs = null;
     await super.disconnect();
   }
 

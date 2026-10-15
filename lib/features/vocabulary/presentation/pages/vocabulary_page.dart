@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:bufopia/components/app_button.dart';
 import 'package:bufopia/components/app_game_dialog.dart';
-import 'package:bufopia/components/app_snack_bar.dart';
+import 'package:bufopia/components/app_toast.dart';
 import 'package:bufopia/core/base/base_page_state.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
@@ -176,7 +176,6 @@ class _VocabularyPageState
                   width: btnWidth,
                   height: btnHeight,
                   fontSize: btnFontSize,
-                  fontWeight: FontWeight.w700,
                   backgroundColor: AppColors.paperSurface,
                   borderColor: AppColors.paperBorder,
                   extrusionColor: AppColors.paperExtrusion,
@@ -200,7 +199,6 @@ class _VocabularyPageState
                   width: btnWidth,
                   height: btnHeight,
                   fontSize: btnFontSize,
-                  fontWeight: FontWeight.w700,
                   backgroundColor: AppColors.dialogCloseBg,
                   borderColor: AppColors.dialogCloseBorder,
                   extrusionColor: AppColors.dialogCloseExtrusion,
@@ -210,7 +208,7 @@ class _VocabularyPageState
                     if (mounted && Navigator.of(context).canPop()) {
                       Navigator.of(context).pop();
                     }
-                    AppSnackBar.showWarning(
+                    AppToast.showWarning(
                       context,
                       'Bạn đã rời khỏi trận đấu.',
                       title: 'ĐÃ THOÁT TRẬN',
@@ -228,7 +226,7 @@ class _VocabularyPageState
                     if (mounted && Navigator.of(context).canPop()) {
                       Navigator.of(context).pop();
                     }
-                    AppSnackBar.showWarning(
+                    AppToast.showWarning(
                       context,
                       'Bạn đã rời khỏi trận đấu.',
                       title: 'ĐÃ THOÁT TRẬN',
@@ -260,7 +258,7 @@ class _VocabularyPageState
         if (Navigator.of(context).canPop()) {
           Navigator.of(context).pop();
         }
-        AppSnackBar.showWarning(
+        AppToast.showWarning(
           context,
           'Đối thủ đã thoát khỏi trận đấu!',
           title: 'TRẬN ĐẤU KẾT THÚC',
@@ -360,7 +358,6 @@ class _VocabularyPageState
               width: 180.w,
               height: 38.h,
               fontSize: 12.sp,
-              fontWeight: FontWeight.w700,
               backgroundColor: AppColors.paperGreen,
               borderColor: AppColors.paperGreenBorder,
               extrusionColor: AppColors.paperGreenExtrusion,
@@ -389,7 +386,7 @@ class _VocabularyPageState
     final currentUser = context.read<AuthBloc>().state.currentUser;
     final p1Name = currentUser?.displayName.isNotEmpty == true
         ? currentUser!.displayName
-        : 'Alex';
+        : 'Bunny';
     final p1Avatar = currentUser?.avatarUrl.isNotEmpty == true
         ? currentUser!.avatarUrl
         : 'assets/images/pip-avatar.webp';

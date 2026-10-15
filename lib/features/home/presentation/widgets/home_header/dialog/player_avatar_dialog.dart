@@ -2,6 +2,8 @@ import 'package:bufopia/components/components.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
+import 'package:bufopia/features/home/presentation/widgets/home_header/dialog/player_gallery_picker_dialog.dart';
+import 'package:bufopia/features/home/presentation/widgets/home_header/dialog/player_photo_crop_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

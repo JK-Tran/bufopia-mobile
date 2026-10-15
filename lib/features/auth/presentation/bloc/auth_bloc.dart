@@ -12,8 +12,12 @@ import 'package:bufopia/features/auth/domain/usecases/update_user_profile_use_ca
 import 'package:bufopia/shared/services/device/device_uid_service.dart';
 import 'package:bufopia/shared/services/firebase/firebase_auth_service.dart';
 import 'package:bufopia/shared/services/network/network_service.dart';
+import 'package:bufopia/shared/services/socket/duel_socket_service.dart';
+import 'package:bufopia/shared/services/socket/word_chain_socket_service.dart';
+import 'package:bufopia/shared/utils/validation_utils.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 
 part 'auth_bloc.freezed.dart';
@@ -32,7 +36,7 @@ class AuthBloc extends BaseBloc<AuthEvent, AuthState> {
     this._firebaseAuthService,
     this._importAccountUseCase,
     this._networkService,
-  ) : super(_createInitialState(getCachedUserUseCase)) {
+  ) : super(_createInitialState(getCachedUserUseCase, _firebaseAuthService)) {
     on<_GetUserInfo>(_onGetUserInfo);
     on<_UpdateProfile>(_onUpdateProfile);
     on<_SignInWithGoogle>(_onSignInWithGoogle);
@@ -61,12 +65,20 @@ class AuthBloc extends BaseBloc<AuthEvent, AuthState> {
 
   /// Tạo state ban đầu đồng bộ từ Local Cache (Offline-First)
   /// Giúp người chơi thấy đúng tên mình ("Ân Cơ Phó") ngay frame đầu tiên.
-  static AuthState _createInitialState(GetCachedUserUseCase getCachedUser) {
+  static AuthState _createInitialState(
+    GetCachedUserUseCase getCachedUser,
+    FirebaseAuthService firebaseAuthService,
+  ) {
     final cached = getCachedUser.execute();
+    final isGoogle = firebaseAuthService.isGoogleLinked;
     if (cached != null) {
-      return AuthState(currentUser: cached, isLoggedIn: true);
+      return AuthState(
+        currentUser: cached,
+        isLoggedIn: true,
+        isGoogleLinked: isGoogle,
+      );
     }
-    return const AuthState();
+    return AuthState(isGoogleLinked: isGoogle);
   }
 
   /// Lắng nghe trạng thái mạng có debounce 1.5s để tự động cập nhật
@@ -129,17 +141,48 @@ class AuthBloc extends BaseBloc<AuthEvent, AuthState> {
                       ? fbUid!
                       : await _deviceUidService.getDeviceUid()));
 
+        final isGoogle = _firebaseAuthService.isGoogleLinked;
+
+        User? fetchedUser;
         try {
           final output = await _getUserInfoUseCase.execute(
             GetUserInfoInput(uid: uid),
           );
+          fetchedUser = output.user;
 
-          if (output.user != null) {
-            await _saveCurrentUserUseCase.execute(output.user!);
+          final isPersisted = fetchedUser != null && fetchedUser.persisted;
+          final hasValidName =
+              fetchedUser != null &&
+              fetchedUser.nameConfigured &&
+              ValidationUtils.isValidPlayerName(fetchedUser.displayName);
+
+          if (isPersisted && hasValidName) {
+            await _saveCurrentUserUseCase.execute(fetchedUser);
             safeEmit(
               state.copyWith(
                 isLoggedIn: true,
-                currentUser: output.user,
+                isGoogleLinked: isGoogle,
+                currentUser: fetchedUser,
+                isLoading: false,
+                errorMessage: null,
+              ),
+            );
+            return;
+          }
+
+          // Nếu user là khách chưa lưu hồ sơ hoặc chưa chọn linh vật/tên,
+          // emit để UI hiển thị hộp thoại chọn linh vật lần đầu mở app
+          if (fetchedUser != null &&
+              (!fetchedUser.persisted ||
+                  !fetchedUser.nameConfigured ||
+                  !ValidationUtils.isValidPlayerName(
+                    fetchedUser.displayName,
+                  ))) {
+            safeEmit(
+              state.copyWith(
+                isLoggedIn: true,
+                isGoogleLinked: isGoogle,
+                currentUser: fetchedUser,
                 isLoading: false,
                 errorMessage: null,
               ),
@@ -151,13 +194,23 @@ class AuthBloc extends BaseBloc<AuthEvent, AuthState> {
         }
 
         // Khởi tạo hồ sơ người dùng trên server với tên hợp lệ
+        // để server lưu vào database (persisted = true)
+        // và cấp quyền lấy đề chơi
         final suffix = uid.length >= 4 ? uid.substring(uid.length - 4) : uid;
-        final fallbackName = state.currentUser?.displayName.isNotEmpty == true
+        final candidateName = state.currentUser?.displayName.isNotEmpty == true
             ? state.currentUser!.displayName
-            : 'Player_$suffix';
+            : (fetchedUser?.displayName.isNotEmpty == true
+                  ? fetchedUser!.displayName
+                  : null);
+        final isCandidateValid = ValidationUtils.isValidPlayerName(
+          candidateName,
+        );
+        final fallbackName = isCandidateValid ? candidateName! : 'BuFo_$suffix';
         final fallbackAvatar = state.currentUser?.avatarUrl.isNotEmpty == true
             ? state.currentUser!.avatarUrl
-            : 'assets/images/bunny-avatar.webp';
+            : (fetchedUser?.avatarUrl.isNotEmpty == true
+                  ? fetchedUser!.avatarUrl
+                  : 'assets/images/bunny-avatar.webp');
 
         try {
           final initOutput = await _updateUserProfileUseCase.execute(
@@ -173,6 +226,7 @@ class AuthBloc extends BaseBloc<AuthEvent, AuthState> {
             safeEmit(
               state.copyWith(
                 isLoggedIn: true,
+                isGoogleLinked: isGoogle,
                 currentUser: initOutput.user,
                 isLoading: false,
                 errorMessage: null,
@@ -322,9 +376,11 @@ class AuthBloc extends BaseBloc<AuthEvent, AuthState> {
             );
 
         await _saveCurrentUserUseCase.execute(importedUser);
+        _resetSockets();
         safeEmit(
           state.copyWith(
             isLoggedIn: true,
+            isGoogleLinked: true,
             currentUser: importedUser,
             isLoading: false,
             conflict: null,
@@ -396,9 +452,11 @@ class AuthBloc extends BaseBloc<AuthEvent, AuthState> {
 
         if (importedUser != null) {
           await _saveCurrentUserUseCase.execute(importedUser);
+          _resetSockets();
           safeEmit(
             state.copyWith(
               isLoggedIn: true,
+              isGoogleLinked: true,
               currentUser: importedUser,
               isLoading: false,
               conflict: null,
@@ -442,6 +500,7 @@ class AuthBloc extends BaseBloc<AuthEvent, AuthState> {
     safeEmit(
       state.copyWith(
         isLoggedIn: true,
+        isGoogleLinked: _firebaseAuthService.isGoogleLinked,
         currentUser: event.user,
       ),
     );
@@ -462,16 +521,31 @@ class AuthBloc extends BaseBloc<AuthEvent, AuthState> {
     _LoggedOut event,
     Emitter<AuthState> emit,
   ) async {
+    _resetSockets();
     await _clearUserCacheUseCase.execute();
     await _firebaseAuthService.signOut();
     safeEmit(
       state.copyWith(
         isLoggedIn: false,
+        isGoogleLinked: false,
         currentUser: null,
         errorMessage: null,
         conflict: null,
         pendingIdToken: null,
       ),
     );
+  }
+
+  void _resetSockets() {
+    try {
+      if (GetIt.instance.isRegistered<WordChainSocketService>()) {
+        GetIt.instance.get<WordChainSocketService>().disconnect();
+      }
+    } on Object catch (_) {}
+    try {
+      if (GetIt.instance.isRegistered<DuelSocketService>()) {
+        GetIt.instance.get<DuelSocketService>().disconnect();
+      }
+    } on Object catch (_) {}
   }
 }

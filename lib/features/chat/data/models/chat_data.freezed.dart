@@ -12,16 +12,19 @@ part of 'chat_data.dart';
 // GENERATED CODE - DO NOT MODIFY BY HAND
 // dart format off
 T _$identity<T>(T value) => value;
+
 /// @nodoc
 mixin _$ChatData {
 
- String get id; int get actor; String get text; String? get name; String? get avatar; num? get time;
+@JsonKey(name: 'id') String? get id;@JsonKey(name: 'actor') int? get actor;@JsonKey(name: 'text') String? get text;@JsonKey(name: 'name') String? get name;@JsonKey(name: 'avatar') String? get avatar;@JsonKey(name: 'time') num? get time;
 /// Create a copy of ChatData
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
 $ChatDataCopyWith<ChatData> get copyWith => _$ChatDataCopyWithImpl<ChatData>(this as ChatData, _$identity);
 
+  /// Serializes this ChatData to a JSON map.
+  Map<String, dynamic> toJson();
 
 
 @override
@@ -30,7 +33,7 @@ bool operator ==(Object other) {
   return identical(this, other) || (other.runtimeType == runtimeType&&other is ChatData&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.actor, _this.actor) || other.actor == _this.actor)&&(identical(other.text, _this.text) || other.text == _this.text)&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.avatar, _this.avatar) || other.avatar == _this.avatar)&&(identical(other.time, _this.time) || other.time == _this.time));
 }
 
-
+@JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as ChatData;
@@ -51,7 +54,7 @@ abstract mixin class $ChatDataCopyWith<$Res>  {
   factory $ChatDataCopyWith(ChatData value, $Res Function(ChatData) _then) = _$ChatDataCopyWithImpl;
 @useResult
 $Res call({
- String id, int actor, String text, String? name, String? avatar, num? time
+@JsonKey(name: 'id') String? id,@JsonKey(name: 'actor') int? actor,@JsonKey(name: 'text') String? text,@JsonKey(name: 'name') String? name,@JsonKey(name: 'avatar') String? avatar,@JsonKey(name: 'time') num? time
 });
 
 
@@ -68,12 +71,12 @@ class _$ChatDataCopyWithImpl<$Res>
 
 /// Create a copy of ChatData
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? actor = null,Object? text = null,Object? name = freezed,Object? avatar = freezed,Object? time = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? actor = freezed,Object? text = freezed,Object? name = freezed,Object? avatar = freezed,Object? time = freezed,}) {
   return _then(ChatData(
-id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as String,actor: null == actor ? _self.actor : actor // ignore: cast_nullable_to_non_nullable
-as int,text: null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
-as String,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String?,actor: freezed == actor ? _self.actor : actor // ignore: cast_nullable_to_non_nullable
+as int?,text: freezed == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
+as String?,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String?,avatar: freezed == avatar ? _self.avatar : avatar // ignore: cast_nullable_to_non_nullable
 as String?,time: freezed == time ? _self.time : time // ignore: cast_nullable_to_non_nullable
 as num?,
@@ -161,7 +164,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  int actor,  String text,  String? name,  String? avatar,  num? time)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'id')  String? id, @JsonKey(name: 'actor')  int? actor, @JsonKey(name: 'text')  String? text, @JsonKey(name: 'name')  String? name, @JsonKey(name: 'avatar')  String? avatar, @JsonKey(name: 'time')  num? time)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _ChatData() when $default != null:
 return $default(_that.id,_that.actor,_that.text,_that.name,_that.avatar,_that.time);case _:
@@ -182,7 +185,7 @@ return $default(_that.id,_that.actor,_that.text,_that.name,_that.avatar,_that.ti
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  int actor,  String text,  String? name,  String? avatar,  num? time)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'id')  String? id, @JsonKey(name: 'actor')  int? actor, @JsonKey(name: 'text')  String? text, @JsonKey(name: 'name')  String? name, @JsonKey(name: 'avatar')  String? avatar, @JsonKey(name: 'time')  num? time)  $default,) {final _that = this;
 switch (_that) {
 case _ChatData():
 return $default(_that.id,_that.actor,_that.text,_that.name,_that.avatar,_that.time);case _:
@@ -202,7 +205,7 @@ return $default(_that.id,_that.actor,_that.text,_that.name,_that.avatar,_that.ti
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  int actor,  String text,  String? name,  String? avatar,  num? time)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'id')  String? id, @JsonKey(name: 'actor')  int? actor, @JsonKey(name: 'text')  String? text, @JsonKey(name: 'name')  String? name, @JsonKey(name: 'avatar')  String? avatar, @JsonKey(name: 'time')  num? time)?  $default,) {final _that = this;
 switch (_that) {
 case _ChatData() when $default != null:
 return $default(_that.id,_that.actor,_that.text,_that.name,_that.avatar,_that.time);case _:
@@ -214,18 +217,18 @@ return $default(_that.id,_that.actor,_that.text,_that.name,_that.avatar,_that.ti
 }
 
 /// @nodoc
-
+@JsonSerializable()
 
 class _ChatData extends ChatData {
-  const _ChatData({this.id = '', this.actor = 0, this.text = '', this.name, this.avatar, this.time}): super._();
-  
+  const _ChatData({@JsonKey(name: 'id') this.id, @JsonKey(name: 'actor') this.actor, @JsonKey(name: 'text') this.text, @JsonKey(name: 'name') this.name, @JsonKey(name: 'avatar') this.avatar, @JsonKey(name: 'time') this.time}): super._();
+  factory _ChatData.fromJson(Map<String, dynamic> json) => _$ChatDataFromJson(json);
 
-@override@JsonKey() final  String id;
-@override@JsonKey() final  int actor;
-@override@JsonKey() final  String text;
-@override final  String? name;
-@override final  String? avatar;
-@override final  num? time;
+@override@JsonKey(name: 'id') final  String? id;
+@override@JsonKey(name: 'actor') final  int? actor;
+@override@JsonKey(name: 'text') final  String? text;
+@override@JsonKey(name: 'name') final  String? name;
+@override@JsonKey(name: 'avatar') final  String? avatar;
+@override@JsonKey(name: 'time') final  num? time;
 
 /// Create a copy of ChatData
 /// with the given fields replaced by the non-null parameter values.
@@ -233,14 +236,17 @@ class _ChatData extends ChatData {
 @pragma('vm:prefer-inline')
 _$ChatDataCopyWith<_ChatData> get copyWith => __$ChatDataCopyWithImpl<_ChatData>(this, _$identity);
 
-
+@override
+Map<String, dynamic> toJson() {
+  return _$ChatDataToJson(this, );
+}
 
 @override
 bool operator ==(Object other) {
     return identical(this, other) || (other.runtimeType == runtimeType&&other is _ChatData&&(identical(other.id, id) || other.id == id)&&(identical(other.actor, actor) || other.actor == actor)&&(identical(other.text, text) || other.text == text)&&(identical(other.name, name) || other.name == name)&&(identical(other.avatar, avatar) || other.avatar == avatar)&&(identical(other.time, time) || other.time == time));
 }
 
-
+@JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
     return Object.hash(runtimeType,id,actor,text,name,avatar,time);
@@ -259,7 +265,7 @@ abstract mixin class _$ChatDataCopyWith<$Res> implements $ChatDataCopyWith<$Res>
   factory _$ChatDataCopyWith(_ChatData value, $Res Function(_ChatData) _then) = __$ChatDataCopyWithImpl;
 @override @useResult
 $Res call({
- String id, int actor, String text, String? name, String? avatar, num? time
+@JsonKey(name: 'id') String? id,@JsonKey(name: 'actor') int? actor,@JsonKey(name: 'text') String? text,@JsonKey(name: 'name') String? name,@JsonKey(name: 'avatar') String? avatar,@JsonKey(name: 'time') num? time
 });
 
 
@@ -276,12 +282,12 @@ class __$ChatDataCopyWithImpl<$Res>
 
 /// Create a copy of ChatData
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? actor = null,Object? text = null,Object? name = freezed,Object? avatar = freezed,Object? time = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? actor = freezed,Object? text = freezed,Object? name = freezed,Object? avatar = freezed,Object? time = freezed,}) {
   return _then(_ChatData(
-id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
-as String,actor: null == actor ? _self.actor : actor // ignore: cast_nullable_to_non_nullable
-as int,text: null == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
-as String,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
+id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String?,actor: freezed == actor ? _self.actor : actor // ignore: cast_nullable_to_non_nullable
+as int?,text: freezed == text ? _self.text : text // ignore: cast_nullable_to_non_nullable
+as String?,name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String?,avatar: freezed == avatar ? _self.avatar : avatar // ignore: cast_nullable_to_non_nullable
 as String?,time: freezed == time ? _self.time : time // ignore: cast_nullable_to_non_nullable
 as num?,
