@@ -61,8 +61,9 @@ abstract class BaseSocketService {
     if (token != null && token.isNotEmpty && !forceRefresh) {
       return token;
     }
-    final idToken =
-        await firebaseAuthService.getIdToken(forceRefresh: forceRefresh);
+    final idToken = await firebaseAuthService.getIdToken(
+      forceRefresh: forceRefresh,
+    );
     if (idToken != null && idToken.isNotEmpty) {
       return idToken;
     }

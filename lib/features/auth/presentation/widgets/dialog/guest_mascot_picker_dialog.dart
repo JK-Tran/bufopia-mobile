@@ -314,9 +314,7 @@ class _Mascot3DCardState extends State<_Mascot3DCard> {
 
     final currentExtrusionColor = widget.isSelected
         ? widget.extrusionColor
-        : (widget.isPaper
-            ? AppColors.paperExtrusion
-            : AppColors.grayExtrusion);
+        : (widget.isPaper ? AppColors.paperExtrusion : AppColors.grayExtrusion);
 
     return GestureDetector(
       onTapDown: (_) => setState(() => _isPressed = true),
@@ -373,8 +371,8 @@ class _Mascot3DCardState extends State<_Mascot3DCard> {
                       color: widget.isSelected
                           ? widget.accentColor
                           : (widget.isPaper
-                              ? AppColors.paperBorder
-                              : AppColors.grayLight),
+                                ? AppColors.paperBorder
+                                : AppColors.grayLight),
                       width: widget.isSelected ? 2.5.w : 1.5.w,
                     ),
                     boxShadow: [
@@ -436,8 +434,8 @@ class _Mascot3DCardState extends State<_Mascot3DCard> {
               color: widget.isSelected
                   ? widget.accentColor
                   : (widget.isPaper
-                      ? AppColors.paperTextDark
-                      : AppColors.grayDark),
+                        ? AppColors.paperTextDark
+                        : AppColors.grayDark),
               textAlign: TextAlign.center,
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
@@ -451,15 +449,15 @@ class _Mascot3DCardState extends State<_Mascot3DCard> {
                 color: widget.isSelected
                     ? widget.badgeBgColor
                     : (widget.isPaper
-                        ? AppColors.paperSurface
-                        : AppColors.grayLight.withValues(alpha: 0.5)),
+                          ? AppColors.paperSurface
+                          : AppColors.grayLight.withValues(alpha: 0.5)),
                 borderRadius: BorderRadius.circular(8.r),
                 border: Border.all(
                   color: widget.isSelected
                       ? widget.accentColor.withValues(alpha: 0.3)
                       : (widget.isPaper
-                          ? AppColors.paperBorder
-                          : AppColors.grayLight),
+                            ? AppColors.paperBorder
+                            : AppColors.grayLight),
                   width: 1.w,
                 ),
               ),
@@ -470,8 +468,8 @@ class _Mascot3DCardState extends State<_Mascot3DCard> {
                 color: widget.isSelected
                     ? widget.accentColor
                     : (widget.isPaper
-                        ? AppColors.paperTextMuted
-                        : AppColors.grayMedium),
+                          ? AppColors.paperTextMuted
+                          : AppColors.grayMedium),
               ),
             ),
           ],

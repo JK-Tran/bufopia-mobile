@@ -151,7 +151,8 @@ class AuthBloc extends BaseBloc<AuthEvent, AuthState> {
           fetchedUser = output.user;
 
           final isPersisted = fetchedUser != null && fetchedUser.persisted;
-          final hasValidName = fetchedUser != null &&
+          final hasValidName =
+              fetchedUser != null &&
               fetchedUser.nameConfigured &&
               ValidationUtils.isValidPlayerName(fetchedUser.displayName);
 
@@ -199,16 +200,17 @@ class AuthBloc extends BaseBloc<AuthEvent, AuthState> {
         final candidateName = state.currentUser?.displayName.isNotEmpty == true
             ? state.currentUser!.displayName
             : (fetchedUser?.displayName.isNotEmpty == true
-                ? fetchedUser!.displayName
-                : null);
-        final isCandidateValid =
-            ValidationUtils.isValidPlayerName(candidateName);
+                  ? fetchedUser!.displayName
+                  : null);
+        final isCandidateValid = ValidationUtils.isValidPlayerName(
+          candidateName,
+        );
         final fallbackName = isCandidateValid ? candidateName! : 'BuFo_$suffix';
         final fallbackAvatar = state.currentUser?.avatarUrl.isNotEmpty == true
             ? state.currentUser!.avatarUrl
             : (fetchedUser?.avatarUrl.isNotEmpty == true
-                ? fetchedUser!.avatarUrl
-                : 'assets/images/bunny-avatar.webp');
+                  ? fetchedUser!.avatarUrl
+                  : 'assets/images/bunny-avatar.webp');
 
         try {
           final initOutput = await _updateUserProfileUseCase.execute(
