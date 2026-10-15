@@ -223,11 +223,11 @@ return $default(_that.actor,_that.entry,_that.time);case _:
 
 
 class _TurnMessage implements TurnMessage {
-  const _TurnMessage({required this.actor, required this.entry, this.time = 0});
+  const _TurnMessage({this.actor = 0, this.entry = const Word(), this.time = 0});
   
 
-@override final  int actor;
-@override final  Word entry;
+@override@JsonKey() final  int actor;
+@override@JsonKey() final  Word entry;
 @override@JsonKey() final  int time;
 
 /// Create a copy of TurnMessage

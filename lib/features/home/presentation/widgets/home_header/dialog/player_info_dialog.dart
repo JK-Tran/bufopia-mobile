@@ -43,7 +43,7 @@ class _PlayerInfoDialogState extends State<PlayerInfoDialog> {
     final user = context.read<AuthBloc>().state.currentUser;
     _displayName = (user?.displayName.isNotEmpty == true)
         ? user!.displayName
-        : 'Alex';
+        : 'Bunny';
     _selectedAvatarUrl = user?.avatarUrl;
   }
 
@@ -62,7 +62,7 @@ class _PlayerInfoDialogState extends State<PlayerInfoDialog> {
     Future.delayed(const Duration(milliseconds: 500), () {
       if (mounted) {
         setState(() => _isSaving = false);
-        AppSnackBar.showSuccess(context, 'Cập nhật hồ sơ thành công!');
+        AppToast.showSuccess(context, 'Cập nhật hồ sơ thành công!');
       }
     });
   }
@@ -80,7 +80,7 @@ class _PlayerInfoDialogState extends State<PlayerInfoDialog> {
           avatarUrl: selected,
         ),
       );
-      AppSnackBar.showSuccess(context, 'Đã cập nhật ảnh đại diện!');
+      AppToast.showSuccess(context, 'Đã cập nhật ảnh đại diện!');
     }
   }
 
@@ -93,12 +93,12 @@ class _PlayerInfoDialogState extends State<PlayerInfoDialog> {
         avatarUrl: assetPath,
       ),
     );
-    AppSnackBar.showSuccess(context, 'Đã đổi ảnh đại diện!');
+    AppToast.showSuccess(context, 'Đã đổi ảnh đại diện!');
   }
 
   void _copyId(String uid) {
     Clipboard.setData(ClipboardData(text: uid));
-    AppSnackBar.showSuccess(context, 'Đã sao chép ID người chơi!');
+    AppToast.showSuccess(context, 'Đã sao chép ID người chơi!');
   }
 
   /// Mở dialog đổi tên hiển thị
@@ -204,7 +204,7 @@ class _PlayerInfoDialogState extends State<PlayerInfoDialog> {
               SizedBox(height: 8.h),
 
               // ── 3. Tiến trình cấp độ & EXP ─────────────────
-              AppLevelProgressBar(
+              _PlayerLevelProgressBar(
                 level: level,
                 currentLevelXp: currentLevelXp,
                 neededForNext: neededForNext,
@@ -290,7 +290,7 @@ class _PlayerInfoDialogState extends State<PlayerInfoDialog> {
                       color: isPaper
                           ? AppColors.paperTextDark
                           : AppColors.grayDark,
-                      fontSize: 10.5.sp,
+                      fontSize: 10.sp,
                     ),
                   ),
                 ],
@@ -300,12 +300,12 @@ class _PlayerInfoDialogState extends State<PlayerInfoDialog> {
           SizedBox(width: 6.w),
           AppButton.secondary(
             text: 'Đăng xuất',
-            fontSize: 11.sp,
+            fontSize: 12.sp,
             height: 28.h,
             padding: EdgeInsets.symmetric(horizontal: 8.w),
             onPressed: () {
               context.read<AuthBloc>().add(const AuthEvent.loggedOut());
-              AppSnackBar.showSuccess(context, 'Đã đăng xuất tài khoản!');
+              AppToast.showSuccess(context, 'Đã đăng xuất tài khoản!');
             },
           ),
         ],
@@ -323,8 +323,8 @@ class _PlayerInfoDialogState extends State<PlayerInfoDialog> {
       extrusionColor: isPaper
           ? AppColors.paperGreenExtrusion
           : AppColors.blueDeep,
-      fontSize: 11.5.sp,
-      fontWeight: FontWeight.w700,
+      fontSize: 12.sp,
+
       height: 32.h,
       onPressed: () {
         context.read<AuthBloc>().add(const AuthEvent.signInWithGoogle());
@@ -615,6 +615,115 @@ class _PlayerInfoDialogState extends State<PlayerInfoDialog> {
                   fontSize: 12.sp,
                 ),
               ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// Thẻ hiển thị Cấp độ & Thanh tiến trình EXP nội bộ của PlayerInfoDialog
+class _PlayerLevelProgressBar extends StatelessWidget {
+  const _PlayerLevelProgressBar({
+    required this.level,
+    required this.currentLevelXp,
+    required this.neededForNext,
+    required this.progressPercent,
+    required this.progressFraction,
+    required this.totalXp,
+    this.backgroundColor,
+    this.borderColor,
+    this.titleColor,
+    this.progressColor,
+  });
+
+  final int level;
+  final int currentLevelXp;
+  final int neededForNext;
+  final double progressPercent;
+  final double progressFraction;
+  final int totalXp;
+  final Color? backgroundColor;
+  final Color? borderColor;
+  final Color? titleColor;
+  final Color? progressColor;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
+      decoration: BoxDecoration(
+        color: backgroundColor ?? AppColors.lightBackground,
+        borderRadius: BorderRadius.circular(12.w),
+        border: Border.all(
+          color: borderColor ?? AppColors.grayLight,
+          width: 1.w,
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          AppText.c1(
+            'TIẾN TRÌNH CẤP ĐỘ',
+            fontSize: 12.sp,
+            fontWeight: FontWeight.w700,
+            color: titleColor ?? AppColors.grayDark,
+          ),
+          SizedBox(height: 4.h),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
+                decoration: BoxDecoration(
+                  color: AppColors.gold,
+                  borderRadius: BorderRadius.circular(12.w),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.gold.withValues(alpha: 0.5),
+                      offset: const Offset(0, 2),
+                    ),
+                  ],
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.star_rounded,
+                      color: AppColors.white,
+                      size: 14.w,
+                    ),
+                    SizedBox(width: 3.w),
+                    AppText.c1(
+                      'CẤP $level',
+                      color: AppColors.white,
+                      fontWeight: FontWeight.w700,
+                      fontSize: 10.sp,
+                    ),
+                  ],
+                ),
+              ),
+              AppText.b2(
+                '$currentLevelXp / $neededForNext XP '
+                '(${progressPercent.toInt()}%)',
+                fontWeight: FontWeight.w700,
+                color: AppColors.grayMedium,
+                fontSize: 12.sp,
+              ),
+            ],
+          ),
+          SizedBox(height: 6.h),
+          ClipRRect(
+            borderRadius: BorderRadius.circular(6.w),
+            child: LinearProgressIndicator(
+              value: progressFraction,
+              minHeight: 8.h,
+              backgroundColor: AppColors.grayLight,
+              valueColor: AlwaysStoppedAnimation<Color>(
+                progressColor ?? AppColors.gold,
+              ),
             ),
           ),
         ],

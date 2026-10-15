@@ -27,7 +27,7 @@ class AppButton extends StatefulWidget {
     this.borderRadius,
     this.shape = BoxShape.rectangle,
     this.fontSize,
-    this.fontWeight = FontWeight.w900,
+    this.fontWeight = FontWeight.w700,
     this.padding,
     this.height,
     this.width,

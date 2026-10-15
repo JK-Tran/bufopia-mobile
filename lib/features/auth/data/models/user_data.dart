@@ -19,6 +19,9 @@ abstract class UserData with _$UserData {
     @JsonKey(name: 'currentLevelXp') int? currentLevelXp,
     @JsonKey(name: 'neededForNext') int? neededForNext,
     @JsonKey(name: 'progressPercent') double? progressPercent,
+    @JsonKey(name: 'persisted') bool? persisted,
+    @JsonKey(name: 'name_configured') bool? nameConfigured,
+    @JsonKey(name: 'name_reset_required') bool? nameResetRequired,
   }) = _UserData;
 
   const UserData._();

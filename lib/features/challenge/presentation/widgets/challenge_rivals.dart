@@ -28,12 +28,12 @@ class ChallengeRivals extends StatelessWidget {
         MediaQuery.of(context).orientation == Orientation.landscape;
 
     final titleFontSize = isLandscape ? 12.0 : 12.sp;
-    final emptyFontSize = isLandscape ? 11.5 : 11.sp;
-    final nameFontSize = isLandscape ? 13.0 : 12.5.sp;
-    final subFontSize = isLandscape ? 10.5 : 10.sp;
+    final emptyFontSize = isLandscape ? 12.0 : 12.sp;
+    final nameFontSize = isLandscape ? 12.0 : 12.sp;
+    final subFontSize = isLandscape ? 10.0 : 10.sp;
     final avatarSize = isLandscape ? 34.0 : 32.w;
     final btnHeight = isLandscape ? 28.0 : 28.h;
-    final btnFontSize = isLandscape ? 11.5 : 11.sp;
+    final btnFontSize = isLandscape ? 12.0 : 12.sp;
     final btnPad = EdgeInsets.symmetric(
       horizontal: isLandscape ? 14.0 : 12.w,
     );
@@ -111,7 +111,6 @@ class ChallengeRivals extends StatelessWidget {
                             text: 'Mời',
                             height: btnHeight,
                             fontSize: btnFontSize,
-                            fontWeight: FontWeight.w700,
                             padding: btnPad,
                             borderRadius: BorderRadius.circular(
                               isLandscape ? 8.0 : 7.r,
@@ -137,7 +136,6 @@ class ChallengeRivals extends StatelessWidget {
                           text: 'Mời',
                           height: btnHeight,
                           fontSize: btnFontSize,
-                          fontWeight: FontWeight.w700,
                           padding: btnPad,
                           borderRadius: BorderRadius.circular(
                             isLandscape ? 8.0 : 7.r,

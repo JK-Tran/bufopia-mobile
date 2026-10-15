@@ -174,7 +174,7 @@ class PortraitQuestionCard extends StatelessWidget {
           child: AppCountdownTimer(
             seconds: remainingSeconds,
             size: clockSize,
-            fontSize: 13.sp,
+            fontSize: 14.sp,
             isPaper: isPaper,
           ),
         ),

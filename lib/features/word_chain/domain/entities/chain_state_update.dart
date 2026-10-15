@@ -6,9 +6,9 @@ part 'chain_state_update.freezed.dart';
 @freezed
 abstract class ChainStateUpdate with _$ChainStateUpdate {
   const factory ChainStateUpdate({
-    required int playerIndex,
-    required String roomCode,
-    required GameState state,
+    @Default(0) int playerIndex,
+    @Default('') String roomCode,
+    @Default(GameState()) GameState state,
     String? rivalName,
     String? rivalAvatar,
     int? serverNow,

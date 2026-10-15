@@ -85,7 +85,7 @@ class AccountConflictDialog extends StatelessWidget {
                       'Bản lưu trên Google',
                       fontWeight: FontWeight.w700,
                       color: textDark,
-                      fontSize: 13.sp,
+                      fontSize: 14.sp,
                     ),
                   ],
                 ),
@@ -117,8 +117,7 @@ class AccountConflictDialog extends StatelessWidget {
             extrusionColor: isPaper
                 ? AppColors.paperGreenExtrusion
                 : AppColors.greenDark,
-            fontSize: 13.sp,
-            fontWeight: FontWeight.w700,
+            fontSize: 12.sp,
             onPressed: () =>
                 Navigator.of(context).pop(ConflictResolutionChoice.merge),
           ),

@@ -239,7 +239,6 @@ class _HomeMenuItemState extends State<HomeMenuItem> {
                                     vertical: 6.h,
                                   ),
                                   fontSize: 12.sp,
-                                  fontWeight: FontWeight.w700,
                                   extrusionHeight: 2,
                                   icon: Icon(
                                     isLocked

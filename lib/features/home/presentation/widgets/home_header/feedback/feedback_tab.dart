@@ -341,7 +341,6 @@ class _FeedbackTabState extends State<FeedbackTab> {
                   color: AppColors.white,
                 ),
           fontSize: 14.sp,
-          fontWeight: FontWeight.w700,
           width: double.infinity,
           height: 40.h,
           backgroundColor: _canSubmit

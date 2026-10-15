@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:bufopia/components/app_snack_bar.dart';
+import 'package:bufopia/components/app_toast.dart';
 import 'package:bufopia/components/loading_overlay.dart';
 import 'package:bufopia/core/base/base_bloc_mixin.dart';
 import 'package:bufopia/core/constants/app_spacing.dart';
@@ -25,7 +25,7 @@ abstract class BasePageState<
     super.initState();
     bloc = createBloc();
 
-    // Lắng nghe lỗi từ Bloc để tự động hiển thị SnackBar
+    // Lắng nghe lỗi từ Bloc để tự động hiển thị Toast
     _errorSubscription = bloc.errorStream.listen((exception) {
       if (mounted) {
         handleError(exception);
@@ -41,7 +41,7 @@ abstract class BasePageState<
   }
 
   void handleError(AppException exception) {
-    AppSnackBar.showError(
+    AppToast.showError(
       context,
       exception.toString(),
     );

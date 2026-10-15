@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$User {
 
- String get uid; String get displayName; String get avatarUrl; int get xp; int get level; int get streak; int get winStreak; String get lastActiveDate; int get currentLevelXp; int get neededForNext; double get progressPercent; DateTime? get createdAt; DateTime? get updatedAt;
+ String get uid; String get displayName; String get avatarUrl; int get xp; int get level; int get streak; int get winStreak; String get lastActiveDate; int get currentLevelXp; int get neededForNext; double get progressPercent; bool get persisted; bool get nameConfigured; bool get nameResetRequired; DateTime? get createdAt; DateTime? get updatedAt;
 /// Create a copy of User
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -27,20 +27,20 @@ $UserCopyWith<User> get copyWith => _$UserCopyWithImpl<User>(this as User, _$ide
 @override
 bool operator ==(Object other) {
   final _this = this as User;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is User&&(identical(other.uid, _this.uid) || other.uid == _this.uid)&&(identical(other.displayName, _this.displayName) || other.displayName == _this.displayName)&&(identical(other.avatarUrl, _this.avatarUrl) || other.avatarUrl == _this.avatarUrl)&&(identical(other.xp, _this.xp) || other.xp == _this.xp)&&(identical(other.level, _this.level) || other.level == _this.level)&&(identical(other.streak, _this.streak) || other.streak == _this.streak)&&(identical(other.winStreak, _this.winStreak) || other.winStreak == _this.winStreak)&&(identical(other.lastActiveDate, _this.lastActiveDate) || other.lastActiveDate == _this.lastActiveDate)&&(identical(other.currentLevelXp, _this.currentLevelXp) || other.currentLevelXp == _this.currentLevelXp)&&(identical(other.neededForNext, _this.neededForNext) || other.neededForNext == _this.neededForNext)&&(identical(other.progressPercent, _this.progressPercent) || other.progressPercent == _this.progressPercent)&&(identical(other.createdAt, _this.createdAt) || other.createdAt == _this.createdAt)&&(identical(other.updatedAt, _this.updatedAt) || other.updatedAt == _this.updatedAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is User&&(identical(other.uid, _this.uid) || other.uid == _this.uid)&&(identical(other.displayName, _this.displayName) || other.displayName == _this.displayName)&&(identical(other.avatarUrl, _this.avatarUrl) || other.avatarUrl == _this.avatarUrl)&&(identical(other.xp, _this.xp) || other.xp == _this.xp)&&(identical(other.level, _this.level) || other.level == _this.level)&&(identical(other.streak, _this.streak) || other.streak == _this.streak)&&(identical(other.winStreak, _this.winStreak) || other.winStreak == _this.winStreak)&&(identical(other.lastActiveDate, _this.lastActiveDate) || other.lastActiveDate == _this.lastActiveDate)&&(identical(other.currentLevelXp, _this.currentLevelXp) || other.currentLevelXp == _this.currentLevelXp)&&(identical(other.neededForNext, _this.neededForNext) || other.neededForNext == _this.neededForNext)&&(identical(other.progressPercent, _this.progressPercent) || other.progressPercent == _this.progressPercent)&&(identical(other.persisted, _this.persisted) || other.persisted == _this.persisted)&&(identical(other.nameConfigured, _this.nameConfigured) || other.nameConfigured == _this.nameConfigured)&&(identical(other.nameResetRequired, _this.nameResetRequired) || other.nameResetRequired == _this.nameResetRequired)&&(identical(other.createdAt, _this.createdAt) || other.createdAt == _this.createdAt)&&(identical(other.updatedAt, _this.updatedAt) || other.updatedAt == _this.updatedAt));
 }
 
 
 @override
 int get hashCode {
   final _this = this as User;
-  return Object.hash(runtimeType,_this.uid,_this.displayName,_this.avatarUrl,_this.xp,_this.level,_this.streak,_this.winStreak,_this.lastActiveDate,_this.currentLevelXp,_this.neededForNext,_this.progressPercent,_this.createdAt,_this.updatedAt);
+  return Object.hash(runtimeType,_this.uid,_this.displayName,_this.avatarUrl,_this.xp,_this.level,_this.streak,_this.winStreak,_this.lastActiveDate,_this.currentLevelXp,_this.neededForNext,_this.progressPercent,_this.persisted,_this.nameConfigured,_this.nameResetRequired,_this.createdAt,_this.updatedAt);
 }
 
 @override
 String toString() {
   final _this = this as User;
-  return 'User(uid: ${_this.uid}, displayName: ${_this.displayName}, avatarUrl: ${_this.avatarUrl}, xp: ${_this.xp}, level: ${_this.level}, streak: ${_this.streak}, winStreak: ${_this.winStreak}, lastActiveDate: ${_this.lastActiveDate}, currentLevelXp: ${_this.currentLevelXp}, neededForNext: ${_this.neededForNext}, progressPercent: ${_this.progressPercent}, createdAt: ${_this.createdAt}, updatedAt: ${_this.updatedAt})';
+  return 'User(uid: ${_this.uid}, displayName: ${_this.displayName}, avatarUrl: ${_this.avatarUrl}, xp: ${_this.xp}, level: ${_this.level}, streak: ${_this.streak}, winStreak: ${_this.winStreak}, lastActiveDate: ${_this.lastActiveDate}, currentLevelXp: ${_this.currentLevelXp}, neededForNext: ${_this.neededForNext}, progressPercent: ${_this.progressPercent}, persisted: ${_this.persisted}, nameConfigured: ${_this.nameConfigured}, nameResetRequired: ${_this.nameResetRequired}, createdAt: ${_this.createdAt}, updatedAt: ${_this.updatedAt})';
 }
 
 
@@ -51,7 +51,7 @@ abstract mixin class $UserCopyWith<$Res>  {
   factory $UserCopyWith(User value, $Res Function(User) _then) = _$UserCopyWithImpl;
 @useResult
 $Res call({
- String uid, String displayName, String avatarUrl, int xp, int level, int streak, int winStreak, String lastActiveDate, int currentLevelXp, int neededForNext, double progressPercent, DateTime? createdAt, DateTime? updatedAt
+ String uid, String displayName, String avatarUrl, int xp, int level, int streak, int winStreak, String lastActiveDate, int currentLevelXp, int neededForNext, double progressPercent, bool persisted, bool nameConfigured, bool nameResetRequired, DateTime? createdAt, DateTime? updatedAt
 });
 
 
@@ -68,7 +68,7 @@ class _$UserCopyWithImpl<$Res>
 
 /// Create a copy of User
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? uid = null,Object? displayName = null,Object? avatarUrl = null,Object? xp = null,Object? level = null,Object? streak = null,Object? winStreak = null,Object? lastActiveDate = null,Object? currentLevelXp = null,Object? neededForNext = null,Object? progressPercent = null,Object? createdAt = freezed,Object? updatedAt = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? uid = null,Object? displayName = null,Object? avatarUrl = null,Object? xp = null,Object? level = null,Object? streak = null,Object? winStreak = null,Object? lastActiveDate = null,Object? currentLevelXp = null,Object? neededForNext = null,Object? progressPercent = null,Object? persisted = null,Object? nameConfigured = null,Object? nameResetRequired = null,Object? createdAt = freezed,Object? updatedAt = freezed,}) {
   return _then(User(
 uid: null == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
 as String,displayName: null == displayName ? _self.displayName : displayName // ignore: cast_nullable_to_non_nullable
@@ -81,7 +81,10 @@ as int,lastActiveDate: null == lastActiveDate ? _self.lastActiveDate : lastActiv
 as String,currentLevelXp: null == currentLevelXp ? _self.currentLevelXp : currentLevelXp // ignore: cast_nullable_to_non_nullable
 as int,neededForNext: null == neededForNext ? _self.neededForNext : neededForNext // ignore: cast_nullable_to_non_nullable
 as int,progressPercent: null == progressPercent ? _self.progressPercent : progressPercent // ignore: cast_nullable_to_non_nullable
-as double,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as double,persisted: null == persisted ? _self.persisted : persisted // ignore: cast_nullable_to_non_nullable
+as bool,nameConfigured: null == nameConfigured ? _self.nameConfigured : nameConfigured // ignore: cast_nullable_to_non_nullable
+as bool,nameResetRequired: null == nameResetRequired ? _self.nameResetRequired : nameResetRequired // ignore: cast_nullable_to_non_nullable
+as bool,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,
   ));
@@ -168,10 +171,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String uid,  String displayName,  String avatarUrl,  int xp,  int level,  int streak,  int winStreak,  String lastActiveDate,  int currentLevelXp,  int neededForNext,  double progressPercent,  DateTime? createdAt,  DateTime? updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String uid,  String displayName,  String avatarUrl,  int xp,  int level,  int streak,  int winStreak,  String lastActiveDate,  int currentLevelXp,  int neededForNext,  double progressPercent,  bool persisted,  bool nameConfigured,  bool nameResetRequired,  DateTime? createdAt,  DateTime? updatedAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _User() when $default != null:
-return $default(_that.uid,_that.displayName,_that.avatarUrl,_that.xp,_that.level,_that.streak,_that.winStreak,_that.lastActiveDate,_that.currentLevelXp,_that.neededForNext,_that.progressPercent,_that.createdAt,_that.updatedAt);case _:
+return $default(_that.uid,_that.displayName,_that.avatarUrl,_that.xp,_that.level,_that.streak,_that.winStreak,_that.lastActiveDate,_that.currentLevelXp,_that.neededForNext,_that.progressPercent,_that.persisted,_that.nameConfigured,_that.nameResetRequired,_that.createdAt,_that.updatedAt);case _:
   return orElse();
 
 }
@@ -189,10 +192,10 @@ return $default(_that.uid,_that.displayName,_that.avatarUrl,_that.xp,_that.level
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String uid,  String displayName,  String avatarUrl,  int xp,  int level,  int streak,  int winStreak,  String lastActiveDate,  int currentLevelXp,  int neededForNext,  double progressPercent,  DateTime? createdAt,  DateTime? updatedAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String uid,  String displayName,  String avatarUrl,  int xp,  int level,  int streak,  int winStreak,  String lastActiveDate,  int currentLevelXp,  int neededForNext,  double progressPercent,  bool persisted,  bool nameConfigured,  bool nameResetRequired,  DateTime? createdAt,  DateTime? updatedAt)  $default,) {final _that = this;
 switch (_that) {
 case _User():
-return $default(_that.uid,_that.displayName,_that.avatarUrl,_that.xp,_that.level,_that.streak,_that.winStreak,_that.lastActiveDate,_that.currentLevelXp,_that.neededForNext,_that.progressPercent,_that.createdAt,_that.updatedAt);case _:
+return $default(_that.uid,_that.displayName,_that.avatarUrl,_that.xp,_that.level,_that.streak,_that.winStreak,_that.lastActiveDate,_that.currentLevelXp,_that.neededForNext,_that.progressPercent,_that.persisted,_that.nameConfigured,_that.nameResetRequired,_that.createdAt,_that.updatedAt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -209,10 +212,10 @@ return $default(_that.uid,_that.displayName,_that.avatarUrl,_that.xp,_that.level
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String uid,  String displayName,  String avatarUrl,  int xp,  int level,  int streak,  int winStreak,  String lastActiveDate,  int currentLevelXp,  int neededForNext,  double progressPercent,  DateTime? createdAt,  DateTime? updatedAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String uid,  String displayName,  String avatarUrl,  int xp,  int level,  int streak,  int winStreak,  String lastActiveDate,  int currentLevelXp,  int neededForNext,  double progressPercent,  bool persisted,  bool nameConfigured,  bool nameResetRequired,  DateTime? createdAt,  DateTime? updatedAt)?  $default,) {final _that = this;
 switch (_that) {
 case _User() when $default != null:
-return $default(_that.uid,_that.displayName,_that.avatarUrl,_that.xp,_that.level,_that.streak,_that.winStreak,_that.lastActiveDate,_that.currentLevelXp,_that.neededForNext,_that.progressPercent,_that.createdAt,_that.updatedAt);case _:
+return $default(_that.uid,_that.displayName,_that.avatarUrl,_that.xp,_that.level,_that.streak,_that.winStreak,_that.lastActiveDate,_that.currentLevelXp,_that.neededForNext,_that.progressPercent,_that.persisted,_that.nameConfigured,_that.nameResetRequired,_that.createdAt,_that.updatedAt);case _:
   return null;
 
 }
@@ -224,7 +227,7 @@ return $default(_that.uid,_that.displayName,_that.avatarUrl,_that.xp,_that.level
 
 
 class _User implements User {
-  const _User({this.uid = '', this.displayName = '', this.avatarUrl = '', this.xp = 0, this.level = 1, this.streak = 0, this.winStreak = 0, this.lastActiveDate = '', this.currentLevelXp = 0, this.neededForNext = 100, this.progressPercent = 0.0, this.createdAt, this.updatedAt});
+  const _User({this.uid = '', this.displayName = '', this.avatarUrl = '', this.xp = 0, this.level = 1, this.streak = 0, this.winStreak = 0, this.lastActiveDate = '', this.currentLevelXp = 0, this.neededForNext = 100, this.progressPercent = 0.0, this.persisted = false, this.nameConfigured = false, this.nameResetRequired = false, this.createdAt, this.updatedAt});
   
 
 @override@JsonKey() final  String uid;
@@ -238,6 +241,9 @@ class _User implements User {
 @override@JsonKey() final  int currentLevelXp;
 @override@JsonKey() final  int neededForNext;
 @override@JsonKey() final  double progressPercent;
+@override@JsonKey() final  bool persisted;
+@override@JsonKey() final  bool nameConfigured;
+@override@JsonKey() final  bool nameResetRequired;
 @override final  DateTime? createdAt;
 @override final  DateTime? updatedAt;
 
@@ -251,18 +257,18 @@ _$UserCopyWith<_User> get copyWith => __$UserCopyWithImpl<_User>(this, _$identit
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _User&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl)&&(identical(other.xp, xp) || other.xp == xp)&&(identical(other.level, level) || other.level == level)&&(identical(other.streak, streak) || other.streak == streak)&&(identical(other.winStreak, winStreak) || other.winStreak == winStreak)&&(identical(other.lastActiveDate, lastActiveDate) || other.lastActiveDate == lastActiveDate)&&(identical(other.currentLevelXp, currentLevelXp) || other.currentLevelXp == currentLevelXp)&&(identical(other.neededForNext, neededForNext) || other.neededForNext == neededForNext)&&(identical(other.progressPercent, progressPercent) || other.progressPercent == progressPercent)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _User&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.avatarUrl, avatarUrl) || other.avatarUrl == avatarUrl)&&(identical(other.xp, xp) || other.xp == xp)&&(identical(other.level, level) || other.level == level)&&(identical(other.streak, streak) || other.streak == streak)&&(identical(other.winStreak, winStreak) || other.winStreak == winStreak)&&(identical(other.lastActiveDate, lastActiveDate) || other.lastActiveDate == lastActiveDate)&&(identical(other.currentLevelXp, currentLevelXp) || other.currentLevelXp == currentLevelXp)&&(identical(other.neededForNext, neededForNext) || other.neededForNext == neededForNext)&&(identical(other.progressPercent, progressPercent) || other.progressPercent == progressPercent)&&(identical(other.persisted, persisted) || other.persisted == persisted)&&(identical(other.nameConfigured, nameConfigured) || other.nameConfigured == nameConfigured)&&(identical(other.nameResetRequired, nameResetRequired) || other.nameResetRequired == nameResetRequired)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,uid,displayName,avatarUrl,xp,level,streak,winStreak,lastActiveDate,currentLevelXp,neededForNext,progressPercent,createdAt,updatedAt);
+    return Object.hash(runtimeType,uid,displayName,avatarUrl,xp,level,streak,winStreak,lastActiveDate,currentLevelXp,neededForNext,progressPercent,persisted,nameConfigured,nameResetRequired,createdAt,updatedAt);
 }
 
 @override
 String toString() {
-    return 'User(uid: $uid, displayName: $displayName, avatarUrl: $avatarUrl, xp: $xp, level: $level, streak: $streak, winStreak: $winStreak, lastActiveDate: $lastActiveDate, currentLevelXp: $currentLevelXp, neededForNext: $neededForNext, progressPercent: $progressPercent, createdAt: $createdAt, updatedAt: $updatedAt)';
+    return 'User(uid: $uid, displayName: $displayName, avatarUrl: $avatarUrl, xp: $xp, level: $level, streak: $streak, winStreak: $winStreak, lastActiveDate: $lastActiveDate, currentLevelXp: $currentLevelXp, neededForNext: $neededForNext, progressPercent: $progressPercent, persisted: $persisted, nameConfigured: $nameConfigured, nameResetRequired: $nameResetRequired, createdAt: $createdAt, updatedAt: $updatedAt)';
 }
 
 
@@ -273,7 +279,7 @@ abstract mixin class _$UserCopyWith<$Res> implements $UserCopyWith<$Res> {
   factory _$UserCopyWith(_User value, $Res Function(_User) _then) = __$UserCopyWithImpl;
 @override @useResult
 $Res call({
- String uid, String displayName, String avatarUrl, int xp, int level, int streak, int winStreak, String lastActiveDate, int currentLevelXp, int neededForNext, double progressPercent, DateTime? createdAt, DateTime? updatedAt
+ String uid, String displayName, String avatarUrl, int xp, int level, int streak, int winStreak, String lastActiveDate, int currentLevelXp, int neededForNext, double progressPercent, bool persisted, bool nameConfigured, bool nameResetRequired, DateTime? createdAt, DateTime? updatedAt
 });
 
 
@@ -290,7 +296,7 @@ class __$UserCopyWithImpl<$Res>
 
 /// Create a copy of User
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? uid = null,Object? displayName = null,Object? avatarUrl = null,Object? xp = null,Object? level = null,Object? streak = null,Object? winStreak = null,Object? lastActiveDate = null,Object? currentLevelXp = null,Object? neededForNext = null,Object? progressPercent = null,Object? createdAt = freezed,Object? updatedAt = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? uid = null,Object? displayName = null,Object? avatarUrl = null,Object? xp = null,Object? level = null,Object? streak = null,Object? winStreak = null,Object? lastActiveDate = null,Object? currentLevelXp = null,Object? neededForNext = null,Object? progressPercent = null,Object? persisted = null,Object? nameConfigured = null,Object? nameResetRequired = null,Object? createdAt = freezed,Object? updatedAt = freezed,}) {
   return _then(_User(
 uid: null == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
 as String,displayName: null == displayName ? _self.displayName : displayName // ignore: cast_nullable_to_non_nullable
@@ -303,7 +309,10 @@ as int,lastActiveDate: null == lastActiveDate ? _self.lastActiveDate : lastActiv
 as String,currentLevelXp: null == currentLevelXp ? _self.currentLevelXp : currentLevelXp // ignore: cast_nullable_to_non_nullable
 as int,neededForNext: null == neededForNext ? _self.neededForNext : neededForNext // ignore: cast_nullable_to_non_nullable
 as int,progressPercent: null == progressPercent ? _self.progressPercent : progressPercent // ignore: cast_nullable_to_non_nullable
-as double,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as double,persisted: null == persisted ? _self.persisted : persisted // ignore: cast_nullable_to_non_nullable
+as bool,nameConfigured: null == nameConfigured ? _self.nameConfigured : nameConfigured // ignore: cast_nullable_to_non_nullable
+as bool,nameResetRequired: null == nameResetRequired ? _self.nameResetRequired : nameResetRequired // ignore: cast_nullable_to_non_nullable
+as bool,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,
   ));

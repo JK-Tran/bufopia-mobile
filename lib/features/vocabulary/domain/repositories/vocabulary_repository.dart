@@ -1,4 +1,3 @@
-import 'package:bufopia/features/vocabulary/data/models/feedback_data.dart';
 import 'package:bufopia/features/vocabulary/domain/entities/battle_deck.dart';
 import 'package:bufopia/features/vocabulary/domain/entities/battle_reward.dart';
 import 'package:bufopia/features/vocabulary/domain/entities/feedback.dart';
@@ -33,5 +32,12 @@ abstract class VocabularyRepository {
     List<WordProfile> profiles,
   );
 
-  Future<Feedback> sendFeedback(FeedbackData request);
+  Future<Feedback> sendFeedback({
+    required String uid,
+    required String userName,
+    required String category,
+    required String message,
+    String? contact,
+    String? page,
+  });
 }

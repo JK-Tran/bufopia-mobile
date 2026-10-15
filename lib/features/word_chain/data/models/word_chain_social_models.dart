@@ -1,87 +1,56 @@
+import 'package:freezed_annotation/freezed_annotation.dart';
+
+part 'word_chain_social_models.freezed.dart';
+part 'word_chain_social_models.g.dart';
+
 /// Các model dữ liệu cho tính năng Social, Mời bạn & Phòng riêng của Word Chain
-class WordChainSocialState {
-  const WordChainSocialState({
-    this.recent = const [],
-    this.invitations = const [],
-  });
+@freezed
+abstract class WordChainSocialState with _$WordChainSocialState {
+  const factory WordChainSocialState({
+    @JsonKey(name: 'recent') @Default([]) List<WordChainRival> recent,
+    @JsonKey(name: 'invitations')
+    @Default([])
+    List<WordChainInvitation> invitations,
+  }) = _WordChainSocialState;
 
-  factory WordChainSocialState.fromJson(Map<String, dynamic> json) {
-    return WordChainSocialState(
-      recent:
-          (json['recent'] as List<dynamic>?)
-              ?.map((e) => WordChainRival.fromJson(e as Map<String, dynamic>))
-              .toList() ??
-          const [],
-      invitations:
-          (json['invitations'] as List<dynamic>?)
-              ?.map(
-                (e) => WordChainInvitation.fromJson(e as Map<String, dynamic>),
-              )
-              .toList() ??
-          const [],
-    );
-  }
+  const WordChainSocialState._();
 
-  final List<WordChainRival> recent;
-  final List<WordChainInvitation> invitations;
+  factory WordChainSocialState.fromJson(Map<String, dynamic> json) =>
+      _$WordChainSocialStateFromJson(json);
 }
 
-class WordChainRival {
-  const WordChainRival({
-    required this.uid,
-    required this.name,
-    this.avatar,
-    this.playedAt,
-  });
+@freezed
+abstract class WordChainRival with _$WordChainRival {
+  const factory WordChainRival({
+    @JsonKey(name: 'uid') @Default('') String uid,
+    @JsonKey(name: 'name') @Default('Người chơi') String name,
+    @JsonKey(name: 'avatar') String? avatar,
+    @JsonKey(name: 'playedAt') int? playedAt,
+  }) = _WordChainRival;
 
-  factory WordChainRival.fromJson(Map<String, dynamic> json) {
-    return WordChainRival(
-      uid: json['uid']?.toString() ?? '',
-      name: json['name']?.toString() ?? 'Người chơi',
-      avatar: json['avatar'] as String?,
-      playedAt: (json['playedAt'] as num?)?.toInt(),
-    );
-  }
+  const WordChainRival._();
 
-  final String uid;
-  final String name;
-  final String? avatar;
-  final int? playedAt;
+  factory WordChainRival.fromJson(Map<String, dynamic> json) =>
+      _$WordChainRivalFromJson(json);
 }
 
-class WordChainInvitation {
-  const WordChainInvitation({
-    required this.id,
-    required this.fromUid,
-    required this.fromName,
-    required this.roomCode,
-    this.fromAvatar,
-    this.activity = 'chain',
-    this.language = 'vi',
-    this.expiresAt = 0,
-  });
+@freezed
+abstract class WordChainInvitation with _$WordChainInvitation {
+  const factory WordChainInvitation({
+    @JsonKey(name: 'id') @Default('') String id,
+    @JsonKey(name: 'fromUid') @Default('') String fromUid,
+    @JsonKey(name: 'fromName') @Default('Bạn bè') String fromName,
+    @JsonKey(name: 'roomCode') @Default('') String roomCode,
+    @JsonKey(name: 'fromAvatar') String? fromAvatar,
+    @JsonKey(name: 'activity') @Default('chain') String activity,
+    @JsonKey(name: 'language') @Default('vi') String language,
+    @JsonKey(name: 'expiresAt') @Default(0) int expiresAt,
+  }) = _WordChainInvitation;
 
-  factory WordChainInvitation.fromJson(Map<String, dynamic> json) {
-    return WordChainInvitation(
-      id: json['id']?.toString() ?? '',
-      fromUid: json['fromUid']?.toString() ?? '',
-      fromName: json['fromName']?.toString() ?? 'Bạn bè',
-      fromAvatar: json['fromAvatar'] as String?,
-      roomCode: json['roomCode']?.toString() ?? '',
-      activity: json['activity']?.toString() ?? 'chain',
-      language: json['language']?.toString() ?? 'vi',
-      expiresAt: (json['expiresAt'] as num?)?.toInt() ?? 0,
-    );
-  }
+  const WordChainInvitation._();
 
-  final String id;
-  final String fromUid;
-  final String fromName;
-  final String? fromAvatar;
-  final String roomCode;
-  final String activity;
-  final String language;
-  final int expiresAt;
+  factory WordChainInvitation.fromJson(Map<String, dynamic> json) =>
+      _$WordChainInvitationFromJson(json);
 
   bool get isExpired =>
       expiresAt > 0 && expiresAt <= DateTime.now().millisecondsSinceEpoch;

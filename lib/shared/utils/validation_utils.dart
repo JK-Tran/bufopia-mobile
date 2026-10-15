@@ -114,4 +114,35 @@ class ValidationUtils {
   static bool isLink(String text) {
     return Uri.parse(text).isAbsolute;
   }
+
+  /// Danh sách các tên mặc định / placeholder không hợp lệ đối với hồ sơ người chơi
+  static const List<String> invalidPlayerNames = [
+    'alex',
+    'player',
+    'bạn',
+    'user',
+    'guest',
+    'người chơi',
+  ];
+
+  /// Kiểm tra tên người chơi hợp lệ (2-25 ký tự, chỉ gồm chữ, số, dấu cách,
+  /// dấu chấm, gạch nối, gạch dưới; không rỗng, không thuộc placeholder)
+  static bool isValidPlayerName(String? name) {
+    if (name == null) return false;
+    final trimmed = name.trim();
+    if (trimmed.length < 2 || trimmed.length > 25) return false;
+    // Backend chỉ chấp nhận: chữ cái, số, dấu cách, dấu chấm,
+    // gạch ngang, gạch dưới.
+    final validChars = RegExp(r'^[a-zA-Z0-9\s._\-À-ỹ]+$');
+    if (!validChars.hasMatch(trimmed)) {
+      return false;
+    }
+    final lower = trimmed.toLowerCase();
+    for (final invalid in invalidPlayerNames) {
+      if (lower == invalid || lower.startsWith('$invalid ')) {
+        return false;
+      }
+    }
+    return true;
+  }
 }

@@ -37,15 +37,15 @@ class AppDimens {
   static double get fontDisplaySmall => 24.sp;
   static double get fontHeadlineLarge => 22.sp;
   static double get fontHeadlineMedium => 20.sp;
-  static double get fontHeadlineSmall => 17.sp;
+  static double get fontHeadlineSmall => 18.sp;
   static double get fontTitleLarge => 16.sp;
   static double get fontTitleMedium => 14.sp;
-  static double get fontTitleSmall => 13.sp;
+  static double get fontTitleSmall => 14.sp;
   static double get fontBodyLarge => 14.sp;
-  static double get fontBodyMedium => 13.sp;
-  static double get fontBodySmall => 11.5.sp;
-  static double get fontLabelLarge => 13.sp;
-  static double get fontLabelMedium => 11.sp;
+  static double get fontBodyMedium => 14.sp;
+  static double get fontBodySmall => 12.sp;
+  static double get fontLabelLarge => 14.sp;
+  static double get fontLabelMedium => 12.sp;
   static double get fontLabelSmall => 10.sp;
 
   /// Icon sizes

@@ -6,8 +6,8 @@ part 'turn_message.freezed.dart';
 @freezed
 abstract class TurnMessage with _$TurnMessage {
   const factory TurnMessage({
-    required int actor,
-    required Word entry,
+    @Default(0) int actor,
+    @Default(Word()) Word entry,
     @Default(0) int time,
   }) = _TurnMessage;
 }

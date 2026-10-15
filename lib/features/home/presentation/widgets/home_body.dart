@@ -60,7 +60,7 @@ class HomeBody extends StatelessWidget {
                         return HomeHeader(
                           userName: (user?.displayName.isNotEmpty == true)
                               ? user!.displayName
-                              : 'Alex',
+                              : 'Bunny',
                           userLevel: user?.level ?? 1,
                           userXp: user?.xp ?? 0,
                           userStreak: user?.streak ?? 0,

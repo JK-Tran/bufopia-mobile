@@ -26,10 +26,10 @@ class ChallengeInvitations extends StatelessWidget {
         MediaQuery.of(context).orientation == Orientation.landscape;
 
     final titleFontSize = isLandscape ? 12.0 : 12.sp;
-    final emptyFontSize = isLandscape ? 11.5 : 11.sp;
+    final emptyFontSize = isLandscape ? 12.0 : 12.sp;
     final textFontSize = isLandscape ? 12.0 : 12.sp;
     final btnHeight = isLandscape ? 28.0 : 28.h;
-    final btnFontSize = isLandscape ? 11.0 : 11.sp;
+    final btnFontSize = isLandscape ? 12.0 : 12.sp;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -98,7 +98,6 @@ class ChallengeInvitations extends StatelessWidget {
                       text: 'VÀO',
                       height: btnHeight,
                       fontSize: btnFontSize,
-                      fontWeight: FontWeight.w700,
                       padding: EdgeInsets.symmetric(
                         horizontal: isLandscape ? 14.0 : 12.w,
                       ),

@@ -1,131 +1,119 @@
 import 'package:bufopia/components/app_avatar.dart';
 import 'package:bufopia/components/app_dotted.dart';
+import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-/// Huy hiệu nhãn (Chip) ở chân thẻ kết quả đối đầu (XP, Streak, Bạn cùng luyện)
-class DuelBadgeChip extends StatelessWidget {
-  const DuelBadgeChip({
-    required this.label,
+/// Khung hiển thị toàn cảnh kết quả đối đầu (Player 1 VS Player 2)
+class AppResultCard extends StatelessWidget {
+  const AppResultCard({
+    required this.player1Card,
+    required this.player2Card,
     super.key,
-    this.icon,
-    this.iconColor,
-    this.backgroundColor,
-    this.textColor,
-    this.borderColor,
-    this.shadowColor,
+    this.isPaper = false,
+    this.isVertical,
   });
 
-  /// Chip hiển thị XP nhận được (+25 XP) - Tone vàng kim ấm áp, rực rỡ
-  factory DuelBadgeChip.xp(int xp) {
-    return DuelBadgeChip(
-      icon: Icons.star_rounded,
-      iconColor: const Color(0xFFFFA000),
-      label: '+$xp XP',
-      backgroundColor: const Color(0xFFFFF8E1),
-      textColor: const Color(0xFFE65100),
-      borderColor: const Color(0xFFFFD54F),
-      shadowColor: const Color(0xFFFFD54F).withValues(alpha: 0.25),
-    );
-  }
+  final AppResultPlayerCard player1Card;
+  final AppResultPlayerCard player2Card;
+  final bool isPaper;
+  final bool? isVertical;
 
-  /// Chip hiển thị Chuỗi ngày - Tone cam lửa nhiệt huyết
-  factory DuelBadgeChip.streak(int days) {
-    return DuelBadgeChip(
-      icon: Icons.local_fire_department_rounded,
-      iconColor: const Color(0xFFFF5722),
-      label: 'Chuỗi: $days ngày',
-      backgroundColor: const Color(0xFFFBE9E7),
-      textColor: const Color(0xFFD84315),
-      borderColor: const Color(0xFFFFCCBC),
-      shadowColor: const Color(0xFFFF5722).withValues(alpha: 0.2),
-    );
-  }
-
-  /// Chip hiển thị Chuỗi dẫn đầu / chuỗi thắng - Tone ngọc cúp chiến thắng
-  factory DuelBadgeChip.winStreak(int winStreak) {
-    return DuelBadgeChip(
-      icon: Icons.emoji_events_rounded,
-      iconColor: const Color(0xFF2E7D32),
-      label: 'Chuỗi dẫn đầu: $winStreak',
-      backgroundColor: const Color(0xFFE8F5E9),
-      textColor: const Color(0xFF1B5E20),
-      borderColor: const Color(0xFFA5D6A7),
-      shadowColor: const Color(0xFF4CAF50).withValues(alpha: 0.2),
-    );
-  }
-
-  /// Chip hiển thị bạn cùng luyện online / đối thủ - Tone xanh biển hài hoà
-  factory DuelBadgeChip.rival({String text = 'Bạn cùng luyện online'}) {
-    return DuelBadgeChip(
-      icon: Icons.military_tech_rounded,
-      iconColor: const Color(0xFF1976D2),
-      label: text,
-      backgroundColor: const Color(0xFFE3F2FD),
-      textColor: const Color(0xFF0D47A1),
-      borderColor: const Color(0xFFBBDEFB),
-      shadowColor: const Color(0xFF2196F3).withValues(alpha: 0.15),
-    );
-  }
-
-  final String label;
-  final IconData? icon;
-  final Color? iconColor;
-  final Color? backgroundColor;
-  final Color? textColor;
-  final Color? borderColor;
-  final Color? shadowColor;
-
-  @override
-  Widget build(BuildContext context) {
+  Widget _buildVsBadge({required bool isCompact}) {
+    final size = isCompact ? 28.r : 38.r;
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.5.h),
+      width: size,
+      height: size,
       decoration: BoxDecoration(
-        color: backgroundColor ?? const Color(0xFFF5F5F5),
-        borderRadius: BorderRadius.circular(16.r),
+        shape: BoxShape.circle,
+        color: isPaper ? AppColors.paperCardBg : AppColors.white,
         border: Border.all(
-          color: borderColor ?? const Color(0xFFE0E0E0),
-          width: 1.w,
+          color: isPaper ? AppColors.paperBorder : const Color(0xFFE0E0E0),
+          width: isCompact ? 1.5.w : 2.w,
         ),
         boxShadow: [
-          if (shadowColor != null)
-            BoxShadow(
-              color: shadowColor!,
-              offset: Offset(0, 1.h),
-              blurRadius: 3.r,
-            ),
-        ],
-      ),
-      child: Row(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          if (icon != null) ...[
-            Icon(
-              icon,
-              size: 13.r,
-              color: iconColor ?? const Color(0xFFFFA000),
-            ),
-            SizedBox(width: 3.5.w),
-          ],
-          Text(
-            label,
-            style: TextStyle(
-              color: textColor ?? const Color(0xFF424242),
-              fontSize: 10.5.sp,
-              fontWeight: FontWeight.w800,
-              letterSpacing: 0.1,
-            ),
+          BoxShadow(
+            color: AppColors.black.withValues(alpha: 0.12),
+            offset: Offset(0, 2.h),
+            blurRadius: 4.r,
           ),
         ],
       ),
+      alignment: Alignment.center,
+      child: AppText.t3(
+        'VS',
+        color: AppColors.grayMedium,
+        fontWeight: FontWeight.w700,
+        fontSize: isCompact ? 10.sp : 12.sp,
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final useVertical = isVertical ?? (constraints.maxWidth < 520);
+        final isCompact = constraints.maxWidth < 560;
+
+        if (useVertical) {
+          return Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              player1Card,
+              Padding(
+                padding: EdgeInsets.symmetric(vertical: 6.h),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: Container(
+                        height: 1.h,
+                        color: isPaper
+                            ? AppColors.paperBorder.withValues(alpha: 0.6)
+                            : const Color(0xFFE0E0E0),
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 10.w),
+                      child: _buildVsBadge(isCompact: true),
+                    ),
+                    Expanded(
+                      child: Container(
+                        height: 1.h,
+                        color: isPaper
+                            ? AppColors.paperBorder.withValues(alpha: 0.6)
+                            : const Color(0xFFE0E0E0),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              player2Card,
+            ],
+          );
+        }
+
+        return Row(
+          children: [
+            Expanded(child: player1Card),
+            Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: isCompact ? 4.w : 8.w,
+              ),
+              child: _buildVsBadge(isCompact: isCompact),
+            ),
+            Expanded(child: player2Card),
+          ],
+        );
+      },
     );
   }
 }
 
-/// Thẻ kết quả thi đấu của 1 người chơi theo chuẩn giao diện Web
-class DuelPlayerSummaryCard extends StatelessWidget {
-  const DuelPlayerSummaryCard({
+/// Thẻ thống kê kết quả thi đấu của 1 người chơi
+class AppResultPlayerCard extends StatelessWidget {
+  const AppResultPlayerCard({
     required this.name,
     super.key,
     this.avatarUrl,
@@ -184,26 +172,20 @@ class DuelPlayerSummaryCard extends StatelessWidget {
         children: [
           Icon(icon, color: iconColor, size: isCompact ? 12.r : 14.r),
           SizedBox(width: 3.w),
-          Text(
+          AppText.c1(
             label,
-            style: TextStyle(
-              color: isPaper
-                  ? AppColors.paperTextMedium
-                  : const Color(0xFF616161),
-              fontSize: isCompact ? 9.sp : 10.sp,
-              fontWeight: FontWeight.w600,
-            ),
+            color: isPaper
+                ? AppColors.paperTextMedium
+                : const Color(0xFF616161),
+            fontSize: 10.sp,
+            fontWeight: FontWeight.w600,
           ),
           const Spacer(),
-          Text(
+          AppText.c1(
             value,
-            style: TextStyle(
-              color: isPaper
-                  ? AppColors.paperTextDark
-                  : const Color(0xFF212121),
-              fontSize: isCompact ? 10.sp : 11.sp,
-              fontWeight: FontWeight.w800,
-            ),
+            color: isPaper ? AppColors.paperTextDark : const Color(0xFF212121),
+            fontSize: isCompact ? 10.sp : 12.sp,
+            fontWeight: FontWeight.w700,
           ),
         ],
       ),
@@ -212,7 +194,7 @@ class DuelPlayerSummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cardBg = isPaper ? AppColors.paperCardBg : Colors.white;
+    final cardBg = isPaper ? AppColors.paperCardBg : AppColors.white;
     final cardBorder = isPaper
         ? AppColors.paperBorder
         : const Color(0xFFE0E0E0);
@@ -235,7 +217,7 @@ class DuelPlayerSummaryCard extends StatelessWidget {
               BoxShadow(
                 color: isPaper
                     ? AppColors.paperExtrusion.withValues(alpha: 0.3)
-                    : Colors.black.withValues(alpha: 0.08),
+                    : AppColors.black.withValues(alpha: 0.08),
                 offset: Offset(0, 3.h),
                 blurRadius: 8.r,
               ),
@@ -260,26 +242,22 @@ class DuelPlayerSummaryCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(
+                        AppText.t3(
                           name.toUpperCase(),
-                          style: TextStyle(
-                            color: nameColor,
-                            fontSize: isCompact ? 11.5.sp : 13.sp,
-                            fontWeight: FontWeight.w800,
-                            letterSpacing: 0.2,
-                          ),
+                          color: nameColor,
+                          fontSize: isCompact ? 12.sp : 14.sp,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 0.2,
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
                         SizedBox(height: 1.h),
                         if (scoreText != null && scoreText!.isNotEmpty)
-                          Text(
+                          AppText.t2(
                             scoreText!,
-                            style: TextStyle(
-                              color: const Color(0xFF212121),
-                              fontSize: isCompact ? 13.sp : 16.sp,
-                              fontWeight: FontWeight.w900,
-                            ),
+                            color: AppColors.grayDark,
+                            fontSize: isCompact ? 14.sp : 16.sp,
+                            fontWeight: FontWeight.w700,
                           )
                         else ...[
                           Row(
@@ -300,15 +278,13 @@ class DuelPlayerSummaryCard extends StatelessWidget {
                                 ),
                               ),
                               SizedBox(width: 3.w),
-                              Text(
+                              AppText.c1(
                                 'Còn $lives tim',
-                                style: TextStyle(
-                                  color: isPaper
-                                      ? AppColors.paperTextMedium
-                                      : const Color(0xFF616161),
-                                  fontSize: isCompact ? 9.sp : 10.sp,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                                color: isPaper
+                                    ? AppColors.paperTextMedium
+                                    : AppColors.grayMedium,
+                                fontSize: 10.sp,
+                                fontWeight: FontWeight.w600,
                               ),
                             ],
                           ),
@@ -320,7 +296,7 @@ class DuelPlayerSummaryCard extends StatelessWidget {
               ),
               SizedBox(height: isCompact ? 6.h : 8.h),
 
-              // 3. Khung 4 chỉ số
+              // 2. Khung 4 chỉ số
               if (isCompact) ...[
                 // Trên màn hình hẹp (mobile): 4 hàng pill xếp dọc (1 cột),
                 // vừa vặn 1 màn hình
@@ -406,7 +382,7 @@ class DuelPlayerSummaryCard extends StatelessWidget {
                 ),
               ],
 
-              // 4. Đường kẻ phân cách nét đứt (Dotted Divider)
+              // 3. Đường kẻ phân cách nét đứt (Dotted Divider)
               SizedBox(height: isCompact ? 6.h : 10.h),
               AppDotted(
                 color: isPaper
@@ -415,7 +391,7 @@ class DuelPlayerSummaryCard extends StatelessWidget {
               ),
               SizedBox(height: isCompact ? 6.h : 8.h),
 
-              // 5. Danh sách huy hiệu chân thẻ (Badges)
+              // 4. Danh sách huy hiệu chân thẻ (Badges)
               if (badges.isNotEmpty)
                 Center(
                   child: Wrap(
@@ -461,17 +437,15 @@ class DuelPlayerSummaryCard extends StatelessWidget {
                     children: [
                       Icon(
                         Icons.emoji_events_rounded,
-                        color: Colors.white,
-                        size: isCompact ? 10.r : 13.r,
+                        color: AppColors.white,
+                        size: isCompact ? 10.r : 12.r,
                       ),
                       SizedBox(width: 2.w),
-                      Text(
+                      AppText.c1(
                         'DẪN ĐẦU',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: isCompact ? 8.sp : 9.sp,
-                          fontWeight: FontWeight.w800,
-                        ),
+                        color: AppColors.white,
+                        fontSize: isCompact ? 8.sp : 10.sp,
+                        fontWeight: FontWeight.w700,
                       ),
                     ],
                   ),
@@ -487,111 +461,119 @@ class DuelPlayerSummaryCard extends StatelessWidget {
   }
 }
 
-/// Khối hiển thị toàn cảnh Đối đầu (Player 1 VS Player 2)
-class DuelVersusResultView extends StatelessWidget {
-  const DuelVersusResultView({
-    required this.player1Card,
-    required this.player2Card,
+/// Huy hiệu nhãn (Chip) ở chân thẻ kết quả (XP, Streak, Bạn cùng luyện)
+class AppResultBadgeChip extends StatelessWidget {
+  const AppResultBadgeChip({
+    required this.label,
     super.key,
-    this.isPaper = false,
-    this.isVertical,
+    this.icon,
+    this.iconColor,
+    this.backgroundColor,
+    this.textColor,
+    this.borderColor,
+    this.shadowColor,
   });
 
-  final DuelPlayerSummaryCard player1Card;
-  final DuelPlayerSummaryCard player2Card;
-  final bool isPaper;
-  final bool? isVertical;
-
-  Widget _buildVsBadge({required bool isCompact}) {
-    final size = isCompact ? 28.r : 38.r;
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(
-        shape: BoxShape.circle,
-        color: isPaper ? AppColors.paperCardBg : Colors.white,
-        border: Border.all(
-          color: isPaper ? AppColors.paperBorder : const Color(0xFFE0E0E0),
-          width: isCompact ? 1.5.w : 2.w,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.12),
-            offset: Offset(0, 2.h),
-            blurRadius: 4.r,
-          ),
-        ],
-      ),
-      alignment: Alignment.center,
-      child: Text(
-        'VS',
-        style: TextStyle(
-          color: const Color(0xFF757575),
-          fontWeight: FontWeight.w900,
-          fontSize: isCompact ? 10.sp : 13.sp,
-          fontStyle: FontStyle.italic,
-        ),
-      ),
+  /// Chip hiển thị XP nhận được (+25 XP) - Tone vàng kim ấm áp, rực rỡ
+  factory AppResultBadgeChip.xp(int xp) {
+    return AppResultBadgeChip(
+      icon: Icons.star_rounded,
+      iconColor: const Color(0xFFFFA000),
+      label: '+$xp XP',
+      backgroundColor: const Color(0xFFFFF8E1),
+      textColor: const Color(0xFFE65100),
+      borderColor: const Color(0xFFFFD54F),
+      shadowColor: const Color(0xFFFFD54F).withValues(alpha: 0.25),
     );
   }
 
+  /// Chip hiển thị Chuỗi ngày - Tone cam lửa nhiệt huyết
+  factory AppResultBadgeChip.streak(int days) {
+    return AppResultBadgeChip(
+      icon: Icons.local_fire_department_rounded,
+      iconColor: const Color(0xFFFF5722),
+      label: 'Chuỗi: $days ngày',
+      backgroundColor: const Color(0xFFFBE9E7),
+      textColor: const Color(0xFFD84315),
+      borderColor: const Color(0xFFFFCCBC),
+      shadowColor: const Color(0xFFFF5722).withValues(alpha: 0.2),
+    );
+  }
+
+  /// Chip hiển thị Chuỗi dẫn đầu / chuỗi thắng - Tone ngọc cúp chiến thắng
+  factory AppResultBadgeChip.winStreak(int winStreak) {
+    return AppResultBadgeChip(
+      icon: Icons.emoji_events_rounded,
+      iconColor: const Color(0xFF2E7D32),
+      label: 'Chuỗi dẫn đầu: $winStreak',
+      backgroundColor: const Color(0xFFE8F5E9),
+      textColor: const Color(0xFF1B5E20),
+      borderColor: const Color(0xFFA5D6A7),
+      shadowColor: const Color(0xFF4CAF50).withValues(alpha: 0.2),
+    );
+  }
+
+  /// Chip hiển thị bạn cùng luyện online / đối thủ - Tone xanh biển hài hoà
+  factory AppResultBadgeChip.rival({String text = 'Bạn cùng luyện online'}) {
+    return AppResultBadgeChip(
+      icon: Icons.military_tech_rounded,
+      iconColor: const Color(0xFF1976D2),
+      label: text,
+      backgroundColor: const Color(0xFFE3F2FD),
+      textColor: const Color(0xFF0D47A1),
+      borderColor: const Color(0xFFBBDEFB),
+      shadowColor: const Color(0xFF2196F3).withValues(alpha: 0.15),
+    );
+  }
+
+  final String label;
+  final IconData? icon;
+  final Color? iconColor;
+  final Color? backgroundColor;
+  final Color? textColor;
+  final Color? borderColor;
+  final Color? shadowColor;
+
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        final useVertical = isVertical ?? (constraints.maxWidth < 520);
-        final isCompact = constraints.maxWidth < 560;
-
-        if (useVertical) {
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              player1Card,
-              Padding(
-                padding: EdgeInsets.symmetric(vertical: 6.h),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: Container(
-                        height: 1.h,
-                        color: isPaper
-                            ? AppColors.paperBorder.withValues(alpha: 0.6)
-                            : const Color(0xFFE0E0E0),
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 10.w),
-                      child: _buildVsBadge(isCompact: true),
-                    ),
-                    Expanded(
-                      child: Container(
-                        height: 1.h,
-                        color: isPaper
-                            ? AppColors.paperBorder.withValues(alpha: 0.6)
-                            : const Color(0xFFE0E0E0),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              player2Card,
-            ],
-          );
-        }
-
-        return Row(
-          children: [
-            Expanded(child: player1Card),
-            Padding(
-              padding: EdgeInsets.symmetric(
-                horizontal: isCompact ? 4.w : 8.w,
-              ),
-              child: _buildVsBadge(isCompact: isCompact),
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 3.5.h),
+      decoration: BoxDecoration(
+        color: backgroundColor ?? const Color(0xFFF5F5F5),
+        borderRadius: BorderRadius.circular(16.r),
+        border: Border.all(
+          color: borderColor ?? const Color(0xFFE0E0E0),
+          width: 1.w,
+        ),
+        boxShadow: [
+          if (shadowColor != null)
+            BoxShadow(
+              color: shadowColor!,
+              offset: Offset(0, 1.h),
+              blurRadius: 3.r,
             ),
-            Expanded(child: player2Card),
+        ],
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (icon != null) ...[
+            Icon(
+              icon,
+              size: 13.r,
+              color: iconColor ?? const Color(0xFFFFA000),
+            ),
+            SizedBox(width: 3.5.w),
           ],
-        );
-      },
+          AppText.c1(
+            label,
+            color: textColor ?? AppColors.grayDark,
+            fontSize: 10.sp,
+            fontWeight: FontWeight.w700,
+            letterSpacing: 0.1,
+          ),
+        ],
+      ),
     );
   }
 }

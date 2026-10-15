@@ -1,5 +1,5 @@
 import 'package:bufopia/components/app_button.dart';
-import 'package:bufopia/components/app_snack_bar.dart';
+import 'package:bufopia/components/app_toast.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
@@ -56,8 +56,7 @@ class ChallengeCreate extends StatelessWidget {
               : AppColors.modeBotButtonExtrusion,
           extrusionHeight: 2,
           borderRadius: BorderRadius.circular(isLandscape ? 10.0 : 10.r),
-          fontSize: isLandscape ? 13.0 : 13.sp,
-          fontWeight: FontWeight.w700,
+          fontSize: isLandscape ? 12.0 : 12.sp,
           onPressed: onCreateRoom,
         ),
       );
@@ -70,7 +69,7 @@ class ChallengeCreate extends StatelessWidget {
         : AppColors.modeBotButtonDark;
 
     final btnHeight = isLandscape ? 30.0 : 30.h;
-    final btnFontSize = isLandscape ? 11.0 : 10.5.sp;
+    final btnFontSize = isLandscape ? 12.0 : 12.sp;
     final iconSize = isLandscape ? 13.0 : 13.r;
     final btnPad = EdgeInsets.symmetric(horizontal: isLandscape ? 12.0 : 10.w);
     final btnSpacing = isLandscape ? 8.0 : 6.w;
@@ -107,7 +106,7 @@ class ChallengeCreate extends StatelessWidget {
               SizedBox(width: isLandscape ? 6.0 : 6.w),
               AppText.c1(
                 'CHỜ ĐỐI THỦ VÀO...',
-                fontSize: isLandscape ? 11.5 : 11.sp,
+                fontSize: isLandscape ? 12.0 : 12.sp,
                 fontWeight: FontWeight.w700,
                 color: statusColor,
               ),
@@ -141,7 +140,6 @@ class ChallengeCreate extends StatelessWidget {
                   ),
                   height: btnHeight,
                   fontSize: btnFontSize,
-                  fontWeight: FontWeight.w700,
                   padding: btnPad,
                   borderRadius: BorderRadius.circular(isLandscape ? 8.0 : 8.r),
                   backgroundColor: AppColors.paperCardBg,
@@ -151,7 +149,7 @@ class ChallengeCreate extends StatelessWidget {
                   extrusionHeight: 1.5,
                   onPressed: () {
                     Clipboard.setData(ClipboardData(text: code));
-                    AppSnackBar.showSuccess(
+                    AppToast.showSuccess(
                       context,
                       'Đã sao chép mã phòng $code',
                     );
@@ -172,7 +170,7 @@ class ChallengeCreate extends StatelessWidget {
                   extrusionHeight: 1.5,
                   onPressed: () {
                     Clipboard.setData(ClipboardData(text: code));
-                    AppSnackBar.showSuccess(
+                    AppToast.showSuccess(
                       context,
                       'Đã sao chép mã phòng $code',
                     );
@@ -191,7 +189,6 @@ class ChallengeCreate extends StatelessWidget {
                   ),
                   height: btnHeight,
                   fontSize: btnFontSize,
-                  fontWeight: FontWeight.w700,
                   padding: btnPad,
                   borderRadius: BorderRadius.circular(isLandscape ? 8.0 : 8.r),
                   backgroundColor: AppColors.paperCardBg,
@@ -205,7 +202,7 @@ class ChallengeCreate extends StatelessWidget {
                         text: 'https://wordduel.app/join/$code',
                       ),
                     );
-                    AppSnackBar.showSuccess(
+                    AppToast.showSuccess(
                       context,
                       'Đã sao chép liên kết vào phòng!',
                     );
@@ -230,7 +227,7 @@ class ChallengeCreate extends StatelessWidget {
                         text: 'https://wordduel.app/join/$code',
                       ),
                     );
-                    AppSnackBar.showSuccess(
+                    AppToast.showSuccess(
                       context,
                       'Đã sao chép liên kết vào phòng!',
                     );
@@ -253,7 +250,6 @@ class ChallengeCreate extends StatelessWidget {
                 borderRadius: BorderRadius.circular(isLandscape ? 8.0 : 8.r),
                 height: btnHeight,
                 fontSize: btnFontSize,
-                fontWeight: FontWeight.w700,
                 padding: btnPad,
                 extrusionHeight: 1.5,
                 onPressed: onCancelRoom,
@@ -292,7 +288,7 @@ class ChallengeCreate extends StatelessWidget {
       child: AppText.t2(
         digit,
         fontSize: fontSize,
-        fontWeight: FontWeight.w800,
+        fontWeight: FontWeight.w700,
         color: isPaper ? AppColors.paperTextDark : AppColors.skyDark,
       ),
     );

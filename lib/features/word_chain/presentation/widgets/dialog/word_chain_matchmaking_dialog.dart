@@ -1,10 +1,9 @@
 import 'dart:async';
-import 'dart:math' as math;
 
-import 'package:bufopia/components/app_avatar.dart';
 import 'package:bufopia/components/app_button.dart';
 import 'package:bufopia/components/app_game_dialog.dart';
-import 'package:bufopia/components/app_snack_bar.dart';
+import 'package:bufopia/components/app_radar_scanner.dart';
+import 'package:bufopia/components/app_toast.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
@@ -77,9 +76,6 @@ class _WordChainMatchmakingDialogState extends State<WordChainMatchmakingDialog>
   late final AnimationController _pulseController;
   late final Animation<double> _pulseAnimation;
 
-  // Hiệu ứng quay 360 độ của tia quét radar
-  late final AnimationController _radarController;
-
   bool _isMatched = false;
   MatchmakeMatchedEvent? _matchedEvent;
   String? _errorMessage;
@@ -98,11 +94,6 @@ class _WordChainMatchmakingDialogState extends State<WordChainMatchmakingDialog>
       CurvedAnimation(parent: _pulseController, curve: Curves.easeInOut),
     );
 
-    _radarController = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 2200),
-    )..repeat();
-
     _startTimer();
     _connectMatchmake();
   }
@@ -120,12 +111,17 @@ class _WordChainMatchmakingDialogState extends State<WordChainMatchmakingDialog>
   Future<void> _connectMatchmake() async {
     final currentUser = context.read<AuthBloc>().state.currentUser;
     final cachedUid = sl<GetCachedUserUseCase>().execute()?.uid;
-    final fbUid = sl<FirebaseAuthService>().currentUid;
-    final currentUid = (currentUser?.uid.isNotEmpty == true)
+    final fbService = sl<FirebaseAuthService>();
+    final fbUid = fbService.currentUid;
+    final isGoogle = fbService.isGoogleLinked;
+    var currentUid = (currentUser?.uid.isNotEmpty == true)
         ? currentUser!.uid
         : (cachedUid?.isNotEmpty == true)
         ? cachedUid!
         : fbUid;
+    if (isGoogle && currentUid != null && !currentUid.startsWith('acct_')) {
+      currentUid = 'acct_$currentUid';
+    }
     final fallbackUid =
         'guest_${DateTime.now().millisecondsSinceEpoch % 10000}';
     final uid = currentUid ?? fallbackUid;
@@ -219,14 +215,13 @@ class _WordChainMatchmakingDialogState extends State<WordChainMatchmakingDialog>
     _socketService.sendCancel();
     Navigator.of(context).pop();
     _socketService.disconnect();
-    AppSnackBar.showWarning(context, 'Đã hủy tìm trận đấu.');
+    AppToast.showWarning(context, 'Đã hủy tìm trận đấu.');
   }
 
   @override
   void dispose() {
     _timer?.cancel();
     _pulseController.dispose();
-    _radarController.dispose();
     _subscription?.cancel();
     if (!_isMatched) {
       _socketService.disconnect();
@@ -322,18 +317,11 @@ class _WordChainMatchmakingDialogState extends State<WordChainMatchmakingDialog>
           SizedBox(height: 8.h),
 
           // ── 2. Radar Scanner Box ────────────────────────────────────
-          AnimatedBuilder(
-            animation: _radarController,
-            builder: (context, _) {
-              return _RadarScannerWidget(
-                rotationAngle: _radarController.value * 2 * math.pi,
-                avatarUrl: currentUser?.avatarUrl,
-                isMatched: _isMatched,
-                isPaperTheme: isPaper,
-                rivalName: _matchedEvent?.rivalName,
-                rivalAvatar: _matchedEvent?.rivalAvatar,
-              );
-            },
+          AppRadarScanner(
+            avatarUrl: currentUser?.avatarUrl,
+            isMatched: _isMatched,
+            isPaperTheme: isPaper,
+            rivalAvatar: _matchedEvent?.rivalAvatar,
           ),
 
           SizedBox(height: 10.h),
@@ -438,7 +426,6 @@ class _WordChainMatchmakingDialogState extends State<WordChainMatchmakingDialog>
           height: 28.h,
           width: 136.w,
           fontSize: 10.sp,
-          fontWeight: FontWeight.w700,
           onPressed: _onCancel,
           backgroundColor: AppColors.dialogCloseBg,
           borderColor: AppColors.dialogCloseBorder,
@@ -472,7 +459,6 @@ class _WordChainMatchmakingDialogState extends State<WordChainMatchmakingDialog>
           height: 28.h,
           width: 140.w,
           fontSize: 10.sp,
-          fontWeight: FontWeight.w700,
           backgroundColor: AppColors.paperGreen,
           borderColor: AppColors.paperGreenBorder,
           extrusionColor: AppColors.paperGreenExtrusion,
@@ -487,213 +473,4 @@ class _WordChainMatchmakingDialogState extends State<WordChainMatchmakingDialog>
       );
     }
   }
-}
-
-/// Widget Radar Scanner với các vòng tròn đồng tâm và tia quét xoay
-class _RadarScannerWidget extends StatelessWidget {
-  const _RadarScannerWidget({
-    required this.rotationAngle,
-    required this.avatarUrl,
-    required this.isMatched,
-    this.isPaperTheme = false,
-    this.rivalName,
-    this.rivalAvatar,
-  });
-
-  final double rotationAngle;
-  final String? avatarUrl;
-  final bool isMatched;
-  final bool isPaperTheme;
-  final String? rivalName;
-  final String? rivalAvatar;
-
-  @override
-  Widget build(BuildContext context) {
-    final radarSize = 88.r;
-
-    return SizedBox(
-      width: radarSize,
-      height: radarSize,
-      child: Stack(
-        alignment: Alignment.center,
-        children: [
-          // 1. Radar Background Painter: Vẽ các vòng tròn và tia quét xoay
-          CustomPaint(
-            size: Size(radarSize, radarSize),
-            painter: _RadarPainter(
-              angle: rotationAngle,
-              scanColor: isPaperTheme
-                  ? AppColors.paperGreen
-                  : AppColors.radarGreenLight,
-              circleColor: isPaperTheme
-                  ? AppColors.paperBorder
-                  : AppColors.radarGreenLight.withValues(alpha: 0.45),
-              isMatched: isMatched,
-            ),
-          ),
-
-          // 2. Avatar của Người dùng hiện tại ở chính giữa
-          Container(
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color:
-                      (isMatched
-                              ? AppColors.radarGreen
-                              : (isPaperTheme
-                                    ? AppColors.paperGreen
-                                    : AppColors.radarGreenLight))
-                          .withValues(alpha: 0.35),
-                  blurRadius: 8.r,
-                  spreadRadius: 1.r,
-                ),
-              ],
-            ),
-            child: AppAvatar(
-              size: 34.r,
-              avatarUrl: avatarUrl,
-              borderWidth: 2.w,
-              borderColor: isPaperTheme
-                  ? AppColors.paperBorder
-                  : AppColors.white,
-            ),
-          ),
-
-          // 3. Nếu tìm thấy đối thủ, hiển thị blip đối thủ trên radar
-          if (isMatched)
-            Positioned(
-              right: 4.w,
-              top: 4.h,
-              child: Container(
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.radarGreen.withValues(alpha: 0.5),
-                      blurRadius: 6.r,
-                      spreadRadius: 1.r,
-                    ),
-                  ],
-                ),
-                child: AppAvatar(
-                  size: 24.r,
-                  avatarUrl: rivalAvatar,
-                  borderWidth: 1.6.w,
-                  borderColor: AppColors.white,
-                ),
-              ),
-            ),
-        ],
-      ),
-    );
-  }
-}
-
-/// CustomPainter vẽ các vòng tròn đồng tâm và chùm quét radar góc 90 độ
-class _RadarPainter extends CustomPainter {
-  _RadarPainter({
-    required this.angle,
-    required this.scanColor,
-    required this.circleColor,
-    required this.isMatched,
-  });
-
-  final double angle;
-  final Color scanColor;
-  final Color circleColor;
-  final bool isMatched;
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final center = Offset(size.width / 2, size.height / 2);
-    final radius = size.width / 2;
-
-    // A. 3 Vòng tròn đồng tâm
-    final ringPaint = Paint()
-      ..color = circleColor
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.0;
-
-    canvas
-      ..drawCircle(center, radius - 1.0, ringPaint)
-      ..drawCircle(center, radius * 0.68, ringPaint)
-      ..drawCircle(center, radius * 0.40, ringPaint);
-
-    // B. Chữ thập định vị mờ
-    final crossPaint = Paint()
-      ..color = circleColor.withValues(alpha: 0.22)
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 0.8;
-    canvas
-      ..drawLine(
-        Offset(center.dx - radius, center.dy),
-        Offset(center.dx + radius, center.dy),
-        crossPaint,
-      )
-      ..drawLine(
-        Offset(center.dx, center.dy - radius),
-        Offset(center.dx, center.dy + radius),
-        crossPaint,
-      );
-
-    // C. Tia quét hình nan quạt (90 độ) xoay vòng
-    if (!isMatched) {
-      canvas
-        ..save()
-        ..translate(center.dx, center.dy)
-        ..rotate(angle);
-
-      final sweepRect = Rect.fromCircle(
-        center: Offset.zero,
-        radius: radius - 1.0,
-      );
-      final sweepPaint = Paint()
-        ..shader = SweepGradient(
-          endAngle: math.pi / 2,
-          colors: [
-            scanColor.withValues(alpha: 0),
-            scanColor.withValues(alpha: 0.30),
-          ],
-        ).createShader(sweepRect)
-        ..style = PaintingStyle.fill;
-
-      canvas.drawArc(
-        sweepRect,
-        0,
-        math.pi / 2,
-        true,
-        sweepPaint,
-      );
-
-      // Đường viền dẫn sáng của tia quét
-      final beamPaint = Paint()
-        ..color = scanColor
-        ..strokeWidth = 1.6
-        ..style = PaintingStyle.stroke;
-      canvas
-        ..drawLine(
-          Offset.zero,
-          Offset(
-            (radius - 1.0) * math.cos(math.pi / 2),
-            (radius - 1.0) * math.sin(math.pi / 2),
-          ),
-          beamPaint,
-        )
-        ..restore();
-    } else {
-      // Khi đã tìm thấy, vòng tròn radar sáng rực ánh xanh thành công
-      final lockPaint = Paint()
-        ..color = AppColors.radarGreen.withValues(alpha: 0.22)
-        ..style = PaintingStyle.fill;
-      canvas.drawCircle(center, radius - 1.0, lockPaint);
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant _RadarPainter oldDelegate) =>
-      oldDelegate.angle != angle ||
-      oldDelegate.isMatched != isMatched ||
-      oldDelegate.scanColor != scanColor ||
-      oldDelegate.circleColor != circleColor;
 }

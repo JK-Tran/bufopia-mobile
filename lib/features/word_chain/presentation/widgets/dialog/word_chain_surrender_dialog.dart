@@ -122,7 +122,7 @@ class WordChainSurrenderDialog extends StatelessWidget {
                       child: AppButton.secondary(
                         text: cancelText,
                         height: 38.h,
-                        fontSize: 13.sp,
+                        fontSize: 14.sp,
                         onPressed: () => Navigator.of(context).pop(),
                       ),
                     ),
@@ -131,7 +131,7 @@ class WordChainSurrenderDialog extends StatelessWidget {
                       child: AppButton.danger(
                         text: confirmText,
                         height: 38.h,
-                        fontSize: 13.sp,
+                        fontSize: 14.sp,
                         onPressed: () {
                           Navigator.of(context).pop();
                           onConfirm();

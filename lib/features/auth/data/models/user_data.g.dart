@@ -20,6 +20,9 @@ _UserData _$UserDataFromJson(Map<String, dynamic> json) => _UserData(
   currentLevelXp: (json['currentLevelXp'] as num?)?.toInt(),
   neededForNext: (json['neededForNext'] as num?)?.toInt(),
   progressPercent: (json['progressPercent'] as num?)?.toDouble(),
+  persisted: json['persisted'] as bool?,
+  nameConfigured: json['name_configured'] as bool?,
+  nameResetRequired: json['name_reset_required'] as bool?,
 );
 
 Map<String, dynamic> _$UserDataToJson(_UserData instance) => <String, dynamic>{
@@ -36,4 +39,7 @@ Map<String, dynamic> _$UserDataToJson(_UserData instance) => <String, dynamic>{
   'currentLevelXp': instance.currentLevelXp,
   'neededForNext': instance.neededForNext,
   'progressPercent': instance.progressPercent,
+  'persisted': instance.persisted,
+  'name_configured': instance.nameConfigured,
+  'name_reset_required': instance.nameResetRequired,
 };

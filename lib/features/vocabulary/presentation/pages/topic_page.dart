@@ -1,5 +1,5 @@
 import 'package:bufopia/components/app_icon_button.dart';
-import 'package:bufopia/components/app_snack_bar.dart';
+import 'package:bufopia/components/app_toast.dart';
 import 'package:bufopia/core/router/app_router.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
@@ -12,6 +12,8 @@ import 'package:bufopia/features/vocabulary/presentation/widgets/dialog/vocabula
 import 'package:bufopia/features/vocabulary/presentation/widgets/topic/dialog/topic_mode_dialog.dart';
 import 'package:bufopia/features/vocabulary/presentation/widgets/topic/topic_grid.dart';
 import 'package:bufopia/features/vocabulary/presentation/widgets/topic/topic_header.dart';
+import 'package:bufopia/shared/utils/user_name_generator.dart';
+import 'package:bufopia/shared/utils/validation_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -58,6 +60,25 @@ class _TopicPageState extends State<TopicPage> {
     required bool isBot,
     required String topic,
   }) {
+    final authBloc = context.read<AuthBloc>();
+    final user = authBloc.state.currentUser;
+
+    // Đảm bảo hồ sơ người chơi được lưu trên server trước khi gọi /api/deck
+    if (user == null ||
+        !user.persisted ||
+        !ValidationUtils.isValidPlayerName(user.displayName)) {
+      final uid = user?.uid.isNotEmpty == true ? user!.uid : '';
+      final mascot = (user?.avatarUrl == UserNameGenerator.pipAvatar)
+          ? UserNameGenerator.pip
+          : UserNameGenerator.bunny;
+      final fallbackName =
+          (user?.displayName.isNotEmpty == true &&
+              ValidationUtils.isValidPlayerName(user!.displayName))
+          ? user.displayName
+          : UserNameGenerator.generate(mascot, uid);
+      authBloc.add(AuthEvent.updateProfile(displayName: fallbackName));
+    }
+
     context.push(
       AppRouter.vocabulary,
       extra: {
@@ -67,36 +88,15 @@ class _TopicPageState extends State<TopicPage> {
     );
   }
 
-  bool _isNameValid(String? name) {
-    if (name == null) return false;
-    final trimmed = name.trim();
-    if (trimmed.length < 2 || trimmed.length > 25) return false;
-    final lower = trimmed.toLowerCase();
-    const invalidNames = [
-      'alex',
-      'player',
-      'bạn',
-      'user',
-      'guest',
-      'người chơi',
-    ];
-    for (final invalid in invalidNames) {
-      if (lower == invalid || lower.startsWith('$invalid ')) {
-        return false;
-      }
-    }
-    return true;
-  }
-
   Future<bool> _ensureValidPlayerName() async {
     final authState = context.read<AuthBloc>().state;
     final currentName = authState.currentUser?.displayName.trim();
 
-    if (_isNameValid(currentName)) {
+    if (ValidationUtils.isValidPlayerName(currentName)) {
       return true;
     }
 
-    AppSnackBar.showWarning(
+    AppToast.showWarning(
       context,
       'Vui lòng đặt tên hiển thị (2–25 ký tự) trước khi tham gia đấu Online!',
     );
@@ -108,14 +108,14 @@ class _TopicPageState extends State<TopicPage> {
 
     if (!mounted) return false;
 
-    if (newName != null && _isNameValid(newName.trim())) {
+    if (newName != null && ValidationUtils.isValidPlayerName(newName.trim())) {
       context.read<AuthBloc>().add(
         AuthEvent.updateProfile(displayName: newName.trim()),
       );
       return true;
     }
 
-    AppSnackBar.showWarning(
+    AppToast.showWarning(
       context,
       'Tên không hợp lệ. Vui lòng đặt từ 2–25 ký'
       ' tự và không dùng tên mặc định.',
@@ -131,7 +131,7 @@ class _TopicPageState extends State<TopicPage> {
       context,
       topic: topic,
       onMatched: (roomCode, rivalName, rivalAvatar) {
-        AppSnackBar.showSuccess(
+        AppToast.showSuccess(
           context,
           'Đã tìm thấy đối thủ $rivalName! Vào trận...',
         );
@@ -156,7 +156,7 @@ class _TopicPageState extends State<TopicPage> {
     ChallengeRoomDialog.show(
       context,
       onEnterRoom: (code) {
-        AppSnackBar.showSuccess(
+        AppToast.showSuccess(
           context,
           'Đã vào phòng thi đấu #$code!',
         );

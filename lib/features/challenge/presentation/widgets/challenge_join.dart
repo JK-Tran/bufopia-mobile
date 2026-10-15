@@ -86,7 +86,6 @@ class ChallengeJoin extends StatelessWidget {
             iconAfter: true,
             height: inputHeight,
             fontSize: fontSize,
-            fontWeight: FontWeight.w700,
             padding: EdgeInsets.symmetric(
               horizontal: isLandscape ? 16.0 : 14.w,
             ),

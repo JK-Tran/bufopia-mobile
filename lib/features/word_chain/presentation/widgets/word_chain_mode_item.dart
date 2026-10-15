@@ -18,7 +18,9 @@ class WordChainModeItem extends StatelessWidget {
     this.description,
     this.onTimedPressed,
     this.onRelaxPressed,
+    this.onLockedTap,
     this.isPaperTheme,
+    this.isLocked = false,
   });
 
   final String badgeText;
@@ -27,7 +29,9 @@ class WordChainModeItem extends StatelessWidget {
   final String? description;
   final VoidCallback? onTimedPressed;
   final VoidCallback? onRelaxPressed;
+  final VoidCallback? onLockedTap;
   final bool? isPaperTheme;
+  final bool isLocked;
 
   @override
   Widget build(BuildContext context) {
@@ -53,16 +57,26 @@ class WordChainModeItem extends StatelessWidget {
     final titleCol = isPaper ? AppColors.paperTextDark : AppColors.grayDark;
     final descCol = isPaper ? AppColors.paperTextMuted : AppColors.grayMedium;
 
-    // Màu nút Luyện Tính Giờ & Thư Giãn (Xanh lá 3D)
-    final btnBg = isPaper
-        ? AppColors.paperGreen
-        : AppColors.classicButtonEmerald;
-    final btnExtrusion = isPaper
-        ? AppColors.paperGreenExtrusion
-        : AppColors.classicButtonEmeraldExtrusion;
-    final btnBorder = isPaper
-        ? AppColors.paperGreenBorder
-        : AppColors.modeBotButtonDark;
+    // Màu nút Luyện Tính Giờ & Thư Giãn (Xanh lá 3D hoặc Xám/Khóa khi locked)
+    final btnBg = isLocked
+        ? (isPaper ? const Color(0xFF8C98A4) : AppColors.neutralDisabled)
+        : (isPaper ? AppColors.paperGreen : AppColors.classicButtonEmerald);
+    final btnExtrusion = isLocked
+        ? (isPaper
+              ? const Color(0xFF63707D)
+              : AppColors.neutralDisabledExtrusion)
+        : (isPaper
+              ? AppColors.paperGreenExtrusion
+              : AppColors.classicButtonEmeraldExtrusion);
+    final btnBorder = isLocked
+        ? (isPaper ? const Color(0xFFB0BAC3) : AppColors.neutralDisabled)
+        : (isPaper ? AppColors.paperGreenBorder : AppColors.modeBotButtonDark);
+
+    final effectiveCardBorder = isLocked
+        ? (isPaper
+              ? AppColors.paperAmberBadgeBorder
+              : AppColors.orange.withValues(alpha: 0.5))
+        : cardBorder;
 
     return Container(
       padding: EdgeInsets.fromLTRB(10.w, 10.h, 10.w, 10.h),
@@ -70,7 +84,7 @@ class WordChainModeItem extends StatelessWidget {
         color: cardBg,
         borderRadius: BorderRadius.circular(16.r),
         border: Border.all(
-          color: cardBorder,
+          color: effectiveCardBorder,
           width: 1.5.w,
         ),
         boxShadow: [
@@ -99,7 +113,7 @@ class WordChainModeItem extends StatelessWidget {
                   color: isPaper ? AppColors.paperCardBg : AppColors.white,
                   borderRadius: BorderRadius.circular(12.r),
                   border: Border.all(
-                    color: cardBorder.withValues(alpha: 0.7),
+                    color: effectiveCardBorder.withValues(alpha: 0.7),
                     width: 1.w,
                   ),
                 ),
@@ -139,25 +153,56 @@ class WordChainModeItem extends StatelessWidget {
                           ),
                         ),
                         SizedBox(width: 6.w),
-                        // Badge viên thuốc (1 NGƯỜI / TÌM BẠN / 2 NGƯỜI)
+                        // Badge viên thuốc (1 NGƯỜI / TÌM BẠN / 2 NGƯỜI hoặc CẦN ĐĂNG NHẬP)
                         Container(
                           padding: EdgeInsets.symmetric(
                             horizontal: 8.w,
                             vertical: 3.h,
                           ),
                           decoration: BoxDecoration(
-                            color: badgeBg,
+                            color: isLocked
+                                ? (isPaper
+                                      ? AppColors.paperAmberBadgeBg
+                                      : AppColors.orange.withValues(
+                                          alpha: 0.15,
+                                        ))
+                                : badgeBg,
                             borderRadius: BorderRadius.circular(12.r),
                             border: Border.all(
-                              color: badgeBorder,
+                              color: isLocked
+                                  ? (isPaper
+                                        ? AppColors.paperAmberBadgeBorder
+                                        : AppColors.orange.withValues(
+                                            alpha: 0.5,
+                                          ))
+                                  : badgeBorder,
                               width: 1.w,
                             ),
                           ),
-                          child: AppText.c1(
-                            badgeText,
-                            fontSize: 10.sp,
-                            fontWeight: FontWeight.w700,
-                            color: badgeTextCol,
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              if (isLocked) ...[
+                                Icon(
+                                  Icons.lock_rounded,
+                                  size: 10.r,
+                                  color: isPaper
+                                      ? AppColors.paperAmberBadgeText
+                                      : AppColors.orange,
+                                ),
+                                SizedBox(width: 3.w),
+                              ],
+                              AppText.c1(
+                                isLocked ? 'CẦN ĐĂNG NHẬP' : badgeText,
+                                fontSize: 10.sp,
+                                fontWeight: FontWeight.w700,
+                                color: isLocked
+                                    ? (isPaper
+                                          ? AppColors.paperAmberBadgeText
+                                          : AppColors.orange)
+                                    : badgeTextCol,
+                              ),
+                            ],
                           ),
                         ),
                       ],
@@ -186,8 +231,10 @@ class WordChainModeItem extends StatelessWidget {
             children: [
               Expanded(
                 child: _ModeButton(
-                  label: 'LUYỆN TÍNH GIỜ',
-                  icon: Icons.play_arrow_rounded,
+                  label: isLocked ? 'MỞ KHÓA' : 'LUYỆN TÍNH GIỜ',
+                  icon: isLocked
+                      ? Icons.lock_rounded
+                      : Icons.play_arrow_rounded,
                   bgColor: btnBg,
                   extrusionColor: btnExtrusion,
                   borderColor: btnBorder,
@@ -195,15 +242,21 @@ class WordChainModeItem extends StatelessWidget {
                     context.read<AppBloc>().add(
                       const AppEvent.clickSoundPlayed(),
                     );
-                    onTimedPressed?.call();
+                    if (isLocked) {
+                      onLockedTap?.call();
+                    } else {
+                      onTimedPressed?.call();
+                    }
                   },
                 ),
               ),
               SizedBox(width: 8.w),
               Expanded(
                 child: _ModeButton(
-                  label: 'LUYỆN THƯ GIÃN',
-                  icon: Icons.auto_awesome_rounded,
+                  label: isLocked ? 'MỞ KHÓA' : 'LUYỆN THƯ GIÃN',
+                  icon: isLocked
+                      ? Icons.lock_rounded
+                      : Icons.auto_awesome_rounded,
                   bgColor: btnBg,
                   extrusionColor: btnExtrusion,
                   borderColor: btnBorder,
@@ -211,7 +264,11 @@ class WordChainModeItem extends StatelessWidget {
                     context.read<AppBloc>().add(
                       const AppEvent.clickSoundPlayed(),
                     );
-                    onRelaxPressed?.call();
+                    if (isLocked) {
+                      onLockedTap?.call();
+                    } else {
+                      onRelaxPressed?.call();
+                    }
                   },
                 ),
               ),
@@ -250,7 +307,6 @@ class _ModeButton extends StatelessWidget {
       extrusionColor: extrusionColor,
       borderColor: borderColor,
       fontSize: 12.sp,
-      fontWeight: FontWeight.w700,
       height: 36.h,
       extrusionHeight: 2.5,
       borderRadius: BorderRadius.circular(10.r),

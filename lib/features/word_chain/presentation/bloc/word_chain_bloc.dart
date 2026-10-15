@@ -448,7 +448,6 @@ class WordChainBloc extends BaseBloc<WordChainEvent, WordChainState> {
         final lastChar = word.substring(word.length - 1);
         final newUsedWords = [...state.gameState.usedWords, word];
         final newMessage = TurnMessage(
-          actor: 0,
           entry: wordEntity,
           time: DateTime.now().millisecondsSinceEpoch,
         );

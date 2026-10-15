@@ -227,12 +227,12 @@ return $default(_that.playerIndex,_that.roomCode,_that.state,_that.rivalName,_th
 
 
 class _ChainStateUpdate implements ChainStateUpdate {
-  const _ChainStateUpdate({required this.playerIndex, required this.roomCode, required this.state, this.rivalName, this.rivalAvatar, this.serverNow, this.sessionId});
+  const _ChainStateUpdate({this.playerIndex = 0, this.roomCode = '', this.state = const GameState(), this.rivalName, this.rivalAvatar, this.serverNow, this.sessionId});
   
 
-@override final  int playerIndex;
-@override final  String roomCode;
-@override final  GameState state;
+@override@JsonKey() final  int playerIndex;
+@override@JsonKey() final  String roomCode;
+@override@JsonKey() final  GameState state;
 @override final  String? rivalName;
 @override final  String? rivalAvatar;
 @override final  int? serverNow;

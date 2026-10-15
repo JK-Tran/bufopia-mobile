@@ -6,8 +6,9 @@ import 'package:injectable/injectable.dart';
 abstract class FirebaseAuthService {
   User? get currentUser;
   String? get currentUid;
-  Future<String?> getIdToken();
+  Future<String?> getIdToken({bool forceRefresh = false});
 
+  bool get isGoogleLinked;
   Future<UserCredential?> signInAnonymously();
   Future<({UserCredential credential, String idToken})?> signInWithGoogle();
   Future<void> signOut();
@@ -49,9 +50,21 @@ class FirebaseAuthServiceImpl implements FirebaseAuthService {
   String? get currentUid => _auth.currentUser?.uid;
 
   @override
-  Future<String?> getIdToken() async {
+  bool get isGoogleLinked {
+    final user = _auth.currentUser;
+    return user != null && !user.isAnonymous;
+  }
+
+  @override
+  Future<String?> getIdToken({bool forceRefresh = false}) async {
     try {
-      return await _auth.currentUser?.getIdToken();
+      final user = _auth.currentUser;
+      if (user == null) return null;
+      var token = await user.getIdToken(forceRefresh);
+      if (token == null && !forceRefresh) {
+        token = await user.getIdToken(true);
+      }
+      return token;
     } on Exception catch (e) {
       Log.e('Failed to get Firebase ID token: $e', name: 'FirebaseAuthService');
       return null;
@@ -98,7 +111,7 @@ class FirebaseAuthServiceImpl implements FirebaseAuthService {
       }
 
       final fbIdToken =
-          await userCredential.user?.getIdToken() ?? idToken ?? '';
+          await userCredential.user?.getIdToken(true) ?? idToken ?? '';
       Log.d(
         'Google sign-in successful: uid=${userCredential.user?.uid}',
         name: 'FirebaseAuthService',
