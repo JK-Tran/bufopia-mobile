@@ -52,9 +52,27 @@ class AppAvatar extends StatelessWidget {
       );
     }
 
+    // 1. Kiểm tra nếu là file cục bộ (ảnh từ máy ảnh / thư viện cắt ảnh)
+    final cleanPath = url.startsWith('file://')
+        ? url.replaceFirst('file://', '')
+        : url;
+    final file = File(cleanPath);
+    if (file.existsSync()) {
+      return Image.file(
+        file,
+        key: ValueKey(cleanPath),
+        width: size,
+        height: size,
+        fit: BoxFit.cover,
+        errorBuilder: (_, _, _) => _buildFallback(),
+      );
+    }
+
+    // 2. Chuẩn hoá đường dẫn asset hoặc API
     final normalized = normalizeAvatarPath(url);
-    if (normalized.startsWith('assets/')) {
-      return Image.asset(
+
+    if (normalized.startsWith('http://') || normalized.startsWith('https://')) {
+      return Image.network(
         normalized,
         width: size,
         height: size,
@@ -63,10 +81,9 @@ class AppAvatar extends StatelessWidget {
       );
     }
 
-    final file = File(url);
-    if (file.existsSync()) {
-      return Image.file(
-        file,
+    if (normalized.startsWith('assets/')) {
+      return Image.asset(
+        normalized,
         width: size,
         height: size,
         fit: BoxFit.cover,
@@ -84,6 +101,15 @@ class AppAvatar extends StatelessWidget {
     if (url.startsWith('/api/') || url.startsWith('api/')) {
       final path = url.startsWith('/') ? url : '/$url';
       return 'https://word-duel-worker.lvthanh-work.workers.dev$path';
+    }
+    final cleanPath = url.startsWith('file://')
+        ? url.replaceFirst('file://', '')
+        : url;
+    if (url.startsWith('/data/') ||
+        url.startsWith('/storage/') ||
+        url.startsWith('file://') ||
+        File(cleanPath).existsSync()) {
+      return cleanPath;
     }
     if (url.startsWith('assets/')) return url;
     if (url.contains('bunny')) return 'assets/images/bunny-avatar.webp';

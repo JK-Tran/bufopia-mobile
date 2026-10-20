@@ -1,4 +1,5 @@
 import 'package:bufopia/core/themes/app_colors.dart';
+import 'package:bufopia/shared/services/audio/sound_manager.dart';
 import 'package:flutter/material.dart';
 
 class AppIconButton extends StatefulWidget {
@@ -130,7 +131,12 @@ class _AppIconButtonState extends State<AppIconButton>
               shape: const CircleBorder(),
               child: InkWell(
                 customBorder: const CircleBorder(),
-                onTap: widget.onPressed,
+                onTap: widget.onPressed != null
+                    ? () {
+                        SoundManager.playClick();
+                        widget.onPressed!();
+                      }
+                    : null,
                 onTapDown: _onTapDown,
                 onTapUp: _onTapUp,
                 onTapCancel: _onTapCancel,

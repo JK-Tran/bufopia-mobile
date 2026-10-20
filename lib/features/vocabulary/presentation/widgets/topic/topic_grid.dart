@@ -3,7 +3,7 @@ import 'package:bufopia/features/vocabulary/presentation/widgets/topic/topic_ite
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-/// Lưới hiển thị danh sách các chủ đề từ vựng (3 cột, cuộn dọc tự động)
+/// Lưới hiển thị danh sách các chủ đề từ vựng (2 cột chuẩn Web)
 class TopicGrid extends StatelessWidget {
   const TopicGrid({
     required this.selectedTopicId,
@@ -25,10 +25,10 @@ class TopicGrid extends StatelessWidget {
       padding: EdgeInsets.only(top: 10.h, bottom: 24.h),
       itemCount: topics.length,
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        crossAxisSpacing: 8.w,
-        mainAxisSpacing: 14.h,
-        childAspectRatio: 0.70,
+        crossAxisCount: 2,
+        crossAxisSpacing: 12.w,
+        mainAxisSpacing: 12.h,
+        childAspectRatio: 0.9,
       ),
       itemBuilder: (context, index) {
         final topic = topics[index];

@@ -15,10 +15,12 @@ class WordChainInputBar extends StatelessWidget {
     required this.requiredLetter,
     required this.onChanged,
     required this.onSubmit,
+    this.focusNode,
     super.key,
   });
 
   final TextEditingController controller;
+  final FocusNode? focusNode;
   final bool isMyTurn;
   final bool isCheckingWord;
   final bool isGameOver;
@@ -75,6 +77,7 @@ class WordChainInputBar extends StatelessWidget {
               alignment: Alignment.center,
               child: TextField(
                 controller: controller,
+                focusNode: focusNode,
                 enabled: isInputEnabled,
                 autocorrect: false,
                 textInputAction: TextInputAction.send,

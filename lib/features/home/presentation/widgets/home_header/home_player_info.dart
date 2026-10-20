@@ -1,6 +1,7 @@
 import 'package:bufopia/components/app_avatar.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
+import 'package:bufopia/shared/services/audio/sound_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -95,7 +96,12 @@ class HomePlayerInfo extends StatelessWidget {
         borderRadius: BorderRadius.circular(16.r),
         child: InkWell(
           borderRadius: BorderRadius.circular(16.r),
-          onTap: onTap,
+          onTap: onTap != null
+              ? () {
+                  SoundManager.playClick();
+                  onTap!();
+                }
+              : null,
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [

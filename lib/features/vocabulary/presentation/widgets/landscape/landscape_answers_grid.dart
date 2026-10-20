@@ -1,5 +1,6 @@
 import 'package:bufopia/features/vocabulary/presentation/widgets/vocabulary_answer_item.dart';
 import 'package:bufopia/features/vocabulary/presentation/widgets/vocabulary_cooldown_bagde.dart';
+import 'package:bufopia/shared/services/audio/sound_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -23,6 +24,11 @@ class LandscapeAnswersGrid extends StatelessWidget {
   final void Function(String word) onSelectAnswer;
   final int cooldownSeconds;
   final bool isPaper;
+
+  void _handleTap(String word) {
+    SoundManager.playClick();
+    onSelectAnswer(word);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +68,7 @@ class LandscapeAnswersGrid extends StatelessWidget {
                           isRoundLocked ||
                           status0 == VocabularyAnswerStatus.wrong ||
                           isLockedByCooldown,
-                      onTap: () => onSelectAnswer(options[0]),
+                      onTap: () => _handleTap(options[0]),
                     ),
                   ),
                 ),
@@ -79,7 +85,7 @@ class LandscapeAnswersGrid extends StatelessWidget {
                           isRoundLocked ||
                           status1 == VocabularyAnswerStatus.wrong ||
                           isLockedByCooldown,
-                      onTap: () => onSelectAnswer(options[1]),
+                      onTap: () => _handleTap(options[1]),
                     ),
                   ),
                 ),
@@ -100,7 +106,7 @@ class LandscapeAnswersGrid extends StatelessWidget {
                           isRoundLocked ||
                           status2 == VocabularyAnswerStatus.wrong ||
                           isLockedByCooldown,
-                      onTap: () => onSelectAnswer(options[2]),
+                      onTap: () => _handleTap(options[2]),
                     ),
                   ),
                 ),
@@ -117,7 +123,7 @@ class LandscapeAnswersGrid extends StatelessWidget {
                           isRoundLocked ||
                           status3 == VocabularyAnswerStatus.wrong ||
                           isLockedByCooldown,
-                      onTap: () => onSelectAnswer(options[3]),
+                      onTap: () => _handleTap(options[3]),
                     ),
                   ),
                 ),

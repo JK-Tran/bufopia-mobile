@@ -277,7 +277,7 @@ class AppGameDialog extends StatelessWidget {
           footerText!,
           color: footerTextColor ?? AppColors.skyDark,
           fontWeight: FontWeight.w700,
-          fontSize: isLandscape ? 10 : 10.sp,
+          fontSize: isLandscape ? 12 : 12.sp,
         ),
       ),
     );

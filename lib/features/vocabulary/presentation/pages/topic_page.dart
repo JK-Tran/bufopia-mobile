@@ -44,8 +44,6 @@ class _TopicPageState extends State<TopicPage> {
       _selectedTopicId = topic.id;
     });
 
-    context.read<AppBloc>().add(const AppEvent.clickSoundPlayed());
-
     // Sau khi chọn chủ đề -> Mở popup 4 chế độ chơi (Bot, PvP, Online, ID)
     TopicModeDialog.show(
       context,
@@ -220,7 +218,11 @@ class _TopicPageState extends State<TopicPage> {
                         context.read<AppBloc>().add(
                           const AppEvent.clickSoundPlayed(),
                         );
-                        Navigator.of(context).pop();
+                        if (context.canPop()) {
+                          context.pop();
+                        } else {
+                          context.go(AppRouter.home);
+                        }
                       },
                     ),
 

@@ -10,6 +10,10 @@ abstract class WordData with _$WordData {
     @JsonKey(name: 'topic') String? topic,
     @JsonKey(name: 'en') String? en,
     @JsonKey(name: 'vi') String? vi,
+    @JsonKey(name: 'phonetic') String? phonetic,
+    @JsonKey(name: 'partOfSpeech') String? partOfSpeech,
+    @JsonKey(name: 'example') String? example,
+    @JsonKey(name: 'exampleVi') String? exampleVi,
   }) = _WordData;
 
   const WordData._();

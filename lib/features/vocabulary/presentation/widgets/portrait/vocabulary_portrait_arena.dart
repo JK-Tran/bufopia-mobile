@@ -171,6 +171,7 @@ class VocabularyPortraitArena extends StatelessWidget {
               isOptionDisabled: (word) =>
                   state.isRoundLocked ||
                   state.wrongWordsP1.contains(word) ||
+                  state.wrongWordsP2.contains(word) ||
                   state.cooldownSecondsP1 > 0,
               isPlayerSelected: (word) =>
                   chosenWordP1 == word || state.wrongWordsP1.contains(word),

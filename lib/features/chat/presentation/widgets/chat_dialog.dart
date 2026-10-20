@@ -18,6 +18,7 @@ class ChatDialog extends StatefulWidget {
     this.isBotMode = false,
     this.isWaiting = false,
     this.myPlayerIndex = 0,
+    this.noteText,
     super.key,
   });
 
@@ -26,6 +27,7 @@ class ChatDialog extends StatefulWidget {
   final bool isBotMode;
   final bool isWaiting;
   final int myPlayerIndex;
+  final String? noteText;
 
   static Future<void> show(
     BuildContext context, {
@@ -34,6 +36,7 @@ class ChatDialog extends StatefulWidget {
     bool isBotMode = false,
     bool isWaiting = false,
     int myPlayerIndex = 0,
+    String? noteText,
   }) {
     final chatBloc = context.read<ChatBloc>()
       ..add(ChatEvent.openChat(myPlayerIndex: myPlayerIndex));
@@ -49,6 +52,7 @@ class ChatDialog extends StatefulWidget {
           isBotMode: isBotMode,
           isWaiting: isWaiting,
           myPlayerIndex: myPlayerIndex,
+          noteText: noteText,
         ),
       ),
     ).then((_) {
@@ -215,15 +219,6 @@ class _ChatDialogState extends State<ChatDialog> {
                           Icons.info_outline_rounded,
                           size: 15.r,
                           color: noteColor,
-                        ),
-                        SizedBox(width: 6.w),
-                        Expanded(
-                          child: AppText.c1(
-                            'Tin nhắn ở đây không được tính là từ nối. '
-                            'Đồng hồ ván đấu vẫn tiếp tục đếm.',
-                            color: noteColor,
-                            fontSize: 12.sp,
-                          ),
                         ),
                       ],
                     ),

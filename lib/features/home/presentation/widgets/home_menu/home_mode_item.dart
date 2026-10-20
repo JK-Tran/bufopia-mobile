@@ -1,9 +1,8 @@
 import 'package:bufopia/components/app_card.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
-import 'package:bufopia/features/app/bloc/app_bloc.dart';
+import 'package:bufopia/shared/services/audio/sound_manager.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class HomeModeItem extends StatelessWidget {
@@ -50,7 +49,7 @@ class HomeModeItem extends StatelessWidget {
         vertical: 6.h,
       ),
       onTap: () {
-        context.read<AppBloc>().add(const AppEvent.clickSoundPlayed());
+        SoundManager.playClick();
         onTap?.call();
       },
       child: Column(

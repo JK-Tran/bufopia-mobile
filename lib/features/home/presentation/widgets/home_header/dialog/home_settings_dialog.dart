@@ -7,6 +7,7 @@ import 'package:bufopia/features/home/presentation/widgets/home_header/dialog/ho
 import 'package:bufopia/features/home/presentation/widgets/home_header/dialog/player_info_dialog.dart';
 import 'package:bufopia/features/home/presentation/widgets/home_header/dialog/privacy_policy_dialog.dart';
 import 'package:bufopia/features/home/presentation/widgets/home_header/settings/settings.dart';
+import 'package:bufopia/shared/services/audio/sound_manager.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -59,8 +60,6 @@ class HomeSettingsDialog extends StatelessWidget {
             builder: (context, authState) {
               final isClassic = appState.isClassicTheme;
               final isPaper = appState.isPaperTheme;
-              final isSoundEnabled =
-                  appState.isMusicEnabled || appState.isSfxEnabled;
 
               final primaryBg = isClassic
                   ? AppColors.classicButtonBlue
@@ -246,23 +245,23 @@ class HomeSettingsDialog extends StatelessWidget {
                       ),
                     ),
 
-                    // ── 4. Âm thanh & hiệu ứng ──────────────────────────
+                    // ── 4. Nhạc nền (BGM) ───────────────────────────────
                     SettingsItem(
-                      title: 'Âm thanh & hiệu ứng',
-                      subtitle: 'Âm thắng, thua và đồng hồ',
+                      title: 'Nhạc nền',
+                      subtitle: 'Bật / tắt nhạc nền tại trang chủ',
                       action: AppButton(
                         icon: Icon(
-                          isSoundEnabled
-                              ? Icons.volume_up_rounded
-                              : Icons.volume_off_rounded,
+                          appState.isMusicEnabled
+                              ? Icons.music_note_rounded
+                              : Icons.music_off_rounded,
                           color: AppColors.white,
                           size: 12.r,
                         ),
-                        text: isSoundEnabled ? 'ĐANG BẬT' : 'ĐÃ TẮT',
-                        backgroundColor: isSoundEnabled
+                        text: appState.isMusicEnabled ? 'ĐANG BẬT' : 'ĐÃ TẮT',
+                        backgroundColor: appState.isMusicEnabled
                             ? soundBg
                             : AppColors.neutralDisabled,
-                        extrusionColor: isSoundEnabled
+                        extrusionColor: appState.isMusicEnabled
                             ? soundExtrusion
                             : AppColors.neutralDisabledExtrusion,
                         fontSize: btnFontSize,
@@ -270,25 +269,42 @@ class HomeSettingsDialog extends StatelessWidget {
                         borderRadius: BorderRadius.circular(8.r),
                         padding: btnPadding,
                         onPressed: () {
-                          if (isSoundEnabled) {
-                            if (appState.isMusicEnabled) {
-                              context.read<AppBloc>().add(
-                                const AppEvent.musicToggled(),
-                              );
-                            }
-                            if (appState.isSfxEnabled) {
-                              context.read<AppBloc>().add(
-                                const AppEvent.sfxToggled(),
-                              );
-                            }
-                          } else {
-                            context.read<AppBloc>().add(
-                              const AppEvent.musicToggled(),
-                            );
-                            context.read<AppBloc>().add(
-                              const AppEvent.sfxToggled(),
-                            );
-                          }
+                          context.read<AppBloc>().add(
+                            const AppEvent.musicToggled(),
+                          );
+                          SoundManager.playClick();
+                        },
+                      ),
+                    ),
+
+                    // ── 5. Hiệu ứng âm thanh (SFX) ──────────────────────
+                    SettingsItem(
+                      title: 'Hiệu ứng âm thanh',
+                      subtitle: 'Âm thanh click, đúng/sai, đồng hồ',
+                      action: AppButton(
+                        icon: Icon(
+                          appState.isSfxEnabled
+                              ? Icons.volume_up_rounded
+                              : Icons.volume_off_rounded,
+                          color: AppColors.white,
+                          size: 12.r,
+                        ),
+                        text: appState.isSfxEnabled ? 'ĐANG BẬT' : 'ĐÃ TẮT',
+                        backgroundColor: appState.isSfxEnabled
+                            ? soundBg
+                            : AppColors.neutralDisabled,
+                        extrusionColor: appState.isSfxEnabled
+                            ? soundExtrusion
+                            : AppColors.neutralDisabledExtrusion,
+                        fontSize: btnFontSize,
+                        height: btnHeight,
+                        borderRadius: BorderRadius.circular(8.r),
+                        padding: btnPadding,
+                        onPressed: () {
+                          context.read<AppBloc>().add(
+                            const AppEvent.sfxToggled(),
+                          );
+                          SoundManager.playClick();
                         },
                       ),
                     ),

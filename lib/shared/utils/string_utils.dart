@@ -366,6 +366,66 @@ abstract final class StringUtils {
     final s = (seconds % 60).toString().padLeft(2, '0');
     return '$m:$s';
   }
+
+  /// Kiểm tra từ có hợp lệ cho luật chơi Word Guess không (3-14 chữ cái)
+  static bool isWordGuessEligible(String? word) {
+    if (word == null) return false;
+    final trimmed = word.trim();
+    if (trimmed.length < 3 || trimmed.length > 14) return false;
+    return isAlphabetOnly(trimmed);
+  }
+
+  /// Tính toán các vị trí ký tự mở ban đầu cho Word Guess:
+  /// - Mở ký tự đầu (0) và cuối (length - 1)
+  /// - Nếu từ >= 8 ký tự, mở thêm ký tự ở giữa: length ~/ 2
+  static Set<int> calculateInitialRevealedIndices(String word) {
+    final len = word.length;
+    if (len <= 2) return {0};
+    final revealed = <int>{0, len - 1};
+    if (len >= 8) {
+      revealed.add(len ~/ 2);
+    }
+    return revealed;
+  }
+
+  /// Định dạng chuỗi masked cho Word Guess (ví dụ: "b _ _ _ _ _ t")
+  static String formatMaskedWord(String word, Iterable<int> revealedIndices) {
+    final revealedSet = revealedIndices is Set<int>
+        ? revealedIndices
+        : revealedIndices.toSet();
+    final buffer = StringBuffer();
+    for (var i = 0; i < word.length; i++) {
+      if (i > 0) buffer.write(' ');
+      if (revealedSet.contains(i)) {
+        buffer.write(word[i]);
+      } else {
+        buffer.write('_');
+      }
+    }
+    return buffer.toString();
+  }
+
+  static List<String> parseWordGuessLetters(String maskedWord) {
+    if (maskedWord.isEmpty) return [];
+    final trimmed = maskedWord.trim();
+    final tokens = trimmed.split(' ').where((s) => s.isNotEmpty).toList();
+    if (tokens.length > 1) {
+      return tokens;
+    }
+    // Nếu từ không có khoảng trắng, tách từng ký tự để hiển thị
+    return trimmed.split('');
+  }
+
+  /// Định dạng chuỗi hiển thị cách nhau bởi khoảng trắng
+  /// (ví dụ: "b l a n k e t")
+  static String formatSpacedWord(String word) {
+    final buffer = StringBuffer();
+    for (var i = 0; i < word.length; i++) {
+      if (i > 0) buffer.write(' ');
+      buffer.write(word[i]);
+    }
+    return buffer.toString();
+  }
 }
 
 extension NullableStringExtension on String? {
@@ -496,4 +556,18 @@ extension StringExtensions on String {
 
     return result;
   }
+
+  /// Kiểm tra từ có hợp lệ cho luật chơi Word Guess không (3-14 chữ cái)
+  bool get isWordGuessEligible => StringUtils.isWordGuessEligible(this);
+
+  /// Lấy tập vị trí ký tự mở ban đầu cho Word Guess
+  Set<int> get initialWordGuessRevealedIndices =>
+      StringUtils.calculateInitialRevealedIndices(this);
+
+  /// Tạo chuỗi masked với các vị trí ký tự đã mở
+  String formatWordGuessMasked(Iterable<int> revealedIndices) =>
+      StringUtils.formatMaskedWord(this, revealedIndices);
+
+  /// Định dạng chuỗi hiển thị cách nhau bởi khoảng trắng
+  String get formatWordGuessSpaced => StringUtils.formatSpacedWord(this);
 }

@@ -11,6 +11,10 @@ _WordData _$WordDataFromJson(Map<String, dynamic> json) => _WordData(
   topic: json['topic'] as String?,
   en: json['en'] as String?,
   vi: json['vi'] as String?,
+  phonetic: json['phonetic'] as String?,
+  partOfSpeech: json['partOfSpeech'] as String?,
+  example: json['example'] as String?,
+  exampleVi: json['exampleVi'] as String?,
 );
 
 Map<String, dynamic> _$WordDataToJson(_WordData instance) => <String, dynamic>{
@@ -18,4 +22,8 @@ Map<String, dynamic> _$WordDataToJson(_WordData instance) => <String, dynamic>{
   'topic': instance.topic,
   'en': instance.en,
   'vi': instance.vi,
+  'phonetic': instance.phonetic,
+  'partOfSpeech': instance.partOfSpeech,
+  'example': instance.example,
+  'exampleVi': instance.exampleVi,
 };

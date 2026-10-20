@@ -98,4 +98,47 @@ class SocketUrlBuilder {
         );
     return uri.toString();
   }
+
+  /// URL tìm trận Word Guess (/ws/guess-matchmake)
+  static String guessMatchmakeWsUrl({
+    required String uid,
+    required String name,
+    required String ticket,
+    String topic = 'daily',
+    String? avatar,
+  }) {
+    final query = <String, String>{
+      'topic': topic,
+      'uid': uid,
+      'name': name,
+      'ticket': ticket,
+      if (avatar != null && avatar.isNotEmpty) 'avatar': avatar,
+    };
+    final uri = Uri.parse('${UrlConstants.webSocketBaseUrl}/guess-matchmake')
+        .replace(
+          queryParameters: query,
+        );
+    return uri.toString();
+  }
+
+  /// URL phòng thi đấu Word Guess (/ws/guess/:roomCode)
+  static String guessRoomWsUrl({
+    required String roomCode,
+    required String uid,
+    required String name,
+    required String ticket,
+    String? avatar,
+  }) {
+    final query = <String, String>{
+      'uid': uid,
+      'name': name,
+      'ticket': ticket,
+      if (avatar != null && avatar.isNotEmpty) 'avatar': avatar,
+    };
+    final uri = Uri.parse('${UrlConstants.webSocketBaseUrl}/guess/$roomCode')
+        .replace(
+          queryParameters: query,
+        );
+    return uri.toString();
+  }
 }

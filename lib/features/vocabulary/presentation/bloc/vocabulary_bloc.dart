@@ -15,6 +15,7 @@ import 'package:bufopia/features/vocabulary/domain/usecases/get_battle_deck_use_
 import 'package:bufopia/features/vocabulary/domain/usecases/submit_battle_reward_use_case.dart';
 import 'package:bufopia/features/vocabulary/domain/usecases/submit_match_result_use_case.dart';
 import 'package:bufopia/features/vocabulary/domain/usecases/submit_word_profiles_use_case.dart';
+import 'package:bufopia/shared/services/audio/sound_manager.dart';
 import 'package:bufopia/shared/services/device/device_uid_service.dart';
 import 'package:bufopia/shared/services/firebase/firebase_auth_service.dart';
 import 'package:bufopia/shared/services/socket/duel_socket_service.dart';
@@ -466,6 +467,7 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
 
     if (event.isPlayer1) {
       if (isCorrect) {
+        SoundManager.playCorrect();
         _countdownTimer?.cancel();
         _botTimer?.cancel();
 
@@ -486,6 +488,7 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
         );
         _scheduleNextRound();
       } else {
+        SoundManager.playWrong();
         final updatedWrong = List<String>.from(state.wrongWordsP1);
         if (!updatedWrong.contains(event.selectedWord)) {
           updatedWrong.add(event.selectedWord);
@@ -502,13 +505,21 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
         _startCooldownP1();
       }
     } else {
+      final selectedOpt = currentQ.options.firstWhere(
+        (o) => o.en == event.selectedWord || o.vi == event.selectedWord,
+        orElse: () => const BattleOption(),
+      );
+
       if (isCorrect) {
+        SoundManager.playCorrect();
         _countdownTimer?.cancel();
         _botTimer?.cancel();
 
         safeEmit(
           state.copyWith(
             selectedWordP2: event.selectedWord,
+            selectedOptionIdP2:
+                selectedOpt.id.isNotEmpty ? selectedOpt.id : null,
             isP2Correct: true,
             isRoundLocked: true,
             player2Score: state.player2Score + 100,
@@ -516,6 +527,7 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
         );
         _scheduleNextRound();
       } else {
+        SoundManager.playWrong();
         final updatedWrong = List<String>.from(state.wrongWordsP2);
         if (!updatedWrong.contains(event.selectedWord)) {
           updatedWrong.add(event.selectedWord);
@@ -524,6 +536,8 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
         safeEmit(
           state.copyWith(
             selectedWordP2: event.selectedWord,
+            selectedOptionIdP2:
+                selectedOpt.id.isNotEmpty ? selectedOpt.id : null,
             isP2Correct: false,
             wrongWordsP2: updatedWrong,
             isRoundLocked: false,
@@ -554,8 +568,12 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
       final remainingSeconds = ((12000 - elapsedMs) / 1000).ceil().clamp(0, 12);
       if (remainingSeconds != state.remainingSeconds) {
         safeEmit(state.copyWith(remainingSeconds: remainingSeconds));
+        if (remainingSeconds <= 5 && remainingSeconds > 0) {
+          SoundManager.playClick();
+        }
       }
       if (remainingSeconds <= 0) {
+        SoundManager.playWrong();
         safeEmit(state.copyWith(remainingSeconds: 0, isRoundLocked: true));
         _countdownTimer?.cancel();
       }
@@ -567,8 +585,12 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
     final remainingSeconds = ((10000 - elapsedMs) / 1000).ceil().clamp(0, 10);
     if (remainingSeconds != state.remainingSeconds) {
       safeEmit(state.copyWith(remainingSeconds: remainingSeconds));
+      if (remainingSeconds <= 5 && remainingSeconds > 0) {
+        SoundManager.playClick();
+      }
     }
     if (remainingSeconds <= 0) {
+      SoundManager.playWrong();
       safeEmit(state.copyWith(remainingSeconds: 0, isRoundLocked: true));
       _countdownTimer?.cancel();
       _botTimer?.cancel();
@@ -678,6 +700,9 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
 
         final uid = await _resolveUid(state.currentUid);
         final isWin = state.player1Score >= state.player2Score;
+        if (isWin) {
+          SoundManager.playWin();
+        }
 
         BattleReward? finalReward;
         try {
@@ -978,9 +1003,11 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
 
     if (isMe) {
       if (!event.isCorrect) {
+        SoundManager.playWrong();
         _lockedUntilMs = DateTime.now().millisecondsSinceEpoch + 2000;
         _startCooldownP1();
       } else {
+        SoundManager.playCorrect();
         _lockedUntilMs = 0;
         _pendingAnswerTimer?.cancel();
         _cooldownTimerP1?.cancel();
@@ -1016,8 +1043,10 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
       );
     } else {
       if (!event.isCorrect) {
+        SoundManager.playWrong();
         _startCooldownP2();
       } else {
+        SoundManager.playCorrect();
         _cooldownTimerP2?.cancel();
       }
 
@@ -1053,6 +1082,7 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
     _SocketRoundTimeout event,
     Emitter<VocabularyState> emit,
   ) {
+    SoundManager.playWrong();
     _countdownTimer?.cancel();
     _pendingAnswerTimer?.cancel();
     _cooldownTimerP1?.cancel();
@@ -1213,6 +1243,7 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
     _SocketOpponentLeft event,
     Emitter<VocabularyState> emit,
   ) {
+    SoundManager.playWin();
     _countdownTimer?.cancel();
     _botTimer?.cancel();
     _nextRoundTimer?.cancel();

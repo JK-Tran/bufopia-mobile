@@ -97,7 +97,7 @@ class AppBloc extends BaseBloc<AppEvent, AppState> {
   ) async {
     final lifecycleState = event.lifecycleState;
     if (lifecycleState == AppLifecycleState.resumed) {
-      if (state.isMusicEnabled) {
+      if (state.isMusicEnabled && _audioService.isHomeActive) {
         await _audioService.resumeBgm();
       }
     } else if (lifecycleState == AppLifecycleState.paused ||

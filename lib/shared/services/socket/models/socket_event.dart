@@ -526,7 +526,7 @@ class ChainAwayWarningEvent extends SocketEvent {
   final int limit;
 }
 
-/// Tin nhắn chat trong phòng Word Chain
+/// Tin nhắn chat trong phòng Word Chain & Word Guess
 class ChainChatMessageEvent extends SocketEvent {
   const ChainChatMessageEvent({
     required this.actor,
@@ -535,17 +535,32 @@ class ChainChatMessageEvent extends SocketEvent {
     this.name,
     this.avatar,
     this.time,
+    this.senderUid,
   });
 
-  factory ChainChatMessageEvent.fromJson(Map<String, dynamic> json) {
-    final msg = json['message'] as Map<String, dynamic>? ?? json;
+  factory ChainChatMessageEvent.fromJson(
+    Map<String, dynamic> json, {
+    int? resolvedActor,
+  }) {
+    final msg =
+        json['chatItem'] as Map<String, dynamic>? ??
+        json['message'] as Map<String, dynamic>? ??
+        json;
+    final senderUid = msg['senderUid'] as String? ?? msg['uid']?.toString();
+    final actorVal =
+        resolvedActor ??
+        msg['actor'] as int? ??
+        (msg['playerIndex'] as int?) ??
+        0;
+
     return ChainChatMessageEvent(
-      actor: msg['actor'] as int? ?? 0,
+      actor: actorVal,
       text: msg['text'] as String? ?? '',
-      id: msg['id'],
-      name: msg['name'] as String?,
-      avatar: msg['avatar'] as String?,
-      time: msg['time'] as num?,
+      id: msg['id']?.toString(),
+      name: msg['name'] as String? ?? msg['senderName'] as String?,
+      avatar: msg['avatar'] as String? ?? msg['senderAvatar'] as String?,
+      time: msg['time'] as num? ?? msg['timestamp'] as num?,
+      senderUid: senderUid,
     );
   }
 
@@ -555,6 +570,7 @@ class ChainChatMessageEvent extends SocketEvent {
   final String? name;
   final String? avatar;
   final num? time;
+  final String? senderUid;
 }
 
 /// Lịch sử chat khi kết nối vào phòng Word Chain
@@ -573,4 +589,173 @@ class ChainSessionRewardEvent extends SocketEvent {
 
   final String sessionId;
   final Reward reward;
+}
+
+// ─── Word Guess Events ──────────────────────────────────────────
+
+/// Server xác nhận kết nối vào phòng Word Guess
+class GuessRoomConnectedEvent extends SocketEvent {
+  const GuessRoomConnectedEvent({
+    required this.myUid,
+    required this.rawState,
+  });
+
+  final String myUid;
+  final Map<String, dynamic> rawState;
+}
+
+/// Server gửi cập nhật trạng thái phòng Word Guess
+class GuessRoomStateEvent extends SocketEvent {
+  const GuessRoomStateEvent({required this.rawState});
+
+  final Map<String, dynamic> rawState;
+}
+
+/// Server mở thêm chữ cái gợi ý cho từ hiện tại
+class GuessWordHintEvent extends SocketEvent {
+  const GuessWordHintEvent({
+    required this.sessionId,
+    required this.index,
+    required this.masked,
+  });
+
+  factory GuessWordHintEvent.fromJson(Map<String, dynamic> json) {
+    return GuessWordHintEvent(
+      sessionId: json['sessionId']?.toString() ?? '',
+      index: json['index'] as int? ?? 0,
+      masked: json['masked'] as String? ?? '',
+    );
+  }
+
+  final String sessionId;
+  final int index;
+  final String masked;
+}
+
+/// Server gửi phiên âm khi người chơi đạt mốc gợi ý
+class GuessWordPhoneticEvent extends SocketEvent {
+  const GuessWordPhoneticEvent({
+    required this.sessionId,
+    required this.index,
+    required this.phonetic,
+    this.phoneticSource,
+    this.phoneticEstimated,
+  });
+
+  factory GuessWordPhoneticEvent.fromJson(Map<String, dynamic> json) {
+    return GuessWordPhoneticEvent(
+      sessionId: json['sessionId']?.toString() ?? '',
+      index: json['index'] as int? ?? 0,
+      phonetic: json['phonetic'] as String? ?? '',
+      phoneticSource: json['phoneticSource'] as String?,
+      phoneticEstimated: json['phoneticEstimated'] as bool?,
+    );
+  }
+
+  final String sessionId;
+  final int index;
+  final String phonetic;
+  final String? phoneticSource;
+  final bool? phoneticEstimated;
+}
+
+/// Server thông báo một từ đã được đoán đúng
+class GuessWordSolvedEvent extends SocketEvent {
+  const GuessWordSolvedEvent({
+    required this.sessionId,
+    required this.index,
+    required this.word,
+    required this.meaning,
+    this.historyItem,
+  });
+
+  factory GuessWordSolvedEvent.fromJson(Map<String, dynamic> json) {
+    return GuessWordSolvedEvent(
+      sessionId: json['sessionId']?.toString() ?? '',
+      index: json['index'] as int? ?? 0,
+      word: json['word'] as String? ?? '',
+      meaning: json['meaning'] as String? ?? '',
+      historyItem: json['historyItem'] as Map<String, dynamic>?,
+    );
+  }
+
+  final String sessionId;
+  final int index;
+  final String word;
+  final String meaning;
+  final Map<String, dynamic>? historyItem;
+}
+
+/// Server gửi phản hồi lượt đoán sai riêng cho người đoán
+class GuessAttemptEvent extends SocketEvent {
+  const GuessAttemptEvent({
+    required this.word,
+    required this.isCorrect,
+    this.message,
+    this.playerUid,
+    this.sessionId,
+    this.index,
+  });
+
+  factory GuessAttemptEvent.fromJson(Map<String, dynamic> json) {
+    final history = json['historyItem'] as Map<String, dynamic>?;
+    final guess = history?['guess'] as String? ?? json['word'] as String? ?? '';
+    final isCorrect =
+        history?['isCorrect'] as bool? ?? json['correct'] as bool? ?? false;
+    final playerUid =
+        json['playerUid'] as String? ?? history?['playerUid'] as String?;
+
+    return GuessAttemptEvent(
+      word: guess,
+      isCorrect: isCorrect,
+      message: json['message'] as String?,
+      playerUid: playerUid,
+      sessionId: json['sessionId']?.toString(),
+      index: json['index'] as int?,
+    );
+  }
+
+  final String word;
+  final bool isCorrect;
+  final String? message;
+  final String? playerUid;
+  final String? sessionId;
+  final int? index;
+}
+
+/// Server thông báo đề xuất biểu quyết đã đóng / hủy
+class GuessProposalClosedEvent extends SocketEvent {
+  const GuessProposalClosedEvent({required this.reason});
+
+  factory GuessProposalClosedEvent.fromJson(Map<String, dynamic> json) {
+    return GuessProposalClosedEvent(
+      reason: json['reason'] as String? ?? 'Đề xuất đã kết thúc',
+    );
+  }
+
+  final String reason;
+}
+
+/// Thưởng kết thúc ván Word Guess từ Server
+class GuessSessionRewardEvent extends SocketEvent {
+  const GuessSessionRewardEvent({
+    required this.sessionId,
+    required this.rawReward,
+  });
+
+  final String sessionId;
+  final Map<String, dynamic> rawReward;
+}
+
+/// Server chặn chat do chứa từ ngữ vi phạm
+class GuessChatBlockedEvent extends SocketEvent {
+  const GuessChatBlockedEvent({required this.reason});
+
+  factory GuessChatBlockedEvent.fromJson(Map<String, dynamic> json) {
+    return GuessChatBlockedEvent(
+      reason: json['reason'] as String? ?? 'Tin nhắn bị chặn',
+    );
+  }
+
+  final String reason;
 }

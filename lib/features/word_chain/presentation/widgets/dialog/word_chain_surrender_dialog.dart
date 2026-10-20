@@ -51,6 +51,7 @@ class WordChainSurrenderDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isPaper = context.select<AppBloc, bool>((b) => b.state.isPaperTheme);
+    var isPopping = false;
 
     final dialogBg = isPaper ? AppColors.paperCardBg : AppColors.white;
     final dialogBorder = isPaper
@@ -98,7 +99,11 @@ class WordChainSurrenderDialog extends StatelessWidget {
                       fontWeight: FontWeight.w700,
                     ),
                     AppButton.close(
-                      onPressed: () => Navigator.of(context).pop(),
+                      onPressed: () {
+                        if (isPopping) return;
+                        isPopping = true;
+                        Navigator.of(context).pop();
+                      },
                     ),
                   ],
                 ),
@@ -123,7 +128,11 @@ class WordChainSurrenderDialog extends StatelessWidget {
                         text: cancelText,
                         height: 38.h,
                         fontSize: 14.sp,
-                        onPressed: () => Navigator.of(context).pop(),
+                        onPressed: () {
+                          if (isPopping) return;
+                          isPopping = true;
+                          Navigator.of(context).pop();
+                        },
                       ),
                     ),
                     SizedBox(width: 10.w),
@@ -133,6 +142,8 @@ class WordChainSurrenderDialog extends StatelessWidget {
                         height: 38.h,
                         fontSize: 14.sp,
                         onPressed: () {
+                          if (isPopping) return;
+                          isPopping = true;
                           Navigator.of(context).pop();
                           onConfirm();
                         },

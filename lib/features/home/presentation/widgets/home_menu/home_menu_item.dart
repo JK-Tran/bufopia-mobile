@@ -3,6 +3,7 @@ import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/home/data/models/home_menu_item_data.dart';
 import 'package:bufopia/features/home/presentation/widgets/home_menu/home_menu_spiral_rings.dart';
+import 'package:bufopia/shared/services/audio/sound_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -40,6 +41,7 @@ class _HomeMenuItemState extends State<HomeMenuItem> {
 
   void _onTapUp(TapUpDetails _) {
     setState(() => _isPressed = false);
+    SoundManager.playClick();
     widget.onTap();
   }
 

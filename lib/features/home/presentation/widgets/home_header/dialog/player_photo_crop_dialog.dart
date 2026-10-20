@@ -97,9 +97,9 @@ class _PlayerPhotoCropDialogState extends State<PlayerPhotoCropDialog> {
         final image = await boundary.toImage(pixelRatio: 3);
         final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
         if (byteData != null) {
-          final tempDir = await getTemporaryDirectory();
+          final dir = await getApplicationDocumentsDirectory();
           final filePath =
-              '${tempDir.path}/avatar_${DateTime.now().millisecondsSinceEpoch}.png';
+              '${dir.path}/avatar_${DateTime.now().millisecondsSinceEpoch}.png';
           final file = File(filePath);
           await file.writeAsBytes(byteData.buffer.asUint8List());
 

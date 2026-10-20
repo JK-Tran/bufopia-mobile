@@ -10,6 +10,7 @@ import 'package:bufopia/features/app/bloc/app_bloc.dart';
 import 'package:bufopia/features/auth/domain/usecases/get_cached_user_use_case.dart';
 import 'package:bufopia/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:bufopia/shared/di/di.dart';
+import 'package:bufopia/shared/services/audio/sound_manager.dart';
 import 'package:bufopia/shared/services/firebase/firebase_auth_service.dart';
 import 'package:bufopia/shared/services/socket/duel_socket_service.dart';
 import 'package:bufopia/shared/services/socket/models/socket_event.dart';
@@ -155,6 +156,7 @@ class _VocabularyMatchmakingDialogState
           });
         }
       } else if (event is MatchmakeMatchedEvent) {
+        SoundManager.playWin();
         setState(() {
           _isMatched = true;
           _matchedEvent = event;

@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$WordData {
 
-@JsonKey(name: 'id') String get id;@JsonKey(name: 'topic') String? get topic;@JsonKey(name: 'en') String? get en;@JsonKey(name: 'vi') String? get vi;
+@JsonKey(name: 'id') String get id;@JsonKey(name: 'topic') String? get topic;@JsonKey(name: 'en') String? get en;@JsonKey(name: 'vi') String? get vi;@JsonKey(name: 'phonetic') String? get phonetic;@JsonKey(name: 'partOfSpeech') String? get partOfSpeech;@JsonKey(name: 'example') String? get example;@JsonKey(name: 'exampleVi') String? get exampleVi;
 /// Create a copy of WordData
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -30,20 +30,20 @@ $WordDataCopyWith<WordData> get copyWith => _$WordDataCopyWithImpl<WordData>(thi
 @override
 bool operator ==(Object other) {
   final _this = this as WordData;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is WordData&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.topic, _this.topic) || other.topic == _this.topic)&&(identical(other.en, _this.en) || other.en == _this.en)&&(identical(other.vi, _this.vi) || other.vi == _this.vi));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is WordData&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.topic, _this.topic) || other.topic == _this.topic)&&(identical(other.en, _this.en) || other.en == _this.en)&&(identical(other.vi, _this.vi) || other.vi == _this.vi)&&(identical(other.phonetic, _this.phonetic) || other.phonetic == _this.phonetic)&&(identical(other.partOfSpeech, _this.partOfSpeech) || other.partOfSpeech == _this.partOfSpeech)&&(identical(other.example, _this.example) || other.example == _this.example)&&(identical(other.exampleVi, _this.exampleVi) || other.exampleVi == _this.exampleVi));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
   final _this = this as WordData;
-  return Object.hash(runtimeType,_this.id,_this.topic,_this.en,_this.vi);
+  return Object.hash(runtimeType,_this.id,_this.topic,_this.en,_this.vi,_this.phonetic,_this.partOfSpeech,_this.example,_this.exampleVi);
 }
 
 @override
 String toString() {
   final _this = this as WordData;
-  return 'WordData(id: ${_this.id}, topic: ${_this.topic}, en: ${_this.en}, vi: ${_this.vi})';
+  return 'WordData(id: ${_this.id}, topic: ${_this.topic}, en: ${_this.en}, vi: ${_this.vi}, phonetic: ${_this.phonetic}, partOfSpeech: ${_this.partOfSpeech}, example: ${_this.example}, exampleVi: ${_this.exampleVi})';
 }
 
 
@@ -54,7 +54,7 @@ abstract mixin class $WordDataCopyWith<$Res>  {
   factory $WordDataCopyWith(WordData value, $Res Function(WordData) _then) = _$WordDataCopyWithImpl;
 @useResult
 $Res call({
-@JsonKey(name: 'id') String id,@JsonKey(name: 'topic') String? topic,@JsonKey(name: 'en') String? en,@JsonKey(name: 'vi') String? vi
+@JsonKey(name: 'id') String id,@JsonKey(name: 'topic') String? topic,@JsonKey(name: 'en') String? en,@JsonKey(name: 'vi') String? vi,@JsonKey(name: 'phonetic') String? phonetic,@JsonKey(name: 'partOfSpeech') String? partOfSpeech,@JsonKey(name: 'example') String? example,@JsonKey(name: 'exampleVi') String? exampleVi
 });
 
 
@@ -71,12 +71,16 @@ class _$WordDataCopyWithImpl<$Res>
 
 /// Create a copy of WordData
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? topic = freezed,Object? en = freezed,Object? vi = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? topic = freezed,Object? en = freezed,Object? vi = freezed,Object? phonetic = freezed,Object? partOfSpeech = freezed,Object? example = freezed,Object? exampleVi = freezed,}) {
   return _then(WordData(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,topic: freezed == topic ? _self.topic : topic // ignore: cast_nullable_to_non_nullable
 as String?,en: freezed == en ? _self.en : en // ignore: cast_nullable_to_non_nullable
 as String?,vi: freezed == vi ? _self.vi : vi // ignore: cast_nullable_to_non_nullable
+as String?,phonetic: freezed == phonetic ? _self.phonetic : phonetic // ignore: cast_nullable_to_non_nullable
+as String?,partOfSpeech: freezed == partOfSpeech ? _self.partOfSpeech : partOfSpeech // ignore: cast_nullable_to_non_nullable
+as String?,example: freezed == example ? _self.example : example // ignore: cast_nullable_to_non_nullable
+as String?,exampleVi: freezed == exampleVi ? _self.exampleVi : exampleVi // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -162,10 +166,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'id')  String id, @JsonKey(name: 'topic')  String? topic, @JsonKey(name: 'en')  String? en, @JsonKey(name: 'vi')  String? vi)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function(@JsonKey(name: 'id')  String id, @JsonKey(name: 'topic')  String? topic, @JsonKey(name: 'en')  String? en, @JsonKey(name: 'vi')  String? vi, @JsonKey(name: 'phonetic')  String? phonetic, @JsonKey(name: 'partOfSpeech')  String? partOfSpeech, @JsonKey(name: 'example')  String? example, @JsonKey(name: 'exampleVi')  String? exampleVi)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _WordData() when $default != null:
-return $default(_that.id,_that.topic,_that.en,_that.vi);case _:
+return $default(_that.id,_that.topic,_that.en,_that.vi,_that.phonetic,_that.partOfSpeech,_that.example,_that.exampleVi);case _:
   return orElse();
 
 }
@@ -183,10 +187,10 @@ return $default(_that.id,_that.topic,_that.en,_that.vi);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'id')  String id, @JsonKey(name: 'topic')  String? topic, @JsonKey(name: 'en')  String? en, @JsonKey(name: 'vi')  String? vi)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function(@JsonKey(name: 'id')  String id, @JsonKey(name: 'topic')  String? topic, @JsonKey(name: 'en')  String? en, @JsonKey(name: 'vi')  String? vi, @JsonKey(name: 'phonetic')  String? phonetic, @JsonKey(name: 'partOfSpeech')  String? partOfSpeech, @JsonKey(name: 'example')  String? example, @JsonKey(name: 'exampleVi')  String? exampleVi)  $default,) {final _that = this;
 switch (_that) {
 case _WordData():
-return $default(_that.id,_that.topic,_that.en,_that.vi);case _:
+return $default(_that.id,_that.topic,_that.en,_that.vi,_that.phonetic,_that.partOfSpeech,_that.example,_that.exampleVi);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -203,10 +207,10 @@ return $default(_that.id,_that.topic,_that.en,_that.vi);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'id')  String id, @JsonKey(name: 'topic')  String? topic, @JsonKey(name: 'en')  String? en, @JsonKey(name: 'vi')  String? vi)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function(@JsonKey(name: 'id')  String id, @JsonKey(name: 'topic')  String? topic, @JsonKey(name: 'en')  String? en, @JsonKey(name: 'vi')  String? vi, @JsonKey(name: 'phonetic')  String? phonetic, @JsonKey(name: 'partOfSpeech')  String? partOfSpeech, @JsonKey(name: 'example')  String? example, @JsonKey(name: 'exampleVi')  String? exampleVi)?  $default,) {final _that = this;
 switch (_that) {
 case _WordData() when $default != null:
-return $default(_that.id,_that.topic,_that.en,_that.vi);case _:
+return $default(_that.id,_that.topic,_that.en,_that.vi,_that.phonetic,_that.partOfSpeech,_that.example,_that.exampleVi);case _:
   return null;
 
 }
@@ -218,13 +222,17 @@ return $default(_that.id,_that.topic,_that.en,_that.vi);case _:
 @JsonSerializable()
 
 class _WordData extends WordData {
-  const _WordData({@JsonKey(name: 'id') required this.id, @JsonKey(name: 'topic') this.topic, @JsonKey(name: 'en') this.en, @JsonKey(name: 'vi') this.vi}): super._();
+  const _WordData({@JsonKey(name: 'id') required this.id, @JsonKey(name: 'topic') this.topic, @JsonKey(name: 'en') this.en, @JsonKey(name: 'vi') this.vi, @JsonKey(name: 'phonetic') this.phonetic, @JsonKey(name: 'partOfSpeech') this.partOfSpeech, @JsonKey(name: 'example') this.example, @JsonKey(name: 'exampleVi') this.exampleVi}): super._();
   factory _WordData.fromJson(Map<String, dynamic> json) => _$WordDataFromJson(json);
 
 @override@JsonKey(name: 'id') final  String id;
 @override@JsonKey(name: 'topic') final  String? topic;
 @override@JsonKey(name: 'en') final  String? en;
 @override@JsonKey(name: 'vi') final  String? vi;
+@override@JsonKey(name: 'phonetic') final  String? phonetic;
+@override@JsonKey(name: 'partOfSpeech') final  String? partOfSpeech;
+@override@JsonKey(name: 'example') final  String? example;
+@override@JsonKey(name: 'exampleVi') final  String? exampleVi;
 
 /// Create a copy of WordData
 /// with the given fields replaced by the non-null parameter values.
@@ -239,18 +247,18 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _WordData&&(identical(other.id, id) || other.id == id)&&(identical(other.topic, topic) || other.topic == topic)&&(identical(other.en, en) || other.en == en)&&(identical(other.vi, vi) || other.vi == vi));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _WordData&&(identical(other.id, id) || other.id == id)&&(identical(other.topic, topic) || other.topic == topic)&&(identical(other.en, en) || other.en == en)&&(identical(other.vi, vi) || other.vi == vi)&&(identical(other.phonetic, phonetic) || other.phonetic == phonetic)&&(identical(other.partOfSpeech, partOfSpeech) || other.partOfSpeech == partOfSpeech)&&(identical(other.example, example) || other.example == example)&&(identical(other.exampleVi, exampleVi) || other.exampleVi == exampleVi));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
 int get hashCode {
-    return Object.hash(runtimeType,id,topic,en,vi);
+    return Object.hash(runtimeType,id,topic,en,vi,phonetic,partOfSpeech,example,exampleVi);
 }
 
 @override
 String toString() {
-    return 'WordData(id: $id, topic: $topic, en: $en, vi: $vi)';
+    return 'WordData(id: $id, topic: $topic, en: $en, vi: $vi, phonetic: $phonetic, partOfSpeech: $partOfSpeech, example: $example, exampleVi: $exampleVi)';
 }
 
 
@@ -261,7 +269,7 @@ abstract mixin class _$WordDataCopyWith<$Res> implements $WordDataCopyWith<$Res>
   factory _$WordDataCopyWith(_WordData value, $Res Function(_WordData) _then) = __$WordDataCopyWithImpl;
 @override @useResult
 $Res call({
-@JsonKey(name: 'id') String id,@JsonKey(name: 'topic') String? topic,@JsonKey(name: 'en') String? en,@JsonKey(name: 'vi') String? vi
+@JsonKey(name: 'id') String id,@JsonKey(name: 'topic') String? topic,@JsonKey(name: 'en') String? en,@JsonKey(name: 'vi') String? vi,@JsonKey(name: 'phonetic') String? phonetic,@JsonKey(name: 'partOfSpeech') String? partOfSpeech,@JsonKey(name: 'example') String? example,@JsonKey(name: 'exampleVi') String? exampleVi
 });
 
 
@@ -278,12 +286,16 @@ class __$WordDataCopyWithImpl<$Res>
 
 /// Create a copy of WordData
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? topic = freezed,Object? en = freezed,Object? vi = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? topic = freezed,Object? en = freezed,Object? vi = freezed,Object? phonetic = freezed,Object? partOfSpeech = freezed,Object? example = freezed,Object? exampleVi = freezed,}) {
   return _then(_WordData(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,topic: freezed == topic ? _self.topic : topic // ignore: cast_nullable_to_non_nullable
 as String?,en: freezed == en ? _self.en : en // ignore: cast_nullable_to_non_nullable
 as String?,vi: freezed == vi ? _self.vi : vi // ignore: cast_nullable_to_non_nullable
+as String?,phonetic: freezed == phonetic ? _self.phonetic : phonetic // ignore: cast_nullable_to_non_nullable
+as String?,partOfSpeech: freezed == partOfSpeech ? _self.partOfSpeech : partOfSpeech // ignore: cast_nullable_to_non_nullable
+as String?,example: freezed == example ? _self.example : example // ignore: cast_nullable_to_non_nullable
+as String?,exampleVi: freezed == exampleVi ? _self.exampleVi : exampleVi // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }

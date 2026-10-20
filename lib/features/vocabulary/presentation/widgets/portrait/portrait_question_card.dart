@@ -89,44 +89,6 @@ class PortraitQuestionCard extends StatelessWidget {
           child: Stack(
             alignment: Alignment.center,
             children: [
-              // Nút loa phát âm
-              Positioned(
-                left: 2.w,
-                child: GestureDetector(
-                  onTap: onSpeakerTap,
-                  child: Container(
-                    width: 38.r,
-                    height: 38.r,
-                    decoration: BoxDecoration(
-                      color: isPaper
-                          ? AppColors.white
-                          : AppColors.lightBackground,
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: isPaper
-                            ? AppColors.paperBorder
-                            : AppColors.grayLight,
-                        width: 1.5.w,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.black.withValues(alpha: 0.08),
-                          offset: Offset(0, 2.h),
-                          blurRadius: 3.r,
-                        ),
-                      ],
-                    ),
-                    child: Icon(
-                      Icons.volume_up_rounded,
-                      size: 18.r,
-                      color: isPaper
-                          ? AppColors.paperTextDark
-                          : AppColors.grayDark,
-                    ),
-                  ),
-                ),
-              ),
-
               // Tiêu đề chủ đề và Từ vựng mục tiêu (Chính giữa thẻ)
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 44.w),

@@ -8,9 +8,8 @@ import 'package:bufopia/features/auth/presentation/widgets/dialog/guest_mascot_p
 import 'package:bufopia/features/home/presentation/bloc/home_bloc.dart';
 import 'package:bufopia/features/home/presentation/widgets/home_body.dart';
 import 'package:bufopia/features/leaderboard/presentation/bloc/leaderboard_bloc.dart';
-import 'package:bufopia/features/vocabulary/presentation/widgets/dialog/vocabulary_review_words_dialog.dart';
 import 'package:bufopia/features/word_chain/word_chain.dart';
-import 'package:bufopia/shared/utils/user_name_generator.dart';
+import 'package:bufopia/shared/services/audio/sound_manager.dart';
 import 'package:bufopia/shared/utils/validation_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -46,6 +45,7 @@ class _HomePageState extends BasePageState<HomePage, HomeBloc> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
+      SoundManager.onEnterHome();
       final user = context.read<AuthBloc>().state.currentUser;
       if (user != null &&
           user.uid.isNotEmpty &&
@@ -57,6 +57,12 @@ class _HomePageState extends BasePageState<HomePage, HomeBloc> {
     });
   }
 
+  @override
+  void dispose() {
+    SoundManager.onLeaveHome();
+    super.dispose();
+  }
+
   void _checkAndShowMascotPicker(String uid) {
     if (_isMascotDialogShowing || !mounted) return;
     _isMascotDialogShowing = true;
@@ -65,55 +71,12 @@ class _HomePageState extends BasePageState<HomePage, HomeBloc> {
     });
   }
 
-  Future<void> _handleQuickBattleNavigation({
-    bool isBot = true,
-    String? roomCode,
-    String? rivalName,
-    String? rivalAvatar,
-  }) async {
-    if (!mounted) return;
-    final authBloc = context.read<AuthBloc>();
-    final user = authBloc.state.currentUser;
-
-    if (user == null ||
-        !user.persisted ||
-        !ValidationUtils.isValidPlayerName(user.displayName)) {
-      final uid = user?.uid.isNotEmpty == true ? user!.uid : '';
-      final mascot = (user?.avatarUrl == UserNameGenerator.pipAvatar)
-          ? UserNameGenerator.pip
-          : UserNameGenerator.bunny;
-      final fallbackName =
-          (user?.displayName.isNotEmpty == true &&
-              ValidationUtils.isValidPlayerName(user!.displayName))
-          ? user.displayName
-          : UserNameGenerator.generate(mascot, uid);
-      authBloc.add(AuthEvent.updateProfile(displayName: fallbackName));
-    }
-
-    await context.push(
-      AppRouter.vocabulary,
-      extra: {
-        'isBot': isBot,
-        'roomCode': ?roomCode,
-        'rivalName': ?rivalName,
-        'rivalAvatar': ?rivalAvatar,
-      },
-    );
-    if (!mounted) return;
-    if (context.read<AuthBloc>().state.currentUser == null) {
-      context.read<AuthBloc>().add(const AuthEvent.getUserInfo());
-    }
-  }
-
   void _onNavigateToChooseTopic() {
     context.push(AppRouter.topic);
   }
 
   Future<void> _onReviewWeakWordsPressed() async {
-    await VocabularyReviewWordsDialog.show(
-      context,
-      onStartPractice: _handleQuickBattleNavigation,
-    );
+    context.push(AppRouter.wordGuessTopic);
   }
 
   Future<void> _onWordChainPressed() async {
