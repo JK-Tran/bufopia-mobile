@@ -13,6 +13,7 @@ import 'package:bufopia/features/word_guess/presentation/bloc/word_guess_bloc.da
 import 'package:bufopia/features/word_guess/presentation/widgets/dialog/word_guess_matchmaking_dialog.dart';
 import 'package:bufopia/features/word_guess/presentation/widgets/dialog/word_guess_mode_dialog.dart';
 import 'package:bufopia/features/word_guess/presentation/widgets/dialog/word_guess_room_dialog.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:bufopia/shared/utils/validation_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -83,7 +84,7 @@ class _WordGuessTopicPageState extends State<WordGuessTopicPage> {
 
     AppToast.showWarning(
       context,
-      'Vui lòng đặt tên hiển thị (2–25 ký tự) trước khi tham gia!',
+      context.l10n.nameRequiredOnline,
     );
 
     final newName = await PlayerEditNameDialog.show(
@@ -113,7 +114,7 @@ class _WordGuessTopicPageState extends State<WordGuessTopicPage> {
       onMatched: (roomCode, rivalName, rivalAvatar) {
         AppToast.showSuccess(
           context,
-          'Đã tìm thấy bạn chơi $rivalName! Vào trận...',
+          context.l10n.opponentFoundRival(rivalName),
         );
         context.push(
           AppRouter.wordGuess,
@@ -137,8 +138,8 @@ class _WordGuessTopicPageState extends State<WordGuessTopicPage> {
         .where((t) => t.id == topicId)
         .firstOrNull;
     final topicTitle = topicId == 'auto'
-        ? 'Luyện ngẫu nhiên'
-        : (topic?.name ?? 'Luyện ngẫu nhiên');
+        ? context.l10n.randomPractice
+        : (topic?.name ?? context.l10n.randomPractice);
 
     await WordGuessRoomDialog.show(
       context,
@@ -188,7 +189,7 @@ class _WordGuessTopicPageState extends State<WordGuessTopicPage> {
                   children: [
                     AppIconButton(
                       icon: Icons.arrow_back_ios_new_rounded,
-                      tooltip: 'Quay lại',
+                      tooltip: context.l10n.back,
                       size: 36.r,
                       iconSize: 18.r,
                       backgroundColor: isPaper
@@ -226,7 +227,7 @@ class _WordGuessTopicPageState extends State<WordGuessTopicPage> {
                     ),
                     AppIconButton(
                       icon: Icons.settings_rounded,
-                      tooltip: 'Cài đặt',
+                      tooltip: context.l10n.settings,
                       size: 36.r,
                       iconSize: 18.r,
                       backgroundColor: isPaper

@@ -2,6 +2,7 @@ import 'package:bufopia/components/app_icon_button.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/shared/di/di.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:bufopia/shared/services/audio/app_audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -81,7 +82,7 @@ class WordGuessClueItem extends StatelessWidget {
               ),
             ),
             child: AppText.c1(
-              'GỢI Ý NGHĨA',
+              context.l10n.meaningClue,
               color: isPaperTheme
                   ? AppColors.paperAmberBadgeText
                   : AppColors.classicBadgePurpleText,
@@ -94,7 +95,7 @@ class WordGuessClueItem extends StatelessWidget {
 
           // 2. Nghĩa tiếng Việt
           AppText.t2(
-            meaning.isNotEmpty ? meaning : 'Đang tải gợi ý...',
+            meaning.isNotEmpty ? meaning : context.l10n.loadingClue,
             color: isPaperTheme ? AppColors.paperTextDark : AppColors.grayDark,
             fontWeight: FontWeight.w700,
             fontSize: 18.sp,
@@ -128,7 +129,7 @@ class WordGuessClueItem extends StatelessWidget {
                   ),
                 ),
                 child: AppText.c1(
-                  '$length chữ cái',
+                  context.l10n.nLettersCount(length),
                   color: isPaperTheme
                       ? AppColors.paperTextDark
                       : AppColors.grayDark,

@@ -3,6 +3,7 @@ import 'dart:math' as math;
 
 import 'package:bufopia/components/app_button.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:bufopia/shared/services/audio/sound_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -88,6 +89,7 @@ class _WordGuessInputBarState extends State<WordGuessInputBar>
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final dividerColor = widget.isPaperTheme
         ? AppColors.paperBorder
         : AppColors.classicBorder;
@@ -116,7 +118,7 @@ class _WordGuessInputBarState extends State<WordGuessInputBar>
           // 1. Nút BỎ QUA 3D (Đồng bộ Paper & Classic)
           if (widget.isPaperTheme)
             AppButton(
-              text: 'BỎ QUA',
+              text: l10n.skipWordAction,
               height: 42.h,
               fontSize: 10.sp,
               padding: EdgeInsets.symmetric(horizontal: 10.w),
@@ -138,7 +140,7 @@ class _WordGuessInputBarState extends State<WordGuessInputBar>
             )
           else
             AppButton.secondary(
-              text: 'BỎ QUA',
+              text: l10n.skipWordAction,
               height: 42.h,
               fontSize: 10.sp,
               padding: EdgeInsets.symmetric(horizontal: 10.w),
@@ -228,7 +230,7 @@ class _WordGuessInputBarState extends State<WordGuessInputBar>
                           : AppColors.grayDark,
                     ),
                     decoration: InputDecoration(
-                      hintText: 'Nhập từ tiếng Anh...',
+                      hintText: l10n.enterEnglishWordHint,
                       hintStyle: TextStyle(
                         fontSize: 12.sp,
                         color: widget.isPaperTheme
@@ -250,7 +252,7 @@ class _WordGuessInputBarState extends State<WordGuessInputBar>
           // 3. Nút ĐOÁN 3D (Đồng bộ Paper & Classic)
           if (widget.isPaperTheme)
             AppButton(
-              text: 'ĐOÁN',
+              text: l10n.guessAction,
               height: 42.h,
               fontSize: 12.sp,
               padding: EdgeInsets.symmetric(horizontal: 12.w),
@@ -274,7 +276,7 @@ class _WordGuessInputBarState extends State<WordGuessInputBar>
             )
           else
             AppButton.success(
-              text: 'ĐOÁN',
+              text: l10n.guessAction,
               height: 42.h,
               fontSize: 12.sp,
               padding: EdgeInsets.symmetric(horizontal: 12.w),

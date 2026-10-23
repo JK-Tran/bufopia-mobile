@@ -18,6 +18,7 @@ import 'package:bufopia/features/word_guess/presentation/widgets/dialog/word_gue
 import 'package:bufopia/features/word_guess/presentation/widgets/dialog/word_guess_result_dialog.dart';
 import 'package:bufopia/features/word_guess/presentation/widgets/word_guess_body.dart';
 import 'package:bufopia/shared/di/di.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:bufopia/shared/services/firebase/firebase_auth_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -168,8 +169,8 @@ class _WordGuessViewState extends State<_WordGuessView> {
     return pIdx != 0 ? pIdx : idx;
   }
 
-  String _getTopicTitle(String id) {
-    if (id == 'auto') return 'Luyện ngẫu nhiên';
+  String _getTopicTitle(String id, BuildContext context) {
+    if (id == 'auto') return context.l10n.randomPractice;
     final topic = TopicX.defaultTopics.where((t) => t.id == id).firstOrNull;
     return topic?.name ?? id;
   }
@@ -184,13 +185,13 @@ class _WordGuessViewState extends State<_WordGuessView> {
 
     AppDialog.show(
       context,
-      title: 'RỜI PHÒNG LUYỆN?',
+      title: context.l10n.leavePracticeRoomTitle,
       child: Builder(
         builder: (dialogCtx) => Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             AppText.b1(
-              'Bạn có chắc chắn muốn thoát khỏi phiên luyện tập này không?',
+              context.l10n.leavePracticeRoomConfirm,
               color: messageColor,
               fontSize: 14.sp,
               textAlign: TextAlign.center,
@@ -201,7 +202,7 @@ class _WordGuessViewState extends State<_WordGuessView> {
                 Expanded(
                   child: isPaper
                       ? AppButton(
-                          text: 'Ở LẠI',
+                          text: context.l10n.stay,
                           height: 40.h,
                           backgroundColor: AppColors.paperSurface,
                           borderColor: AppColors.paperBorder,
@@ -214,7 +215,7 @@ class _WordGuessViewState extends State<_WordGuessView> {
                           },
                         )
                       : AppButton.secondary(
-                          text: 'Ở LẠI',
+                          text: context.l10n.stay,
                           height: 40.h,
                           onPressed: () {
                             if (isPopping) return;
@@ -226,7 +227,7 @@ class _WordGuessViewState extends State<_WordGuessView> {
                 SizedBox(width: 10.w),
                 Expanded(
                   child: AppButton.danger(
-                    text: 'RỜI ĐI',
+                    text: context.l10n.leave,
                     height: 40.h,
                     onPressed: () {
                       if (isPopping) return;
@@ -269,13 +270,13 @@ class _WordGuessViewState extends State<_WordGuessView> {
 
     AppDialog.show(
       context,
-      title: 'KẾT THÚC VÁN CHƠI',
+      title: context.l10n.endGameEarlyTitle,
       child: Builder(
         builder: (dialogCtx) => Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             AppText.b1(
-              'Bạn muốn dừng buổi luyện tập sớm và xem kết quả?',
+              context.l10n.endGameEarlyConfirm,
               color: messageColor,
               fontSize: 14.sp,
               textAlign: TextAlign.center,
@@ -286,7 +287,7 @@ class _WordGuessViewState extends State<_WordGuessView> {
                 Expanded(
                   child: isPaper
                       ? AppButton(
-                          text: 'CHƠI TIẾP',
+                          text: context.l10n.continuePlaying,
                           height: 40.h,
                           backgroundColor: AppColors.paperSurface,
                           borderColor: AppColors.paperBorder,
@@ -299,7 +300,7 @@ class _WordGuessViewState extends State<_WordGuessView> {
                           },
                         )
                       : AppButton.secondary(
-                          text: 'CHƠI TIẾP',
+                          text: context.l10n.continuePlaying,
                           height: 40.h,
                           onPressed: () {
                             if (isPopping) return;
@@ -311,7 +312,7 @@ class _WordGuessViewState extends State<_WordGuessView> {
                 SizedBox(width: 10.w),
                 Expanded(
                   child: AppButton.danger(
-                    text: 'KẾT THÚC',
+                    text: context.l10n.endGame,
                     height: 40.h,
                     onPressed: () {
                       if (isPopping) return;
@@ -566,7 +567,7 @@ class _WordGuessViewState extends State<_WordGuessView> {
   @override
   Widget build(BuildContext context) {
     final isPaper = context.select<AppBloc, bool>((b) => b.state.isPaperTheme);
-    final topicTitle = _getTopicTitle(widget.topic);
+    final topicTitle = _getTopicTitle(widget.topic, context);
     final isSolo = widget.mode == WordGuessGameMode.practice;
 
     return BlocConsumer<WordGuessBloc, WordGuessState>(
@@ -722,7 +723,8 @@ class _WordGuessViewState extends State<_WordGuessView> {
                             final rivalName =
                                 rivalPlayer?.name.isNotEmpty == true
                                 ? rivalPlayer!.name
-                                : (widget.rivalName ?? 'Đối thủ');
+                                : (widget.rivalName ??
+                                    context.l10n.humanOpponent);
                             final rivalAvatar =
                                 rivalPlayer?.avatar ?? widget.rivalAvatar;
                             ChatDialog.show(

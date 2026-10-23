@@ -2,6 +2,7 @@ import 'package:bufopia/components/app_icon_button.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/home/presentation/widgets/home_header/dialog/home_settings_dialog.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -32,6 +33,7 @@ class WordGuessHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final titleColor = isPaperTheme
         ? AppColors.paperTextDark
         : AppColors.grayDark;
@@ -52,7 +54,7 @@ class WordGuessHeader extends StatelessWidget {
     final dotColor = isPaperTheme ? AppColors.paperGreenDark : AppColors.green;
 
     final subtitleText = playerCount != null && playerCount! > 1
-        ? '$topicTitle · $playerCount người chơi'
+        ? l10n.topicWithPlayers(topicTitle, playerCount!)
         : topicTitle;
 
     return Container(
@@ -89,7 +91,7 @@ class WordGuessHeader extends StatelessWidget {
           // 1. Nút quay lại tròn 3D căn giữa tuyệt đối
           AppIconButton(
             icon: Icons.arrow_back_rounded,
-            tooltip: 'Quay lại',
+            tooltip: l10n.back,
             size: 32.r,
             iconSize: 18.r,
             backgroundColor: btnBg,
@@ -110,7 +112,7 @@ class WordGuessHeader extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 AppText.t3(
-                  'Đoán từ khuyết',
+                  l10n.wordGuess,
                   color: titleColor,
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w700,
@@ -159,7 +161,7 @@ class WordGuessHeader extends StatelessWidget {
                   children: [
                     AppIconButton(
                       icon: Icons.chat_bubble_outline_rounded,
-                      tooltip: 'Trò chuyện',
+                      tooltip: l10n.chat,
                       size: 32.r,
                       iconSize: 15.r,
                       backgroundColor: isPaperTheme
@@ -226,7 +228,7 @@ class WordGuessHeader extends StatelessWidget {
               if (onEnd != null) ...[
                 AppIconButton(
                   icon: Icons.flag_outlined,
-                  tooltip: 'Kết thúc ván đấu',
+                  tooltip: l10n.leaveBattle,
                   size: 32.r,
                   iconSize: 18.r,
                   backgroundColor: isPaperTheme
@@ -249,7 +251,7 @@ class WordGuessHeader extends StatelessWidget {
               // Nút Cài đặt âm thanh / nhạc nền
               AppIconButton(
                 icon: Icons.settings_rounded,
-                tooltip: 'Cài đặt',
+                tooltip: l10n.settings,
                 size: 32.r,
                 iconSize: 18.r,
                 backgroundColor: btnBg,

@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bufopia/shared/services/socket/base_socket_service.dart';
 import 'package:bufopia/shared/services/socket/models/socket_event.dart';
+import 'package:bufopia/shared/services/socket/realtime_routing_service.dart';
 import 'package:bufopia/shared/services/socket/socket_url_builder.dart';
 import 'package:bufopia/shared/utils/log_utils.dart';
 import 'package:injectable/injectable.dart';
@@ -40,6 +41,10 @@ abstract class DuelSocketService {
     required int matchRound,
     required int roundIndex,
     required String optionId,
+    String? selectedAnswer,
+    bool? isCorrect,
+    double? timeSpent,
+    int? scoreDelta,
   });
 
   /// Gửi cancel để hủy tìm trận (chỉ dùng trong Matchmaker)
@@ -60,7 +65,10 @@ class DuelSocketServiceImpl extends BaseSocketService
     super.deviceAuthService,
     super.authDataSource,
     super.firebaseAuthService,
+    this._routingService,
   );
+
+  final RealtimeRoutingService _routingService;
 
   Map<String, dynamic>? _lastMatchmakeArgs;
   Map<String, dynamic>? _lastRoomArgs;
@@ -78,11 +86,41 @@ class DuelSocketServiceImpl extends BaseSocketService
   }) async {
     _lastMatchmakeArgs = {
       'uid': uid,
+      'token': token,
       'topic': topic,
       'name': name,
       'avatar': avatar,
     };
     _lastRoomArgs = null;
+
+    final config = await _routingService.getConfig();
+    final isGo = _routingService.isGoMatchmaking(config: config);
+
+    if (isGo) {
+      Log.d(
+        'Routing duel matchmaking to Go Realtime Server (First-Frame Auth)',
+        name: logTag,
+      );
+      final effectiveToken = await resolveToken(token);
+      final deviceSecret = await deviceAuthService.getDeviceSecret();
+      final url = SocketUrlBuilder.goQuizMatchmakeWsUrl();
+
+      await connectUrl(
+        url,
+        firstFrameAuth: FirstFrameAuth(
+          uid: uid,
+          token: effectiveToken,
+          deviceSecret: deviceSecret,
+        ),
+      );
+      return;
+    }
+
+    // ── Fallback: Cloudflare Worker (Ticket-based) ──────────────────
+    Log.d(
+      'Routing duel matchmaking to Cloudflare Worker (Ticket Auth)',
+      name: logTag,
+    );
     var effectiveToken = await resolveToken(token);
     String? ticket;
     try {
@@ -92,10 +130,7 @@ class DuelSocketServiceImpl extends BaseSocketService
         token: effectiveToken,
       );
     } on Object catch (e) {
-      Log.e(
-        'Failed to get matchmake socket ticket: $e',
-        name: logTag,
-      );
+      Log.e('Failed to get matchmake socket ticket: $e', name: logTag);
     }
 
     if (ticket == null || ticket.isEmpty) {
@@ -152,11 +187,41 @@ class DuelSocketServiceImpl extends BaseSocketService
     _lastRoomArgs = {
       'roomCode': roomCode,
       'uid': uid,
+      'token': token,
       'topic': topic,
       'name': name,
       'avatar': avatar,
     };
     _lastMatchmakeArgs = null;
+
+    final config = await _routingService.getConfig();
+    final isGo = _routingService.isGoQuizRoom(roomCode, config: config);
+
+    if (isGo) {
+      Log.d(
+        'Routing quiz room $roomCode to Go Realtime Server (First-Frame Auth)',
+        name: logTag,
+      );
+      final effectiveToken = await resolveToken(token);
+      final deviceSecret = await deviceAuthService.getDeviceSecret();
+      final url = SocketUrlBuilder.goQuizRoomWsUrl(roomCode);
+
+      await connectUrl(
+        url,
+        firstFrameAuth: FirstFrameAuth(
+          uid: uid,
+          token: effectiveToken,
+          deviceSecret: deviceSecret,
+        ),
+      );
+      return;
+    }
+
+    // ── Fallback: Cloudflare Worker (Ticket-based) ──────────────────
+    Log.d(
+      'Routing quiz room $roomCode to Cloudflare Worker (Ticket Auth)',
+      name: logTag,
+    );
     var effectiveToken = await resolveToken(token);
     String? ticket;
     try {
@@ -213,12 +278,30 @@ class DuelSocketServiceImpl extends BaseSocketService
   }
 
   @override
+  void onWelcome(Map<String, dynamic> json) {
+    // Nếu đang trong hàng đợi tìm trận Go Server, gửi frame join sau Welcome
+    if (_lastMatchmakeArgs != null) {
+      final name = _lastMatchmakeArgs!['name'] as String? ?? 'Player';
+      final avatar = _lastMatchmakeArgs!['avatar'] as String? ?? '';
+      Log.d('Sending join frame to Go matchmaker queue', name: logTag);
+      sendRaw({
+        'type': 'join',
+        'name': name,
+        'avatar': avatar,
+        'rating': 1200,
+        'level': 5,
+      });
+    }
+  }
+
+  @override
   Future<void> reconnect() async {
     if (_lastRoomArgs != null) {
       final args = _lastRoomArgs!;
       await connectRoom(
         roomCode: args['roomCode'] as String,
         uid: args['uid'] as String,
+        token: args['token'] as String?,
         topic: args['topic'] as String? ?? 'auto',
         name: args['name'] as String?,
         avatar: args['avatar'] as String?,
@@ -229,6 +312,7 @@ class DuelSocketServiceImpl extends BaseSocketService
       final args = _lastMatchmakeArgs!;
       await connectMatchmake(
         uid: args['uid'] as String,
+        token: args['token'] as String?,
         topic: args['topic'] as String? ?? 'auto',
         name: args['name'] as String?,
         avatar: args['avatar'] as String?,
@@ -270,13 +354,23 @@ class DuelSocketServiceImpl extends BaseSocketService
     required int matchRound,
     required int roundIndex,
     required String optionId,
+    String? selectedAnswer,
+    bool? isCorrect,
+    double? timeSpent,
+    int? scoreDelta,
   }) {
-    sendRaw({
+    final payload = <String, dynamic>{
       'type': 'answer',
       'matchRound': matchRound,
       'roundIndex': roundIndex,
+      'questionIndex': roundIndex,
       'optionId': optionId,
-    });
+    };
+    if (selectedAnswer != null) payload['selectedAnswer'] = selectedAnswer;
+    if (isCorrect != null) payload['isCorrect'] = isCorrect;
+    if (timeSpent != null) payload['timeSpent'] = timeSpent;
+    if (scoreDelta != null) payload['scoreDelta'] = scoreDelta;
+    sendRaw(payload);
   }
 
   @override
@@ -303,7 +397,8 @@ class DuelSocketServiceImpl extends BaseSocketService
       case 'queued':
         emitEvent(MatchmakeQueuedEvent.fromJson(json));
       case 'matched':
-        // Server tự đóng WS sau khi gửi `matched` — đây là normal close.
+      case 'match_found':
+        // Server tự đóng WS sau khi gửi `matched` / `match_found`
         isNormalServerClose = true;
         emitEvent(MatchmakeMatchedEvent.fromJson(json));
 
@@ -335,7 +430,10 @@ class DuelSocketServiceImpl extends BaseSocketService
         emitEvent(RoomGameOverEvent.fromJson(json));
 
       case 'rematch_waiting':
+      case 'rematch_request':
         emitEvent(RoomRematchWaitingEvent.fromJson(json));
+      case 'rematch_accepted':
+        break;
 
       case 'player_left':
       case 'player_disconnected':

@@ -3,6 +3,7 @@ import 'package:bufopia/components/app_countdown_timer.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -132,7 +133,7 @@ class WordChainScoreBoard extends StatelessWidget {
                             borderRadius: BorderRadius.circular(6.r),
                           ),
                           child: AppText.c1(
-                            'LƯỢT',
+                            context.l10n.turnLabel,
                             color: AppColors.white,
                             fontSize: 8.sp,
                             fontWeight: FontWeight.w700,
@@ -280,7 +281,7 @@ class WordChainScoreBoard extends StatelessWidget {
                             borderRadius: BorderRadius.circular(6.r),
                           ),
                           child: AppText.c1(
-                            'LƯỢT',
+                            context.l10n.turnLabel,
                             color: AppColors.white,
                             fontSize: 8.sp,
                             fontWeight: FontWeight.w700,

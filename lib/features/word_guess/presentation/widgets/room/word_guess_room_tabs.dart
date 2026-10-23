@@ -1,6 +1,7 @@
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -33,6 +34,7 @@ class WordGuessRoomTabs extends StatelessWidget {
     final tabHeight = isLandscape ? 40.0 : 42.h;
     final fontSize = isLandscape ? 12.0 : 12.sp;
     final iconSize = isLandscape ? 16.0 : 16.r;
+    final l10n = context.l10n;
 
     return Container(
       height: tabHeight,
@@ -95,7 +97,7 @@ class WordGuessRoomTabs extends StatelessWidget {
                         ),
                         SizedBox(width: 6.w),
                         AppText.b2(
-                          'Tạo phòng',
+                          l10n.createRoomTab,
                           fontSize: fontSize,
                           fontWeight: FontWeight.w700,
                           color: isCreate ? activeText : inactiveText,
@@ -127,7 +129,7 @@ class WordGuessRoomTabs extends StatelessWidget {
                         ),
                         SizedBox(width: 6.w),
                         AppText.b2(
-                          'Vào phòng',
+                          l10n.enterCodeTab,
                           fontSize: fontSize,
                           fontWeight: FontWeight.w700,
                           color: !isCreate ? activeText : inactiveText,

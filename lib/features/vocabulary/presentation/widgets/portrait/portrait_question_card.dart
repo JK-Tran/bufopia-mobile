@@ -1,6 +1,7 @@
 import 'package:bufopia/components/app_countdown_timer.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -65,8 +66,8 @@ class PortraitQuestionCard extends StatelessWidget {
           );
 
     final topicText = topicName.isNotEmpty
-        ? 'CHỦ ĐỀ: ${topicName.toUpperCase()}'
-        : 'DỊCH SANG TIẾNG ANH';
+        ? context.l10n.topicHeader(topicName.toUpperCase())
+        : context.l10n.translateToEnglish;
 
     final clockSize = 46.r;
     final halfClock = clockSize / 2;

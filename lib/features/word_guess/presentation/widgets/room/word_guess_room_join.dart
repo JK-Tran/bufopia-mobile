@@ -2,6 +2,7 @@ import 'package:bufopia/components/app_button.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -23,6 +24,7 @@ class WordGuessRoomJoin extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isPaper = context.select<AppBloc, bool>((b) => b.state.isPaperTheme);
+    final l10n = context.l10n;
     final textColorDark = isPaper
         ? const Color(0xFF3B352B)
         : AppColors.grayDark;
@@ -38,7 +40,7 @@ class WordGuessRoomJoin extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         AppText.b2(
-          'Mã phòng hoặc link mời',
+          l10n.roomOrInviteLink,
           fontWeight: FontWeight.w700,
           color: textColorDark,
         ),
@@ -57,7 +59,7 @@ class WordGuessRoomJoin extends StatelessWidget {
               color: textColorDark,
             ),
             decoration: InputDecoration(
-              hintText: 'Nhập mã 6 số hoặc dán link mời',
+              hintText: l10n.enterCodeOrLinkHint,
               hintStyle: TextStyle(
                 fontSize: 12.sp,
                 fontWeight: FontWeight.w500,
@@ -74,13 +76,13 @@ class WordGuessRoomJoin extends StatelessWidget {
         ),
         SizedBox(height: 4.h),
         AppText.c1(
-          'Nhập mã bạn bè đã chia sẻ.',
+          l10n.enterSharedCodeDesc,
           color: textColorMuted,
         ),
         SizedBox(height: 16.h),
         // Nút VÀO PHÒNG (Screenshot 1) chuẩn AppButton
         AppButton(
-          text: 'VÀO PHÒNG',
+          text: l10n.joinRoom.toUpperCase(),
           icon: Icon(
             Icons.mail_outline_rounded,
             size: 16.r,

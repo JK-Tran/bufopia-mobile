@@ -1,6 +1,7 @@
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -17,6 +18,7 @@ class TopicHeader extends StatelessWidget {
     final isPaper =
         isPaperTheme ??
         context.select<AppBloc, bool>((b) => b.state.isPaperTheme);
+    final l10n = context.l10n;
 
     if (isPaper) {
       return Container(
@@ -68,7 +70,7 @@ class TopicHeader extends StatelessWidget {
                     ),
                     SizedBox(width: 6.w),
                     AppText.t3(
-                      'Chọn Nội Dung',
+                      l10n.chooseTopicTitle,
                       fontSize: 16.sp,
                       fontWeight: FontWeight.w700,
                       letterSpacing: 0.6,
@@ -84,7 +86,7 @@ class TopicHeader extends StatelessWidget {
                 ),
                 SizedBox(height: 1.h),
                 AppText.c1(
-                  'Chọn một chủ đề thi đấu',
+                  l10n.chooseTopicSubtitle,
                   fontSize: 10.sp,
                   color: AppColors.paperTextMedium,
                 ),
@@ -155,7 +157,7 @@ class TopicHeader extends StatelessWidget {
                   ),
                   SizedBox(width: 6.w),
                   AppText.t3(
-                    'Chọn Nội Dung',
+                    l10n.chooseTopicTitle,
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w700,
                     letterSpacing: 0.6,
@@ -185,7 +187,7 @@ class TopicHeader extends StatelessWidget {
               ),
               SizedBox(height: 1.h),
               AppText.c1(
-                'Chọn một chủ đề thi đấu',
+                l10n.chooseTopicSubtitle,
                 fontSize: 10.sp,
                 color: AppColors.brownDark,
               ),

@@ -3,6 +3,7 @@ import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
 import 'package:bufopia/features/challenge/domain/entities/social_state.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -45,7 +46,7 @@ class ChallengeRivals extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         AppText.t3(
-          '5 đối thủ gần nhất',
+          context.l10n.recentOpponents(rivals.length),
           fontSize: titleFontSize,
           fontWeight: FontWeight.w700,
           color: isPaper ? AppColors.paperTextDark : AppColors.grayDark,
@@ -55,7 +56,7 @@ class ChallengeRivals extends StatelessWidget {
           Padding(
             padding: EdgeInsets.symmetric(vertical: isLandscape ? 2.0 : 2.h),
             child: AppText.b2(
-              'Chơi một trận online để lưu đối thủ tại đây.',
+              context.l10n.playOnlineToSaveOpponents,
               fontSize: emptyFontSize,
               color: isPaper ? AppColors.paperTextMuted : AppColors.grayMedium,
             ),
@@ -93,7 +94,7 @@ class ChallengeRivals extends StatelessWidget {
                                   : AppColors.grayDark,
                             ),
                             AppText.c1(
-                              'Đã chơi gần đây',
+                              context.l10n.playedRecently,
                               fontSize: subFontSize,
                               fontWeight: FontWeight.w600,
                               color: isPaper
@@ -108,7 +109,7 @@ class ChallengeRivals extends StatelessWidget {
                       if (isRoomCreated)
                         if (isPaper)
                           AppButton(
-                            text: 'Mời',
+                            text: context.l10n.invite,
                             height: btnHeight,
                             fontSize: btnFontSize,
                             padding: btnPad,
@@ -122,7 +123,7 @@ class ChallengeRivals extends StatelessWidget {
                           )
                         else
                           AppButton.secondary(
-                            text: 'Mời',
+                            text: context.l10n.invite,
                             height: btnHeight,
                             fontSize: btnFontSize,
                             padding: btnPad,
@@ -133,7 +134,7 @@ class ChallengeRivals extends StatelessWidget {
                           )
                       else if (isPaper)
                         AppButton(
-                          text: 'Mời',
+                          text: context.l10n.invite,
                           height: btnHeight,
                           fontSize: btnFontSize,
                           padding: btnPad,
@@ -147,7 +148,7 @@ class ChallengeRivals extends StatelessWidget {
                         )
                       else
                         AppButton.disabled(
-                          text: 'Mời',
+                          text: context.l10n.invite,
                           height: btnHeight,
                           fontSize: btnFontSize,
                           padding: btnPad,

@@ -2,7 +2,7 @@ import 'package:bufopia/components/components.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-/// Switcher chọn ngôn ngữ (VI / EN / 中文) tái sử dụng [AppPillSwitcher]
+/// Switcher chọn ngôn ngữ (VI / EN) tái sử dụng [AppPillSwitcher]
 class SettingsLanguageSwitcher extends StatelessWidget {
   const SettingsLanguageSwitcher({
     required this.currentLanguage,
@@ -18,7 +18,6 @@ class SettingsLanguageSwitcher extends StatelessWidget {
   static const _options = [
     AppPillSwitcherItem<String>(value: 'vi', label: 'VI'),
     AppPillSwitcherItem<String>(value: 'en', label: 'EN'),
-    AppPillSwitcherItem<String>(value: 'zh', label: '中文'),
   ];
 
   @override
@@ -28,7 +27,7 @@ class SettingsLanguageSwitcher extends StatelessWidget {
       selectedValue: currentLanguage,
       onChanged: onChanged,
       isPaper: isPaper,
-      width: 126.w,
+      width: 88.w,
     );
   }
 }

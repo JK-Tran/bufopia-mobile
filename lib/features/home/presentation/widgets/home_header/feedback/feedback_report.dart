@@ -2,6 +2,7 @@ import 'package:bufopia/components/app_button.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/home/presentation/widgets/home_header/feedback/feedback_word_list.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -34,30 +35,41 @@ class _FeedbackReportState extends State<FeedbackReport> {
   final TextEditingController _contentController = TextEditingController();
   final TextEditingController _contactController = TextEditingController();
 
-  String _selectedIssue = 'Sửa nghĩa tiếng Việt';
+  String _selectedIssueKey = 'meaning';
 
   static const List<Map<String, dynamic>> _issueTypes = [
     {
-      'title': 'Sửa nghĩa tiếng Việt',
+      'key': 'meaning',
       'icon': Icons.translate_rounded,
     },
     {
-      'title': 'Lỗi chính tả tiếng Anh',
+      'key': 'spelling',
       'icon': Icons.spellcheck_rounded,
     },
     {
-      'title': 'Sửa phiên âm / phát âm',
+      'key': 'pronunciation',
       'icon': Icons.record_voice_over_rounded,
     },
     {
-      'title': 'Nghĩa chưa tự nhiên / thiếu ngữ cảnh',
+      'key': 'context',
       'icon': Icons.menu_book_rounded,
     },
     {
-      'title': 'Góp ý khác',
+      'key': 'other',
       'icon': Icons.more_horiz_rounded,
     },
   ];
+
+  String _issueTitle(String key, BuildContext context) {
+    final l10n = context.l10n;
+    return switch (key) {
+      'meaning' => l10n.feedbackIssueMeaning,
+      'spelling' => l10n.feedbackIssueSpelling,
+      'pronunciation' => l10n.feedbackIssuePronunciation,
+      'context' => l10n.feedbackIssueContext,
+      _ => l10n.feedbackIssueOther,
+    };
+  }
 
   @override
   void dispose() {
@@ -66,23 +78,18 @@ class _FeedbackReportState extends State<FeedbackReport> {
     super.dispose();
   }
 
-  String _getDynamicPlaceholder() {
+  String _getDynamicPlaceholder(BuildContext context) {
+    final l10n = context.l10n;
     final en = widget.entry.word.en;
     final vi = widget.entry.word.vi;
 
-    switch (_selectedIssue) {
-      case 'Sửa nghĩa tiếng Việt':
-        return "Ví dụ: Từ '$en' nên dịch là '...' thay vì '$vi' vì...";
-      case 'Lỗi chính tả tiếng Anh':
-        return "Ví dụ: Từ tiếng Anh '$en' viết đúng chính tả phải là...";
-      case 'Sửa phiên âm / phát âm':
-        return "Ví dụ: Phiên âm đúng của '$en' nên là /.../";
-      case 'Nghĩa chưa tự nhiên / thiếu ngữ cảnh':
-        return "Mô tả ngữ cảnh phù hợp hơn cho từ '$en'...";
-      case 'Góp ý khác':
-      default:
-        return "Mô tả chi tiết góp ý chỉnh sửa của bạn cho từ '$en'...";
-    }
+    return switch (_selectedIssueKey) {
+      'meaning' => l10n.feedbackHintMeaning(en, vi),
+      'spelling' => l10n.feedbackHintSpelling(en),
+      'pronunciation' => l10n.feedbackHintPronunciation(en),
+      'context' => l10n.feedbackHintContext(en),
+      _ => l10n.feedbackHintOther(en),
+    };
   }
 
   bool get _canSubmit {
@@ -92,7 +99,7 @@ class _FeedbackReportState extends State<FeedbackReport> {
   void _handleSubmit() {
     if (!_canSubmit) return;
     widget.onSubmit(
-      issueType: _selectedIssue,
+      issueType: _issueTitle(_selectedIssueKey, context),
       content: _contentController.text.trim(),
       contact: _contactController.text.trim().isNotEmpty
           ? _contactController.text.trim()
@@ -253,7 +260,7 @@ class _FeedbackReportState extends State<FeedbackReport> {
 
           // 2. Nhóm 5 Chip Chọn Vấn Đề
           AppText.b2(
-            'Vấn đề bạn phát hiện ở từ này:',
+            context.l10n.feedbackQuestion,
             fontWeight: FontWeight.w700,
             fontSize: 12.sp,
             color: AppColors.paperTextDark,
@@ -263,12 +270,13 @@ class _FeedbackReportState extends State<FeedbackReport> {
             spacing: 6.w,
             runSpacing: 4.h,
             children: _issueTypes.map((item) {
-              final title = item['title'] as String;
+              final key = item['key'] as String;
+              final title = _issueTitle(key, context);
               final icon = item['icon'] as IconData;
-              final isSelected = _selectedIssue == title;
+              final isSelected = _selectedIssueKey == key;
 
               return GestureDetector(
-                onTap: () => setState(() => _selectedIssue = title),
+                onTap: () => setState(() => _selectedIssueKey = key),
                 child: Container(
                   padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                   decoration: BoxDecoration(
@@ -315,7 +323,7 @@ class _FeedbackReportState extends State<FeedbackReport> {
           Row(
             children: [
               AppText.b2(
-                'Nội dung chỉnh sửa đề xuất của bạn ',
+                '${context.l10n.feedbackContent} ',
                 fontWeight: FontWeight.w700,
                 fontSize: 12.sp,
                 color: AppColors.paperTextDark,
@@ -359,7 +367,7 @@ class _FeedbackReportState extends State<FeedbackReport> {
                     fontFamily: 'Inter',
                   ),
                   decoration: InputDecoration(
-                    hintText: _getDynamicPlaceholder(),
+                    hintText: _getDynamicPlaceholder(context),
                     hintStyle: TextStyle(
                       fontSize: 12.sp,
                       color: AppColors.darkOnSurfaceVariant,
@@ -387,7 +395,7 @@ class _FeedbackReportState extends State<FeedbackReport> {
             Padding(
               padding: EdgeInsets.only(top: 2.h),
               child: AppText.c1(
-                'Bạn vui lòng mô tả chi tiết hơn nhé — ít nhất 10 ký tự.',
+                context.l10n.feedbackMinLength,
                 fontSize: 10.sp,
                 color: AppColors.dialogCloseIcon,
               ),
@@ -397,7 +405,7 @@ class _FeedbackReportState extends State<FeedbackReport> {
 
           // 4. Ô Thông Tin Liên Hệ
           AppText.b2(
-            'Thông tin liên hệ (không bắt buộc)',
+            context.l10n.feedbackContact,
             fontSize: 12.sp,
             color: AppColors.paperTextDark,
           ),
@@ -429,8 +437,7 @@ class _FeedbackReportState extends State<FeedbackReport> {
                 fontFamily: 'Inter',
               ),
               decoration: InputDecoration(
-                hintText:
-                    'Email, Discord hoặc cách liên hệ khác để nhận phản hồi',
+                hintText: context.l10n.feedbackContactHint,
                 hintStyle: TextStyle(
                   fontSize: 10.sp,
                   color: AppColors.darkOnSurfaceVariant,
@@ -453,7 +460,7 @@ class _FeedbackReportState extends State<FeedbackReport> {
                 child: Padding(
                   padding: EdgeInsets.symmetric(vertical: 4.h, horizontal: 4.w),
                   child: AppText.c1(
-                    'Chọn từ khác',
+                    context.l10n.viewOtherWords,
                     fontSize: 12.sp,
                     fontWeight: FontWeight.w600,
                     color: AppColors.paperBadgeText,
@@ -461,7 +468,9 @@ class _FeedbackReportState extends State<FeedbackReport> {
                 ),
               ),
               AppButton(
-                text: widget.isSubmitting ? 'ĐANG GỬI...' : 'GỬI BÁO LỖI DỊCH',
+                text: widget.isSubmitting
+                    ? context.l10n.sendingFeedback
+                    : context.l10n.sendFeedback,
                 icon: widget.isSubmitting
                     ? SizedBox(
                         width: 12.r,

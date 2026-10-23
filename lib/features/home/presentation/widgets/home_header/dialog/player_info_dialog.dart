@@ -7,6 +7,7 @@ import 'package:bufopia/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:bufopia/features/auth/presentation/widgets/dialog/account_conflict_dialog.dart';
 import 'package:bufopia/features/home/presentation/widgets/home_header/dialog/player_avatar_dialog.dart';
 import 'package:bufopia/features/home/presentation/widgets/home_header/dialog/player_edit_name_dialog.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:firebase_auth/firebase_auth.dart' as fb;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -62,7 +63,7 @@ class _PlayerInfoDialogState extends State<PlayerInfoDialog> {
     Future.delayed(const Duration(milliseconds: 500), () {
       if (mounted) {
         setState(() => _isSaving = false);
-        AppToast.showSuccess(context, 'Cập nhật hồ sơ thành công!');
+        AppToast.showSuccess(context, context.l10n.profileUpdated);
       }
     });
   }
@@ -80,7 +81,7 @@ class _PlayerInfoDialogState extends State<PlayerInfoDialog> {
           avatarUrl: selected,
         ),
       );
-      AppToast.showSuccess(context, 'Đã cập nhật ảnh đại diện!');
+      AppToast.showSuccess(context, context.l10n.avatarUpdated);
     }
   }
 
@@ -93,12 +94,12 @@ class _PlayerInfoDialogState extends State<PlayerInfoDialog> {
         avatarUrl: assetPath,
       ),
     );
-    AppToast.showSuccess(context, 'Đã đổi ảnh đại diện!');
+    AppToast.showSuccess(context, context.l10n.avatarUpdated);
   }
 
   void _copyId(String uid) {
     Clipboard.setData(ClipboardData(text: uid));
-    AppToast.showSuccess(context, 'Đã sao chép ID người chơi!');
+    AppToast.showSuccess(context, context.l10n.copiedPlayerId);
   }
 
   /// Mở dialog đổi tên hiển thị
@@ -151,7 +152,7 @@ class _PlayerInfoDialogState extends State<PlayerInfoDialog> {
         final uid = user.uid.isNotEmpty ? user.uid : 'V417IR';
 
         return AppGameDialog(
-          title: 'Hồ sơ người chơi',
+          title: context.l10n.playerProfile,
           icon: Icons.account_circle_rounded,
           maxWidth: 340.w,
           maxHeight: 560.h,
@@ -299,13 +300,13 @@ class _PlayerInfoDialogState extends State<PlayerInfoDialog> {
           ),
           SizedBox(width: 6.w),
           AppButton.secondary(
-            text: 'Đăng xuất',
+            text: context.l10n.logOut,
             fontSize: 12.sp,
             height: 28.h,
             padding: EdgeInsets.symmetric(horizontal: 8.w),
             onPressed: () {
               context.read<AuthBloc>().add(const AuthEvent.loggedOut());
-              AppToast.showSuccess(context, 'Đã đăng xuất tài khoản!');
+              AppToast.showSuccess(context, context.l10n.logoutSuccess);
             },
           ),
         ],
@@ -318,7 +319,7 @@ class _PlayerInfoDialogState extends State<PlayerInfoDialog> {
         size: 16.w,
         color: AppColors.white,
       ),
-      text: 'LƯU TIẾN ĐỘ LÊN GOOGLE',
+      text: context.l10n.saveProgressGoogle,
       backgroundColor: isPaper ? AppColors.paperGreen : AppColors.blue,
       extrusionColor: isPaper
           ? AppColors.paperGreenExtrusion
@@ -374,7 +375,7 @@ class _PlayerInfoDialogState extends State<PlayerInfoDialog> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     AppText.c1(
-                      'TÊN HIỂN THỊ',
+                      context.l10n.displayNameLabel,
                       color: textMuted,
                       fontWeight: FontWeight.w700,
                       fontSize: 10.sp,
@@ -441,7 +442,7 @@ class _PlayerInfoDialogState extends State<PlayerInfoDialog> {
           Row(
             children: [
               AppText.c1(
-                'Avatar có sẵn:',
+                context.l10n.presetAvatars,
                 color: textMuted,
                 fontWeight: FontWeight.w700,
                 fontSize: 10.sp,
@@ -603,14 +604,14 @@ class _PlayerInfoDialogState extends State<PlayerInfoDialog> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 AppText.t3(
-                  'Chiến binh từ vựng',
+                  context.l10n.vocabWarrior,
                   color: titleColor,
                   fontWeight: FontWeight.w700,
                   fontSize: 14.sp,
                 ),
                 SizedBox(height: 2.h),
                 AppText.c1(
-                  'Thắng trận đấu để nhận thêm điểm XP và nâng cấp danh hiệu!',
+                  context.l10n.vocabWarriorSubtitle,
                   color: subtitleColor,
                   fontSize: 12.sp,
                 ),
@@ -666,7 +667,7 @@ class _PlayerLevelProgressBar extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           AppText.c1(
-            'TIẾN TRÌNH CẤP ĐỘ',
+            context.l10n.levelProgress,
             fontSize: 12.sp,
             fontWeight: FontWeight.w700,
             color: titleColor ?? AppColors.grayDark,
@@ -697,7 +698,7 @@ class _PlayerLevelProgressBar extends StatelessWidget {
                     ),
                     SizedBox(width: 3.w),
                     AppText.c1(
-                      'CẤP $level',
+                      context.l10n.levelBadge(level),
                       color: AppColors.white,
                       fontWeight: FontWeight.w700,
                       fontSize: 10.sp,

@@ -45,12 +45,17 @@ class MatchmakeMatchedEvent extends SocketEvent {
   });
 
   factory MatchmakeMatchedEvent.fromJson(Map<String, dynamic> json) {
+    final opponent = json['opponent'] as Map<String, dynamic>?;
     return MatchmakeMatchedEvent(
       matchId: json['matchId'] as String? ?? '',
       roomCode: json['roomCode']?.toString() ?? '',
       playerIndex: json['playerIndex'] as int? ?? 0,
-      rivalName: json['rivalName'] as String? ?? 'Rival',
-      rivalAvatar: json['rivalAvatar'] as String? ?? '',
+      rivalName: opponent?['name'] as String? ??
+          json['rivalName'] as String? ??
+          'Đối thủ',
+      rivalAvatar: opponent?['avatar'] as String? ??
+          json['rivalAvatar'] as String? ??
+          '',
       topicId: json['topicId'] as String? ?? 'auto',
     );
   }
@@ -158,6 +163,8 @@ class RoomMatchStartEvent extends SocketEvent {
   });
 
   factory RoomMatchStartEvent.fromJson(Map<String, dynamic> json) {
+    final rawDeck = (json['deck'] as List<dynamic>?) ??
+        (json['questions'] as List<dynamic>?);
     return RoomMatchStartEvent(
       matchId: json['matchId'] as String? ?? '',
       roomCode: json['roomCode']?.toString() ?? '',
@@ -166,7 +173,7 @@ class RoomMatchStartEvent extends SocketEvent {
       rivalAvatar: json['rivalAvatar'] as String? ?? '',
       matchRound: json['matchRound'] as int? ?? 1,
       deck:
-          (json['deck'] as List<dynamic>?)
+          rawDeck
               ?.map((e) => Map<String, dynamic>.from(e as Map))
               .toList() ??
           const [],
@@ -758,4 +765,68 @@ class GuessChatBlockedEvent extends SocketEvent {
   }
 
   final String reason;
+}
+
+/// Nhận lời mời thách đấu trực tiếp từ bạn bè qua Social Lobby
+class SocialChallengeReceivedEvent extends SocketEvent {
+  const SocialChallengeReceivedEvent({
+    required this.challengeId,
+    required this.challengerUid,
+    required this.gameMode,
+    this.challengerName,
+    this.challengerAvatar,
+  });
+
+  factory SocialChallengeReceivedEvent.fromJson(Map<String, dynamic> json) {
+    final info = json['challengerInfo'] as Map<String, dynamic>?;
+    return SocialChallengeReceivedEvent(
+      challengeId: json['challengeId']?.toString() ?? '',
+      challengerUid: json['challengerUid']?.toString() ?? '',
+      gameMode: json['gameMode']?.toString() ?? 'quiz',
+      challengerName: info?['name']?.toString() ?? json['name']?.toString(),
+      challengerAvatar:
+          info?['avatar']?.toString() ?? json['avatar']?.toString(),
+    );
+  }
+
+  final String challengeId;
+  final String challengerUid;
+  final String gameMode;
+  final String? challengerName;
+  final String? challengerAvatar;
+}
+
+/// Server phát tín hiệu bắt đầu trận đấu trực tiếp (Battle Start)
+class SocialBattleStartEvent extends SocketEvent {
+  const SocialBattleStartEvent({
+    required this.roomCode,
+    required this.gameMode,
+  });
+
+  factory SocialBattleStartEvent.fromJson(Map<String, dynamic> json) {
+    return SocialBattleStartEvent(
+      roomCode: json['roomCode']?.toString() ?? '',
+      gameMode: json['gameMode']?.toString() ?? 'quiz',
+    );
+  }
+
+  final String roomCode;
+  final String gameMode;
+}
+
+/// Danh sách phòng đang chờ công khai (Waiting Matches Radar)
+class WaitingMatchesEvent extends SocketEvent {
+  const WaitingMatchesEvent({this.matches = const []});
+
+  factory WaitingMatchesEvent.fromJson(Map<String, dynamic> json) {
+    return WaitingMatchesEvent(
+      matches:
+          (json['matches'] as List<dynamic>?)
+              ?.map((e) => Map<String, dynamic>.from(e as Map))
+              .toList() ??
+          const [],
+    );
+  }
+
+  final List<Map<String, dynamic>> matches;
 }

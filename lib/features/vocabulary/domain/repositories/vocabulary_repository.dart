@@ -6,7 +6,7 @@ import 'package:bufopia/features/vocabulary/domain/entities/vocabulary.dart';
 import 'package:bufopia/features/vocabulary/domain/entities/word_profile.dart';
 
 abstract class VocabularyRepository {
-  Future<Vocabulary> getVocabulary();
+  Future<Vocabulary> getVocabulary({bool forceRefresh = false});
 
   Future<BattleDeck> getDeck({
     required String topic,

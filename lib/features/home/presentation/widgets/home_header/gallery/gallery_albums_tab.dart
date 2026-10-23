@@ -1,5 +1,6 @@
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:photo_manager/photo_manager.dart';
@@ -32,7 +33,7 @@ class GalleryAlbumsTab extends StatelessWidget {
             ),
             SizedBox(height: 8.h),
             AppText.t3(
-              'Không tìm thấy album',
+              context.l10n.noAlbumsFound,
               color: AppColors.grayDark,
               fontWeight: FontWeight.w700,
               fontSize: 14.sp,
@@ -148,7 +149,7 @@ class _AlbumTileItem extends StatelessWidget {
                           ),
                           SizedBox(height: 2.h),
                           AppText.c1(
-                            '$count ảnh',
+                            context.l10n.albumPhotosCount(count),
                             fontWeight: FontWeight.w600,
                             fontSize: 10.sp,
                             color: AppColors.grayMedium,

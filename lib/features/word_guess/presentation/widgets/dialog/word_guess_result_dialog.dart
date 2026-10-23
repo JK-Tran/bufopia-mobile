@@ -13,6 +13,7 @@ import 'package:bufopia/features/word_guess/domain/entities/room_player.dart';
 import 'package:bufopia/features/word_guess/domain/entities/word_info.dart';
 import 'package:bufopia/features/word_guess/domain/usecases/submit_guess_vault_use_case.dart';
 import 'package:bufopia/shared/di/di.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:bufopia/shared/services/audio/app_audio_service.dart';
 import 'package:bufopia/shared/services/audio/sound_manager.dart';
 import 'package:bufopia/shared/services/firebase/firebase_auth_service.dart';
@@ -121,19 +122,20 @@ class _WordGuessResultDialogState extends State<WordGuessResultDialog> {
     if (uid == 'guest') {
       AppToast.show(
         context,
-        message: 'Vui lòng đăng nhập để lưu từ vào kho cá nhân.',
+        message: context.l10n.loginToSaveVault,
         type: AppToastType.warning,
       );
       return;
     }
 
     setState(() => _isSavingVault = true);
+    final vaultTitle = context.l10n.wordGuessVocab;
     try {
       final token = await sl<FirebaseAuthService>().getIdToken();
       final output = await sl<SubmitGuessVaultUseCase>().execute(
         SubmitGuessVaultInput(
           uid: uid,
-          title: 'Từ vựng Word Guess',
+          title: vaultTitle,
           token: token,
           words: [
             {
@@ -155,8 +157,8 @@ class _WordGuessResultDialogState extends State<WordGuessResultDialog> {
         AppToast.show(
           context,
           message: isSuccess
-              ? 'Đã lưu "$wordEn" vào kho từ vựng!'
-              : 'Lưu từ thất bại, vui lòng thử lại.',
+              ? context.l10n.savedWordToVault(wordEn)
+              : context.l10n.saveWordFailed,
           type: isSuccess ? AppToastType.success : AppToastType.error,
         );
       }
@@ -165,15 +167,15 @@ class _WordGuessResultDialogState extends State<WordGuessResultDialog> {
         setState(() => _isSavingVault = false);
         AppToast.show(
           context,
-          message: 'Lỗi khi lưu từ: $e',
+          message: context.l10n.saveWordError(e.toString()),
           type: AppToastType.error,
         );
       }
     }
   }
 
-  String _getSolverName(String word) {
-    if (widget.isSolo) return 'Bạn';
+  String _getSolverName(BuildContext context, String word) {
+    if (widget.isSolo) return context.l10n.you;
     final normalized = word.toLowerCase().trim();
     final matched = widget.history.firstWhereOrNull(
       (h) =>
@@ -181,10 +183,10 @@ class _WordGuessResultDialogState extends State<WordGuessResultDialog> {
           h.guess.toLowerCase().trim() == normalized,
     );
     if (matched != null && matched.solverName.isNotEmpty) {
-      if (matched.playerUid == widget.myUid) return 'Bạn';
+      if (matched.playerUid == widget.myUid) return context.l10n.you;
       return matched.solverName;
     }
-    return widget.myName.isNotEmpty ? widget.myName : 'Bạn';
+    return widget.myName.isNotEmpty ? widget.myName : context.l10n.you;
   }
 
   bool _isWordSkipped(String word) {
@@ -303,11 +305,11 @@ class _WordGuessResultDialogState extends State<WordGuessResultDialog> {
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             // Banner KẾT QUẢ CỦA BẠN
-                            _buildResultBanner(isPaper),
+                            _buildResultBanner(context, isPaper),
                             SizedBox(height: 10.h),
 
                             // 3 Metric Cards (Bạn tìm được / Từ cần ôn lại / Đã cộng vào hồ sơ)
-                            _buildMetricCards(isPaper, reviewCount),
+                            _buildMetricCards(context, isPaper, reviewCount),
                             SizedBox(height: 12.h),
 
                             // Leaderboard (nếu chơi phòng / nhiều người)
@@ -356,7 +358,7 @@ class _WordGuessResultDialogState extends State<WordGuessResultDialog> {
           SizedBox(width: 8.w),
           Expanded(
             child: AppText.t2(
-              'TỔNG KẾT BUỔI LUYỆN',
+              context.l10n.practiceSummary,
               color: isPaper ? AppColors.paperTextDark : AppColors.grayDark,
               fontSize: 18.sp,
               fontWeight: FontWeight.w700,
@@ -387,7 +389,9 @@ class _WordGuessResultDialogState extends State<WordGuessResultDialog> {
               ],
             ),
             child: AppText.c1(
-              widget.isSolo ? 'Luyện đơn' : 'Luyện cùng bạn',
+              widget.isSolo
+                  ? context.l10n.soloBadge
+                  : context.l10n.withFriendsBadge,
               color: isPaper ? AppColors.paperTextMedium : AppColors.grayMedium,
               fontWeight: FontWeight.w600,
               fontSize: 12.sp,
@@ -407,7 +411,8 @@ class _WordGuessResultDialogState extends State<WordGuessResultDialog> {
     );
   }
 
-  Widget _buildResultBanner(bool isPaper) {
+  Widget _buildResultBanner(BuildContext context, bool isPaper) {
+    final l10n = context.l10n;
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 16.w, vertical: 12.h),
       decoration: BoxDecoration(
@@ -464,7 +469,7 @@ class _WordGuessResultDialogState extends State<WordGuessResultDialog> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 AppText.c1(
-                  'KẾT QUẢ CỦA BẠN',
+                  l10n.yourResults,
                   color: isPaper
                       ? AppColors.paperTextMuted
                       : AppColors.grayMedium,
@@ -474,14 +479,14 @@ class _WordGuessResultDialogState extends State<WordGuessResultDialog> {
                 ),
                 SizedBox(height: 2.h),
                 AppText.t1(
-                  '${widget.foundCount} từ đã tìm',
+                  l10n.wordsFoundCount(widget.foundCount),
                   color: isPaper ? AppColors.paperTextDark : AppColors.grayDark,
                   fontSize: 20.sp,
                   fontWeight: FontWeight.w700,
                 ),
                 SizedBox(height: 2.h),
                 AppText.c1(
-                  'Xem kết quả và ôn lại những từ bạn đã gặp.',
+                  l10n.reviewWordsDesc,
                   color: isPaper
                       ? AppColors.paperTextMedium
                       : AppColors.grayMedium,
@@ -495,7 +500,12 @@ class _WordGuessResultDialogState extends State<WordGuessResultDialog> {
     );
   }
 
-  Widget _buildMetricCards(bool isPaper, int reviewCount) {
+  Widget _buildMetricCards(
+    BuildContext context,
+    bool isPaper,
+    int reviewCount,
+  ) {
+    final l10n = context.l10n;
     return Row(
       children: [
         Expanded(
@@ -503,7 +513,7 @@ class _WordGuessResultDialogState extends State<WordGuessResultDialog> {
             icon: Icons.check_circle_outline_rounded,
             iconColor: isPaper ? AppColors.paperGreen : AppColors.green,
             value: '${widget.foundCount}',
-            label: 'Bạn tìm được',
+            label: l10n.wordsFound,
             isPaper: isPaper,
           ),
         ),
@@ -513,7 +523,7 @@ class _WordGuessResultDialogState extends State<WordGuessResultDialog> {
             icon: Icons.menu_book_outlined,
             iconColor: isPaper ? AppColors.paperGreen : AppColors.green,
             value: '$reviewCount',
-            label: 'Từ cần ôn lại',
+            label: l10n.wordsToReview,
             isPaper: isPaper,
           ),
         ),
@@ -523,7 +533,7 @@ class _WordGuessResultDialogState extends State<WordGuessResultDialog> {
             icon: Icons.star_rounded,
             iconColor: const Color(0xFFF59E0B),
             value: widget.earnedXp > 0 ? '+${widget.earnedXp} XP' : '— XP',
-            label: 'Đã cộng vào hồ sơ',
+            label: l10n.addedToProfile,
             isPaper: isPaper,
           ),
         ),
@@ -537,6 +547,7 @@ class _WordGuessResultDialogState extends State<WordGuessResultDialog> {
     List<RoomPlayer> sortedPlayers,
     int maxScore,
   ) {
+    final l10n = context.l10n;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -549,7 +560,7 @@ class _WordGuessResultDialogState extends State<WordGuessResultDialog> {
             ),
             SizedBox(width: 6.w),
             AppText.b1(
-              'Bảng kết quả',
+              l10n.resultsBoard,
               color: isPaper ? AppColors.paperTextDark : AppColors.grayDark,
               fontSize: 16.sp,
               fontWeight: FontWeight.w700,
@@ -642,7 +653,7 @@ class _WordGuessResultDialogState extends State<WordGuessResultDialog> {
                                 borderRadius: BorderRadius.circular(6.r),
                               ),
                               child: AppText.c1(
-                                'Bạn',
+                                l10n.you,
                                 color: AppColors.white,
                                 fontSize: 10.sp,
                                 fontWeight: FontWeight.w700,
@@ -661,7 +672,7 @@ class _WordGuessResultDialogState extends State<WordGuessResultDialog> {
                                 borderRadius: BorderRadius.circular(6.r),
                               ),
                               child: AppText.c1(
-                                'Điểm bằng nhau',
+                                l10n.tiedScore,
                                 color: AppColors.white,
                                 fontSize: 10.sp,
                                 fontWeight: FontWeight.w700,
@@ -672,7 +683,7 @@ class _WordGuessResultDialogState extends State<WordGuessResultDialog> {
                     ),
                     SizedBox(width: 6.w),
                     AppText.b2(
-                      '${player.effectiveScore} từ đã tìm',
+                      l10n.wordsFoundCount(player.effectiveScore),
                       color: isPaper
                           ? AppColors.paperTextDark
                           : AppColors.grayDark,
@@ -685,8 +696,9 @@ class _WordGuessResultDialogState extends State<WordGuessResultDialog> {
                         onTap: () {
                           AppToast.show(
                             context,
-                            message:
-                                'Đã gửi phản hồi về người chơi ${player.name}!',
+                            message: context.l10n.feedbackSentForPlayer(
+                              player.name,
+                            ),
                           );
                         },
                         child: Icon(
@@ -735,7 +747,7 @@ class _WordGuessResultDialogState extends State<WordGuessResultDialog> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         AppText.b1(
-          'Các từ đã học (${uniqueWords.length})',
+          context.l10n.learnedWordsCount(uniqueWords.length),
           color: isPaper ? AppColors.paperTextDark : AppColors.grayDark,
           fontSize: 16.sp,
           fontWeight: FontWeight.w700,
@@ -787,10 +799,11 @@ class _WordGuessResultDialogState extends State<WordGuessResultDialog> {
   }
 
   Widget _buildWordCard(BuildContext context, WordInfo w, bool isPaper) {
+    final l10n = context.l10n;
     final en = (w.en != null && w.en!.isNotEmpty) ? w.en! : w.masked;
     final isSaved = _savedWords.contains(en);
     final (exampleEn, exampleVi) = _getExamplePair(en, w.vi, w.example);
-    final solverName = _getSolverName(en);
+    final solverName = _getSolverName(context, en);
     final isSkipped = _isWordSkipped(en);
 
     return Container(
@@ -963,7 +976,7 @@ class _WordGuessResultDialogState extends State<WordGuessResultDialog> {
               sl<AppAudioService>().speakWord(en);
               AppToast.show(
                 context,
-                message: 'Lắng nghe & luyện phát âm từ "$en"!',
+                message: l10n.listenAndPracticeWord(en),
               );
             },
             borderRadius: BorderRadius.circular(14.r),
@@ -1009,7 +1022,7 @@ class _WordGuessResultDialogState extends State<WordGuessResultDialog> {
             children: [
               if (isSkipped)
                 AppText.c1(
-                  'Đã bỏ qua',
+                  l10n.skipped,
                   color: isPaper
                       ? const Color(0xFFC0392B)
                       : const Color(0xFFDC2626),
@@ -1094,7 +1107,7 @@ class _WordGuessResultDialogState extends State<WordGuessResultDialog> {
                       ),
                       SizedBox(width: 3.w),
                       AppText.c1(
-                        isSaved ? 'Đã lưu' : 'Lưu vào Kho',
+                        isSaved ? l10n.saved : l10n.saveToVault,
                         color: isSaved
                             ? (isPaper
                                   ? AppColors.paperGreenDark
@@ -1156,7 +1169,7 @@ class _WordGuessResultDialogState extends State<WordGuessResultDialog> {
                       ),
                       SizedBox(width: 3.w),
                       AppText.c1(
-                        'Góp ý từ',
+                        l10n.suggestWordFeedback,
                         color: isPaper
                             ? const Color(0xFF78350F)
                             : AppColors.grayDark,
@@ -1175,6 +1188,7 @@ class _WordGuessResultDialogState extends State<WordGuessResultDialog> {
   }
 
   Widget _buildFooterActions(BuildContext context, bool isPaper) {
+    final l10n = context.l10n;
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
       decoration: BoxDecoration(
@@ -1189,12 +1203,11 @@ class _WordGuessResultDialogState extends State<WordGuessResultDialog> {
       child: LayoutBuilder(
         builder: (context, constraints) {
           // Bố cục thích ứng: Trên màn hình hẹp di động (< 480px) dùng lưới 2x2
-          // giúp các nút có đủ chiều rộng (~150px), chữ "LUYỆN LẠI",
-          // "ĐỔI CHỦ ĐỀ", "TRAO ĐỔI", "TRANG CHỦ" hiển thị trọn vẹn.
+          // giúp các nút có đủ chiều rộng (~150px) hiển thị trọn vẹn.
           final isNarrow = constraints.maxWidth < 480;
 
           final replayBtn = AppButton(
-            text: 'LUYỆN LẠI',
+            text: l10n.practiceAgain,
             height: 38.h,
             fontSize: isNarrow ? 12.sp : 10.sp,
             icon: Icon(
@@ -1216,7 +1229,7 @@ class _WordGuessResultDialogState extends State<WordGuessResultDialog> {
           );
 
           final changeTopicBtn = AppButton(
-            text: 'ĐỔI CHỦ ĐỀ',
+            text: l10n.changeTopic,
             height: 38.h,
             fontSize: isNarrow ? 12.sp : 10.sp,
             icon: Icon(
@@ -1236,7 +1249,7 @@ class _WordGuessResultDialogState extends State<WordGuessResultDialog> {
           );
 
           final chatBtn = AppButton(
-            text: 'TRAO ĐỔI',
+            text: l10n.chatExchange,
             height: 38.h,
             fontSize: isNarrow ? 12.sp : 10.sp,
             icon: Icon(
@@ -1268,15 +1281,14 @@ class _WordGuessResultDialogState extends State<WordGuessResultDialog> {
               } else {
                 AppToast.show(
                   context,
-                  message:
-                      'Tính năng trao đổi hoạt động trong phòng cùng bạn bè!',
+                  message: l10n.chatRoomOnlyToast,
                 );
               }
             },
           );
 
           final homeBtn = AppButton(
-            text: 'TRANG CHỦ',
+            text: l10n.backToHome,
             height: 38.h,
             fontSize: isNarrow ? 12.sp : 10.sp,
             icon: Icon(

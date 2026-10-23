@@ -4,6 +4,7 @@ import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
 import 'package:bufopia/features/word_guess/data/models/room_player_data.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -50,6 +51,7 @@ class WordGuessRoomCreate extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isPaper = context.select<AppBloc, bool>((b) => b.state.isPaperTheme);
+    final l10n = context.l10n;
     final textColorDark = isPaper
         ? const Color(0xFF3B352B)
         : AppColors.grayDark;
@@ -62,7 +64,7 @@ class WordGuessRoomCreate extends StatelessWidget {
       children: [
         if (!isRoomCreated) ...[
           AppText.c1(
-            'Chọn chủ đề, thời gian rồi tạo phòng để mời bạn bè.',
+            l10n.createRoomPreDesc,
             color: textColorMuted,
           ),
           SizedBox(height: 12.h),
@@ -74,7 +76,7 @@ class WordGuessRoomCreate extends StatelessWidget {
 
         // 1. Chọn nội dung
         AppText.b2(
-          'Chọn nội dung',
+          l10n.chooseTopicTitle,
           fontWeight: FontWeight.w700,
           color: textColorDark,
         ),
@@ -100,7 +102,7 @@ class WordGuessRoomCreate extends StatelessWidget {
 
         // 2. Thời gian luyện (3 PHÚT / 5 PHÚT / 10 PHÚT)
         AppText.b2(
-          'Thời gian luyện',
+          l10n.practiceDuration,
           fontWeight: FontWeight.w700,
           color: textColorDark,
         ),
@@ -110,21 +112,21 @@ class WordGuessRoomCreate extends StatelessWidget {
             _buildDurationButton(
               context: context,
               seconds: 180,
-              label: '3 PHÚT',
+              label: l10n.minutesFormat(3),
               isPaper: isPaper,
             ),
             SizedBox(width: 8.w),
             _buildDurationButton(
               context: context,
               seconds: 300,
-              label: '5 PHÚT',
+              label: l10n.minutesFormat(5),
               isPaper: isPaper,
             ),
             SizedBox(width: 8.w),
             _buildDurationButton(
               context: context,
               seconds: 600,
-              label: '10 PHÚT',
+              label: l10n.minutesFormat(10),
               isPaper: isPaper,
             ),
           ],
@@ -134,7 +136,7 @@ class WordGuessRoomCreate extends StatelessWidget {
         // 3. Trạng thái Pre-create: Nút TẠO PHÒNG (Screenshot 4)
         if (!isRoomCreated) ...[
           AppButton(
-            text: 'TẠO PHÒNG',
+            text: l10n.createRoom.toUpperCase(),
             icon: Icon(
               Icons.sensors_rounded,
               size: 16.r,
@@ -157,7 +159,7 @@ class WordGuessRoomCreate extends StatelessWidget {
           ),
         ] else ...[
           // Trạng thái Room Created: Danh sách thành viên (Screenshot 3 & 2)
-          _buildMembersCard(isPaper, textColorDark, textColorMuted),
+          _buildMembersCard(context, isPaper, textColorDark, textColorMuted),
         ],
       ],
     );
@@ -172,6 +174,7 @@ class WordGuessRoomCreate extends StatelessWidget {
         ? const Color(0xFFC7BBA8)
         : const Color(0xFF93C5FD);
     final digits = roomCode.split('');
+    final l10n = context.l10n;
 
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 12.h),
@@ -183,7 +186,7 @@ class WordGuessRoomCreate extends StatelessWidget {
       child: Column(
         children: [
           AppText.c1(
-            'Mã phòng',
+            l10n.roomCode,
             fontWeight: FontWeight.w700,
             color: isPaper ? const Color(0xFF6E6455) : AppColors.grayMedium,
           ),
@@ -224,7 +227,7 @@ class WordGuessRoomCreate extends StatelessWidget {
             children: [
               Expanded(
                 child: AppButton(
-                  text: 'CHÉP MÃ',
+                  text: l10n.copyCode,
                   icon: Icon(
                     Icons.copy_rounded,
                     size: 14.r,
@@ -248,7 +251,7 @@ class WordGuessRoomCreate extends StatelessWidget {
               SizedBox(width: 8.w),
               Expanded(
                 child: AppButton(
-                  text: 'LINK MỜI',
+                  text: l10n.inviteLink,
                   icon: Icon(
                     Icons.link_rounded,
                     size: 14.r,
@@ -273,7 +276,7 @@ class WordGuessRoomCreate extends StatelessWidget {
           ),
           SizedBox(height: 8.h),
           AppText.c1(
-            'Gửi mã hoặc link này cho bạn bè để vào cùng phòng.',
+            l10n.sendCodeOrLinkDesc,
             color: isPaper ? const Color(0xFF7E7668) : AppColors.grayMedium,
             textAlign: TextAlign.center,
           ),
@@ -315,10 +318,12 @@ class WordGuessRoomCreate extends StatelessWidget {
   }
 
   Widget _buildMembersCard(
+    BuildContext context,
     bool isPaper,
     Color textColorDark,
     Color textColorMuted,
   ) {
+    final l10n = context.l10n;
     final cardBg = isPaper ? const Color(0xFFF4EFE6) : AppColors.grayLight;
     final cardBorder = isPaper ? const Color(0xFF689F66) : AppColors.green;
 
@@ -334,7 +339,7 @@ class WordGuessRoomCreate extends StatelessWidget {
             ),
             SizedBox(width: 6.w),
             AppText.b2(
-              'Thành viên (${roomPlayers.length})',
+              l10n.membersCount(roomPlayers.length),
               fontWeight: FontWeight.w700,
               color: textColorDark,
             ),
@@ -402,7 +407,7 @@ class WordGuessRoomCreate extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(4.r),
                               ),
                               child: AppText.c1(
-                                'Bạn',
+                                l10n.you,
                                 color: isPaper
                                     ? const Color(0xFF6D6559)
                                     : AppColors.grayDark,
@@ -428,10 +433,10 @@ class WordGuessRoomCreate extends StatelessWidget {
                           SizedBox(width: 4.w),
                           AppText.c1(
                             player.isHost == true
-                                ? 'Chủ phòng'
+                                ? l10n.roomHost
                                 : (player.isReady == true
-                                      ? 'Đã sẵn sàng'
-                                      : 'Đang chuẩn bị'),
+                                      ? l10n.ready
+                                      : l10n.preparing),
                             color:
                                 player.isHost == true || player.isReady == true
                                 ? const Color(0xFF3E8243)
@@ -465,16 +470,14 @@ class WordGuessRoomCreate extends StatelessWidget {
           final String statusGuidance;
           if (isHost) {
             if (roomPlayers.length < 2) {
-              statusGuidance =
-                  'Đang chờ bạn bè vào phòng. Cần ít nhất 2 người để bắt đầu.';
+              statusGuidance = l10n.waitingFriendsMinPlayers;
             } else if (!allGuestsReady) {
-              statusGuidance = 'Đang chờ bạn bè sẵn sàng...';
+              statusGuidance = l10n.waitingFriendsReady;
             } else {
-              statusGuidance = 'Mọi người đã sẵn sàng! Bấm Bắt đầu để chơi.';
+              statusGuidance = l10n.allReadyCanStart;
             }
           } else {
-            statusGuidance =
-                'Xem chủ đề và thời gian, rồi bấm Sẵn sàng để chơi cùng bạn.';
+            statusGuidance = l10n.guestReviewTopicGuidance;
           }
 
           return Column(
@@ -490,7 +493,7 @@ class WordGuessRoomCreate extends StatelessWidget {
                   Expanded(
                     child: isHost
                         ? AppButton(
-                            text: 'BẮT ĐẦU',
+                            text: l10n.startGame,
                             icon: Icon(
                               Icons.play_arrow_rounded,
                               size: 16.r,
@@ -523,7 +526,9 @@ class WordGuessRoomCreate extends StatelessWidget {
                             onPressed: canStart ? onStartGame : null,
                           )
                         : AppButton(
-                            text: isMyReady ? 'HỦY SẴN SÀNG' : 'SẴN SÀNG',
+                            text: isMyReady
+                                ? l10n.cancelReadyBtn
+                                : l10n.readyBtn,
                             icon: Icon(
                               isMyReady
                                   ? Icons.close_rounded
@@ -561,7 +566,7 @@ class WordGuessRoomCreate extends StatelessWidget {
                   SizedBox(width: 10.w),
                   Expanded(
                     child: AppButton(
-                      text: 'RỜI PHÒNG',
+                      text: l10n.leaveRoom,
                       height: 42.h,
                       fontSize: 12.sp,
                       backgroundColor: isPaper

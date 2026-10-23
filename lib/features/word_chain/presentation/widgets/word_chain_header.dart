@@ -3,6 +3,7 @@ import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
 import 'package:bufopia/features/word_chain/presentation/bloc/word_chain_bloc.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -30,14 +31,14 @@ class WordChainHeader extends StatelessWidget {
   final VoidCallback? onSurrenderPressed;
   final VoidCallback? onRematch;
 
-  String _getSubtitleText() {
-    if (relaxed) return 'Thư giãn';
+  String _getSubtitleText(BuildContext context) {
+    if (relaxed) return context.l10n.relaxedPractice;
     switch (mode) {
       case WordChainGameMode.bot:
-        return 'Đấu với máy';
+        return context.l10n.practiceBot;
       case WordChainGameMode.online:
       case WordChainGameMode.room:
-        return 'Nối từ tự do - Học qua ngữ cảnh';
+        return context.l10n.menuWordChainSubtitle;
     }
   }
 
@@ -69,7 +70,7 @@ class WordChainHeader extends StatelessWidget {
         : AppColors.grayExtrusion;
 
     final dotColor = _getStatusDotColor(isPaper);
-    final subtitleText = _getSubtitleText();
+    final subtitleText = _getSubtitleText(context);
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 6.h),
@@ -101,7 +102,7 @@ class WordChainHeader extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: [
                 AppText.t3(
-                  'Phòng nối từ',
+                  context.l10n.wordChainTitle,
                   color: titleColor,
                   fontSize: 14.sp,
                   fontWeight: FontWeight.w700,

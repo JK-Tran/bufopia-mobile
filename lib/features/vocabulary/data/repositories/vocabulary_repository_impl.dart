@@ -35,10 +35,32 @@ class VocabularyRepositoryImpl implements VocabularyRepository {
   final WordProfileDataMapper _wordProfileMapper;
   final FeedbackDataMapper _feedbackMapper;
 
+  Vocabulary? _cachedVocabulary;
+  Future<Vocabulary>? _pendingVocabularyFuture;
+
   @override
-  Future<Vocabulary> getVocabulary() async {
-    final response = await _dataSource.getVocabulary();
-    return _vocabularyMapper.mapToEntity(response);
+  Future<Vocabulary> getVocabulary({bool forceRefresh = false}) async {
+    if (_cachedVocabulary != null && !forceRefresh) {
+      return _cachedVocabulary!;
+    }
+
+    if (_pendingVocabularyFuture != null && !forceRefresh) {
+      return _pendingVocabularyFuture!;
+    }
+
+    final future = () async {
+      try {
+        final response = await _dataSource.getVocabulary();
+        final mapped = _vocabularyMapper.mapToEntity(response);
+        _cachedVocabulary = mapped;
+        return mapped;
+      } finally {
+        _pendingVocabularyFuture = null;
+      }
+    }();
+
+    _pendingVocabularyFuture = future;
+    return future;
   }
 
   @override

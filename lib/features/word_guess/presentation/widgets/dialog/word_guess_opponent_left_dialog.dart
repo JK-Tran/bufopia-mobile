@@ -3,6 +3,7 @@ import 'package:bufopia/components/app_game_dialog.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -26,7 +27,7 @@ class WordGuessOpponentLeftDialog extends StatelessWidget {
 
     return AppGameDialog.show(
       context: context,
-      title: 'ĐỐI THỦ ĐÃ RỜI PHÒNG',
+      title: context.l10n.opponentLeftTitle,
       maxWidth: 340.w,
       maxHeight: 280.h,
       isScrollable: false,
@@ -57,6 +58,7 @@ class WordGuessOpponentLeftDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final isPaper =
         isPaperTheme ??
         context.select<AppBloc, bool>((b) => b.state.isPaperTheme);
@@ -89,21 +91,20 @@ class WordGuessOpponentLeftDialog extends StatelessWidget {
         ),
         SizedBox(height: 10.h),
         AppText.t2(
-          'CHIẾN THẮNG DANH DỰ! 🏆',
+          l10n.honoraryVictory,
           color: isPaper ? AppColors.paperTextDark : AppColors.orangeDark,
           fontWeight: FontWeight.w700,
         ),
         SizedBox(height: 4.h),
         AppText.b2(
-          'Đối thủ đã thoát khỏi trận đấu giữa chừng.\n'
-          'Chiến thắng thuộc về bạn!',
+          l10n.opponentLeftMidwayDesc,
           color: isPaper ? AppColors.paperTextMedium : AppColors.grayDark,
           textAlign: TextAlign.center,
         ),
         SizedBox(height: 14.h),
         if (isPaper)
           AppButton(
-            text: 'VỀ TRANG CHỦ',
+            text: l10n.backToHome,
             icon: Icon(
               Icons.home_rounded,
               size: 18.r,
@@ -121,7 +122,7 @@ class WordGuessOpponentLeftDialog extends StatelessWidget {
           )
         else
           AppButton.orange(
-            text: 'VỀ TRANG CHỦ',
+            text: l10n.backToHome,
             icon: Icon(
               Icons.home_rounded,
               size: 18.r,

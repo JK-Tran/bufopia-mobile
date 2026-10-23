@@ -1,6 +1,7 @@
 import 'package:bufopia/components/app_button.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -66,8 +67,8 @@ class WordGuessSolvedBanner extends StatelessWidget {
           Expanded(
             child: AppText.c1(
               isMe
-                  ? '$solverName đoán đúng · +1 điểm!'
-                  : '$solverName đã đoán đúng trước',
+                  ? context.l10n.solvedCorrectlyPoint(solverName)
+                  : context.l10n.solvedFirst(solverName),
               color: contentColor,
               fontSize: 12.sp,
               fontWeight: FontWeight.w700,
@@ -79,7 +80,7 @@ class WordGuessSolvedBanner extends StatelessWidget {
             SizedBox(width: 6.w),
             if (isPaperTheme)
               AppButton(
-                text: '+ Tuyệt!',
+                text: context.l10n.plusGreat,
                 height: 26.h,
                 fontSize: 10.sp,
                 padding: EdgeInsets.symmetric(horizontal: 8.w),
@@ -91,7 +92,7 @@ class WordGuessSolvedBanner extends StatelessWidget {
               )
             else
               AppButton.secondary(
-                text: '+ Tuyệt!',
+                text: context.l10n.plusGreat,
                 height: 26.h,
                 fontSize: 10.sp,
                 padding: EdgeInsets.symmetric(horizontal: 8.w),

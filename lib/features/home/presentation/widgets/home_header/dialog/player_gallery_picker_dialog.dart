@@ -8,6 +8,7 @@ import 'package:bufopia/features/home/presentation/widgets/home_header/dialog/pl
 import 'package:bufopia/features/home/presentation/widgets/home_header/gallery/gallery_albums_tab.dart';
 import 'package:bufopia/features/home/presentation/widgets/home_header/gallery/gallery_bottom_bar.dart';
 import 'package:bufopia/features/home/presentation/widgets/home_header/gallery/gallery_photos_tab.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
@@ -309,7 +310,7 @@ class _PlayerGalleryPickerDialogState extends State<PlayerGalleryPickerDialog>
           ),
           SizedBox(width: 8.w),
           AppText.t3(
-            'Thư viện ảnh',
+            context.l10n.photoGalleryTitle,
             fontWeight: FontWeight.w700,
             fontSize: 16.sp,
             color: AppColors.white,
@@ -357,7 +358,9 @@ class _PlayerGalleryPickerDialogState extends State<PlayerGalleryPickerDialog>
               child: _buildSegmentTab(
                 index: 0,
                 icon: Icons.photo_rounded,
-                label: _currentAlbum != null ? _currentAlbum!.name : 'Ảnh',
+                label: _currentAlbum != null
+                    ? _currentAlbum!.name
+                    : context.l10n.photosTab,
               ),
             ),
             SizedBox(width: 4.w),
@@ -365,7 +368,7 @@ class _PlayerGalleryPickerDialogState extends State<PlayerGalleryPickerDialog>
               child: _buildSegmentTab(
                 index: 1,
                 icon: Icons.folder_rounded,
-                label: 'Album',
+                label: context.l10n.albumsTab,
               ),
             ),
           ],

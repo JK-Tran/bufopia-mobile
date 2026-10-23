@@ -1,4 +1,6 @@
 import 'package:bufopia/features/home/home.dart';
+import 'package:bufopia/features/practice/presentation/contribution/pages/contribution_page.dart';
+import 'package:bufopia/features/practice/presentation/review/pages/review_page.dart';
 import 'package:bufopia/features/vocabulary/presentation/pages/topic_page.dart';
 import 'package:bufopia/features/vocabulary/presentation/pages/vocabulary_page.dart';
 import 'package:bufopia/features/word_chain/word_chain.dart';
@@ -22,6 +24,8 @@ class AppRouter {
   static const String wordChain = '/word-chain';
   static const String wordGuessTopic = '/word-guess/topic';
   static const String wordGuess = '/word-guess';
+  static const String practiceReview = '/practice/review';
+  static const String practiceContribution = '/practice/contribution';
 
   static final GoRouter router = GoRouter(
     navigatorKey: rootNavigatorKey,
@@ -167,6 +171,38 @@ class AppRouter {
                 },
           );
         },
+      ),
+      GoRoute(
+        path: practiceReview,
+        name: 'practice-review',
+        pageBuilder: (context, state) => CustomTransitionPage<void>(
+          key: state.pageKey,
+          child: const ReviewPage(),
+          transitionDuration: const Duration(milliseconds: 250),
+          reverseTransitionDuration: const Duration(milliseconds: 200),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(
+              opacity: animation,
+              child: child,
+            );
+          },
+        ),
+      ),
+      GoRoute(
+        path: practiceContribution,
+        name: 'practice-contribution',
+        pageBuilder: (context, state) => CustomTransitionPage<void>(
+          key: state.pageKey,
+          child: const ContributionPage(),
+          transitionDuration: const Duration(milliseconds: 250),
+          reverseTransitionDuration: const Duration(milliseconds: 200),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            return FadeTransition(
+              opacity: animation,
+              child: child,
+            );
+          },
+        ),
       ),
     ],
   );

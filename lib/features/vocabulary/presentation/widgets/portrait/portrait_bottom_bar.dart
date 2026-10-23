@@ -1,6 +1,7 @@
 import 'package:bufopia/components/app_avatar.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -146,14 +147,14 @@ class PortraitBottomBar extends StatelessWidget {
                 ),
                 SizedBox(width: 8.w),
                 AppText.c1(
-                  'Bạn: ',
+                  context.l10n.youColon,
                   fontSize: 12.sp,
                   fontWeight: FontWeight.w700,
                   color: isPaper ? AppColors.paperTextDark : AppColors.white,
                 ),
                 Expanded(
                   child: AppText.c1(
-                    chosenWordP1 ?? 'Đang chọn...',
+                    chosenWordP1 ?? context.l10n.choosingOption,
                     fontSize: 12.sp,
                     fontWeight: FontWeight.w700,
                     color: _getP1TextColor(),
@@ -186,14 +187,14 @@ class PortraitBottomBar extends StatelessWidget {
                 ),
                 SizedBox(width: 8.w),
                 AppText.c1(
-                  'Đối thủ: ',
+                  context.l10n.opponentColon,
                   fontSize: 12.sp,
                   fontWeight: FontWeight.w700,
                   color: isPaper ? AppColors.paperTextDark : AppColors.white,
                 ),
                 Expanded(
                   child: AppText.c1(
-                    chosenWordP2 ?? 'Đang nghĩ...',
+                    chosenWordP2 ?? context.l10n.thinkingOption,
                     fontSize: 12.sp,
                     fontWeight: FontWeight.w700,
                     color: _getP2TextColor(),

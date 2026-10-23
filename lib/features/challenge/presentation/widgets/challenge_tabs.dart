@@ -2,6 +2,7 @@ import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
 import 'package:bufopia/features/challenge/presentation/bloc/challenge_room_bloc.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -24,6 +25,7 @@ class ChallengeTabs extends StatelessWidget {
     final isLandscape =
         MediaQuery.of(context).orientation == Orientation.landscape;
     final isJoin = currentTab == ChallengeRoomTab.join;
+    final l10n = context.l10n;
 
     final activeColor = isPaper ? AppColors.paperTextDark : AppColors.grayDark;
     final inactiveColor = isPaper
@@ -102,7 +104,7 @@ class ChallengeTabs extends StatelessWidget {
                         ),
                         SizedBox(width: isLandscape ? 6.0 : 6.w),
                         AppText.b2(
-                          'NHẬP MÃ',
+                          l10n.enterCodeTab,
                           fontSize: fontSize,
                           fontWeight: FontWeight.w700,
                           color: isJoin ? activeColor : inactiveColor,
@@ -129,7 +131,7 @@ class ChallengeTabs extends StatelessWidget {
                         ),
                         SizedBox(width: isLandscape ? 6.0 : 6.w),
                         AppText.b2(
-                          'TẠO PHÒNG',
+                          l10n.createRoomTab,
                           fontSize: fontSize,
                           fontWeight: FontWeight.w700,
                           color: !isJoin ? activeColor : inactiveColor,

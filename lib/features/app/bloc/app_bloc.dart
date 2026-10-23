@@ -96,6 +96,7 @@ class AppBloc extends BaseBloc<AppEvent, AppState> {
     Emitter<AppState> emit,
   ) async {
     final lifecycleState = event.lifecycleState;
+    safeEmit(state.copyWith(lifecycleState: lifecycleState));
     if (lifecycleState == AppLifecycleState.resumed) {
       if (state.isMusicEnabled && _audioService.isHomeActive) {
         await _audioService.resumeBgm();

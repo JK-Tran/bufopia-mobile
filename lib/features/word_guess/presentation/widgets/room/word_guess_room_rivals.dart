@@ -5,6 +5,7 @@ import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
 import 'package:bufopia/features/word_chain/data/models/word_chain_social_models.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -78,15 +79,17 @@ class _WordGuessRoomRivalsState extends State<WordGuessRoomRivals> {
     await widget.onInvite(rival);
   }
 
-  String _formatPlayedDate(int? playedAt) {
-    if (playedAt == null || playedAt <= 0) return 'Đã luyện gần đây';
+  String _formatPlayedDate(BuildContext context, int? playedAt) {
+    if (playedAt == null || playedAt <= 0) {
+      return context.l10n.recentlyPracticed;
+    }
     try {
       final dt = DateTime.fromMillisecondsSinceEpoch(
         playedAt > 10000000000 ? playedAt : playedAt * 1000,
       );
-      return 'Đã luyện ${dt.day}/${dt.month}/${dt.year}';
+      return context.l10n.practicedOnDate(dt.day, dt.month, dt.year);
     } on Object catch (_) {
-      return 'Đã luyện gần đây';
+      return context.l10n.recentlyPracticed;
     }
   }
 
@@ -104,7 +107,7 @@ class _WordGuessRoomRivalsState extends State<WordGuessRoomRivals> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         AppText.b2(
-          '5 bạn cùng luyện gần nhất (${widget.rivals.length})',
+          context.l10n.recentPartners(widget.rivals.length),
           fontWeight: FontWeight.w700,
           color: textColorDark,
         ),
@@ -125,7 +128,7 @@ class _WordGuessRoomRivalsState extends State<WordGuessRoomRivals> {
             padding: EdgeInsets.symmetric(vertical: 10.h),
             child: Center(
               child: AppText.c1(
-                'Chưa có bạn cùng luyện gần đây.',
+                context.l10n.noRecentPartners,
                 color: textColorMuted,
               ),
             ),
@@ -148,14 +151,14 @@ class _WordGuessRoomRivalsState extends State<WordGuessRoomRivals> {
                         ),
                         SizedBox(height: 2.h),
                         AppText.c1(
-                          _formatPlayedDate(rival.playedAt),
+                          _formatPlayedDate(context, rival.playedAt),
                           color: textColorMuted,
                         ),
                       ],
                     ),
                   ),
                   AppButton(
-                    text: cooldown > 0 ? '${cooldown}s' : 'Mời',
+                    text: cooldown > 0 ? '${cooldown}s' : context.l10n.invite,
                     height: 32.h,
                     width: 64.w,
                     fontSize: 12.sp,

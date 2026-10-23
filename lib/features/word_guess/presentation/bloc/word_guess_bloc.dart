@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:bufopia/core/base/base_bloc.dart';
+import 'package:bufopia/features/practice/domain/repositories/practice_repository.dart';
+import 'package:bufopia/features/practice/domain/services/srs_engine.dart';
 import 'package:bufopia/features/vocabulary/domain/entities/word.dart';
 import 'package:bufopia/features/word_guess/domain/entities/deck.dart';
 import 'package:bufopia/features/word_guess/domain/entities/game_event.dart';
@@ -53,6 +55,7 @@ class WordGuessBloc extends BaseBloc<WordGuessEvent, WordGuessState> {
     this._submitReadyUseCase,
     this._submitStartUseCase,
     this._submitRestartUseCase,
+    this._practiceRepository,
   ) : super(const WordGuessState()) {
     // Solo Practice
     on<_StartPractice>(_onStartPractice);
@@ -98,6 +101,7 @@ class WordGuessBloc extends BaseBloc<WordGuessEvent, WordGuessState> {
   final SubmitGuessReadyUseCase _submitReadyUseCase;
   final SubmitGuessStartUseCase _submitStartUseCase;
   final SubmitGuessRestartUseCase _submitRestartUseCase;
+  final PracticeRepository _practiceRepository;
 
   StreamSubscription<dynamic>? _gameStreamSubscription;
   Timer? _countdownTimer;
@@ -307,6 +311,23 @@ class WordGuessBloc extends BaseBloc<WordGuessEvent, WordGuessState> {
     if (currentWord == null || state.isDelayingNextRound) return null;
 
     _stopAutoHintTimer();
+
+    if (state.myUid.isNotEmpty) {
+      final wordKey = currentWord.id.startsWith('vocab_')
+          ? currentWord.id
+          : 'vocab_${currentWord.id}';
+      final memory = SrsEngine.updateMemory(
+        wordId: wordKey,
+        correct: false,
+        seconds: 12,
+      );
+      unawaited(
+        _practiceRepository.submitProfile(
+          uid: state.myUid,
+          memory: memory,
+        ),
+      );
+    }
 
     final updatedHistory = [
       ...state.gameState.history.where(

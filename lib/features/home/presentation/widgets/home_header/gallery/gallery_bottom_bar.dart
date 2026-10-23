@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:bufopia/components/app_button.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:photo_manager/photo_manager.dart';
@@ -63,7 +64,7 @@ class GalleryBottomBar extends StatelessWidget {
             ),
             SizedBox(width: 8.w),
             AppText.c1(
-              '1 ảnh đã chọn',
+              context.l10n.photosSelected(1),
               color: AppColors.blueDark,
               fontWeight: FontWeight.w700,
               fontSize: 12.sp,
@@ -76,7 +77,7 @@ class GalleryBottomBar extends StatelessWidget {
             ),
             SizedBox(width: 6.w),
             AppText.c1(
-              'Chạm vào ảnh để chọn',
+              context.l10n.tapPhotoToSelect,
               color: AppColors.grayMedium,
               fontWeight: FontWeight.w600,
               fontSize: 12.sp,
@@ -88,7 +89,7 @@ class GalleryBottomBar extends StatelessWidget {
           // 3D Game "Tiếp theo" Button
           if (hasSelection)
             AppButton.primary(
-              text: 'Tiếp theo',
+              text: context.l10n.nextButton,
               height: 28.h,
               padding: EdgeInsets.symmetric(horizontal: 14.w),
               icon: Icon(
@@ -103,7 +104,7 @@ class GalleryBottomBar extends StatelessWidget {
             )
           else
             AppButton.disabled(
-              text: 'Tiếp theo',
+              text: context.l10n.nextButton,
               height: 28.h,
               padding: EdgeInsets.symmetric(horizontal: 14.w),
               icon: Icon(

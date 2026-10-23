@@ -1,6 +1,7 @@
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -61,7 +62,7 @@ class WordChainStatusBar extends StatelessWidget {
                 SizedBox(width: 4.w),
                 if (!relaxed) ...[
                   AppText.b2(
-                    'Còn ${remainingSeconds}s ',
+                    '${context.l10n.remainingSecondsFormat(remainingSeconds)} ',
                     color: timerColor,
                     fontSize: 12.sp,
                     fontWeight: FontWeight.w700,
@@ -69,8 +70,10 @@ class WordChainStatusBar extends StatelessWidget {
                 ],
                 AppText.c1(
                   relaxed
-                      ? 'Thư giãn (Không giới hạn)'
-                      : (isMyTurn ? 'Lượt của bạn' : 'Lượt bạn cùng luyện'),
+                      ? context.l10n.relaxedUnlimited
+                      : (isMyTurn
+                            ? context.l10n.yourTurn
+                            : context.l10n.partnerTurn),
                   color: subColor,
                   fontSize: 10.sp,
                 ),
@@ -108,7 +111,7 @@ class WordChainStatusBar extends StatelessWidget {
                     ),
                     SizedBox(width: 4.w),
                     AppText.c1(
-                      'Chat',
+                      context.l10n.chat,
                       color: isPaper
                           ? AppColors.paperTextDark
                           : AppColors.grayDark,
@@ -149,7 +152,7 @@ class WordChainStatusBar extends StatelessWidget {
                     ),
                     SizedBox(width: 4.w),
                     AppText.c1(
-                      'Kết thúc',
+                      context.l10n.endTurn,
                       color: AppColors.red,
                       fontSize: 10.sp,
                       fontWeight: FontWeight.w600,

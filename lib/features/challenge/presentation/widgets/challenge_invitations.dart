@@ -3,6 +3,7 @@ import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
 import 'package:bufopia/features/challenge/domain/entities/social_state.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -35,7 +36,7 @@ class ChallengeInvitations extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         AppText.t3(
-          'Lời mời đến',
+          context.l10n.incomingInvitations,
           fontSize: titleFontSize,
           fontWeight: FontWeight.w700,
           color: isPaper ? AppColors.paperTextDark : AppColors.grayDark,
@@ -45,7 +46,7 @@ class ChallengeInvitations extends StatelessWidget {
           Padding(
             padding: EdgeInsets.symmetric(vertical: isLandscape ? 2.0 : 2.h),
             child: AppText.b2(
-              'Chưa có lời mời mới.',
+              context.l10n.noNewInvitations,
               fontSize: emptyFontSize,
               color: isPaper ? AppColors.paperTextMuted : AppColors.grayMedium,
             ),
@@ -85,7 +86,10 @@ class ChallengeInvitations extends StatelessWidget {
                   SizedBox(width: isLandscape ? 8.0 : 8.w),
                   Expanded(
                     child: AppText.b2(
-                      '${inv.fromName} mời vào phòng #${inv.roomCode}',
+                      context.l10n.invitationCardDesc(
+                        inv.fromName,
+                        inv.roomCode,
+                      ),
                       fontSize: textFontSize,
                       fontWeight: FontWeight.w700,
                       color: isPaper
@@ -95,7 +99,7 @@ class ChallengeInvitations extends StatelessWidget {
                   ),
                   if (isPaper)
                     AppButton(
-                      text: 'VÀO',
+                      text: context.l10n.enter,
                       height: btnHeight,
                       fontSize: btnFontSize,
                       padding: EdgeInsets.symmetric(
@@ -111,7 +115,7 @@ class ChallengeInvitations extends StatelessWidget {
                     )
                   else
                     AppButton.success(
-                      text: 'VÀO',
+                      text: context.l10n.enter,
                       height: btnHeight,
                       fontSize: btnFontSize,
                       padding: EdgeInsets.symmetric(

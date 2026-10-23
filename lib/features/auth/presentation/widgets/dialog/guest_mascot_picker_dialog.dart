@@ -5,6 +5,7 @@ import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
 import 'package:bufopia/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:bufopia/shared/utils/user_name_generator.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,7 +26,7 @@ class GuestMascotPickerDialog extends StatefulWidget {
   }) {
     return AppDialog.show(
       context,
-      title: 'CHỌN BẠN ĐỒNG HÀNH',
+      title: context.l10n.chooseCompanion,
       showCloseButton: false,
       barrierDismissible: false,
       leading: Container(
@@ -105,7 +106,7 @@ class _GuestMascotPickerDialogState extends State<GuestMascotPickerDialog> {
           });
           AppToast.showError(
             context,
-            'Không thể cập nhật linh vật: ${state.errorMessage}',
+            context.l10n.cannotUpdateMascot(state.errorMessage!),
           );
         } else if (state.currentUser != null &&
             state.currentUser!.persisted &&
@@ -117,11 +118,12 @@ class _GuestMascotPickerDialogState extends State<GuestMascotPickerDialog> {
           Navigator.of(context).pop();
           AppToast.showSuccess(
             context,
-            'Chào mừng $name đến với BuFoPia! Sẵn sàng so tài!',
+            context.l10n.welcomeUserReady(name),
           );
         }
       },
       builder: (context, state) {
+        final l10n = context.l10n;
         final isPaper = context.select<AppBloc, bool>(
           (bloc) => bloc.state.isPaperTheme,
         );
@@ -146,8 +148,7 @@ class _GuestMascotPickerDialogState extends State<GuestMascotPickerDialog> {
           children: [
             SizedBox(height: 6.h),
             AppText.b2(
-              'Chào mừng bạn đến với BuFoPia! Hãy chọn linh vật đại diện'
-              ' để bắt đầu hành trình từ vựng:',
+              l10n.welcomeChooseMascot,
               textAlign: TextAlign.center,
               color: bodyColor,
               fontSize: 12.sp,
@@ -162,7 +163,7 @@ class _GuestMascotPickerDialogState extends State<GuestMascotPickerDialog> {
                   child: _Mascot3DCard(
                     mascotName: UserNameGenerator.bunny,
                     displayName: bunnyName,
-                    tagText: 'Thỏ Tinh Anh',
+                    tagText: l10n.bunnyTag,
                     avatarPath: UserNameGenerator.bunnyAvatar,
                     isSelected: isBunny,
                     isPaper: isPaper,
@@ -192,7 +193,7 @@ class _GuestMascotPickerDialogState extends State<GuestMascotPickerDialog> {
                   child: _Mascot3DCard(
                     mascotName: UserNameGenerator.pip,
                     displayName: pipName,
-                    tagText: 'Cáo Thông Thái',
+                    tagText: l10n.pipTag,
                     avatarPath: UserNameGenerator.pipAvatar,
                     isSelected: !isBunny,
                     isPaper: isPaper,
@@ -222,7 +223,7 @@ class _GuestMascotPickerDialogState extends State<GuestMascotPickerDialog> {
 
             // Nút Xác nhận Bắt đầu 3D thích ứng màu theo linh vật đã chọn
             AppButton(
-              text: isBunny ? 'BẮT ĐẦU VỚI BUNNY' : 'BẮT ĐẦU VỚI PIP',
+              text: isBunny ? l10n.startWithBunny : l10n.startWithPip,
               icon: Icon(
                 Icons.play_arrow_rounded,
                 color: AppColors.white,

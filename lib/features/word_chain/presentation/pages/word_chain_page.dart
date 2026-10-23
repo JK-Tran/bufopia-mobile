@@ -44,8 +44,7 @@ class WordChainPage extends StatefulWidget {
   State<WordChainPage> createState() => _WordChainPageState();
 }
 
-class _WordChainPageState extends State<WordChainPage>
-    with WidgetsBindingObserver {
+class _WordChainPageState extends State<WordChainPage> {
   late final WordChainBloc _bloc;
   int _lastMessageCount = 0;
   bool _isResultDialogShown = false;
@@ -60,17 +59,8 @@ class _WordChainPageState extends State<WordChainPage>
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
     _bloc = GetIt.instance.get<WordChainBloc>();
     _initGame();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused ||
-        state == AppLifecycleState.inactive) {
-      _bloc.add(const WordChainEvent.appAway());
-    }
   }
 
   void _initGame() {
@@ -123,7 +113,6 @@ class _WordChainPageState extends State<WordChainPage>
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
     _bloc.close();
     super.dispose();
   }
@@ -370,8 +359,20 @@ class _WordChainPageState extends State<WordChainPage>
 
     return BlocProvider.value(
       value: _bloc,
-      child: BlocListener<WordChainBloc, WordChainState>(
-        listener: (context, state) {
+      child: MultiBlocListener(
+        listeners: [
+          BlocListener<AppBloc, AppState>(
+            listenWhen: (previous, current) =>
+                previous.lifecycleState != current.lifecycleState,
+            listener: (context, state) {
+              if (state.lifecycleState == AppLifecycleState.paused ||
+                  state.lifecycleState == AppLifecycleState.inactive) {
+                _bloc.add(const WordChainEvent.appAway());
+              }
+            },
+          ),
+          BlocListener<WordChainBloc, WordChainState>(
+            listener: (context, state) {
           // 1. Tự động đọc phát âm khi có từ mới trong chuỗi
           if (state.gameState.messages.length > _lastMessageCount) {
             _lastMessageCount = state.gameState.messages.length;
@@ -520,7 +521,9 @@ class _WordChainPageState extends State<WordChainPage>
             );
           }
         },
-        child: PopScope(
+      ),
+    ],
+    child: PopScope(
           canPop: false,
           onPopInvokedWithResult: (didPop, _) {
             if (didPop) return;

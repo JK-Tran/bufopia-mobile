@@ -4,6 +4,7 @@ import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
 import 'package:bufopia/features/auth/domain/entities/account_import_result.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -31,6 +32,7 @@ class AccountConflictDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final isPaper = context.select<AppBloc, bool>((b) => b.state.isPaperTheme);
 
     final cardBg = isPaper ? AppColors.paperSurface : AppColors.lightBackground;
@@ -41,7 +43,7 @@ class AccountConflictDialog extends StatelessWidget {
         : AppColors.grayMedium;
 
     return AppGameDialog(
-      title: 'Xung đột tài khoản',
+      title: l10n.accountConflictTitle,
       icon: Icons.sync_problem_rounded,
       maxWidth: 340.w,
       backgroundColor: isPaper ? AppColors.paperCardBg : AppColors.white,
@@ -56,7 +58,7 @@ class AccountConflictDialog extends StatelessWidget {
           AppText.b2(
             conflict.message.isNotEmpty
                 ? conflict.message
-                : 'Tài khoản Google này đã có dữ liệu lưu trữ đám mây.',
+                : l10n.accountConflictDefaultMsg,
             color: textDark,
             textAlign: TextAlign.center,
           ),
@@ -82,7 +84,7 @@ class AccountConflictDialog extends StatelessWidget {
                     ),
                     SizedBox(width: 6.w),
                     AppText.t3(
-                      'Bản lưu trên Google',
+                      l10n.googleCloudSave,
                       fontWeight: FontWeight.w700,
                       color: textDark,
                       fontSize: 14.sp,
@@ -92,17 +94,17 @@ class AccountConflictDialog extends StatelessWidget {
                 SizedBox(height: 6.h),
                 if (conflict.cloudElo > 0)
                   AppText.b2(
-                    'Điểm Elo: ${conflict.cloudElo}',
+                    l10n.eloScore(conflict.cloudElo),
                     color: textMuted,
                   ),
                 if (conflict.cloudMatches > 0)
                   AppText.b2(
-                    'Số trận đã đấu: ${conflict.cloudMatches}',
+                    l10n.matchesPlayed(conflict.cloudMatches),
                     color: textMuted,
                   ),
                 if (conflict.cloudLastActive.isNotEmpty)
                   AppText.b2(
-                    'Hoạt động gần nhất: ${conflict.cloudLastActive}',
+                    l10n.lastActive(conflict.cloudLastActive),
                     color: textMuted,
                   ),
               ],
@@ -112,7 +114,7 @@ class AccountConflictDialog extends StatelessWidget {
 
           // Nút Gộp dữ liệu (Merge)
           AppButton(
-            text: 'GỘP TIẾN ĐỘ (KHUYÊN DÙNG)',
+            text: l10n.mergeProgressRecommended,
             backgroundColor: isPaper ? AppColors.paperGreen : AppColors.green,
             extrusionColor: isPaper
                 ? AppColors.paperGreenExtrusion
@@ -125,7 +127,7 @@ class AccountConflictDialog extends StatelessWidget {
 
           // Nút Dùng bản lưu đám mây (Overwrite)
           AppButton.secondary(
-            text: 'Dùng dữ liệu đám mây (Ghi đè)',
+            text: l10n.useCloudDataOverwrite,
             fontSize: 12.sp,
             onPressed: () =>
                 Navigator.of(context).pop(ConflictResolutionChoice.overwrite),
@@ -137,7 +139,7 @@ class AccountConflictDialog extends StatelessWidget {
             onPressed: () =>
                 Navigator.of(context).pop(ConflictResolutionChoice.cancel),
             child: AppText.c1(
-              'Huỷ bỏ',
+              l10n.cancel,
               color: textMuted,
             ),
           ),

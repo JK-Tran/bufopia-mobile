@@ -4,6 +4,7 @@ import 'dart:ui' as ui;
 import 'package:bufopia/components/components.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -170,7 +171,7 @@ class _PlayerPhotoCropDialogState extends State<PlayerPhotoCropDialog> {
           ),
           SizedBox(width: 12.w),
           AppText.t3(
-            'Căn chỉnh ảnh',
+            context.l10n.adjustPhoto,
             color: AppColors.white,
             fontWeight: FontWeight.w700,
             fontSize: 16.sp,
@@ -184,7 +185,7 @@ class _PlayerPhotoCropDialogState extends State<PlayerPhotoCropDialog> {
           ),
           const Spacer(),
           AppButton.success(
-            text: 'Xong',
+            text: context.l10n.done,
             height: 28.h,
             padding: EdgeInsets.symmetric(horizontal: 14.w),
             icon: Icon(
@@ -279,7 +280,7 @@ class _PlayerPhotoCropDialogState extends State<PlayerPhotoCropDialog> {
           SizedBox(width: 8.w),
           Expanded(
             child: AppText.c1(
-              'Dùng ngón tay kéo & phóng to để căn chỉnh ảnh vào khung vuông',
+              context.l10n.cropPhotoInstruction,
               color: AppColors.white.withValues(alpha: 0.85),
               fontSize: 12.sp,
               maxLines: 2,

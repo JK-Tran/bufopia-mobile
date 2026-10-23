@@ -4,6 +4,7 @@ import 'package:bufopia/features/app/bloc/app_bloc.dart';
 import 'package:bufopia/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:bufopia/features/auth/presentation/widgets/dialog/app_login_prompt_dialog.dart';
 import 'package:bufopia/features/word_guess/presentation/widgets/mode/word_guess_mode_item.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -39,13 +40,14 @@ class WordGuessModeDialog extends StatelessWidget {
     VoidCallback? onCustomRoom,
   }) {
     final isPaper = context.read<AppBloc>().state.isPaperTheme;
+    final l10n = context.l10n;
 
     return AppGameDialog.show(
       context: context,
-      title: 'CHỌN CHẾ ĐỘ CHƠI',
+      title: l10n.chooseGameMode,
       icon: Icons.sports_esports_rounded,
       maxWidth: 365.w,
-      footerText: '⭐ Chọn chế độ để bắt đầu đoán từ vựng ⭐',
+      footerText: l10n.modeFooterGuess,
       padding: EdgeInsets.fromLTRB(10.w, 10.h, 10.w, 10.h),
       backgroundColor: isPaper ? AppColors.paperCardBg : AppColors.white,
       borderColor: isPaper ? AppColors.paperBorder : AppColors.blueLight,
@@ -91,6 +93,7 @@ class WordGuessModeDialog extends StatelessWidget {
         isPaperTheme ??
         context.select<AppBloc, bool>((b) => b.state.isPaperTheme);
     final isGuest = context.select<AuthBloc, bool>((b) => b.state.isGuest);
+    final l10n = context.l10n;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -99,13 +102,13 @@ class WordGuessModeDialog extends StatelessWidget {
         WordGuessModeItem(
           isPaper: isPaper,
           isLocked: false,
-          badgeText: '1 NGƯỜI',
+          badgeText: l10n.onePlayerBadge,
           badgeIcon: Icons.person_rounded,
           badgeColor: isPaper ? AppColors.paperGreen : AppColors.modeBotButton,
           imagePath: 'assets/images/webp/mode-bot.webp',
-          title: 'Tự luyện tập',
-          subtitle: 'Luyện đoán từ cùng Bot thông minh',
-          buttonText: 'CHƠI NGAY',
+          title: l10n.soloPractice,
+          subtitle: l10n.soloPracticeDesc,
+          buttonText: l10n.playNow,
           buttonIcon: Icons.play_arrow_rounded,
           classicButtonGradient: const LinearGradient(
             begin: Alignment.topCenter,
@@ -130,15 +133,15 @@ class WordGuessModeDialog extends StatelessWidget {
         WordGuessModeItem(
           isPaper: isPaper,
           isLocked: isGuest,
-          badgeText: 'GHÉP CẶP',
+          badgeText: l10n.findFriendBadge,
           badgeIcon: Icons.sensors_rounded,
           badgeColor: isPaper
               ? AppColors.paperStreakFlame
               : AppColors.modeOnlineButton,
           imagePath: 'assets/images/webp/mode-online.webp',
-          title: 'Ghép Online',
-          subtitle: 'Ghép ngẫu nhiên so tài trực tuyến',
-          buttonText: 'TÌM TRẬN',
+          title: l10n.onlineMatch,
+          subtitle: l10n.onlineMatchDesc,
+          buttonText: l10n.findFriendBadge,
           buttonIcon: Icons.sensors_rounded,
           classicButtonGradient: const LinearGradient(
             begin: Alignment.topCenter,
@@ -155,7 +158,7 @@ class WordGuessModeDialog extends StatelessWidget {
             if (isGuest) {
               AppLoginPromptDialog.show(
                 context,
-                featureName: 'chế độ Ghép Online',
+                featureName: l10n.onlineMatch,
               );
               return;
             }
@@ -176,9 +179,9 @@ class WordGuessModeDialog extends StatelessWidget {
               ? AppColors.paperGreenDark
               : AppColors.modeIdButton,
           imagePath: 'assets/images/webp/mode-id.webp',
-          title: 'Thách Đấu',
-          subtitle: 'Tạo phòng so tài cùng bạn bè',
-          buttonText: 'VÀO PHÒNG',
+          title: l10n.customRoom,
+          subtitle: l10n.customRoomDesc,
+          buttonText: l10n.joinRoom,
           buttonIcon: Icons.sports_kabaddi_rounded,
           classicButtonGradient: const LinearGradient(
             begin: Alignment.topCenter,
@@ -195,7 +198,7 @@ class WordGuessModeDialog extends StatelessWidget {
             if (isGuest) {
               AppLoginPromptDialog.show(
                 context,
-                featureName: 'chế độ Thách Đấu Phòng Riêng',
+                featureName: l10n.customRoom,
               );
               return;
             }

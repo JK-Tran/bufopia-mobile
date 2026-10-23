@@ -9,6 +9,7 @@ abstract class AppState with _$AppState {
     @Default(false) bool isDarkMode,
     @Default('paper') String appTheme,
     @Default(false) bool isInitialized,
+    @Default(AppLifecycleState.resumed) AppLifecycleState lifecycleState,
   }) = _AppState;
 
   const AppState._();

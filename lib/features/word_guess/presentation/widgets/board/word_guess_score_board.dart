@@ -4,6 +4,7 @@ import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
 import 'package:bufopia/features/word_guess/domain/entities/room_player.dart';
 import 'package:bufopia/features/word_guess/presentation/widgets/board/word_guess_timer_item.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -42,6 +43,9 @@ class WordGuessScoreBoard extends StatelessWidget {
   Widget build(BuildContext context) {
     final isPaper = context.select<AppBloc, bool>((b) => b.state.isPaperTheme);
     final showTimer = hasTimer ?? (!isSolo && secondsLeft > 0);
+    final l10n = context.l10n;
+    final resolvedMyName =
+        (myName.isNotEmpty && myName != 'Bạn') ? myName : l10n.you;
 
     if (isSolo || players.isEmpty) {
       // ── HUD Solo Practice ──────────────────────────────────────────
@@ -59,7 +63,7 @@ class WordGuessScoreBoard extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       AppText.b2(
-                        myName.isNotEmpty ? myName : 'Bạn',
+                        resolvedMyName,
                         color: isPaper
                             ? AppColors.paperTextDark
                             : AppColors.grayDark,
@@ -69,7 +73,7 @@ class WordGuessScoreBoard extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                       ),
                       AppText.c1(
-                        'Từ $currentRound · $foundCount từ đã tìm',
+                        l10n.wordRoundFoundCount(currentRound, foundCount),
                         color: isPaper
                             ? AppColors.paperTextMedium
                             : AppColors.grayMedium,
@@ -106,7 +110,7 @@ class WordGuessScoreBoard extends StatelessWidget {
     final rivalScore = rivalPlayer?.effectiveScore ?? 0;
     final rivalName = rivalPlayer?.name.isNotEmpty == true
         ? rivalPlayer!.name
-        : 'Đối thủ';
+        : l10n.humanOpponent;
     final rivalAvatar = rivalPlayer?.avatar;
 
     return Row(
@@ -115,7 +119,7 @@ class WordGuessScoreBoard extends StatelessWidget {
         Expanded(
           child: _PlayerScorePill(
             avatarUrl: myAvatar,
-            name: myName.isNotEmpty ? myName : 'Bạn',
+            name: resolvedMyName,
             score: myScore,
             isMe: true,
             isPaper: isPaper,
@@ -129,7 +133,7 @@ class WordGuessScoreBoard extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: [
               AppText.c1(
-                'Từ $currentRound',
+                l10n.wordRound(currentRound),
                 fontWeight: FontWeight.w700,
                 fontSize: 12.sp,
                 color: isPaper ? AppColors.paperTextDark : AppColors.grayDark,

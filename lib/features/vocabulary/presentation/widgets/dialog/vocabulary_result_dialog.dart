@@ -4,6 +4,7 @@ import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
 import 'package:bufopia/features/vocabulary/presentation/bloc/vocabulary_bloc.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -27,6 +28,7 @@ class VocabularyResultDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isPaper = context.select<AppBloc, bool>((b) => b.state.isPaperTheme);
+    final l10n = context.l10n;
     final isLandscape =
         MediaQuery.of(context).orientation == Orientation.landscape;
     final isLocal2P =
@@ -39,23 +41,23 @@ class VocabularyResultDialog extends StatelessWidget {
     String resultTitle;
     Color resultColor;
     if (isTie) {
-      resultTitle = '🤝 HÒA NHAU!';
+      resultTitle = l10n.draw;
       resultColor = isPaper ? AppColors.paperTextDark : AppColors.gold;
     } else if (isLocal2P) {
       resultTitle = isP1Winner
-          ? '🎉 $player1Name THẮNG!'
-          : '🎉 $player2Name THẮNG!';
+          ? l10n.playerWins(player1Name)
+          : l10n.playerWins(player2Name);
       resultColor = isP1Winner
           ? (isPaper ? AppColors.playerPinkDark : AppColors.playerPink)
           : (isPaper ? AppColors.playerBlueDark : AppColors.blue);
     } else {
-      resultTitle = isP1Winner ? '🎉 CHIẾN THẮNG!' : '😢 THUA CUỘC!';
+      resultTitle = isP1Winner ? l10n.victory : l10n.defeat;
       resultColor = isP1Winner ? AppColors.green : AppColors.red;
     }
 
     final p2Subtitle = isLocal2P
-        ? 'Người chơi 2'
-        : (state.isBotOpponent ? 'Bot' : 'Đối thủ');
+        ? l10n.player2
+        : (state.isBotOpponent ? l10n.botOpponent : l10n.humanOpponent);
 
     final reward = state.reward;
     final gainedXp = (reward != null && reward.gainedXp > 0)
@@ -76,7 +78,7 @@ class VocabularyResultDialog extends StatelessWidget {
     final p2Badges = <Widget>[
       AppResultBadgeChip.rival(text: p2Subtitle),
       if (!isTie && !isP1Winner)
-        AppResultBadgeChip.rival(text: 'Dẫn đầu lượt luyện'),
+        AppResultBadgeChip.rival(text: l10n.leadPracticeRound),
     ];
 
     final totalQ = state.questions.isNotEmpty ? state.questions.length : 15;
@@ -91,8 +93,8 @@ class VocabularyResultDialog extends StatelessWidget {
     final p1Card = AppResultPlayerCard(
       name: player1Name,
       isLeader: isP1Winner,
-      scoreText: '${state.player1Score} điểm',
-      correctCount: '${state.correctCountP1} câu',
+      scoreText: context.l10n.pointsCount(state.player1Score),
+      correctCount: context.l10n.questionsCount(state.correctCountP1),
       accuracy: p1Acc,
       streak: '${state.correctCountP1}',
       badges: p1Badges,
@@ -104,8 +106,8 @@ class VocabularyResultDialog extends StatelessWidget {
       avatarUrl: state.opponentAvatar,
       nameColor: const Color(0xFF1E88E5),
       isLeader: !isTie && !isP1Winner,
-      scoreText: '${state.player2Score} điểm',
-      correctCount: '$p2Correct câu',
+      scoreText: context.l10n.pointsCount(state.player2Score),
+      correctCount: context.l10n.questionsCount(p2Correct),
       fastestTime: '5.2s',
       accuracy: p2Acc,
       streak: '$p2Correct',
@@ -204,7 +206,7 @@ class VocabularyResultDialog extends StatelessWidget {
                       ),
                       SizedBox(width: isLandscape ? 8 : 10.w),
                       AppText.b2(
-                        'Đang tính thưởng & lưu kết quả...',
+                        l10n.calculatingReward,
                         color: isPaper
                             ? AppColors.paperTextMedium
                             : AppColors.grayMedium,
@@ -240,8 +242,10 @@ class VocabularyResultDialog extends StatelessWidget {
                         ),
                         SizedBox(width: isLandscape ? 4 : 6.w),
                         AppText.b2(
-                          'LÊN CẤP! Lv.${reward.oldLevel} '
-                          '➔ Lv.${reward.newLevel}',
+                          l10n.levelUpBanner(
+                            reward.oldLevel,
+                            reward.newLevel,
+                          ),
                           fontWeight: FontWeight.w700,
                           fontSize: isLandscape ? 11 : 12.sp,
                           color: AppColors.orangeDeep,
@@ -279,8 +283,7 @@ class VocabularyResultDialog extends StatelessWidget {
                         ),
                         SizedBox(width: 4.w),
                         AppText.b2(
-                          state.opponentLeftMessage ??
-                              'Đối thủ đã thoát khỏi phòng',
+                          state.opponentLeftMessage ?? l10n.opponentLeftTitle,
                           fontSize: isLandscape ? 12.0 : 12.sp,
                           fontWeight: FontWeight.w600,
                           color: AppColors.red,
@@ -315,7 +318,7 @@ class VocabularyResultDialog extends StatelessWidget {
                         ),
                         SizedBox(width: 6.w),
                         AppText.b2(
-                          'Đang đợi đối thủ đồng ý tái đấu...',
+                          l10n.waitingForRematchAccept,
                           fontSize: isLandscape ? 12.0 : 12.sp,
                           fontWeight: FontWeight.w600,
                           color: AppColors.orange,
@@ -347,7 +350,7 @@ class VocabularyResultDialog extends StatelessWidget {
                         ),
                         SizedBox(width: 4.w),
                         AppText.b2(
-                          'Đối thủ muốn tái đấu cùng bạn!',
+                          l10n.opponentWantsRematch,
                           fontSize: isLandscape ? 12.0 : 12.sp,
                           fontWeight: FontWeight.w700,
                           color: AppColors.green,
@@ -363,7 +366,7 @@ class VocabularyResultDialog extends StatelessWidget {
                   if (onBackPressed != null)
                     Expanded(
                       child: AppButton(
-                        text: state.isOpponentLeft ? 'Về trang chủ' : 'Thoát',
+                        text: state.isOpponentLeft ? l10n.home : l10n.quit,
                         height: btnHeight,
                         fontSize: btnFontSize,
                         backgroundColor: isPaper
@@ -388,10 +391,10 @@ class VocabularyResultDialog extends StatelessWidget {
                       child: isPaper
                           ? AppButton(
                               text: state.isRematchRequested
-                                  ? 'Đang chờ...'
+                                  ? l10n.waiting
                                   : (state.isOpponentWantRematch
-                                        ? 'Tái đấu ngay'
-                                        : 'Chơi lại'),
+                                        ? l10n.rematchNow
+                                        : l10n.playAgain),
                               isLoading: state.isRematchRequested,
                               height: btnHeight,
                               fontSize: btnFontSize,
@@ -408,10 +411,10 @@ class VocabularyResultDialog extends StatelessWidget {
                             )
                           : AppButton.primary(
                               text: state.isRematchRequested
-                                  ? 'Đang chờ...'
+                                  ? l10n.waiting
                                   : (state.isOpponentWantRematch
-                                        ? 'Tái đấu ngay'
-                                        : 'Chơi lại'),
+                                        ? l10n.rematchNow
+                                        : l10n.playAgain),
                               isLoading: state.isRematchRequested,
                               height: btnHeight,
                               fontSize: btnFontSize,

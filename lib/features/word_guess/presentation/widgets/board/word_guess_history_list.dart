@@ -2,6 +2,7 @@ import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/word_guess/domain/entities/history_item.dart';
 import 'package:bufopia/features/word_guess/presentation/widgets/board/word_guess_history_item.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -67,8 +68,8 @@ class WordGuessHistoryList extends StatelessWidget {
               SizedBox(width: 4.w),
               AppText.c1(
                 hasHistory
-                    ? 'Đã thử (${uniqueHistory.length}):'
-                    : 'Đã thử: Chưa có lượt đoán',
+                    ? context.l10n.triedGuessesCount(uniqueHistory.length)
+                    : context.l10n.noGuessesYet,
                 color: isPaperTheme
                     ? AppColors.paperTextMedium
                     : AppColors.grayMedium,

@@ -19,6 +19,7 @@ import 'package:bufopia/features/word_guess/presentation/widgets/room/word_guess
 import 'package:bufopia/features/word_guess/presentation/widgets/room/word_guess_room_rivals.dart';
 import 'package:bufopia/features/word_guess/presentation/widgets/room/word_guess_room_tabs.dart';
 import 'package:bufopia/shared/di/di.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:bufopia/shared/services/audio/sound_manager.dart';
 import 'package:bufopia/shared/services/firebase/firebase_auth_service.dart';
 import 'package:bufopia/shared/services/socket/models/socket_event.dart';
@@ -128,7 +129,7 @@ class _WordGuessRoomDialogState extends State<WordGuessRoomDialog> {
     final displayName = currentUser?.displayName ?? cachedUser?.displayName;
     return (displayName != null && displayName.isNotEmpty)
         ? displayName
-        : 'Bạn';
+        : context.l10n.you;
   }
 
   String? _getMyAvatar() {
@@ -215,7 +216,10 @@ class _WordGuessRoomDialogState extends State<WordGuessRoomDialog> {
     } on Object catch (e) {
       if (mounted) {
         setState(() => _isConnectingRoom = false);
-        AppToast.showError(context, 'Không thể kết nối phòng: $e');
+        AppToast.showError(
+          context,
+          context.l10n.connectRoomFailed(e.toString()),
+        );
       }
     }
   }
@@ -281,7 +285,7 @@ class _WordGuessRoomDialogState extends State<WordGuessRoomDialog> {
       _generatedRoomCode = _generateRandomRoomCode();
     });
 
-    AppToast.showWarning(context, 'Đã rời phòng tạo.');
+    AppToast.showWarning(context, context.l10n.leftRoom);
   }
 
   void _handleStartGame() {
@@ -301,14 +305,17 @@ class _WordGuessRoomDialogState extends State<WordGuessRoomDialog> {
   void _onCopyCode() {
     context.read<AppBloc>().add(const AppEvent.clickSoundPlayed());
     Clipboard.setData(ClipboardData(text: _generatedRoomCode));
-    AppToast.showSuccess(context, 'Đã chép mã phòng: $_generatedRoomCode');
+    AppToast.showSuccess(
+      context,
+      context.l10n.copiedRoomCode(_generatedRoomCode),
+    );
   }
 
   void _onCopyLink() {
     context.read<AppBloc>().add(const AppEvent.clickSoundPlayed());
     final link = 'https://bufopia.pages.dev/?guess_room=$_generatedRoomCode';
     Clipboard.setData(ClipboardData(text: link));
-    AppToast.showSuccess(context, 'Đã chép liên kết mời!');
+    AppToast.showSuccess(context, context.l10n.copiedInviteLink);
   }
 
   // ── 3. API: Vào phòng qua Lookup API (/api/guess-room/lookup) ───────
@@ -317,7 +324,7 @@ class _WordGuessRoomDialogState extends State<WordGuessRoomDialog> {
     if (raw.isEmpty) {
       AppToast.showWarning(
         context,
-        'Vui lòng nhập mã phòng hoặc dán link mời!',
+        context.l10n.pleaseEnterRoomCode,
       );
       return;
     }
@@ -326,7 +333,7 @@ class _WordGuessRoomDialogState extends State<WordGuessRoomDialog> {
     final code = match?.group(0) ?? raw;
 
     if (code.length < 4) {
-      AppToast.showWarning(context, 'Mã phòng phải có ít nhất 4 ký tự!');
+      AppToast.showWarning(context, context.l10n.roomCodeMinLength);
       return;
     }
 
@@ -355,8 +362,7 @@ class _WordGuessRoomDialogState extends State<WordGuessRoomDialog> {
           setState(() => _isCheckingRoom = false);
           AppToast.showWarning(
             context,
-            lookupOutput.reason ??
-                'Phòng đoán từ không khả dụng hoặc đã kết thúc.',
+            lookupOutput.reason ?? context.l10n.roomUnavailable,
           );
         }
         return;
@@ -384,7 +390,10 @@ class _WordGuessRoomDialogState extends State<WordGuessRoomDialog> {
           _isConnectingRoom = false;
           _isRoomCreated = true;
         });
-        AppToast.showSuccess(context, 'Đã vào phòng $code thành công!');
+        AppToast.showSuccess(
+          context,
+          context.l10n.joinRoomSuccess(code),
+        );
       }
     } on Object catch (e) {
       if (mounted) {
@@ -393,7 +402,10 @@ class _WordGuessRoomDialogState extends State<WordGuessRoomDialog> {
           _isCheckingRoom = false;
           _isConnectingRoom = false;
         });
-        AppToast.showError(context, 'Không thể vào phòng: $e');
+        AppToast.showError(
+          context,
+          context.l10n.joinRoomFailed(e.toString()),
+        );
       }
     }
   }
@@ -418,12 +430,12 @@ class _WordGuessRoomDialogState extends State<WordGuessRoomDialog> {
         if (success) {
           AppToast.showSuccess(
             context,
-            'Đã gửi lời mời tới ${rival.name}!',
+            context.l10n.invitedPartner(rival.name),
           );
         } else {
           AppToast.showWarning(
             context,
-            'Chờ 10 giây trước khi gửi tiếp lời mời.',
+            context.l10n.inviteCooldownWait,
           );
         }
       }
@@ -431,7 +443,7 @@ class _WordGuessRoomDialogState extends State<WordGuessRoomDialog> {
       if (mounted) {
         AppToast.showSuccess(
           context,
-          'Đã gửi lời mời tới ${rival.name}!',
+          context.l10n.invitedPartner(rival.name),
         );
       }
     }
@@ -504,7 +516,7 @@ class _WordGuessRoomDialogState extends State<WordGuessRoomDialog> {
                       ),
                       SizedBox(width: 8.w),
                       AppText.t2(
-                        'PHÒNG ĐOÁN TỪ',
+                        context.l10n.wordGuessRoomTitle,
                         fontWeight: FontWeight.w700,
                         color: textColorDark,
                       ),

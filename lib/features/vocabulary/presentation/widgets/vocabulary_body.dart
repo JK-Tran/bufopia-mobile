@@ -6,6 +6,7 @@ import 'package:bufopia/features/vocabulary/presentation/widgets/dialog/vocabula
 import 'package:bufopia/features/vocabulary/presentation/widgets/landscape/vocabulary_landscape_arena.dart';
 import 'package:bufopia/features/vocabulary/presentation/widgets/portrait/vocabulary_portrait_arena.dart';
 import 'package:bufopia/features/vocabulary/presentation/widgets/vocabulary_answer_item.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -154,8 +155,8 @@ class VocabularyBody extends StatelessWidget {
                   SizedBox(height: 12.h),
                   AppText.b2(
                     state.isWaitingForReady
-                        ? 'ĐANG CHỜ ĐỐI THỦ SẴN SÀNG...'
-                        : 'ĐANG TẢI BỘ TỪ VỰNG...',
+                        ? context.l10n.waitingForOpponentReady
+                        : context.l10n.loadingVocabSet,
                     color: isPaper ? AppColors.paperTextDark : AppColors.white,
                     fontWeight: FontWeight.w700,
                   ),

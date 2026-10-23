@@ -23,5 +23,1018 @@
   "day": "day(s) ago",
   "hour": "hour(s) ago",
   "minute": "minute(s) ago",
-  "justNow": "Just now"
+  "justNow": "Just now",
+
+  "ok": "OK",
+  "cancel": "Cancel",
+  "confirm": "Confirm",
+  "close": "Close",
+  "save": "Save",
+  "back": "Back",
+  "loading": "Loading...",
+  "success": "Success",
+  "error": "Error",
+  "retry": "Retry",
+  "quit": "Quit",
+  "home": "Home",
+  "playAgain": "Play Again",
+  "rematch": "Rematch",
+  "rematchNow": "Rematch Now",
+  "waiting": "Waiting...",
+  "unlock": "Unlock",
+  "playNow": "PLAY NOW",
+  "practice": "PRACTICE",
+  "explore": "EXPLORE",
+  "startNow": "START NOW",
+  "nextWord": "Next word →",
+  "finishReview": "Finish Review",
+  "loginRequired": "LOGIN REQUIRED",
+  "onState": "ON",
+  "offState": "OFF",
+  "profileBtn": "PROFILE",
+
+  "diffEasy": "Easy",
+  "diffMedium": "Medium",
+  "diffHard": "Hard",
+  "multiTopic": "Multi-topic",
+  "wordsCount": "{count} words",
+  "@wordsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "roundBadge": "ROUND {current} / {total}",
+  "@roundBadge": {
+    "placeholders": {
+      "current": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "leaveBattle": "Leave Battle",
+
+  "menuQuizTitle": "Quiz",
+  "menuQuizSubtitle": "Choose topic or random duel",
+  "menuWordChainTitle": "Word Chain",
+  "menuWordChainSubtitle": "Link words freely, learn pronunciation & context",
+  "menuWordGuessTitle": "Missing Word",
+  "menuWordGuessSubtitle": "Guess mysterious words to fill blanks",
+  "menuStudyHubTitle": "Study Hub",
+  "menuStudyHubSubtitle": "Review and store your knowledge",
+
+  "settingsTitle": "Game Settings",
+  "account": "Account",
+  "guestNotLinked": "Guest: {name} (Google not linked)",
+  "@guestNotLinked": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "accountLinked": "Account: {name}",
+  "@accountLinked": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "viewProfile": "View profile",
+  "logIn": "LOG IN",
+  "logOut": "LOG OUT",
+  "language": "Language",
+  "languageSubtitle": "Game display language",
+  "theme": "Theme",
+  "themeSubtitle": "Change display style",
+  "music": "Music",
+  "musicSubtitle": "Toggle in-game background music",
+  "soundEffects": "Sound Effects",
+  "soundEffectsSubtitle": "Toggle button clicks, tile flips, and result sounds",
+  "feedback": "Feedback",
+  "feedbackSubtitle": "Submit suggestions or report questions",
+  "privacyPolicy": "Privacy Policy",
+  "privacyPolicySubtitle": "Terms of service and user privacy",
+  "logoutConfirmTitle": "Log out account",
+  "logoutConfirmMessage": "Are you sure you want to log out?",
+
+  "playerProfile": "Player Profile",
+  "studyStreak": "Study streak",
+  "winStreak": "Win streak",
+  "level": "Level {level}",
+  "@level": {
+    "placeholders": {
+      "level": { "type": "int" }
+    }
+  },
+  "copyPlayerId": "Copy ID",
+  "copiedPlayerId": "Player ID copied!",
+  "profileUpdated": "Profile updated successfully!",
+  "avatarUpdated": "Avatar updated!",
+  "editName": "Edit Name",
+  "saveChanges": "Save Changes",
+  "enterPlayerName": "Enter player name",
+  "chooseCompanion": "CHOOSE COMPANION",
+  "companionSubtitle": "Choose your favorite companion mascot",
+
+  "studyHubTitle": "STUDY HUB",
+  "studyHubFooter": "⭐ Auto-save progress & Boost your reflexes ⭐",
+  "reviewWeakWords": "Review Weak Words",
+  "reviewWeakWordsSubtitle": "Practice words with incorrect answers or slow reflexes",
+  "contributeVocab": "Contribute Vocabulary",
+  "contributeVocabSubtitle": "Submit new words or edit submitted content",
+  "badgeNew": "NEW",
+  "feedbackReport": "Feedback & Bug Report",
+  "feedbackReportSubtitle": "Send feedback to help improve the game experience",
+  "badgeFeedback": "FEEDBACK",
+
+  "chooseGameMode": "CHOOSE GAME MODE",
+  "chooseTopicTitle": "Select Content",
+  "chooseTopicSubtitle": "Choose a battle topic",
+  "modeFooterVocab": "⭐ Choose a mode to start vocabulary duel ⭐",
+  "modeFooterGuess": "⭐ Choose a mode to start guessing vocabulary ⭐",
+  "battleWithBot": "Battle with Bot",
+  "battleWithBotDesc": "Train vocabulary reflexes with AI Bot",
+  "duel2Players": "2 Players",
+  "duel2PlayersDesc": "Duel locally on the same device",
+  "randomMatchmaking": "Random Matchmaking",
+  "randomMatchmakingDesc": "Find online opponents worldwide",
+  "challengeById": "Challenge by ID",
+  "challengeByIdDesc": "Create or join private room with friends",
+
+  "wordChainModeTitle": "CHOOSE WORD CHAIN\nPRACTICE MODE",
+  "threeModesBadge": "3 MODES",
+  "onePlayerBadge": "1 PLAYER",
+  "findFriendBadge": "FIND MATCH",
+  "twoPlayersBadge": "2 PLAYERS",
+  "practiceBot": "Practice with Bot",
+  "practiceBotDesc": "Train vocabulary reflexes with Bot",
+  "practiceOnline": "Online Match",
+  "practiceOnlineDesc": "Random matchmaking with players",
+  "inviteFriends": "Invite Friends",
+  "inviteFriendsDesc": "Create private room to compete with friends",
+  "timedPractice": "TIMED PRACTICE",
+  "relaxedPractice": "RELAXED",
+
+  "soloPractice": "Solo Practice",
+  "soloPracticeDesc": "Relaxed word guessing to expand vocabulary",
+  "onlineMatch": "Online Match",
+  "onlineMatchDesc": "Matchmaking for quick guessing duel",
+  "customRoom": "Custom Room",
+  "customRoomDesc": "Invite friends to compete together",
+
+  "findingOpponent": "FINDING OPPONENT...",
+  "opponentFound": "🎉 OPPONENT FOUND!",
+  "opponentFoundRival": "🎉 FOUND: {name}!",
+  "@opponentFoundRival": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "cancelMatchmaking": "CANCEL",
+  "enteringMatch": "ENTERING MATCH...",
+  "battleRoom": "BATTLE ROOM",
+  "enterCodeTab": "ENTER CODE",
+  "createRoomTab": "CREATE ROOM",
+  "roomCode": "Room Code",
+  "enterRoomCode": "Enter 6-digit room code",
+  "joinRoom": "Join Room",
+  "createRoom": "Create Room",
+
+  "matchResults": "MATCH RESULTS",
+  "victory": "🎉 VICTORY!",
+  "defeat": "😢 DEFEAT!",
+  "draw": "🤝 DRAW!",
+  "playerWins": "🎉 {name} WINS!",
+  "@playerWins": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "botOpponent": "Bot",
+  "humanOpponent": "Opponent",
+  "player2": "Player 2",
+  "correctAnswers": "Correct Answers",
+  "xpEarned": "XP Earned",
+  "opponentWantsRematch": "Opponent wants a rematch with you!",
+
+  "leaderboardTitle": "LEADERBOARD",
+  "leaderboardFooter": "⭐ Learn, duel and conquer the top spot! ⭐",
+  "totalXp": "Total XP",
+  "leaderboardWinStreak": "Win Streak",
+  "leaderboardStudyStreak": "Study Streak",
+
+  "chatWaiting": "Waiting for opponent...",
+  "chatHint": "Message your partner...",
+  "send": "Send",
+
+  "accountConflictTitle": "Account Conflict",
+  "accountConflictDefaultMsg": "This Google account already has data saved in the cloud.",
+  "mergeData": "MERGE DATA",
+  "overwriteAccount": "OVERWRITE",
+
+  "engToVie": "ENG → VIE",
+  "correctProgressSaved": "Correct! ({time}s) • Progress saved",
+  "@correctProgressSaved": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "saveToVault": "Save to Vault",
+  "savingToVault": "Saving...",
+  "savedToVault": "Saved to Vault!",
+
+  "displayNameLabel": "DISPLAY NAME",
+  "presetAvatars": "Available Avatars:",
+  "vocabWarrior": "Vocabulary Warrior",
+  "vocabWarriorSubtitle": "Win battles to earn more XP and upgrade badges!",
+  "levelProgress": "LEVEL PROGRESS",
+  "levelBadge": "LEVEL {level}",
+  "@levelBadge": {
+    "placeholders": {
+      "level": { "type": "int" }
+    }
+  },
+  "saveProgressGoogle": "SAVE PROGRESS TO GOOGLE",
+  "logoutSuccess": "Logged out successfully!",
+  "enterNameHint": "Enter name...",
+  "bunnyTag": "Elite Bunny",
+  "pipTag": "Wise Fox",
+  "startWithBunny": "START WITH BUNNY",
+  "startWithPip": "START WITH PIP",
+  "welcomeChooseMascot": "Welcome to BuFoPia! Choose your companion mascot to start your vocabulary journey:",
+  "welcomeUserReady": "Welcome {name} to BuFoPia! Ready to duel!",
+  "@welcomeUserReady": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "cannotUpdateMascot": "Cannot update mascot: {error}",
+  "@cannotUpdateMascot": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "googleCloudSave": "Google Cloud Save",
+  "eloScore": "Elo Score: {score}",
+  "@eloScore": {
+    "placeholders": {
+      "score": { "type": "int" }
+    }
+  },
+  "matchesPlayed": "Matches played: {count}",
+  "@matchesPlayed": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "lastActive": "Last active: {time}",
+  "@lastActive": {
+    "placeholders": {
+      "time": { "type": "String" }
+    }
+  },
+  "mergeProgressRecommended": "MERGE PROGRESS (RECOMMENDED)",
+  "useCloudDataOverwrite": "Use cloud data (Overwrite)",
+  "weakWordsPractice": "WEAK WORDS PRACTICE",
+  "questionIndex": "Question {current}/{total}",
+  "@questionIndex": {
+    "placeholders": {
+      "current": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "reviewCompletedMsg": "Congratulations! You have completed the review!",
+  "loginToSaveVault": "Please log in to save words to your personal vault.",
+  "savedWordToVault": "Saved \"{word}\" to your Vault!",
+  "@savedWordToVault": {
+    "placeholders": {
+      "word": { "type": "String" }
+    }
+  },
+  "practiceSummary": "PRACTICE SUMMARY",
+  "soloBadge": "Solo Practice",
+  "withFriendsBadge": "Practice with Friends",
+  "yourResults": "YOUR RESULTS",
+  "wordsFoundCount": "{count} words found",
+  "@wordsFoundCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "reviewWordsDesc": "Review results and words you encountered.",
+  "wordsFound": "Words Found",
+  "wordsToReview": "Words to Review",
+  "addedToProfile": "Added to Profile",
+  "resultsBoard": "Results Board",
+  "you": "You",
+  "tiedScore": "Tied Score",
+  "learnedWordsCount": "Learned Words ({count})",
+  "@learnedWordsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "skipped": "Skipped",
+  "saved": "Saved",
+  "suggestWordFeedback": "Suggest Word",
+  "practiceAgain": "PRACTICE AGAIN",
+  "changeTopic": "CHANGE TOPIC",
+  "chatExchange": "EXCHANGE",
+  "chatRoomOnlyToast": "Chat feature is only available in friend rooms!",
+  "opponentLeftTitle": "OPPONENT LEFT",
+  "honoraryVictory": "HONORABLE VICTORY! 🏆",
+  "opponentLeftMidwayDesc": "The opponent left the match midway.\nVictory is yours!",
+  "backToHome": "BACK TO HOME",
+  "oneVsOneRandom": "1 VS 1 RANDOM",
+  "roomOrInviteLink": "Room code or invite link",
+  "enterCodeOrLinkHint": "Enter 6-digit code or paste invite link",
+  "enterSharedCodeDesc": "Enter the code shared by your friend.",
+  "createRoomPreDesc": "Select topic and duration, then create a room to invite friends.",
+  "practiceDuration": "Practice Duration",
+  "minutesFormat": "{minutes} MIN",
+  "@minutesFormat": {
+    "placeholders": {
+      "minutes": { "type": "int" }
+    }
+  },
+  "copyCode": "COPY CODE",
+  "inviteLink": "INVITE LINK",
+  "sendCodeOrLinkDesc": "Send this code or link to your friends to join the room.",
+  "membersCount": "Members ({count})",
+  "@membersCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "roomHost": "Host",
+  "ready": "Ready",
+  "preparing": "Preparing",
+  "waitingFriendsMinPlayers": "Waiting for friends to join. At least 2 players needed to start.",
+  "waitingFriendsReady": "Waiting for friends to get ready...",
+  "allReadyCanStart": "Everyone is ready! Tap Start to play.",
+  "guestReviewTopicGuidance": "Check topic and time, then tap Ready to duel.",
+  "startGame": "START",
+  "readyBtn": "READY",
+  "cancelReadyBtn": "CANCEL READY",
+  "leaveRoom": "LEAVE ROOM",
+  "randomPracticeTopic": "Random Practice",
+  "earlyEndTitle": "EARLY END",
+  "surrenderConfirmDesc": "Ending early will stop this practice turn and count the opponent as leading. Are you sure?",
+  "stay": "Stay",
+  "matchEnd": "MATCH END",
+  "opponentLivesDepleted": "Opponent ran out of lives!",
+  "myLivesDepleted": "You ran out of lives!",
+  "opponentTimeout": "Opponent ran out of time!",
+  "myTimeout": "You ran out of time!",
+  "opponentSurrendered": "Opponent surrendered!",
+  "mySurrendered": "You ended the match early!",
+  "opponentAbandoned": "Opponent left the match!",
+  "victoryBelongsToYou": "Victory is yours!",
+  "betterLuckNextTime": "Better luck next time!",
+  "waitingForOpponent": "WAITING FOR OPPONENT...",
+  "rivalReady": "OPPONENT IS READY!",
+  "fastest": "Fastest",
+  "accuracy": "Accuracy",
+  "streak": "Streak",
+  "correct": "Correct",
+  "leaderBadge": "LEADER",
+  "remainingHearts": "{count} hearts left",
+  "@remainingHearts": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "leaderStreakChip": "Leader Streak: {streak}",
+  "@leaderStreakChip": {
+    "placeholders": {
+      "streak": { "type": "int" }
+    }
+  },
+  "onlinePracticePartner": "Online Practice Partner",
+  "leadingTurn": "Leading Practice Turn",
+  "listenAndPracticeWord": "Listen & practice pronouncing \"{word}\"!",
+  "@listenAndPracticeWord": {
+    "placeholders": {
+      "word": { "type": "String" }
+    }
+  },
+  "saveWordFailed": "Failed to save word, please try again.",
+
+  "settings": "Settings",
+  "chat": "Chat",
+  "player": "Player",
+  "anonymous": "Anonymous",
+  "rank": "RANK",
+  "matches": "matches",
+  "days": "days",
+  "enter": "ENTER",
+  "maybeLater": "MAYBE LATER",
+  "loginGoogle": "LOG IN WITH GOOGLE",
+  "loginPromptTitle": "LOGIN REQUIRED",
+  "loginToUnlock": "Log in to unlock",
+  "loginPromptDesc": "You are playing as a Guest. Please log in with Google to experience {feature} and save your progress to the Leaderboard!",
+  "@loginPromptDesc": {
+    "placeholders": {
+      "feature": { "type": "String" }
+    }
+  },
+  "defaultOnlineModeName": "Online Match & Custom Room",
+  "roundWithNumbers": "ROUND {current} / {total}",
+  "@roundWithNumbers": {
+    "placeholders": {
+      "current": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "leaveMatch": "Leave Match",
+  "leaveMatchTitle": "LEAVE MATCH?",
+  "leaveMatchWarningSolo": "⚠️ Leaving midway counts as a loss!",
+  "leaveMatchWarningMulti": "⚠️ Leaving will end the match for both players!",
+  "leaveMatchConfirm": "Are you sure you want to leave this match?",
+  "opponentLeftMatchTitle": "OPPONENT LEFT MATCH",
+  "matchEndedOpponentLeft": "Match ended because the opponent left.",
+  "youLeftMatch": "You left the match.",
+  "exitedMatchTitle": "MATCH EXITED",
+  "opponentLeftMatch": "Opponent left the match!",
+  "surrender": "Surrender",
+  "surrenderTitle": "SURRENDER",
+  "surrenderMessage": "Surrendering will count as a loss for this match. Are you sure?",
+  "loadingData": "LOADING DATA...",
+  "waitingForOpponentReady": "WAITING FOR OPPONENT TO BE READY...",
+  "waitingForOpponentToJoin": "WAITING FOR OPPONENT TO JOIN...",
+  "createRoomNow": "CREATE ROOM NOW",
+  "creatingRoom": "CREATING ROOM...",
+  "copyCodeCaps": "COPY CODE",
+  "copyLinkCaps": "COPY LINK",
+  "recentOpponents": "5 Recent Opponents ({count})",
+  "@recentOpponents": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "playOnlineToSaveOpponents": "Play an online match to save opponents here.",
+  "playedRecently": "Played recently",
+  "incomingInvitations": "Incoming invitations",
+  "noNewInvitations": "No new invitations.",
+  "invitationCardDesc": "{name} invited you to room #{roomCode}",
+  "@invitationCardDesc": {
+    "placeholders": {
+      "name": { "type": "String" },
+      "roomCode": { "type": "String" }
+    }
+  },
+  "enterValid6DigitCode": "Please enter a valid 6-digit room code!",
+  "inviteCooldownWait": "Wait 10 seconds before sending another invite.",
+  "inviteSentSuccess": "Challenge invitation sent successfully!",
+  "challengeRoomTitle": "ONLINE BATTLE ROOM",
+  "challengeRoomFooter": "⭐ Compete in vocabulary duels with online friends ⭐",
+
+  "wordChainTitle": "Word Chain Room",
+  "turnLabel": "TURN",
+  "yourTurn": "Your turn",
+  "partnerTurn": "Partner's turn",
+  "relaxedUnlimited": "Relaxed (Unlimited)",
+  "remainingSecondsFormat": "{seconds}s left",
+  "@remainingSecondsFormat": {
+    "placeholders": {
+      "seconds": { "type": "int" }
+    }
+  },
+  "endTurn": "End",
+  "yourTurnLetter": "Your turn — enter a word starting with {letter}",
+  "@yourTurnLetter": {
+    "placeholders": {
+      "letter": { "type": "String" }
+    }
+  },
+  "yourTurnAny": "Your turn — enter any word to start",
+  "rivalThinking": "{name} is thinking of a connecting word...",
+  "@rivalThinking": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "enterWordStartingWith": "Enter a word starting with {letter}...",
+  "@enterWordStartingWith": {
+    "placeholders": {
+      "letter": { "type": "String" }
+    }
+  },
+  "enterWordToStart": "Enter an English word to start...",
+  "startNewChain": "Start a new word chain",
+  "startNewChainDesc": "Enter any English word to kick off the match!",
+  "correctWordLabel": "Correct: {word}",
+  "@correctWordLabel": {
+    "placeholders": {
+      "word": { "type": "String" }
+    }
+  },
+  "wordChainRoomTitle": "WORD CHAIN BATTLE ROOM",
+  "wordChainRoomFooter": "⭐ Compete in word chaining with online friends ⭐",
+  "roomCreationNotConfirmed": "Did not receive room creation confirmation. Please try again.",
+  "roomCancelled": "Battle room cancelled.",
+  "invitationValidFor2Min": "Invited {name}. Invitation is valid for 2 minutes.",
+  "@invitationValidFor2Min": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+
+  "wordGuess": "Missing Word",
+  "wordGuessRoomTitle": "WORD GUESS ROOM",
+  "wordGuessVocab": "Word Guess Vocabulary",
+  "saveWordError": "Error saving word: {error}",
+  "@saveWordError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "feedbackSentForPlayer": "Feedback sent for player {name}!",
+  "@feedbackSentForPlayer": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "recentPartners": "5 Recent practice partners ({count})",
+  "@recentPartners": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "noRecentPartners": "No recent practice partners.",
+  "recentlyPracticed": "Recently practiced",
+  "practicedOnDate": "Practiced on {day}/{month}/{year}",
+  "@practicedOnDate": {
+    "placeholders": {
+      "day": { "type": "int" },
+      "month": { "type": "int" },
+      "year": { "type": "int" }
+    }
+  },
+  "invite": "Invite",
+  "invitedPartner": "Invited {name}!",
+  "@invitedPartner": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "roomCodeMinLength": "Room code must have at least 4 characters!",
+  "pleaseEnterRoomCode": "Please enter room code or paste invite link!",
+  "roomUnavailable": "Word guess room is unavailable or has ended.",
+  "joinRoomSuccess": "Successfully joined room {code}!",
+  "@joinRoomSuccess": {
+    "placeholders": {
+      "code": { "type": "String" }
+    }
+  },
+  "joinRoomFailed": "Failed to join room: {error}",
+  "@joinRoomFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "connectRoomFailed": "Failed to connect to room: {error}",
+  "@connectRoomFailed": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "leftRoom": "Left room.",
+  "copiedRoomCode": "Copied room code: {code}",
+  "@copiedRoomCode": {
+    "placeholders": {
+      "code": { "type": "String" }
+    }
+  },
+  "copiedInviteLink": "Copied invite link!",
+  "matchmakingCancelled": "Matchmaking cancelled.",
+  "connectionError": "Connection error: {error}",
+  "@connectionError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "findingTopic": "FINDING: {topic}...",
+  "@findingTopic": {
+    "placeholders": {
+      "topic": { "type": "String" }
+    }
+  },
+  "solvedCorrectlyPoint": "{name} guessed correctly · +1 pt!",
+  "@solvedCorrectlyPoint": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "solvedFirst": "{name} guessed correctly first",
+  "@solvedFirst": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "greatJob": "Great! 👍",
+  "plusGreat": "+ Great!",
+  "suggestSkipWord": "Teammate suggested SKIPPING this word!",
+  "autoSkipCountdown": "Auto-skips in 5 seconds if no one objects",
+  "agree": "Agree",
+  "reject": "Reject",
+  "topicWithPlayers": "{topic} · {count} players",
+  "@topicWithPlayers": {
+    "placeholders": {
+      "topic": { "type": "String" },
+      "count": { "type": "int" }
+    }
+  },
+
+  "translateToEnglish": "TRANSLATE TO ENGLISH",
+  "topicHeader": "TOPIC: {topic}",
+  "@topicHeader": {
+    "placeholders": {
+      "topic": { "type": "String" }
+    }
+  },
+  "choosingOption": "Choosing...",
+  "thinkingOption": "Thinking...",
+  "youColon": "You: ",
+  "opponentColon": "Opponent: ",
+  "selectedBadge": "Selected",
+  "loadingVocabSet": "LOADING VOCABULARY SET...",
+  "weakWordsSRS": "WEAK WORDS REVIEW (SRS)",
+  "srsAlgorithmDesc": "⭐ Spaced Repetition Algorithm automatically reminds you of forgotten words ⭐",
+  "noWeakWordsTitle": "No weak words to review!",
+  "noWeakWordsSubtitle": "Join Quick Battle to accumulate and test your vocabulary!",
+  "totalWordsInProfile": "Total: {count} words in memory profile",
+  "@totalWordsInProfile": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "practiceNow": "Practice Now",
+  "familiarityInterval": "Familiarity: {familiarity}/5 • Repeat: {days} days",
+  "@familiarityInterval": {
+    "placeholders": {
+      "familiarity": { "type": "int" },
+      "days": { "type": "int" }
+    }
+  },
+  "frequentlyForgotten": "Frequently forgotten ({count})",
+  "@frequentlyForgotten": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "wellRemembered": "Well remembered",
+
+  "chatWithRival": "Chat with {name}",
+  "@chatWithRival": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "noMessagesYet": "No messages yet.\nSay hello to your partner!",
+  "chatDefaultCheer": "Keep it up! Let's chain words together.",
+
+  "pronunciationScore": "PRONUNCIATION ASSESSMENT",
+  "listenSampleAudio": "Listen to sample",
+  "accuracyMetric": "Accuracy",
+  "fluencyMetric": "Fluency",
+  "completenessMetric": "Completeness",
+  "assessingPronunciation": "Assessing...",
+  "tapToAssess": "Tap to check pronunciation",
+  "micInitFailed": "Cannot start microphone recording. Please try again!",
+  "pronScoreGood": "Good",
+  "pronScoreFair": "Fair",
+  "pronScoreWeak": "Needs improvement",
+  "noWeakWordsToSave": "No weak words to save to Vault!",
+  "savedAllWeakWords": "Saved all {count} review words to your Vault!",
+  "@savedAllWeakWords": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "saveAllToVault": "Save All to Vault",
+  "startPracticing": "Start Practicing",
+  "weakWordsList": "List of {count} words to review",
+  "@weakWordsList": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "yourContributions": "Your contributions",
+  "contributionHistory": "HISTORY",
+  "botMedium": "BOT (MEDIUM)",
+  "calculatingReward": "Calculating rewards & saving results...",
+  "levelUpBanner": "LEVEL UP! Lv.{oldLevel} ➔ Lv.{newLevel}",
+  "@levelUpBanner": {
+    "placeholders": {
+      "oldLevel": { "type": "int" },
+      "newLevel": { "type": "int" }
+    }
+  },
+  "waitingForRematchAccept": "Waiting for opponent to accept rematch...",
+  "leadPracticeRound": "Leading practice round",
+  "cannotLoadLeaderboard": "Unable to load leaderboard",
+  "noLeaderboardData": "No leaderboard data yet",
+  "leaderboardFooterText": "⭐ Learn, duel and conquer the top ranking! ⭐",
+  "newContribution": "New Contribution",
+  "practiceWeakWordsTitle": "WEAK WORDS PRACTICE",
+  "questionProgress": "Question {current}/{total}",
+  "@questionProgress": {
+    "placeholders": {
+      "current": { "type": "int" },
+      "total": { "type": "int" }
+    }
+  },
+  "nextWord": "Next Word",
+  "finishReview": "Finish Review",
+  "otherMeaning": "Other meaning {index}",
+  "@otherMeaning": {
+    "placeholders": {
+      "index": { "type": "int" }
+    }
+  },
+
+  "defaultGameDialogFooter": "⭐ Happy Learning Daily - Practice English Vocabulary ⭐",
+  "feedbackFooter": "⭐ Your feedback helps Bufopia improve every day ⭐",
+  "privacyFooter": "⭐ Bufopia is committed to data protection & privacy ⭐",
+  "privacyPolicyTitle": "POLICIES & TERMS",
+  "privacyUnderstoodAgreed": "I UNDERSTAND AND AGREE",
+
+  "historyWordsTab": "Played Words History",
+  "generalFeedbackTab": "General Feedback / Other",
+  "feedbackQuestion": "What would you like Bufopia to improve?",
+  "feedbackCategoryIdea": "Idea",
+  "feedbackCategoryBug": "App Bug",
+  "feedbackCategoryFeature": "New Feature",
+  "feedbackCategoryUI": "UI & Audio",
+  "feedbackCategoryOther": "Other",
+  "feedbackContent": "Feedback content",
+  "feedbackContentHint": "Describe ideas, bugs encountered, or areas you wish to upgrade...",
+  "feedbackMinLength": "Please describe in more detail — at least 10 characters.",
+  "feedbackContact": "Contact info (optional)",
+  "feedbackContactHint": "Email, Discord or other contact method...",
+  "sendFeedback": "SEND FEEDBACK",
+  "sendingFeedback": "SENDING...",
+  "feedbackThanks": "Thank you for your feedback!",
+  "feedbackWordReportSuccess": "Your suggestion for '{word}' has been forwarded to Bufopia moderators for review and early update.",
+  "@feedbackWordReportSuccess": {
+    "placeholders": {
+      "word": { "type": "String" }
+    }
+  },
+  "feedbackGeneralSuccess": "Your feedback has been recorded and will help Bufopia improve every day.",
+  "viewOtherWords": "VIEW OTHER WORDS",
+  "sendOtherFeedback": "SEND ANOTHER FEEDBACK",
+  "feedbackIssueMeaning": "Correct Vietnamese meaning",
+  "feedbackIssueSpelling": "English spelling error",
+  "feedbackIssuePronunciation": "Correct phonetics / pronunciation",
+  "feedbackIssueContext": "Unnatural meaning / missing context",
+  "feedbackIssueOther": "Other suggestions",
+  "feedbackHintMeaning": "Example: '{en}' should be translated as '...' instead of '{vi}' because...",
+  "@feedbackHintMeaning": {
+    "placeholders": {
+      "en": { "type": "String" },
+      "vi": { "type": "String" }
+    }
+  },
+  "feedbackHintSpelling": "Example: English word '{en}' correct spelling is...",
+  "@feedbackHintSpelling": {
+    "placeholders": {
+      "en": { "type": "String" }
+    }
+  },
+  "feedbackHintPronunciation": "Example: Correct phonetic of '{en}' should be /.../",
+  "@feedbackHintPronunciation": {
+    "placeholders": {
+      "en": { "type": "String" }
+    }
+  },
+  "feedbackHintContext": "Describe more suitable context for '{en}'...",
+  "@feedbackHintContext": {
+    "placeholders": {
+      "en": { "type": "String" }
+    }
+  },
+  "feedbackHintOther": "Describe your detailed feedback for '{en}'...",
+  "@feedbackHintOther": {
+    "placeholders": {
+      "en": { "type": "String" }
+    }
+  },
+  "searchVocabularyHint": "Search English, Vietnamese, topic...",
+  "report": "Report",
+  "noWordsFound": "No matching vocabulary found!",
+  "cannotFindWordInHistory": "Can't find word in history? Tap to search entire dictionary",
+  "allGameModes": "All",
+  "wordChainMode": "Word Chain",
+  "vocabBattleMode": "Vocab Battle",
+  "wordGuessMode": "Word Guess",
+  "reviewMode": "Review",
+
+  "studyStreak": "Study Streak",
+  "winStreak": "Win Streak",
+  "streakDaysCount": "{count} days",
+  "@streakDaysCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "streakMatchesCount": "{count} matches",
+  "@streakMatchesCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "chooseAvatarTitle": "Choose Avatar",
+  "takePhoto": "Take Photo",
+  "openCamera": "Open Camera",
+  "openGallery": "Open Gallery",
+  "photoGallery": "Gallery",
+  "chooseFromDevice": "Choose from Device",
+  "photoGalleryTitle": "Photo Gallery",
+  "photosTab": "Photos",
+  "albumsTab": "Albums",
+  "cameraTile": "Camera",
+  "photosSelected": "{count} photo selected",
+  "@photosSelected": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "tapPhotoToSelect": "Tap photo to select",
+  "nextButton": "Next",
+  "pickDirectlyFromStorage": "Pick photos directly from storage without granting permissions.",
+  "noAlbumsFound": "No albums found",
+  "albumPhotosCount": "{count} photos",
+  "@albumPhotosCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "nameRequiredOnline": "Please enter a display name (2–25 characters) before joining Online match!",
+  "nameInvalidNotice": "Invalid name. Please use 2–25 characters and avoid default names.",
+  "foundRivalEnteringMatch": "Found rival {rivalName}! Entering match...",
+  "@foundRivalEnteringMatch": {
+    "placeholders": {
+      "rivalName": { "type": "String" }
+    }
+  },
+  "enteredRoomCode": "Entered battle room #{code}!",
+  "@enteredRoomCode": {
+    "placeholders": {
+      "code": { "type": "String" }
+    }
+  },
+
+  "randomBattle": "Random Battle",
+  "autoTopicSubtitle": "System auto-selects topics",
+  "dailyLifeSubtitle": "Daily life & routines",
+  "schoolSubtitle": "School & studying",
+  "travelSubtitle": "Travel & exploration",
+  "foodSubtitle": "Food & dining",
+  "familySubtitle": "Family & relationships",
+  "bodySubtitle": "Body & health",
+  "clothesSubtitle": "Clothing & accessories",
+  "shoppingSubtitle": "Shopping & money",
+  "townSubtitle": "Places in town",
+  "directionsSubtitle": "Directions & positions",
+  "jobsSubtitle": "Jobs & workplaces",
+  "hobbiesSubtitle": "Hobbies & leisure",
+  "sportsSubtitle": "Sports & fitness",
+  "animalsSubtitle": "Animals & pets",
+  "timeSubtitle": "Time & calendar",
+  "shapesSubtitle": "Colors & shapes",
+  "celebrationsSubtitle": "Festivals & celebrations",
+  "feelingsSubtitle": "Feelings & personality",
+  "environmentSubtitle": "Nature & environment",
+  "technologySubtitle": "Technology & digital",
+  "communicationSubtitle": "Communication & social",
+  "toeicSubtitle": "Workplace TOEIC vocabulary",
+  "ieltsSubtitle": "Core IELTS vocabulary",
+  "topicVocabularySubtitle": "Topic vocabulary",
+
+  "privacyTab": "Privacy",
+  "termsTab": "Terms",
+  "cookiesTab": "Cookies",
+  "deletionTab": "Delete Data",
+  "dataProtectionTag": "Data Protection",
+  "codeOfConductTag": "Code of Conduct",
+  "deviceStorageTag": "Device Storage",
+  "yourRightsTag": "Your Rights",
+
+  "pointsCount": "{count} pts",
+  "@pointsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "questionsCount": "{count} questions",
+  "@questionsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+
+  "adjustPhoto": "Adjust Photo",
+  "done": "Done",
+  "cropPhotoInstruction": "Drag & pinch to fit the photo inside the square",
+
+  "findMatchOnline": "FIND MATCH ONLINE",
+
+  "reviewVocabTitle": "Review Vocabulary",
+  "defaultPlayerName": "Player",
+  "connectedStatus": "Connected",
+  "wordsNeedReview": "words to review",
+  "noWeakWordsReviewTitle": "Great! No weak words to review",
+  "noWeakWordsReviewSubtitle": "All words you learned are in good shape.",
+  "wrongAnswer": "Incorrect answer",
+  "slowResponse": "Slow response",
+
+  "contributeVocabSubtitle": "Enrich vocabulary with Bufopia community",
+  "editWordBadge": "EDIT WORD",
+  "newContributionBadge": "NEW CONTRIBUTION",
+  "dailyContributionLimit": "Max {count} words/day",
+  "@dailyContributionLimit": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "addAnEnglishWord": "Add an English word",
+  "editContributedWord": "Edit contributed word",
+  "englishWordField": "English word *",
+  "vietnameseMeaningField": "Vietnamese meaning *",
+  "topicField": "Topic *",
+  "partOfSpeechField": "Part of speech",
+  "phoneticField": "Phonetic transcription",
+  "exampleSentenceField": "English example sentence",
+  "exampleSentenceHint": "Example sentence must contain the contributed word",
+  "exampleTranslationField": "Example translation",
+  "exampleTranslationHint": "Vietnamese translation",
+  "contributionGuidelines": "Contributions will be reviewed before being added to the vocabulary pool. Please provide clear meanings and examples, and do not submit personal info.",
+  "submitting": "Submitting...",
+  "saveChanges": "SAVE CHANGES",
+  "submitContribution": "SUBMIT CONTRIBUTION",
+  "pleaseEnterEnglishWord": "Please enter an English word!",
+  "pleaseEnterVietnameseMeaning": "Please enter the Vietnamese meaning!",
+  "nWordsCount": "{count} words",
+  "@nWordsCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "refreshAction": "REFRESH",
+  "noContributionsYet": "You haven't submitted any words yet. Start with a useful word!",
+  "statusApproved": "Approved",
+  "statusRejected": "Rejected",
+  "statusChangesRequested": "Changes requested",
+  "statusPending": "Pending",
+  "reviewerFeedback": "Reviewer feedback:",
+  "editAndResubmit": "Edit & resubmit",
+
+  "randomPractice": "Random practice",
+  "leavePracticeRoomTitle": "LEAVE PRACTICE ROOM?",
+  "leavePracticeRoomConfirm": "Are you sure you want to exit this practice session?",
+  "stay": "STAY",
+  "leave": "LEAVE",
+  "endGameEarlyTitle": "END GAME EARLY",
+  "endGameEarlyConfirm": "Do you want to end practice early and see results?",
+  "continuePlaying": "CONTINUE",
+  "endGame": "END GAME",
+  "wordRoundFoundCount": "Word {round} · {found} found",
+  "@wordRoundFoundCount": {
+    "placeholders": {
+      "round": { "type": "int" },
+      "found": { "type": "int" }
+    }
+  },
+  "wordRound": "Word {round}",
+  "@wordRound": {
+    "placeholders": {
+      "round": { "type": "int" }
+    }
+  },
+  "meaningClue": "MEANING CLUE",
+  "loadingClue": "Loading clue...",
+  "nLettersCount": "{count} letters",
+  "@nLettersCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "triedGuessesCount": "Tried ({count}):",
+  "@triedGuessesCount": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "noGuessesYet": "Tried: No guesses yet",
+  "skipWordAction": "SKIP",
+  "enterEnglishWordHint": "Enter English word...",
+  "guessAction": "GUESS",
+
+  "academicSubtitle": "Academic & Education",
+  "posNoun": "Noun",
+  "posVerb": "Verb",
+  "posAdjective": "Adjective",
+  "posAdverb": "Adverb",
+  "posPhrase": "Phrase",
+  "posUnknown": "Unspecified"
 }

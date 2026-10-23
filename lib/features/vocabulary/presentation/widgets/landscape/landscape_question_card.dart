@@ -1,6 +1,7 @@
 import 'package:bufopia/components/app_countdown_timer.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 
 /// Thẻ câu hỏi mục tiêu có huy hiệu đồng hồ nổi đính trên đỉnh
@@ -69,8 +70,8 @@ class LandscapeQuestionCard extends StatelessWidget {
           );
 
     final topicText = topicName.isNotEmpty
-        ? 'CHỦ ĐỀ: ${topicName.toUpperCase()}'
-        : 'DỊCH SANG TIẾNG ANH';
+        ? context.l10n.topicHeader(topicName.toUpperCase())
+        : context.l10n.translateToEnglish;
 
     return SizedBox(
       height: totalHeight,

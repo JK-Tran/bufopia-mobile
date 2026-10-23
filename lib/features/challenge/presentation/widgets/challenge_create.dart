@@ -3,6 +3,7 @@ import 'package:bufopia/components/app_toast.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -35,7 +36,7 @@ class ChallengeCreate extends StatelessWidget {
       return Padding(
         padding: EdgeInsets.symmetric(vertical: isLandscape ? 4.0 : 4.h),
         child: AppButton(
-          text: 'TẠO PHÒNG NGAY',
+          text: context.l10n.createRoomNow,
           icon: Icon(
             Icons.sensors_rounded,
             size: isLandscape ? 16.0 : 14.r,
@@ -105,7 +106,7 @@ class ChallengeCreate extends StatelessWidget {
               ),
               SizedBox(width: isLandscape ? 6.0 : 6.w),
               AppText.c1(
-                'CHỜ ĐỐI THỦ VÀO...',
+                context.l10n.waitingForOpponentToJoin,
                 fontSize: isLandscape ? 12.0 : 12.sp,
                 fontWeight: FontWeight.w700,
                 color: statusColor,
@@ -132,7 +133,7 @@ class ChallengeCreate extends StatelessWidget {
               // Nút 1: Chép mã
               if (isPaper)
                 AppButton(
-                  text: 'CHÉP MÃ',
+                  text: context.l10n.copyCodeCaps,
                   icon: Icon(
                     Icons.copy_rounded,
                     size: iconSize,
@@ -151,13 +152,13 @@ class ChallengeCreate extends StatelessWidget {
                     Clipboard.setData(ClipboardData(text: code));
                     AppToast.showSuccess(
                       context,
-                      'Đã sao chép mã phòng $code',
+                      context.l10n.copiedRoomCode(code),
                     );
                   },
                 )
               else
                 AppButton.secondary(
-                  text: 'CHÉP MÃ',
+                  text: context.l10n.copyCodeCaps,
                   icon: Icon(
                     Icons.copy_rounded,
                     size: iconSize,
@@ -172,7 +173,7 @@ class ChallengeCreate extends StatelessWidget {
                     Clipboard.setData(ClipboardData(text: code));
                     AppToast.showSuccess(
                       context,
-                      'Đã sao chép mã phòng $code',
+                      context.l10n.copiedRoomCode(code),
                     );
                   },
                 ),
@@ -181,7 +182,7 @@ class ChallengeCreate extends StatelessWidget {
               // Nút 2: Chép link
               if (isPaper)
                 AppButton(
-                  text: 'CHÉP LINK',
+                  text: context.l10n.copyLinkCaps,
                   icon: Icon(
                     Icons.link_rounded,
                     size: iconSize,
@@ -204,13 +205,13 @@ class ChallengeCreate extends StatelessWidget {
                     );
                     AppToast.showSuccess(
                       context,
-                      'Đã sao chép liên kết vào phòng!',
+                      context.l10n.copiedInviteLink,
                     );
                   },
                 )
               else
                 AppButton.secondary(
-                  text: 'CHÉP LINK',
+                  text: context.l10n.copyLinkCaps,
                   icon: Icon(
                     Icons.link_rounded,
                     size: iconSize,
@@ -229,7 +230,7 @@ class ChallengeCreate extends StatelessWidget {
                     );
                     AppToast.showSuccess(
                       context,
-                      'Đã sao chép liên kết vào phòng!',
+                      context.l10n.copiedInviteLink,
                     );
                   },
                 ),
@@ -237,7 +238,7 @@ class ChallengeCreate extends StatelessWidget {
 
               // Nút 3: Hủy (dùng hệ màu dialogClose chuẩn từ AppColors)
               AppButton(
-                text: 'HỦY',
+                text: context.l10n.cancel.toUpperCase(),
                 icon: Icon(
                   Icons.close_rounded,
                   size: iconSize,

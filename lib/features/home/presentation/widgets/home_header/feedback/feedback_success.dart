@@ -1,6 +1,7 @@
 import 'package:bufopia/components/app_button.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -18,6 +19,7 @@ class FeedbackSuccess extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final isWordReport = reportedWord != null && reportedWord!.isNotEmpty;
 
     return Center(
@@ -54,7 +56,7 @@ class FeedbackSuccess extends StatelessWidget {
 
           // 2. Tiêu đề
           AppText.t2(
-            'Cảm ơn bạn đã đóng góp!',
+            l10n.feedbackThanks,
             fontWeight: FontWeight.w700,
             fontSize: 18.sp,
             color: AppColors.grayDark,
@@ -68,11 +70,8 @@ class FeedbackSuccess extends StatelessWidget {
             constraints: BoxConstraints(maxWidth: 280.w),
             child: AppText.b2(
               isWordReport
-                  ? "Ý kiến chỉnh sửa từ vựng '$reportedWord' của bạn đã "
-                        'được chuyển tới Ban quản trị Bufopia '
-                        'để kiểm duyệt và cập nhật sớm nhất.'
-                  : 'Góp ý của bạn đã được ghi nhận và sẽ giúp Bufopia '
-                        'hoàn thiện hơn mỗi ngày.',
+                  ? l10n.feedbackWordReportSuccess(reportedWord!)
+                  : l10n.feedbackGeneralSuccess,
               fontSize: 12.sp,
               color: AppColors.grayMedium,
               textAlign: TextAlign.center,
@@ -88,7 +87,9 @@ class FeedbackSuccess extends StatelessWidget {
               children: [
                 Expanded(
                   child: AppButton(
-                    text: isWordReport ? 'XEM TỪ KHÁC' : 'GÓP Ý KHÁC',
+                    text: isWordReport
+                        ? l10n.viewOtherWords
+                        : l10n.sendOtherFeedback,
                     fontSize: 12.sp,
                     height: 38.h,
                     backgroundColor: AppColors.white,
@@ -102,7 +103,7 @@ class FeedbackSuccess extends StatelessWidget {
                 SizedBox(width: 10.w),
                 Expanded(
                   child: AppButton(
-                    text: 'HOÀN TẤT',
+                    text: l10n.confirm.toUpperCase(),
                     fontSize: 12.sp,
                     height: 38.h,
                     backgroundColor: AppColors.feedbackMossGreen,

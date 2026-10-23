@@ -3,6 +3,7 @@ import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
 import 'package:bufopia/features/vocabulary/domain/entities/topic.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:bufopia/shared/services/audio/sound_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -177,7 +178,7 @@ class _TopicItemState extends State<TopicItem> {
         FittedBox(
           fit: BoxFit.scaleDown,
           child: AppText.t3(
-            widget.topic.name,
+            widget.topic.displayName,
             fontSize: 14.sp,
             fontWeight: FontWeight.w700,
             color: isPaper ? AppColors.paperTextDark : AppColors.grayDark,
@@ -205,9 +206,7 @@ class _TopicItemState extends State<TopicItem> {
   Widget _buildBadges(bool isPaper) {
     final displayDiff = widget.topic.displayDifficulty;
     final style = _getDifficultyStyle(displayDiff, isPaper);
-    final countText = widget.topic.isAuto
-        ? 'Đa chủ đề'
-        : '${widget.topic.wordCount > 0 ? widget.topic.wordCount : 100} từ';
+    final countText = widget.topic.displayWordCount;
 
     return FittedBox(
       fit: BoxFit.scaleDown,
@@ -307,7 +306,7 @@ class _TopicItemState extends State<TopicItem> {
           Icon(Icons.check_circle_rounded, size: 10.r, color: AppColors.white),
           SizedBox(width: 2.w),
           AppText.c1(
-            'Đã chọn',
+            context.l10n.selectedBadge,
             fontSize: 10.sp,
             fontWeight: FontWeight.w700,
             color: AppColors.white,

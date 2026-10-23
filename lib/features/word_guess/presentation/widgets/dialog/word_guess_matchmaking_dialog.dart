@@ -11,6 +11,7 @@ import 'package:bufopia/features/auth/domain/entities/user.dart';
 import 'package:bufopia/features/auth/domain/usecases/get_cached_user_use_case.dart';
 import 'package:bufopia/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:bufopia/shared/di/di.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:bufopia/shared/services/audio/sound_manager.dart';
 import 'package:bufopia/shared/services/firebase/firebase_auth_service.dart';
 import 'package:bufopia/shared/services/socket/models/socket_event.dart';
@@ -108,18 +109,21 @@ class _WordGuessMatchmakingDialogState extends State<WordGuessMatchmakingDialog>
     final cachedUser = sl<GetCachedUserUseCase>().execute();
     final user = authState.currentUser ?? cachedUser;
 
+    final defaultPlayerName = context.l10n.player;
     final token = await sl<FirebaseAuthService>().getIdToken();
     final uid = user?.uid.isNotEmpty == true ? user!.uid : 'guest';
     final name = (user?.displayName.isNotEmpty == true)
         ? user!.displayName
-        : 'Người chơi';
+        : defaultPlayerName;
     final avatar = user?.avatarUrl;
 
     _subscription = _socketService.eventStream.listen(
       _handleSocketEvent,
       onError: (Object error) {
         if (!mounted) return;
-        setState(() => _errorMessage = 'Lỗi kết nối: $error');
+        setState(() => _errorMessage = context.l10n.connectionError(
+          error.toString(),
+        ));
       },
     );
 
@@ -164,7 +168,7 @@ class _WordGuessMatchmakingDialogState extends State<WordGuessMatchmakingDialog>
       ..sendCancel()
       ..disconnect();
     Navigator.of(context).pop();
-    AppToast.showWarning(context, 'Đã hủy tìm trận đấu.');
+    AppToast.showWarning(context, context.l10n.matchmakingCancelled);
   }
 
   @override
@@ -184,9 +188,10 @@ class _WordGuessMatchmakingDialogState extends State<WordGuessMatchmakingDialog>
   Widget build(BuildContext context) {
     final isPaper = context.select<AppBloc, bool>((b) => b.state.isPaperTheme);
     final user = context.select<AuthBloc, User?>((b) => b.state.currentUser);
+    final l10n = context.l10n;
 
     return AppGameDialog(
-      title: 'TÌM TRẬN ONLINE',
+      title: l10n.findMatchOnline,
       icon: Icons.sensors_rounded,
       maxWidth: 390.w,
       maxHeight: 246.h,
@@ -229,7 +234,7 @@ class _WordGuessMatchmakingDialogState extends State<WordGuessMatchmakingDialog>
           ),
         ),
         child: AppText.c1(
-          '1 VS 1 NGẪU NHIÊN',
+          l10n.oneVsOneRandom,
           fontWeight: FontWeight.w700,
           fontSize: 10.sp,
           color: AppColors.white,
@@ -241,7 +246,7 @@ class _WordGuessMatchmakingDialogState extends State<WordGuessMatchmakingDialog>
         mainAxisSize: MainAxisSize.min,
         children: [
           // ── 1. Status Row: Đang tìm đối thủ + Bộ đếm giờ ─────────────
-          _buildStatusRow(isPaper),
+          _buildStatusRow(context, isPaper),
 
           // Thông báo lỗi nếu có
           if (_errorMessage != null && !_isMatched) ...[
@@ -278,14 +283,15 @@ class _WordGuessMatchmakingDialogState extends State<WordGuessMatchmakingDialog>
           SizedBox(height: 10.h),
 
           // ── 3. Nút hành động: HỦY TÌM TRẬN hoặc VÀO TRẬN ─────────────
-          _buildActionButton(isPaper),
+          _buildActionButton(context, isPaper),
         ],
       ),
     );
   }
 
   /// Chấm xanh nhấp nháy + "ĐANG TÌM ĐỐI THỦ..." + Capsule đếm giờ
-  Widget _buildStatusRow(bool isPaper) {
+  Widget _buildStatusRow(BuildContext context, bool isPaper) {
+    final l10n = context.l10n;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -322,12 +328,13 @@ class _WordGuessMatchmakingDialogState extends State<WordGuessMatchmakingDialog>
             AppText.t3(
               _isMatched
                   ? (_matchedEvent != null
-                        ? '🎉 ĐÃ TÌM THẤY: '
-                              '${_matchedEvent!.rivalName.toUpperCase()}!'
-                        : '🎉 ĐÃ TÌM THẤY ĐỐI THỦ!')
+                        ? l10n.opponentFoundRival(
+                            _matchedEvent!.rivalName.toUpperCase(),
+                          )
+                        : l10n.opponentFound)
                   : (widget.topic != 'auto'
-                        ? 'ĐANG TÌM: ${widget.topic.toUpperCase()}...'
-                        : 'ĐANG TÌM ĐỐI THỦ...'),
+                        ? l10n.findingTopic(widget.topic.toUpperCase())
+                        : l10n.findingOpponent),
               fontWeight: FontWeight.w700,
               fontSize: 12.sp,
               color: _isMatched
@@ -370,7 +377,8 @@ class _WordGuessMatchmakingDialogState extends State<WordGuessMatchmakingDialog>
   }
 
   /// Nút hành động: HỦY TÌM TRẬN hoặc VÀO TRẬN NGAY
-  Widget _buildActionButton(bool isPaper) {
+  Widget _buildActionButton(BuildContext context, bool isPaper) {
+    final l10n = context.l10n;
     if (!_isMatched) {
       if (isPaper) {
         return AppButton(
@@ -387,7 +395,7 @@ class _WordGuessMatchmakingDialogState extends State<WordGuessMatchmakingDialog>
             size: 14.r,
             color: AppColors.dialogCloseIcon,
           ),
-          text: 'HỦY TÌM TRẬN',
+          text: l10n.cancelMatchmaking,
         );
       }
       return AppButton.danger(
@@ -400,12 +408,12 @@ class _WordGuessMatchmakingDialogState extends State<WordGuessMatchmakingDialog>
           size: 14.r,
           color: AppColors.white,
         ),
-        text: 'HỦY TÌM TRẬN',
+        text: l10n.cancelMatchmaking,
       );
     } else {
       if (isPaper) {
         return AppButton(
-          text: 'VÀO TRẬN NGAY...',
+          text: l10n.enteringMatch,
           isLoading: true,
           height: 28.h,
           width: 140.w,
@@ -416,7 +424,7 @@ class _WordGuessMatchmakingDialogState extends State<WordGuessMatchmakingDialog>
         );
       }
       return AppButton.success(
-        text: 'VÀO TRẬN NGAY...',
+        text: l10n.enteringMatch,
         isLoading: true,
         height: 28.h,
         width: 140.w,

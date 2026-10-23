@@ -2,6 +2,7 @@ import 'package:bufopia/components/app_avatar.dart';
 import 'package:bufopia/components/app_dotted.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -279,7 +280,7 @@ class AppResultPlayerCard extends StatelessWidget {
                               ),
                               SizedBox(width: 3.w),
                               AppText.c1(
-                                'Còn $lives tim',
+                                context.l10n.remainingHearts(lives),
                                 color: isPaper
                                     ? AppColors.paperTextMedium
                                     : AppColors.grayMedium,
@@ -303,7 +304,7 @@ class AppResultPlayerCard extends StatelessWidget {
                 _buildStatPill(
                   icon: Icons.gps_fixed_rounded,
                   iconColor: const Color(0xFF0288D1),
-                  label: 'Đúng',
+                  label: context.l10n.correct,
                   value: correctCount,
                   isCompact: true,
                 ),
@@ -311,7 +312,7 @@ class AppResultPlayerCard extends StatelessWidget {
                 _buildStatPill(
                   icon: Icons.bolt_rounded,
                   iconColor: const Color(0xFFF57C00),
-                  label: 'Nhanh nhất',
+                  label: context.l10n.fastest,
                   value: fastestTime,
                   isCompact: true,
                 ),
@@ -319,7 +320,7 @@ class AppResultPlayerCard extends StatelessWidget {
                 _buildStatPill(
                   icon: Icons.military_tech_rounded,
                   iconColor: const Color(0xFF388E3C),
-                  label: 'Chính xác',
+                  label: context.l10n.accuracy,
                   value: accuracy,
                   isCompact: true,
                 ),
@@ -327,7 +328,7 @@ class AppResultPlayerCard extends StatelessWidget {
                 _buildStatPill(
                   icon: Icons.local_fire_department_rounded,
                   iconColor: const Color(0xFFE64A19),
-                  label: 'Chuỗi',
+                  label: context.l10n.streak,
                   value: streak,
                   isCompact: true,
                 ),
@@ -339,7 +340,7 @@ class AppResultPlayerCard extends StatelessWidget {
                       child: _buildStatPill(
                         icon: Icons.gps_fixed_rounded,
                         iconColor: const Color(0xFF0288D1),
-                        label: 'Đúng',
+                        label: context.l10n.correct,
                         value: correctCount,
                         isCompact: false,
                       ),
@@ -349,7 +350,7 @@ class AppResultPlayerCard extends StatelessWidget {
                       child: _buildStatPill(
                         icon: Icons.bolt_rounded,
                         iconColor: const Color(0xFFF57C00),
-                        label: 'Nhanh nhất',
+                        label: context.l10n.fastest,
                         value: fastestTime,
                         isCompact: false,
                       ),
@@ -363,7 +364,7 @@ class AppResultPlayerCard extends StatelessWidget {
                       child: _buildStatPill(
                         icon: Icons.military_tech_rounded,
                         iconColor: const Color(0xFF388E3C),
-                        label: 'Chính xác',
+                        label: context.l10n.accuracy,
                         value: accuracy,
                         isCompact: false,
                       ),
@@ -373,7 +374,7 @@ class AppResultPlayerCard extends StatelessWidget {
                       child: _buildStatPill(
                         icon: Icons.local_fire_department_rounded,
                         iconColor: const Color(0xFFE64A19),
-                        label: 'Chuỗi',
+                        label: context.l10n.streak,
                         value: streak,
                         isCompact: false,
                       ),
@@ -442,7 +443,7 @@ class AppResultPlayerCard extends StatelessWidget {
                       ),
                       SizedBox(width: 2.w),
                       AppText.c1(
-                        'DẪN ĐẦU',
+                        context.l10n.leaderBadge,
                         color: AppColors.white,
                         fontSize: isCompact ? 8.sp : 10.sp,
                         fontWeight: FontWeight.w700,

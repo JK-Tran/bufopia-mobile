@@ -2,6 +2,7 @@ import 'package:bufopia/components/app_button.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -193,7 +194,9 @@ class WordChainModeItem extends StatelessWidget {
                                 SizedBox(width: 3.w),
                               ],
                               AppText.c1(
-                                isLocked ? 'CẦN ĐĂNG NHẬP' : badgeText,
+                                isLocked
+                                    ? context.l10n.loginRequired
+                                    : badgeText,
                                 fontSize: 10.sp,
                                 fontWeight: FontWeight.w700,
                                 color: isLocked
@@ -231,7 +234,9 @@ class WordChainModeItem extends StatelessWidget {
             children: [
               Expanded(
                 child: _ModeButton(
-                  label: isLocked ? 'MỞ KHÓA' : 'LUYỆN TÍNH GIỜ',
+                  label: isLocked
+                      ? context.l10n.unlock.toUpperCase()
+                      : context.l10n.timedPractice,
                   icon: isLocked
                       ? Icons.lock_rounded
                       : Icons.play_arrow_rounded,
@@ -253,7 +258,9 @@ class WordChainModeItem extends StatelessWidget {
               SizedBox(width: 8.w),
               Expanded(
                 child: _ModeButton(
-                  label: isLocked ? 'MỞ KHÓA' : 'LUYỆN THƯ GIÃN',
+                  label: isLocked
+                      ? context.l10n.unlock.toUpperCase()
+                      : context.l10n.relaxedPractice,
                   icon: isLocked
                       ? Icons.lock_rounded
                       : Icons.auto_awesome_rounded,

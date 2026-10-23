@@ -426,6 +426,48 @@ abstract final class StringUtils {
     }
     return buffer.toString();
   }
+
+  /// Làm sạch word ID (loại bỏ tiền tố 'vocab_' nếu có)
+  /// Ví dụ: 'vocab_apple' -> 'apple'
+  static String cleanWordId(String? rawWordId) {
+    if (rawWordId == null || rawWordId.isEmpty) return '';
+    final trimmed = rawWordId.trim();
+    if (trimmed.startsWith('vocab_')) {
+      return trimmed.substring(6);
+    }
+    return trimmed;
+  }
+
+  /// Chuẩn hoá Part of Speech (Từ loại) sang nhãn tiếng Việt dễ đọc
+  /// Ví dụ: 'noun' / 'n' -> 'Danh từ', 'verb' / 'v' -> 'Động từ'
+  static String formatPartOfSpeech(
+    String? raw, {
+    String fallback = 'Danh từ',
+  }) {
+    if (raw == null || raw.trim().isEmpty) return fallback;
+    final lower = raw.toLowerCase().trim();
+    if (lower.contains('noun') || lower == 'n') return 'Danh từ';
+    if (lower.contains('verb') || lower == 'v') return 'Động từ';
+    if (lower.contains('adj') || lower.contains('adjective')) return 'Tính từ';
+    if (lower.contains('adv') || lower.contains('adverb')) return 'Phó từ';
+    if (lower.contains('prep') || lower.contains('preposition')) {
+      return 'Giới từ';
+    }
+    if (lower.contains('pron') || lower.contains('pronoun')) return 'Đại từ';
+    if (lower.contains('conj') || lower.contains('conjunction')) {
+      return 'Liên từ';
+    }
+    if (lower.contains('interj') || lower.contains('interjection')) {
+      return 'Thán từ';
+    }
+    return raw.trim();
+  }
+
+  /// Định dạng phần trăm hiển thị (vd: 85.0 -> '85%')
+  static String formatPercentage(double? score, {int fractionDigits = 0}) {
+    if (score == null) return '0%';
+    return '${score.toStringAsFixed(fractionDigits)}%';
+  }
 }
 
 extension NullableStringExtension on String? {

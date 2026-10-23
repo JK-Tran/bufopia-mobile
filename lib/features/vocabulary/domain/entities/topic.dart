@@ -1,3 +1,4 @@
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'topic.freezed.dart';
@@ -39,58 +40,70 @@ extension TopicX on Topic {
   }
 
   /// Chuỗi hiển thị số lượng từ vựng
-  String get displayWordCount => isAuto
-      ? 'Đa chủ đề'
-      : (wordCount > 0 ? '$wordCount từ vựng' : '100 từ vựng');
+  String get displayWordCount {
+    final l10n = S.current;
+    return isAuto
+        ? l10n.multiTopic
+        : (wordCount > 0 ? l10n.wordsCount(wordCount) : l10n.wordsCount(100));
+  }
 
-  /// Hiển thị độ khó tiếng Việt chuẩn
+  /// Hiển thị độ khó theo ngôn ngữ hiện tại
   String get displayDifficulty {
+    final l10n = S.current;
     switch (difficulty.toLowerCase()) {
       case 'easy':
       case 'dễ':
-        return 'Dễ';
+        return l10n.diffEasy;
       case 'medium':
       case 'trung bình':
       case 'vừa':
-        return 'Trung bình';
+        return l10n.diffMedium;
       case 'advanced':
       case 'hard':
       case 'nâng cao':
       case 'khó':
-        return 'Nâng cao';
+        return l10n.diffHard;
       default:
-        return difficulty.isNotEmpty ? difficulty : (isAuto ? 'Tự động' : 'Dễ');
+        return difficulty.isNotEmpty
+            ? difficulty
+            : (isAuto ? l10n.multiTopic : l10n.diffEasy);
     }
   }
 
-  /// Mô tả phụ tiếng Việt cho từng chủ đề (theo đặc tả kỹ thuật 23 topics)
-  String get subtitle => switch (id) {
-    'auto' => 'Hệ thống tự chọn chủ đề',
-    'daily' => 'Đời sống thường ngày',
-    'school' => 'Trường học & Học tập',
-    'travel' => 'Du lịch & Khám phá',
-    'food' => 'Ẩm thực & Món ăn',
-    'family' => 'Gia đình & Mối quan hệ',
-    'body' => 'Cơ thể & Sức khỏe',
-    'clothes' => 'Trang phục & Phụ kiện',
-    'shopping' => 'Mua sắm & Tiền bạc',
-    'town' => 'Địa điểm thị trấn',
-    'directions' => 'Phương hướng & Vị trí',
-    'jobs' => 'Nghề nghiệp & Nơi làm việc',
-    'hobbies' => 'Sở thích & Thời gian rảnh',
-    'sports' => 'Thể thao & Rèn luyện',
-    'animals' => 'Động vật & Thú cưng',
-    'time' => 'Thời gian & Ngày tháng',
-    'shapes' => 'Màu sắc & Hình khối',
-    'celebrations' => 'Lễ hội & Ngày đặc biệt',
-    'feelings' => 'Cảm xúc & Tính cách',
-    'environment' => 'Môi trường & Tự nhiên',
-    'technology' => 'Công nghệ & Kỹ thuật số',
-    'communication' => 'Giao tiếp & Kết nối',
-    'toeic' => 'Từ vựng TOEIC Công sở',
-    'ielts' => 'Từ vựng IELTS Trọng tâm',
-    _ => category.isNotEmpty ? category : 'Từ vựng chủ đề',
-  };
+  /// Tên hiển thị theo ngôn ngữ hiện tại
+  String get displayName => isAuto ? S.current.randomBattle : name;
+
+  /// Mô tả phụ đa ngôn ngữ cho từng chủ đề (theo đặc tả kỹ thuật 23 topics)
+  String get subtitle {
+    final l10n = S.current;
+    return switch (id) {
+      'auto' => l10n.autoTopicSubtitle,
+      'daily' => l10n.dailyLifeSubtitle,
+      'school' => l10n.schoolSubtitle,
+      'travel' => l10n.travelSubtitle,
+      'food' => l10n.foodSubtitle,
+      'family' => l10n.familySubtitle,
+      'body' => l10n.bodySubtitle,
+      'clothes' => l10n.clothesSubtitle,
+      'shopping' => l10n.shoppingSubtitle,
+      'town' => l10n.townSubtitle,
+      'directions' => l10n.directionsSubtitle,
+      'jobs' => l10n.jobsSubtitle,
+      'hobbies' => l10n.hobbiesSubtitle,
+      'sports' => l10n.sportsSubtitle,
+      'animals' => l10n.animalsSubtitle,
+      'time' => l10n.timeSubtitle,
+      'shapes' => l10n.shapesSubtitle,
+      'celebrations' => l10n.celebrationsSubtitle,
+      'feelings' => l10n.feelingsSubtitle,
+      'environment' => l10n.environmentSubtitle,
+      'technology' => l10n.technologySubtitle,
+      'communication' => l10n.communicationSubtitle,
+      'toeic' => l10n.toeicSubtitle,
+      'ielts' => l10n.ieltsSubtitle,
+      _ => category.isNotEmpty ? category : l10n.topicVocabularySubtitle,
+    };
+  }
 
   /// 23 chủ đề chuẩn của hệ thống + chủ đề ngẫu nhiên (auto)
   static const List<Topic> defaultTopics = [

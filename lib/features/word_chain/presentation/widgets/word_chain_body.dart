@@ -10,6 +10,7 @@ import 'package:bufopia/features/word_chain/presentation/widgets/word_chain_inpu
 import 'package:bufopia/features/word_chain/presentation/widgets/word_chain_message_list.dart';
 import 'package:bufopia/features/word_chain/presentation/widgets/word_chain_score_board.dart';
 import 'package:bufopia/features/word_chain/presentation/widgets/word_chain_turn_banner.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -143,9 +144,9 @@ class _WordChainBodyState extends State<WordChainBody> {
   void _handleOpenSurrender() {
     WordChainSurrenderDialog.show(
       context,
-      title: 'ĐẦU HÀNG',
-      message: 'Đầu hàng sẽ tính bạn thua ván đấu này. Bạn có chắc không?',
-      confirmText: 'Đầu hàng',
+      title: context.l10n.surrenderTitle,
+      message: context.l10n.surrenderMessage,
+      confirmText: context.l10n.surrender,
       onConfirm: () {
         context.read<WordChainBloc>().add(const WordChainEvent.surrender());
       },
@@ -360,8 +361,8 @@ class _WordChainBodyState extends State<WordChainBody> {
                         SizedBox(height: 14.h),
                         AppText.b2(
                           isWaitingForRival
-                              ? 'ĐANG CHỜ ĐỐI THỦ SẴN SÀNG...'
-                              : 'ĐANG TẢI DỮ LIỆU...',
+                              ? context.l10n.waitingForOpponentReady
+                              : context.l10n.loadingData,
                           color: isPaper
                               ? AppColors.paperTextDark
                               : AppColors.white,
