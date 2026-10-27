@@ -10,6 +10,7 @@ import 'package:bufopia/features/app/bloc/app_bloc.dart';
 import 'package:bufopia/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:bufopia/features/vocabulary/presentation/bloc/vocabulary_bloc.dart';
 import 'package:bufopia/features/vocabulary/presentation/widgets/vocabulary_body.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -118,13 +119,13 @@ class _VocabularyPageState
     final btnSpacing = isLandscape ? 12.0 : 14.w;
     final contentSpacing = isLandscape ? 10.0 : 14.h;
     final footerMsg = isLocal2P
-        ? '⚠️ Rời trận sẽ kết thúc ván đấu của cả 2 người chơi!'
-        : '⚠️ Rời trận giữa chừng sẽ tính là bạn thua cuộc!';
+        ? context.l10n.leaveMatchWarningMulti
+        : context.l10n.leaveMatchWarningSolo;
 
     // Hiển thị dialog xác nhận nếu đang trong ván đấu
     AppGameDialog.show<void>(
       context: context,
-      title: 'RỜI KHỎI TRẬN ĐẤU?',
+      title: context.l10n.leaveMatchTitle,
       icon: Icons.logout_rounded,
       maxWidth: dialogMaxWidth,
       maxHeight: dialogMaxHeight,
@@ -160,7 +161,7 @@ class _VocabularyPageState
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           AppText.b1(
-            'Bạn có chắc chắn muốn rời khỏi trận đấu này không?',
+            context.l10n.leaveMatchConfirm,
             color: isPaper ? AppColors.paperTextDark : AppColors.grayDark,
             fontWeight: FontWeight.w700,
             fontSize: contentFontSize,
@@ -172,7 +173,7 @@ class _VocabularyPageState
             children: [
               if (isPaper)
                 AppButton(
-                  text: 'Ở LẠI',
+                  text: context.l10n.stay,
                   width: btnWidth,
                   height: btnHeight,
                   fontSize: btnFontSize,
@@ -185,7 +186,7 @@ class _VocabularyPageState
                 )
               else
                 AppButton.secondary(
-                  text: 'Ở LẠI',
+                  text: context.l10n.stay,
                   width: btnWidth,
                   height: btnHeight,
                   fontSize: btnFontSize,
@@ -195,7 +196,7 @@ class _VocabularyPageState
               SizedBox(width: btnSpacing),
               if (isPaper)
                 AppButton(
-                  text: 'RỜI TRẬN',
+                  text: context.l10n.leaveMatch,
                   width: btnWidth,
                   height: btnHeight,
                   fontSize: btnFontSize,
@@ -210,14 +211,14 @@ class _VocabularyPageState
                     }
                     AppToast.showWarning(
                       context,
-                      'Bạn đã rời khỏi trận đấu.',
-                      title: 'ĐÃ THOÁT TRẬN',
+                      context.l10n.youLeftMatch,
+                      title: context.l10n.exitedMatchTitle,
                     );
                   },
                 )
               else
                 AppButton.danger(
-                  text: 'RỜI TRẬN',
+                  text: context.l10n.leaveMatch,
                   width: btnWidth,
                   height: btnHeight,
                   fontSize: btnFontSize,
@@ -228,8 +229,8 @@ class _VocabularyPageState
                     }
                     AppToast.showWarning(
                       context,
-                      'Bạn đã rời khỏi trận đấu.',
-                      title: 'ĐÃ THOÁT TRẬN',
+                      context.l10n.youLeftMatch,
+                      title: context.l10n.exitedMatchTitle,
                     );
                   },
                 ),
@@ -260,8 +261,8 @@ class _VocabularyPageState
         }
         AppToast.showWarning(
           context,
-          'Đối thủ đã thoát khỏi trận đấu!',
-          title: 'TRẬN ĐẤU KẾT THÚC',
+          context.l10n.opponentLeftMatch,
+          title: context.l10n.matchResults,
         );
       }
     }
@@ -270,12 +271,14 @@ class _VocabularyPageState
 
     final isPaper = context.read<AppBloc>().state.isPaperTheme;
 
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
+
     AppGameDialog.show<void>(
       context: context,
-      title: 'ĐỐI THỦ ĐÃ RỜI TRẬN',
+      title: context.l10n.opponentLeftMatchTitle,
       icon: Icons.person_off_rounded,
-      maxWidth: 520.w,
-      maxHeight: 260.h,
+      maxWidth: isLandscape ? 380.0 : 310.w,
       backgroundColor: isPaper ? AppColors.paperCardBg : AppColors.white,
       borderColor: isPaper ? AppColors.paperBorder : AppColors.blueLight,
       headerGradientColors: isPaper
@@ -300,7 +303,7 @@ class _VocabularyPageState
               ),
             ]
           : null,
-      footerText: '⚡ Trận đấu kết thúc do đối thủ rời phòng ⚡',
+      footerText: context.l10n.matchEndedOpponentLeft,
       footerBackgroundColor: isPaper ? AppColors.paperSurface : null,
       footerBorderColor: isPaper ? AppColors.paperBorder : null,
       footerTextColor: isPaper ? AppColors.paperTextMedium : null,
@@ -332,24 +335,22 @@ class _VocabularyPageState
           ),
           SizedBox(height: 8.h),
           AppText.t2(
-            'CHIẾN THẮNG DANH DỰ! 🏆',
+            context.l10n.honoraryVictory,
             color: isPaper ? AppColors.paperStreakFlame : AppColors.orangeDark,
             fontWeight: FontWeight.w700,
             fontSize: 16.sp,
           ),
           SizedBox(height: 4.h),
           AppText.b2(
-            'Đối thủ đã thoát khỏi trận đấu giữa chừng.'
-            '\nChiến thắng thuộc về bạn!',
+            context.l10n.opponentLeftMidwayDesc,
             color: isPaper ? AppColors.paperTextDark : AppColors.grayMedium,
-            fontWeight: FontWeight.w700,
             fontSize: 12.sp,
             textAlign: TextAlign.center,
           ),
           SizedBox(height: 12.h),
           if (isPaper)
             AppButton(
-              text: 'VỀ TRANG CHỦ',
+              text: context.l10n.backToHome,
               icon: const Icon(
                 Icons.home_rounded,
                 color: AppColors.white,
@@ -365,7 +366,7 @@ class _VocabularyPageState
             )
           else
             AppButton.success(
-              text: 'VỀ TRANG CHỦ',
+              text: context.l10n.backToHome,
               icon: const Icon(
                 Icons.home_rounded,
                 color: AppColors.white,
@@ -444,12 +445,14 @@ class _VocabularyPageState
               }
               final battleState = context.watch<VocabularyBloc>().state;
               final p2Name = widget.isBotOpponent
-                  ? 'BOT (VỪA)'
+                  ? context.l10n.botMedium
                   : (battleState.opponentName?.isNotEmpty == true
                         ? battleState.opponentName!
                         : (widget.initialOpponentName?.isNotEmpty == true
                               ? widget.initialOpponentName!
-                              : (isLocal2P ? 'NGƯỜI CHƠI 2' : 'ĐỐI THỦ')));
+                              : (isLocal2P
+                                    ? context.l10n.player2
+                                    : context.l10n.humanOpponent)));
               final p2Avatar = widget.isBotOpponent
                   ? (p1Avatar.contains('pip')
                         ? 'assets/images/bunny-avatar.webp'

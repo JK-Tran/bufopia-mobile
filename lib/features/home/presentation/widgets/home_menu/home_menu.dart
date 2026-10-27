@@ -1,7 +1,8 @@
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
 import 'package:bufopia/features/home/presentation/widgets/home_menu/home_menu_item.dart';
-import 'package:bufopia/shared/utils/view_utils.dart';
+import 'package:bufopia/features/practice/presentation/dialog/study_hub_dialog.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -26,13 +27,14 @@ class HomeMenu extends StatelessWidget {
     final isPaper = context.select<AppBloc, bool>(
       (bloc) => bloc.state.isPaperTheme,
     );
+    final l10n = context.l10n;
 
     final items = [
       // 1. Trắc nghiệm từ vựng (Ô trên trái)
       HomeMenuItemData(
-        title: 'Trắc nghiệm',
-        subtitle: 'Chọn chủ đề hoặc đấu ngẫu nhiên',
-        buttonText: 'CHƠI NGAY',
+        title: l10n.menuQuizTitle,
+        subtitle: l10n.menuQuizSubtitle,
+        buttonText: l10n.playNow,
         buttonColor: AppColors.menuChainGreen,
         buttonExtrusionColor: AppColors.menuChainGreenExtrusion,
         titleColor: AppColors.menuChainGreenTitle,
@@ -45,9 +47,9 @@ class HomeMenu extends StatelessWidget {
       ),
       // 2. Nối từ (Ô trên phải)
       HomeMenuItemData(
-        title: 'Nối từ',
-        subtitle: 'Nối từ tự do, học phát âm và ngữ cảnh',
-        buttonText: 'CHƠI NGAY',
+        title: l10n.menuWordChainTitle,
+        subtitle: l10n.menuWordChainSubtitle,
+        buttonText: l10n.playNow,
         buttonColor: AppColors.menuQuizRed,
         buttonExtrusionColor: AppColors.menuQuizRedExtrusion,
         titleColor: AppColors.menuQuizRedTitle,
@@ -61,9 +63,9 @@ class HomeMenu extends StatelessWidget {
 
       // 3. Góc luyện tập (Ô dưới trái)
       HomeMenuItemData(
-        title: 'Đoán từ khuyết',
-        subtitle: 'Đoán từ bí ẩn điền vào ô trống',
-        buttonText: 'LUYỆN TẬP',
+        title: l10n.menuWordGuessTitle,
+        subtitle: l10n.menuWordGuessSubtitle,
+        buttonText: l10n.practice,
         buttonColor: AppColors.menuReviewPurple,
         buttonExtrusionColor: AppColors.menuReviewPurpleExtrusion,
         titleColor: AppColors.menuReviewPurpleTitle,
@@ -75,26 +77,20 @@ class HomeMenu extends StatelessWidget {
         onTap: onReviewWeakWords,
       ),
 
-      // 4. Sắp ra mắt (Ô dưới phải)
+      // 4. Góc luyện tập (Ô dưới phải)
       HomeMenuItemData(
-        title: 'Góc luyện tập',
-        subtitle: 'Ôn tập và nơi lưu trữ kiến thức ',
-        buttonText: 'SẮP RA MẮT',
-        buttonColor: AppColors.grayMedium,
-        buttonExtrusionColor: AppColors.grayDark,
-        titleColor: AppColors.grayDark,
-        titleShadowColor: AppColors.grayLight,
+        title: l10n.menuStudyHubTitle,
+        subtitle: l10n.menuStudyHubSubtitle,
+        buttonText: l10n.explore,
+        buttonColor: AppColors.green,
+        buttonExtrusionColor: AppColors.greenDark,
+        titleColor: AppColors.greenDark,
+        titleShadowColor: AppColors.greenLight,
         imagePath: isPaper
-            ? 'assets/images/background_switch/menu_3.webp'
-            : 'assets/images/home/review_word.png',
+            ? 'assets/images/background_switch/menu_4.png'
+            : 'assets/images/home/practice.png',
         backgroundImagePath: 'assets/images/quick_battle/banner_menu_1.png',
-        isLocked: true,
-        onTap:
-            onNewMode ??
-            () => ViewUtils.showAppToast(
-              context,
-              'Tính năng đang được phát triển, hãy đón chờ nhé!',
-            ),
+        onTap: onNewMode ?? () => StudyHubDialog.show(context),
       ),
     ];
 

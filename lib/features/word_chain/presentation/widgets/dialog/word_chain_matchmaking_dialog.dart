@@ -10,6 +10,8 @@ import 'package:bufopia/features/app/bloc/app_bloc.dart';
 import 'package:bufopia/features/auth/domain/usecases/get_cached_user_use_case.dart';
 import 'package:bufopia/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:bufopia/shared/di/di.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
+import 'package:bufopia/shared/services/audio/sound_manager.dart';
 import 'package:bufopia/shared/services/firebase/firebase_auth_service.dart';
 import 'package:bufopia/shared/services/socket/models/socket_event.dart';
 import 'package:bufopia/shared/services/socket/word_chain_socket_service.dart';
@@ -95,7 +97,11 @@ class _WordChainMatchmakingDialogState extends State<WordChainMatchmakingDialog>
     );
 
     _startTimer();
-    _connectMatchmake();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _connectMatchmake();
+      }
+    });
   }
 
   void _startTimer() {
@@ -188,6 +194,7 @@ class _WordChainMatchmakingDialogState extends State<WordChainMatchmakingDialog>
   }
 
   void _handleMatched(MatchmakeMatchedEvent event) {
+    SoundManager.playWin();
     _subscription?.cancel();
     _subscription = null;
     if (mounted) {
@@ -235,7 +242,7 @@ class _WordChainMatchmakingDialogState extends State<WordChainMatchmakingDialog>
     final isPaper = context.select<AppBloc, bool>((b) => b.state.isPaperTheme);
 
     return AppGameDialog(
-      title: 'TÌM TRẬN ONLINE',
+      title: context.l10n.findMatchOnline,
       icon: Icons.sensors_rounded,
       maxWidth: 390.w,
       maxHeight: 246.h,
@@ -278,7 +285,7 @@ class _WordChainMatchmakingDialogState extends State<WordChainMatchmakingDialog>
           ),
         ),
         child: AppText.c1(
-          '1 VS 1 NGẪU NHIÊN',
+          context.l10n.oneVsOneRandom,
           fontWeight: FontWeight.w700,
           fontSize: 10.sp,
           color: AppColors.white,
@@ -373,10 +380,11 @@ class _WordChainMatchmakingDialogState extends State<WordChainMatchmakingDialog>
             AppText.t3(
               _isMatched
                   ? (_matchedEvent != null
-                        ? '🎉 ĐÃ TÌM THẤY: '
-                              '${_matchedEvent!.rivalName.toUpperCase()}!'
-                        : '🎉 ĐÃ TÌM THẤY ĐỐI THỦ!')
-                  : 'ĐANG TÌM ĐỐI THỦ...',
+                        ? context.l10n.opponentFoundRival(
+                            _matchedEvent!.rivalName.toUpperCase(),
+                          )
+                        : context.l10n.opponentFound)
+                  : context.l10n.findingOpponent,
               fontWeight: FontWeight.w700,
               fontSize: 12.sp,
               color: _isMatched
@@ -420,6 +428,7 @@ class _WordChainMatchmakingDialogState extends State<WordChainMatchmakingDialog>
 
   /// Nút hành động phía dưới: HỦY TÌM TRẬN hoặc VÀO TRẬN NGAY...
   Widget _buildActionButton(bool isPaper) {
+    final l10n = context.l10n;
     if (!_isMatched) {
       if (isPaper) {
         return AppButton(
@@ -436,7 +445,7 @@ class _WordChainMatchmakingDialogState extends State<WordChainMatchmakingDialog>
             size: 14.r,
             color: AppColors.dialogCloseIcon,
           ),
-          text: 'HỦY TÌM TRẬN',
+          text: l10n.cancelMatchmaking,
         );
       }
       return AppButton.danger(
@@ -449,12 +458,12 @@ class _WordChainMatchmakingDialogState extends State<WordChainMatchmakingDialog>
           size: 14.r,
           color: AppColors.white,
         ),
-        text: 'HỦY TÌM TRẬN',
+        text: l10n.cancelMatchmaking,
       );
     } else {
       if (isPaper) {
         return AppButton(
-          text: 'VÀO TRẬN NGAY...',
+          text: l10n.enteringMatch,
           isLoading: true,
           height: 28.h,
           width: 140.w,
@@ -465,7 +474,7 @@ class _WordChainMatchmakingDialogState extends State<WordChainMatchmakingDialog>
         );
       }
       return AppButton.success(
-        text: 'VÀO TRẬN NGAY...',
+        text: l10n.enteringMatch,
         isLoading: true,
         height: 28.h,
         width: 140.w,

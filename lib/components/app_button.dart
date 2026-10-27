@@ -1,5 +1,6 @@
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
+import 'package:bufopia/shared/services/audio/sound_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -133,7 +134,7 @@ class AppButton extends StatefulWidget {
     isLoading: isLoading,
     backgroundColor: AppColors.redDark,
     borderColor: AppColors.white.withValues(alpha: 0.3),
-    extrusionColor: AppColors.red,
+    extrusionColor: AppColors.redDeep,
     fontSize: fontSize,
     padding: padding,
     width: width,
@@ -342,6 +343,7 @@ class _AppButtonState extends State<AppButton> {
   void _onTapUp(TapUpDetails _) {
     if (widget.onPressed != null && !widget.isLoading) {
       setState(() => _internalPressed = false);
+      SoundManager.playClick();
       widget.onPressed!();
     }
   }

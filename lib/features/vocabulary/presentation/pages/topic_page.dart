@@ -12,6 +12,7 @@ import 'package:bufopia/features/vocabulary/presentation/widgets/dialog/vocabula
 import 'package:bufopia/features/vocabulary/presentation/widgets/topic/dialog/topic_mode_dialog.dart';
 import 'package:bufopia/features/vocabulary/presentation/widgets/topic/topic_grid.dart';
 import 'package:bufopia/features/vocabulary/presentation/widgets/topic/topic_header.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:bufopia/shared/utils/user_name_generator.dart';
 import 'package:bufopia/shared/utils/validation_utils.dart';
 import 'package:flutter/material.dart';
@@ -43,8 +44,6 @@ class _TopicPageState extends State<TopicPage> {
     setState(() {
       _selectedTopicId = topic.id;
     });
-
-    context.read<AppBloc>().add(const AppEvent.clickSoundPlayed());
 
     // Sau khi chọn chủ đề -> Mở popup 4 chế độ chơi (Bot, PvP, Online, ID)
     TopicModeDialog.show(
@@ -98,7 +97,7 @@ class _TopicPageState extends State<TopicPage> {
 
     AppToast.showWarning(
       context,
-      'Vui lòng đặt tên hiển thị (2–25 ký tự) trước khi tham gia đấu Online!',
+      context.l10n.nameRequiredOnline,
     );
 
     final newName = await PlayerEditNameDialog.show(
@@ -117,8 +116,7 @@ class _TopicPageState extends State<TopicPage> {
 
     AppToast.showWarning(
       context,
-      'Tên không hợp lệ. Vui lòng đặt từ 2–25 ký'
-      ' tự và không dùng tên mặc định.',
+      context.l10n.nameInvalidNotice,
     );
     return false;
   }
@@ -133,7 +131,7 @@ class _TopicPageState extends State<TopicPage> {
       onMatched: (roomCode, rivalName, rivalAvatar) {
         AppToast.showSuccess(
           context,
-          'Đã tìm thấy đối thủ $rivalName! Vào trận...',
+          context.l10n.foundRivalEnteringMatch(rivalName),
         );
         context.push(
           AppRouter.vocabulary,
@@ -158,7 +156,7 @@ class _TopicPageState extends State<TopicPage> {
       onEnterRoom: (code) {
         AppToast.showSuccess(
           context,
-          'Đã vào phòng thi đấu #$code!',
+          context.l10n.enteredRoomCode(code),
         );
         context.push(
           AppRouter.vocabulary,
@@ -200,7 +198,7 @@ class _TopicPageState extends State<TopicPage> {
                   children: [
                     AppIconButton(
                       icon: Icons.arrow_back_ios_new_rounded,
-                      tooltip: 'Quay lại',
+                      tooltip: context.l10n.back,
                       size: 36.r,
                       iconSize: 18.r,
                       backgroundColor: isPaper
@@ -220,7 +218,11 @@ class _TopicPageState extends State<TopicPage> {
                         context.read<AppBloc>().add(
                           const AppEvent.clickSoundPlayed(),
                         );
-                        Navigator.of(context).pop();
+                        if (context.canPop()) {
+                          context.pop();
+                        } else {
+                          context.go(AppRouter.home);
+                        }
                       },
                     ),
 
@@ -232,7 +234,7 @@ class _TopicPageState extends State<TopicPage> {
 
                     AppIconButton(
                       icon: Icons.settings_rounded,
-                      tooltip: 'Cài đặt',
+                      tooltip: context.l10n.settings,
                       size: 36.r,
                       iconSize: 18.r,
                       backgroundColor: isPaper

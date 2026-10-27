@@ -8,6 +8,7 @@ import 'package:bufopia/features/leaderboard/presentation/bloc/leaderboard_bloc.
 import 'package:bufopia/features/leaderboard/presentation/widgets/leaderboard_list.dart';
 import 'package:bufopia/features/leaderboard/presentation/widgets/leaderboard_podium.dart';
 import 'package:bufopia/features/leaderboard/presentation/widgets/leaderboard_tabs.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -23,11 +24,11 @@ class LeaderboardDialog extends StatefulWidget {
 
     return AppGameDialog.show<void>(
       context: context,
-      title: 'BẢNG XẾP HẠNG',
+      title: context.l10n.leaderboardTitle,
       icon: Icons.emoji_events_rounded,
       maxWidth: 340.w,
       maxHeight: 580.h,
-      footerText: '⭐ Cùng học, cùng đấu và chinh phục vị trí dẫn đầu! ⭐',
+      footerText: context.l10n.leaderboardFooter,
       padding: EdgeInsets.fromLTRB(10.w, 6.h, 10.w, 8.h),
       backgroundColor: isPaper ? AppColors.paperCardBg : AppColors.white,
       borderColor: isPaper ? AppColors.paperBorder : AppColors.blueLight,
@@ -134,7 +135,7 @@ class _LeaderboardDialogState extends State<LeaderboardDialog> {
     height: 80.h,
     child: Center(
       child: AppText.b2(
-        'Chua co du lieu bang xep hang',
+        context.l10n.noLeaderboardData,
         color: AppColors.paperTextMuted,
       ),
     ),
@@ -152,13 +153,13 @@ class _LeaderboardDialogState extends State<LeaderboardDialog> {
         ),
         SizedBox(height: 6.h),
         AppText.b2(
-          'Khong the tai bang xep hang',
+          context.l10n.cannotLoadLeaderboard,
           color: AppColors.grayDark,
           fontWeight: FontWeight.w600,
         ),
         SizedBox(height: 8.h),
         AppButton.primary(
-          text: 'Thu lai',
+          text: context.l10n.retry,
           fontSize: 12.sp,
           padding: EdgeInsets.symmetric(
             horizontal: 20.w,

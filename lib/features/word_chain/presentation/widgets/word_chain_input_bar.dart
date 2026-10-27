@@ -1,6 +1,7 @@
 import 'package:bufopia/components/app_button.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -15,10 +16,12 @@ class WordChainInputBar extends StatelessWidget {
     required this.requiredLetter,
     required this.onChanged,
     required this.onSubmit,
+    this.focusNode,
     super.key,
   });
 
   final TextEditingController controller;
+  final FocusNode? focusNode;
   final bool isMyTurn;
   final bool isCheckingWord;
   final bool isGameOver;
@@ -28,12 +31,13 @@ class WordChainInputBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final isPaper = context.select<AppBloc, bool>((b) => b.state.isPaperTheme);
 
     final letter = requiredLetter.trim().toUpperCase();
     final hintText = letter.isNotEmpty
-        ? 'Nhập từ bắt đầu bằng $letter...'
-        : 'Nhập từ tiếng Anh để bắt đầu...';
+        ? l10n.enterWordStartingWith(letter)
+        : l10n.enterWordToStart;
 
     final isInputEnabled = isMyTurn && !isCheckingWord && !isGameOver;
 
@@ -75,6 +79,7 @@ class WordChainInputBar extends StatelessWidget {
               alignment: Alignment.center,
               child: TextField(
                 controller: controller,
+                focusNode: focusNode,
                 enabled: isInputEnabled,
                 autocorrect: false,
                 textInputAction: TextInputAction.send,
@@ -111,7 +116,7 @@ class WordChainInputBar extends StatelessWidget {
             builder: (_, value, _) {
               final canSend = isInputEnabled && value.text.trim().isNotEmpty;
               return AppButton.success(
-                text: 'Gửi',
+                text: l10n.send,
                 height: 44.h,
                 width: 72.w,
                 fontSize: 14.sp,

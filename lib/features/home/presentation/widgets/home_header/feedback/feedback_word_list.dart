@@ -2,6 +2,7 @@ import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/home/presentation/widgets/home_header/feedback/feedback_word_list_item.dart';
 import 'package:bufopia/features/vocabulary/domain/entities/word.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -79,8 +80,21 @@ class _FeedbackWordListState extends State<FeedbackWordList> {
     return widget.entries.where((e) => e.gameMode == mode).length;
   }
 
+  String _modeLabel(String mode, BuildContext context) {
+    final l10n = context.l10n;
+    return switch (mode) {
+      'Tất cả' => l10n.allGameModes,
+      'Nối từ' => l10n.wordChainMode,
+      'Đấu từ' => l10n.vocabBattleMode,
+      'Đoán từ' => l10n.wordGuessMode,
+      'Ôn tập' => l10n.reviewMode,
+      _ => mode,
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final filtered = _filteredEntries;
 
     return Column(
@@ -115,7 +129,7 @@ class _FeedbackWordListState extends State<FeedbackWordList> {
                     fontFamily: 'Inter',
                   ),
                   decoration: InputDecoration(
-                    hintText: 'Tìm từ tiếng Anh, tiếng Việt...',
+                    hintText: l10n.searchVocabularyHint,
                     hintStyle: TextStyle(
                       fontSize: 12.sp,
                       color: AppColors.darkOnSurfaceVariant,
@@ -163,6 +177,7 @@ class _FeedbackWordListState extends State<FeedbackWordList> {
               final mode = _modes[index];
               final isSelected = _selectedMode == mode;
               final count = _countForMode(mode);
+              final label = _modeLabel(mode, context);
               return GestureDetector(
                 onTap: () => setState(() => _selectedMode = mode),
                 child: Container(
@@ -181,7 +196,7 @@ class _FeedbackWordListState extends State<FeedbackWordList> {
                   ),
                   alignment: Alignment.center,
                   child: AppText.c1(
-                    '$mode ($count)',
+                    '$label ($count)',
                     fontSize: 10.sp,
                     fontWeight: isSelected ? FontWeight.w700 : null,
                     color: isSelected
@@ -210,7 +225,7 @@ class _FeedbackWordListState extends State<FeedbackWordList> {
                       ),
                       SizedBox(height: 4.h),
                       AppText.b2(
-                        'Không tìm thấy từ vựng phù hợp!',
+                        l10n.noWordsFound,
                         color: AppColors.grayMedium,
                         fontSize: 12.sp,
                       ),
@@ -250,8 +265,7 @@ class _FeedbackWordListState extends State<FeedbackWordList> {
                     ),
                     SizedBox(width: 4.w),
                     AppText.c1(
-                      'Không thấy từ trong lịch sử?'
-                      ' Nhấn để tìm trong toàn bộ từ điển',
+                      l10n.cannotFindWordInHistory,
                       fontSize: 10.sp,
                       fontWeight: FontWeight.w600,
                       color: AppColors.feedbackMossGreen,

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:bufopia/components/components.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:photo_manager/photo_manager.dart';
@@ -52,7 +53,7 @@ class GalleryPhotosTab extends StatelessWidget {
     return Column(
       children: [
         if (isPermissionDenied && additionalFiles.isEmpty)
-          _buildPermissionBanner(),
+          _buildPermissionBanner(context),
         Expanded(
           child: GridView.builder(
             controller: scrollController,
@@ -65,7 +66,7 @@ class GalleryPhotosTab extends StatelessWidget {
             itemCount: totalItems,
             itemBuilder: (context, index) {
               if (index == 0) {
-                return _buildCameraTile();
+                return _buildCameraTile(context);
               }
 
               final fileIndex = index - 1;
@@ -108,7 +109,7 @@ class GalleryPhotosTab extends StatelessWidget {
     );
   }
 
-  Widget _buildPermissionBanner() {
+  Widget _buildPermissionBanner(BuildContext context) {
     return Container(
       margin: EdgeInsets.all(8.w),
       padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 8.h),
@@ -127,14 +128,14 @@ class GalleryPhotosTab extends StatelessWidget {
           SizedBox(width: 8.w),
           Expanded(
             child: AppText.c1(
-              'Chọn ảnh trực tiếp từ bộ nhớ mà không cần cấp quyền.',
+              context.l10n.pickDirectlyFromStorage,
               color: AppColors.blueDark,
               fontWeight: FontWeight.w600,
               fontSize: 12.sp,
             ),
           ),
           AppButton.primary(
-            text: 'Mở thư viện',
+            text: context.l10n.photoGallery,
             fontSize: 12.sp,
             padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h),
             onPressed: onPickFromSystemGallery,
@@ -144,7 +145,7 @@ class GalleryPhotosTab extends StatelessWidget {
     );
   }
 
-  Widget _buildCameraTile() {
+  Widget _buildCameraTile(BuildContext context) {
     return AppButton.custom(
       onPressed: onOpenCamera,
       backgroundColor: AppColors.lightBackground,
@@ -170,7 +171,7 @@ class GalleryPhotosTab extends StatelessWidget {
           ),
           SizedBox(height: 4.h),
           AppText.c1(
-            'Máy ảnh',
+            context.l10n.cameraTile,
             color: AppColors.grayDark,
             fontWeight: FontWeight.w700,
             fontSize: 10.sp,

@@ -3,6 +3,7 @@ import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
 import 'package:bufopia/features/leaderboard/presentation/bloc/leaderboard_bloc.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -20,6 +21,7 @@ class LeaderboardTabs extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isPaper = context.select<AppBloc, bool>((b) => b.state.isPaperTheme);
+    final l10n = context.l10n;
 
     return BlocBuilder<LeaderboardBloc, LeaderboardState>(
       buildWhen: (prev, curr) => prev.selectedMetric != curr.selectedMetric,
@@ -30,7 +32,7 @@ class LeaderboardTabs extends StatelessWidget {
             Expanded(
               child: _LeaderboardTabButton(
                 metric: 'xp',
-                label: 'Tổng XP',
+                label: l10n.totalXp,
                 icon: Icons.bolt_rounded,
                 iconColor: AppColors.purple,
                 isSelected: selected == 'xp',
@@ -42,7 +44,7 @@ class LeaderboardTabs extends StatelessWidget {
             Expanded(
               child: _LeaderboardTabButton(
                 metric: 'win_streak',
-                label: 'Chuỗi thắng',
+                label: l10n.leaderboardWinStreak,
                 icon: Icons.emoji_events_rounded,
                 iconColor: AppColors.gold,
                 isSelected: selected == 'win_streak',
@@ -54,7 +56,7 @@ class LeaderboardTabs extends StatelessWidget {
             Expanded(
               child: _LeaderboardTabButton(
                 metric: 'streak',
-                label: 'Chuỗi học',
+                label: l10n.leaderboardStudyStreak,
                 icon: Icons.local_fire_department_rounded,
                 iconColor: AppColors.red,
                 isSelected: selected == 'streak',

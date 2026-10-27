@@ -4,6 +4,7 @@ import 'package:bufopia/features/app/bloc/app_bloc.dart';
 import 'package:bufopia/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:bufopia/features/auth/presentation/widgets/dialog/app_login_prompt_dialog.dart';
 import 'package:bufopia/features/vocabulary/presentation/widgets/topic/topic_mode_item.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -34,15 +35,16 @@ class TopicModeDialog extends StatelessWidget {
     VoidCallback? onIdChallenge,
   }) {
     final isPaper = context.read<AppBloc>().state.isPaperTheme;
+    final l10n = context.l10n;
 
     return AppGameDialog.show(
       context: context,
-      title: 'CHỌN CHẾ ĐỘ CHƠI',
+      title: l10n.chooseGameMode,
       icon: Icons.sports_esports_rounded,
       maxWidth: 350.w,
       maxHeight: 400.h,
       isScrollable: false,
-      footerText: '⭐ Chọn chế độ để bắt đầu so tài từ vựng ⭐',
+      footerText: l10n.modeFooterVocab,
       padding: EdgeInsets.fromLTRB(10.w, 10.h, 10.w, 10.h),
       backgroundColor: isPaper ? AppColors.paperCardBg : AppColors.white,
       borderColor: isPaper ? AppColors.paperBorder : AppColors.blueLight,
@@ -87,6 +89,7 @@ class TopicModeDialog extends StatelessWidget {
         isPaperTheme ??
         context.select<AppBloc, bool>((b) => b.state.isPaperTheme);
     final isGuest = context.select<AuthBloc, bool>((b) => b.state.isGuest);
+    final l10n = context.l10n;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -97,14 +100,14 @@ class TopicModeDialog extends StatelessWidget {
             // Mode 1: Bot
             Expanded(
               child: TopicModeItem(
-                badgeText: '1 NGƯỜI',
+                badgeText: l10n.onePlayerBadge,
                 badgeIcon: Icons.person_rounded,
                 badgeColor: isPaper
                     ? AppColors.paperGreen
                     : AppColors.modeBotButton,
                 imagePath: 'assets/images/webp/mode-bot.webp',
-                title: 'Đấu với Bot',
-                buttonText: 'CHƠI NGAY',
+                title: l10n.battleWithBot,
+                buttonText: l10n.playNow,
                 buttonIcon: Icons.play_arrow_rounded,
                 buttonGradient: LinearGradient(
                   begin: Alignment.topCenter,
@@ -138,14 +141,14 @@ class TopicModeDialog extends StatelessWidget {
             // Mode 2: PvP (Chơi 2 người trên cùng 1 máy)
             Expanded(
               child: TopicModeItem(
-                badgeText: '2 NGƯỜI',
+                badgeText: l10n.twoPlayersBadge,
                 badgeIcon: Icons.people_rounded,
                 badgeColor: isPaper
                     ? AppColors.paperAmberBadgeText
                     : AppColors.modePvpButton,
                 imagePath: 'assets/images/webp/mode-pvp.webp',
-                title: 'Đấu 2 Người',
-                buttonText: 'CHƠI NGAY',
+                title: l10n.duel2Players,
+                buttonText: l10n.playNow,
                 buttonIcon: Icons.people_rounded,
                 buttonGradient: LinearGradient(
                   begin: Alignment.topCenter,
@@ -185,14 +188,14 @@ class TopicModeDialog extends StatelessWidget {
             Expanded(
               child: TopicModeItem(
                 isLocked: isGuest,
-                badgeText: 'GHÉP CẶP',
+                badgeText: l10n.findFriendBadge,
                 badgeIcon: Icons.sensors_rounded,
                 badgeColor: isPaper
                     ? AppColors.paperStreakFlame
                     : AppColors.modeOnlineButton,
                 imagePath: 'assets/images/webp/mode-online.webp',
-                title: 'Ghép Online',
-                buttonText: 'TÌM TRẬN',
+                title: l10n.onlineMatch,
+                buttonText: l10n.findFriendBadge,
                 buttonIcon: Icons.sensors_rounded,
                 buttonGradient: LinearGradient(
                   begin: Alignment.topCenter,
@@ -219,7 +222,7 @@ class TopicModeDialog extends StatelessWidget {
                   if (isGuest) {
                     AppLoginPromptDialog.show(
                       context,
-                      featureName: 'chế độ Ghép Online',
+                      featureName: l10n.onlineMatch,
                     );
                     return;
                   }
@@ -240,8 +243,8 @@ class TopicModeDialog extends StatelessWidget {
                     ? AppColors.paperGreenDark
                     : AppColors.modeIdButton,
                 imagePath: 'assets/images/webp/mode-id.webp',
-                title: 'Thách Đấu',
-                buttonText: 'TẠO PHÒNG',
+                title: l10n.customRoom,
+                buttonText: l10n.createRoomTab,
                 buttonIcon: Icons.sports_kabaddi_rounded,
                 buttonGradient: LinearGradient(
                   begin: Alignment.topCenter,
@@ -268,7 +271,7 @@ class TopicModeDialog extends StatelessWidget {
                   if (isGuest) {
                     AppLoginPromptDialog.show(
                       context,
-                      featureName: 'chế độ Thách Đấu Phòng Riêng',
+                      featureName: l10n.customRoom,
                     );
                     return;
                   }

@@ -5,6 +5,7 @@ import 'package:bufopia/features/app/bloc/app_bloc.dart';
 import 'package:bufopia/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:bufopia/features/auth/presentation/widgets/dialog/app_login_prompt_dialog.dart';
 import 'package:bufopia/features/word_chain/presentation/widgets/word_chain_mode_item.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -63,6 +64,7 @@ class WordChainModeDialog extends StatelessWidget {
         isPaperTheme ??
         context.select<AppBloc, bool>((b) => b.state.isPaperTheme);
     final isGuest = context.select<AuthBloc, bool>((b) => b.state.isGuest);
+    final l10n = context.l10n;
 
     final isLandscape =
         MediaQuery.of(context).orientation == Orientation.landscape;
@@ -126,18 +128,11 @@ class WordChainModeDialog extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             AppText.t2(
-                              'CHỌN CÁCH LUYỆN\nNỐI TỪ',
+                              l10n.wordChainModeTitle,
                               fontSize: 16.sp,
                               fontWeight: FontWeight.w700,
                               color: titleCol,
                             ),
-                            // SizedBox(height: 3.h),
-                            // AppText.c1(
-                            //   'Nối từ online: lần 1 và 2 sẽ nhắc nhở;'
-                            //   ' rời tab lần 3 mới bị loại.',
-                            //   fontSize: 12.sp,
-                            //   color: subtitleCol,
-                            // ),
                           ],
                         ),
                       ),
@@ -168,7 +163,7 @@ class WordChainModeDialog extends StatelessWidget {
                               ),
                             ),
                             child: AppText.c1(
-                              '3 CÁCH LUYỆN',
+                              l10n.threeModesBadge,
                               fontSize: 10.sp,
                               fontWeight: FontWeight.w700,
                               color: isPaper
@@ -195,10 +190,10 @@ class WordChainModeDialog extends StatelessWidget {
                   // ── 2. Danh sách 3 Thẻ Chế Độ (Xếp Dọc Thoải Mái) ──────
                   // Card 1: Luyện với máy
                   WordChainModeItem(
-                    badgeText: '1 NGƯỜI',
+                    badgeText: l10n.onePlayerBadge,
                     imagePath: 'assets/images/webp/mode-bot.webp',
-                    title: 'Luyện với máy',
-                    description: 'Rèn luyện phản xạ từ vựng cùng Bot',
+                    title: l10n.practiceBot,
+                    description: l10n.practiceBotDesc,
                     isPaperTheme: isPaper,
                     onTimedPressed: () {
                       Navigator.of(context).pop();
@@ -214,10 +209,10 @@ class WordChainModeDialog extends StatelessWidget {
 
                   // Card 2: Luyện cùng online
                   WordChainModeItem(
-                    badgeText: 'TÌM BẠN',
+                    badgeText: l10n.findFriendBadge,
                     imagePath: 'assets/images/webp/mode-online.webp',
-                    title: 'Luyện cùng online',
-                    description: 'Ghép trận ngẫu nhiên cùng người chơi',
+                    title: l10n.practiceOnline,
+                    description: l10n.practiceOnlineDesc,
                     isPaperTheme: isPaper,
                     isLocked: isGuest,
                     onLockedTap: () => AppLoginPromptDialog.show(
@@ -238,10 +233,10 @@ class WordChainModeDialog extends StatelessWidget {
 
                   // Card 3: Mời bạn
                   WordChainModeItem(
-                    badgeText: '2 NGƯỜI',
+                    badgeText: l10n.twoPlayersBadge,
                     imagePath: 'assets/images/webp/mode-id.webp',
-                    title: 'Mời bạn',
-                    description: 'Tạo phòng riêng so tài cùng bạn bè',
+                    title: l10n.inviteFriends,
+                    description: l10n.inviteFriendsDesc,
                     isPaperTheme: isPaper,
                     isLocked: isGuest,
                     onLockedTap: () => AppLoginPromptDialog.show(

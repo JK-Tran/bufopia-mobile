@@ -4,6 +4,7 @@ import 'package:bufopia/features/app/bloc/app_bloc.dart';
 import 'package:bufopia/features/home/data/models/legal_policies_data.dart';
 import 'package:bufopia/features/home/presentation/widgets/home_header/privacy/privacy_tab_bar.dart';
 import 'package:bufopia/features/home/presentation/widgets/home_header/privacy/privacy_tab_view.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -68,15 +69,19 @@ class _PrivacyPolicyDialogState extends State<PrivacyPolicyDialog> {
       builder: (context, state) {
         final isClassic = state.isClassicTheme;
         final isPaper = state.isPaperTheme;
-        final currentTab = LegalPoliciesData.tabs[_tabIndex];
+        final currentTab = LegalPoliciesData.getTabs(context.l10n)[_tabIndex];
+
+        final isLandscape =
+            MediaQuery.of(context).orientation == Orientation.landscape;
+        final dialogHeight = isLandscape ? 330.0 : 540.h;
 
         return AppGameDialog(
-          title: 'CHÍNH SÁCH & ĐIỀU KHOẢN',
+          title: context.l10n.privacyPolicyTitle,
           icon: Icons.verified_user_rounded,
           maxWidth: 340.w,
-          maxHeight: 560.h,
+          height: dialogHeight,
           isScrollable: false,
-          footerText: '⭐ Bufopia cam kết bảo vệ dữ liệu & quyền riêng tư ⭐',
+          footerText: context.l10n.privacyFooter,
           padding: EdgeInsets.fromLTRB(10.w, 8.h, 10.w, 6.h),
           backgroundColor: isPaper ? AppColors.paperCardBg : AppColors.white,
           borderColor: isPaper ? AppColors.paperBorder : AppColors.blueLight,

@@ -543,7 +543,7 @@ String toString() {
 /// @nodoc
 mixin _$AppState {
 
- bool get isMusicEnabled; bool get isSfxEnabled; String get languageCode; bool get isDarkMode; String get appTheme; bool get isInitialized;
+ bool get isMusicEnabled; bool get isSfxEnabled; String get languageCode; bool get isDarkMode; String get appTheme; bool get isInitialized; AppLifecycleState get lifecycleState;
 /// Create a copy of AppState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -555,20 +555,20 @@ $AppStateCopyWith<AppState> get copyWith => _$AppStateCopyWithImpl<AppState>(thi
 @override
 bool operator ==(Object other) {
   final _this = this as AppState;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppState&&(identical(other.isMusicEnabled, _this.isMusicEnabled) || other.isMusicEnabled == _this.isMusicEnabled)&&(identical(other.isSfxEnabled, _this.isSfxEnabled) || other.isSfxEnabled == _this.isSfxEnabled)&&(identical(other.languageCode, _this.languageCode) || other.languageCode == _this.languageCode)&&(identical(other.isDarkMode, _this.isDarkMode) || other.isDarkMode == _this.isDarkMode)&&(identical(other.appTheme, _this.appTheme) || other.appTheme == _this.appTheme)&&(identical(other.isInitialized, _this.isInitialized) || other.isInitialized == _this.isInitialized));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AppState&&(identical(other.isMusicEnabled, _this.isMusicEnabled) || other.isMusicEnabled == _this.isMusicEnabled)&&(identical(other.isSfxEnabled, _this.isSfxEnabled) || other.isSfxEnabled == _this.isSfxEnabled)&&(identical(other.languageCode, _this.languageCode) || other.languageCode == _this.languageCode)&&(identical(other.isDarkMode, _this.isDarkMode) || other.isDarkMode == _this.isDarkMode)&&(identical(other.appTheme, _this.appTheme) || other.appTheme == _this.appTheme)&&(identical(other.isInitialized, _this.isInitialized) || other.isInitialized == _this.isInitialized)&&(identical(other.lifecycleState, _this.lifecycleState) || other.lifecycleState == _this.lifecycleState));
 }
 
 
 @override
 int get hashCode {
   final _this = this as AppState;
-  return Object.hash(runtimeType,_this.isMusicEnabled,_this.isSfxEnabled,_this.languageCode,_this.isDarkMode,_this.appTheme,_this.isInitialized);
+  return Object.hash(runtimeType,_this.isMusicEnabled,_this.isSfxEnabled,_this.languageCode,_this.isDarkMode,_this.appTheme,_this.isInitialized,_this.lifecycleState);
 }
 
 @override
 String toString() {
   final _this = this as AppState;
-  return 'AppState(isMusicEnabled: ${_this.isMusicEnabled}, isSfxEnabled: ${_this.isSfxEnabled}, languageCode: ${_this.languageCode}, isDarkMode: ${_this.isDarkMode}, appTheme: ${_this.appTheme}, isInitialized: ${_this.isInitialized})';
+  return 'AppState(isMusicEnabled: ${_this.isMusicEnabled}, isSfxEnabled: ${_this.isSfxEnabled}, languageCode: ${_this.languageCode}, isDarkMode: ${_this.isDarkMode}, appTheme: ${_this.appTheme}, isInitialized: ${_this.isInitialized}, lifecycleState: ${_this.lifecycleState})';
 }
 
 
@@ -579,7 +579,7 @@ abstract mixin class $AppStateCopyWith<$Res>  {
   factory $AppStateCopyWith(AppState value, $Res Function(AppState) _then) = _$AppStateCopyWithImpl;
 @useResult
 $Res call({
- bool isMusicEnabled, bool isSfxEnabled, String languageCode, bool isDarkMode, String appTheme, bool isInitialized
+ bool isMusicEnabled, bool isSfxEnabled, String languageCode, bool isDarkMode, String appTheme, bool isInitialized, AppLifecycleState lifecycleState
 });
 
 
@@ -596,7 +596,7 @@ class _$AppStateCopyWithImpl<$Res>
 
 /// Create a copy of AppState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? isMusicEnabled = null,Object? isSfxEnabled = null,Object? languageCode = null,Object? isDarkMode = null,Object? appTheme = null,Object? isInitialized = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? isMusicEnabled = null,Object? isSfxEnabled = null,Object? languageCode = null,Object? isDarkMode = null,Object? appTheme = null,Object? isInitialized = null,Object? lifecycleState = null,}) {
   return _then(AppState(
 isMusicEnabled: null == isMusicEnabled ? _self.isMusicEnabled : isMusicEnabled // ignore: cast_nullable_to_non_nullable
 as bool,isSfxEnabled: null == isSfxEnabled ? _self.isSfxEnabled : isSfxEnabled // ignore: cast_nullable_to_non_nullable
@@ -604,7 +604,8 @@ as bool,languageCode: null == languageCode ? _self.languageCode : languageCode /
 as String,isDarkMode: null == isDarkMode ? _self.isDarkMode : isDarkMode // ignore: cast_nullable_to_non_nullable
 as bool,appTheme: null == appTheme ? _self.appTheme : appTheme // ignore: cast_nullable_to_non_nullable
 as String,isInitialized: null == isInitialized ? _self.isInitialized : isInitialized // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,lifecycleState: null == lifecycleState ? _self.lifecycleState : lifecycleState // ignore: cast_nullable_to_non_nullable
+as AppLifecycleState,
   ));
 }
 
@@ -689,10 +690,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isMusicEnabled,  bool isSfxEnabled,  String languageCode,  bool isDarkMode,  String appTheme,  bool isInitialized)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( bool isMusicEnabled,  bool isSfxEnabled,  String languageCode,  bool isDarkMode,  String appTheme,  bool isInitialized,  AppLifecycleState lifecycleState)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AppState() when $default != null:
-return $default(_that.isMusicEnabled,_that.isSfxEnabled,_that.languageCode,_that.isDarkMode,_that.appTheme,_that.isInitialized);case _:
+return $default(_that.isMusicEnabled,_that.isSfxEnabled,_that.languageCode,_that.isDarkMode,_that.appTheme,_that.isInitialized,_that.lifecycleState);case _:
   return orElse();
 
 }
@@ -710,10 +711,10 @@ return $default(_that.isMusicEnabled,_that.isSfxEnabled,_that.languageCode,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isMusicEnabled,  bool isSfxEnabled,  String languageCode,  bool isDarkMode,  String appTheme,  bool isInitialized)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( bool isMusicEnabled,  bool isSfxEnabled,  String languageCode,  bool isDarkMode,  String appTheme,  bool isInitialized,  AppLifecycleState lifecycleState)  $default,) {final _that = this;
 switch (_that) {
 case _AppState():
-return $default(_that.isMusicEnabled,_that.isSfxEnabled,_that.languageCode,_that.isDarkMode,_that.appTheme,_that.isInitialized);case _:
+return $default(_that.isMusicEnabled,_that.isSfxEnabled,_that.languageCode,_that.isDarkMode,_that.appTheme,_that.isInitialized,_that.lifecycleState);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -730,10 +731,10 @@ return $default(_that.isMusicEnabled,_that.isSfxEnabled,_that.languageCode,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isMusicEnabled,  bool isSfxEnabled,  String languageCode,  bool isDarkMode,  String appTheme,  bool isInitialized)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( bool isMusicEnabled,  bool isSfxEnabled,  String languageCode,  bool isDarkMode,  String appTheme,  bool isInitialized,  AppLifecycleState lifecycleState)?  $default,) {final _that = this;
 switch (_that) {
 case _AppState() when $default != null:
-return $default(_that.isMusicEnabled,_that.isSfxEnabled,_that.languageCode,_that.isDarkMode,_that.appTheme,_that.isInitialized);case _:
+return $default(_that.isMusicEnabled,_that.isSfxEnabled,_that.languageCode,_that.isDarkMode,_that.appTheme,_that.isInitialized,_that.lifecycleState);case _:
   return null;
 
 }
@@ -745,7 +746,7 @@ return $default(_that.isMusicEnabled,_that.isSfxEnabled,_that.languageCode,_that
 
 
 class _AppState extends AppState {
-  const _AppState({this.isMusicEnabled = true, this.isSfxEnabled = true, this.languageCode = 'vi', this.isDarkMode = false, this.appTheme = 'paper', this.isInitialized = false}): super._();
+  const _AppState({this.isMusicEnabled = true, this.isSfxEnabled = true, this.languageCode = 'vi', this.isDarkMode = false, this.appTheme = 'paper', this.isInitialized = false, this.lifecycleState = AppLifecycleState.resumed}): super._();
   
 
 @override@JsonKey() final  bool isMusicEnabled;
@@ -754,6 +755,7 @@ class _AppState extends AppState {
 @override@JsonKey() final  bool isDarkMode;
 @override@JsonKey() final  String appTheme;
 @override@JsonKey() final  bool isInitialized;
+@override@JsonKey() final  AppLifecycleState lifecycleState;
 
 /// Create a copy of AppState
 /// with the given fields replaced by the non-null parameter values.
@@ -765,18 +767,18 @@ _$AppStateCopyWith<_AppState> get copyWith => __$AppStateCopyWithImpl<_AppState>
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppState&&(identical(other.isMusicEnabled, isMusicEnabled) || other.isMusicEnabled == isMusicEnabled)&&(identical(other.isSfxEnabled, isSfxEnabled) || other.isSfxEnabled == isSfxEnabled)&&(identical(other.languageCode, languageCode) || other.languageCode == languageCode)&&(identical(other.isDarkMode, isDarkMode) || other.isDarkMode == isDarkMode)&&(identical(other.appTheme, appTheme) || other.appTheme == appTheme)&&(identical(other.isInitialized, isInitialized) || other.isInitialized == isInitialized));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _AppState&&(identical(other.isMusicEnabled, isMusicEnabled) || other.isMusicEnabled == isMusicEnabled)&&(identical(other.isSfxEnabled, isSfxEnabled) || other.isSfxEnabled == isSfxEnabled)&&(identical(other.languageCode, languageCode) || other.languageCode == languageCode)&&(identical(other.isDarkMode, isDarkMode) || other.isDarkMode == isDarkMode)&&(identical(other.appTheme, appTheme) || other.appTheme == appTheme)&&(identical(other.isInitialized, isInitialized) || other.isInitialized == isInitialized)&&(identical(other.lifecycleState, lifecycleState) || other.lifecycleState == lifecycleState));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,isMusicEnabled,isSfxEnabled,languageCode,isDarkMode,appTheme,isInitialized);
+    return Object.hash(runtimeType,isMusicEnabled,isSfxEnabled,languageCode,isDarkMode,appTheme,isInitialized,lifecycleState);
 }
 
 @override
 String toString() {
-    return 'AppState(isMusicEnabled: $isMusicEnabled, isSfxEnabled: $isSfxEnabled, languageCode: $languageCode, isDarkMode: $isDarkMode, appTheme: $appTheme, isInitialized: $isInitialized)';
+    return 'AppState(isMusicEnabled: $isMusicEnabled, isSfxEnabled: $isSfxEnabled, languageCode: $languageCode, isDarkMode: $isDarkMode, appTheme: $appTheme, isInitialized: $isInitialized, lifecycleState: $lifecycleState)';
 }
 
 
@@ -787,7 +789,7 @@ abstract mixin class _$AppStateCopyWith<$Res> implements $AppStateCopyWith<$Res>
   factory _$AppStateCopyWith(_AppState value, $Res Function(_AppState) _then) = __$AppStateCopyWithImpl;
 @override @useResult
 $Res call({
- bool isMusicEnabled, bool isSfxEnabled, String languageCode, bool isDarkMode, String appTheme, bool isInitialized
+ bool isMusicEnabled, bool isSfxEnabled, String languageCode, bool isDarkMode, String appTheme, bool isInitialized, AppLifecycleState lifecycleState
 });
 
 
@@ -804,7 +806,7 @@ class __$AppStateCopyWithImpl<$Res>
 
 /// Create a copy of AppState
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? isMusicEnabled = null,Object? isSfxEnabled = null,Object? languageCode = null,Object? isDarkMode = null,Object? appTheme = null,Object? isInitialized = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? isMusicEnabled = null,Object? isSfxEnabled = null,Object? languageCode = null,Object? isDarkMode = null,Object? appTheme = null,Object? isInitialized = null,Object? lifecycleState = null,}) {
   return _then(_AppState(
 isMusicEnabled: null == isMusicEnabled ? _self.isMusicEnabled : isMusicEnabled // ignore: cast_nullable_to_non_nullable
 as bool,isSfxEnabled: null == isSfxEnabled ? _self.isSfxEnabled : isSfxEnabled // ignore: cast_nullable_to_non_nullable
@@ -812,7 +814,8 @@ as bool,languageCode: null == languageCode ? _self.languageCode : languageCode /
 as String,isDarkMode: null == isDarkMode ? _self.isDarkMode : isDarkMode // ignore: cast_nullable_to_non_nullable
 as bool,appTheme: null == appTheme ? _self.appTheme : appTheme // ignore: cast_nullable_to_non_nullable
 as String,isInitialized: null == isInitialized ? _self.isInitialized : isInitialized // ignore: cast_nullable_to_non_nullable
-as bool,
+as bool,lifecycleState: null == lifecycleState ? _self.lifecycleState : lifecycleState // ignore: cast_nullable_to_non_nullable
+as AppLifecycleState,
   ));
 }
 

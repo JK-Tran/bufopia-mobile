@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Word {
 
- String get id; String get topic; String get en; String get vi;
+ String get id; String get topic; String get en; String get vi; String get phonetic; String get partOfSpeech; String get example; String get exampleVi;
 /// Create a copy of Word
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -27,20 +27,20 @@ $WordCopyWith<Word> get copyWith => _$WordCopyWithImpl<Word>(this as Word, _$ide
 @override
 bool operator ==(Object other) {
   final _this = this as Word;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Word&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.topic, _this.topic) || other.topic == _this.topic)&&(identical(other.en, _this.en) || other.en == _this.en)&&(identical(other.vi, _this.vi) || other.vi == _this.vi));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Word&&(identical(other.id, _this.id) || other.id == _this.id)&&(identical(other.topic, _this.topic) || other.topic == _this.topic)&&(identical(other.en, _this.en) || other.en == _this.en)&&(identical(other.vi, _this.vi) || other.vi == _this.vi)&&(identical(other.phonetic, _this.phonetic) || other.phonetic == _this.phonetic)&&(identical(other.partOfSpeech, _this.partOfSpeech) || other.partOfSpeech == _this.partOfSpeech)&&(identical(other.example, _this.example) || other.example == _this.example)&&(identical(other.exampleVi, _this.exampleVi) || other.exampleVi == _this.exampleVi));
 }
 
 
 @override
 int get hashCode {
   final _this = this as Word;
-  return Object.hash(runtimeType,_this.id,_this.topic,_this.en,_this.vi);
+  return Object.hash(runtimeType,_this.id,_this.topic,_this.en,_this.vi,_this.phonetic,_this.partOfSpeech,_this.example,_this.exampleVi);
 }
 
 @override
 String toString() {
   final _this = this as Word;
-  return 'Word(id: ${_this.id}, topic: ${_this.topic}, en: ${_this.en}, vi: ${_this.vi})';
+  return 'Word(id: ${_this.id}, topic: ${_this.topic}, en: ${_this.en}, vi: ${_this.vi}, phonetic: ${_this.phonetic}, partOfSpeech: ${_this.partOfSpeech}, example: ${_this.example}, exampleVi: ${_this.exampleVi})';
 }
 
 
@@ -51,7 +51,7 @@ abstract mixin class $WordCopyWith<$Res>  {
   factory $WordCopyWith(Word value, $Res Function(Word) _then) = _$WordCopyWithImpl;
 @useResult
 $Res call({
- String id, String topic, String en, String vi
+ String id, String topic, String en, String vi, String phonetic, String partOfSpeech, String example, String exampleVi
 });
 
 
@@ -68,12 +68,16 @@ class _$WordCopyWithImpl<$Res>
 
 /// Create a copy of Word
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? topic = null,Object? en = null,Object? vi = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? topic = null,Object? en = null,Object? vi = null,Object? phonetic = null,Object? partOfSpeech = null,Object? example = null,Object? exampleVi = null,}) {
   return _then(Word(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,topic: null == topic ? _self.topic : topic // ignore: cast_nullable_to_non_nullable
 as String,en: null == en ? _self.en : en // ignore: cast_nullable_to_non_nullable
 as String,vi: null == vi ? _self.vi : vi // ignore: cast_nullable_to_non_nullable
+as String,phonetic: null == phonetic ? _self.phonetic : phonetic // ignore: cast_nullable_to_non_nullable
+as String,partOfSpeech: null == partOfSpeech ? _self.partOfSpeech : partOfSpeech // ignore: cast_nullable_to_non_nullable
+as String,example: null == example ? _self.example : example // ignore: cast_nullable_to_non_nullable
+as String,exampleVi: null == exampleVi ? _self.exampleVi : exampleVi // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }
@@ -159,10 +163,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String topic,  String en,  String vi)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String topic,  String en,  String vi,  String phonetic,  String partOfSpeech,  String example,  String exampleVi)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Word() when $default != null:
-return $default(_that.id,_that.topic,_that.en,_that.vi);case _:
+return $default(_that.id,_that.topic,_that.en,_that.vi,_that.phonetic,_that.partOfSpeech,_that.example,_that.exampleVi);case _:
   return orElse();
 
 }
@@ -180,10 +184,10 @@ return $default(_that.id,_that.topic,_that.en,_that.vi);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String topic,  String en,  String vi)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String topic,  String en,  String vi,  String phonetic,  String partOfSpeech,  String example,  String exampleVi)  $default,) {final _that = this;
 switch (_that) {
 case _Word():
-return $default(_that.id,_that.topic,_that.en,_that.vi);case _:
+return $default(_that.id,_that.topic,_that.en,_that.vi,_that.phonetic,_that.partOfSpeech,_that.example,_that.exampleVi);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -200,10 +204,10 @@ return $default(_that.id,_that.topic,_that.en,_that.vi);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String topic,  String en,  String vi)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String topic,  String en,  String vi,  String phonetic,  String partOfSpeech,  String example,  String exampleVi)?  $default,) {final _that = this;
 switch (_that) {
 case _Word() when $default != null:
-return $default(_that.id,_that.topic,_that.en,_that.vi);case _:
+return $default(_that.id,_that.topic,_that.en,_that.vi,_that.phonetic,_that.partOfSpeech,_that.example,_that.exampleVi);case _:
   return null;
 
 }
@@ -215,13 +219,17 @@ return $default(_that.id,_that.topic,_that.en,_that.vi);case _:
 
 
 class _Word implements Word {
-  const _Word({this.id = '', this.topic = '', this.en = '', this.vi = ''});
+  const _Word({this.id = '', this.topic = '', this.en = '', this.vi = '', this.phonetic = '', this.partOfSpeech = '', this.example = '', this.exampleVi = ''});
   
 
 @override@JsonKey() final  String id;
 @override@JsonKey() final  String topic;
 @override@JsonKey() final  String en;
 @override@JsonKey() final  String vi;
+@override@JsonKey() final  String phonetic;
+@override@JsonKey() final  String partOfSpeech;
+@override@JsonKey() final  String example;
+@override@JsonKey() final  String exampleVi;
 
 /// Create a copy of Word
 /// with the given fields replaced by the non-null parameter values.
@@ -233,18 +241,18 @@ _$WordCopyWith<_Word> get copyWith => __$WordCopyWithImpl<_Word>(this, _$identit
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Word&&(identical(other.id, id) || other.id == id)&&(identical(other.topic, topic) || other.topic == topic)&&(identical(other.en, en) || other.en == en)&&(identical(other.vi, vi) || other.vi == vi));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _Word&&(identical(other.id, id) || other.id == id)&&(identical(other.topic, topic) || other.topic == topic)&&(identical(other.en, en) || other.en == en)&&(identical(other.vi, vi) || other.vi == vi)&&(identical(other.phonetic, phonetic) || other.phonetic == phonetic)&&(identical(other.partOfSpeech, partOfSpeech) || other.partOfSpeech == partOfSpeech)&&(identical(other.example, example) || other.example == example)&&(identical(other.exampleVi, exampleVi) || other.exampleVi == exampleVi));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,id,topic,en,vi);
+    return Object.hash(runtimeType,id,topic,en,vi,phonetic,partOfSpeech,example,exampleVi);
 }
 
 @override
 String toString() {
-    return 'Word(id: $id, topic: $topic, en: $en, vi: $vi)';
+    return 'Word(id: $id, topic: $topic, en: $en, vi: $vi, phonetic: $phonetic, partOfSpeech: $partOfSpeech, example: $example, exampleVi: $exampleVi)';
 }
 
 
@@ -255,7 +263,7 @@ abstract mixin class _$WordCopyWith<$Res> implements $WordCopyWith<$Res> {
   factory _$WordCopyWith(_Word value, $Res Function(_Word) _then) = __$WordCopyWithImpl;
 @override @useResult
 $Res call({
- String id, String topic, String en, String vi
+ String id, String topic, String en, String vi, String phonetic, String partOfSpeech, String example, String exampleVi
 });
 
 
@@ -272,12 +280,16 @@ class __$WordCopyWithImpl<$Res>
 
 /// Create a copy of Word
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? topic = null,Object? en = null,Object? vi = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? topic = null,Object? en = null,Object? vi = null,Object? phonetic = null,Object? partOfSpeech = null,Object? example = null,Object? exampleVi = null,}) {
   return _then(_Word(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,topic: null == topic ? _self.topic : topic // ignore: cast_nullable_to_non_nullable
 as String,en: null == en ? _self.en : en // ignore: cast_nullable_to_non_nullable
 as String,vi: null == vi ? _self.vi : vi // ignore: cast_nullable_to_non_nullable
+as String,phonetic: null == phonetic ? _self.phonetic : phonetic // ignore: cast_nullable_to_non_nullable
+as String,partOfSpeech: null == partOfSpeech ? _self.partOfSpeech : partOfSpeech // ignore: cast_nullable_to_non_nullable
+as String,example: null == example ? _self.example : example // ignore: cast_nullable_to_non_nullable
+as String,exampleVi: null == exampleVi ? _self.exampleVi : exampleVi // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }

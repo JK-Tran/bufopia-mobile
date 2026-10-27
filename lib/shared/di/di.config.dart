@@ -73,6 +73,8 @@ import '../../features/chat/domain/usecases/get_chat_stream_use_case.dart'
 import '../../features/chat/domain/usecases/submit_chat_use_case.dart'
     as _i1025;
 import '../../features/chat/presentation/bloc/chat_bloc.dart' as _i65;
+import '../../features/home/presentation/bloc/feedback/feedback_bloc.dart'
+    as _i250;
 import '../../features/home/presentation/bloc/home_bloc.dart' as _i202;
 import '../../features/leaderboard/data/datasources/leaderboard_data_source.dart'
     as _i183;
@@ -85,9 +87,43 @@ import '../../features/leaderboard/data/repositories/leaderboard_repository_impl
 import '../../features/leaderboard/domain/repositories/leaderboard_repository.dart'
     as _i655;
 import '../../features/leaderboard/domain/usecases/get_leaderboard_use_case.dart'
-    as _i876;
+    as _i877;
 import '../../features/leaderboard/presentation/bloc/leaderboard_bloc.dart'
     as _i957;
+import '../../features/practice/data/datasources/practice_data_source.dart'
+    as _i830;
+import '../../features/practice/data/mapper/contribution_data_mapper.dart'
+    as _i749;
+import '../../features/practice/data/mapper/dictionary_detail_data_mapper.dart'
+    as _i652;
+import '../../features/practice/data/mapper/pronunciation_assessment_data_mapper.dart'
+    as _i886;
+import '../../features/practice/data/mapper/word_memory_data_mapper.dart'
+    as _i224;
+import '../../features/practice/data/repositories/practice_repository_impl.dart'
+    as _i862;
+import '../../features/practice/domain/repositories/practice_repository.dart'
+    as _i980;
+import '../../features/practice/domain/usecases/get_contributions_use_case.dart'
+    as _i169;
+import '../../features/practice/domain/usecases/get_dictionary_detail_use_case.dart'
+    as _i745;
+import '../../features/practice/domain/usecases/get_practice_profiles_use_case.dart'
+    as _i151;
+import '../../features/practice/domain/usecases/get_weak_words_use_case.dart'
+    as _i54;
+import '../../features/practice/domain/usecases/submit_contribution_use_case.dart'
+    as _i427;
+import '../../features/practice/domain/usecases/submit_practice_profile_use_case.dart'
+    as _i576;
+import '../../features/practice/domain/usecases/submit_pronunciation_assessment_use_case.dart'
+    as _i721;
+import '../../features/practice/domain/usecases/update_contribution_use_case.dart'
+    as _i1039;
+import '../../features/practice/presentation/contribution/bloc/contribution_bloc.dart'
+    as _i653;
+import '../../features/practice/presentation/review/bloc/review_bloc.dart'
+    as _i741;
 import '../../features/vocabulary/data/datasources/vocabulary_data_source.dart'
     as _i534;
 import '../../features/vocabulary/data/mapper/battle_deck_data_mapper.dart'
@@ -171,6 +207,67 @@ import '../../features/word_chain/domain/usecases/submit_start_session_use_case.
     as _i975;
 import '../../features/word_chain/presentation/bloc/word_chain_bloc.dart'
     as _i7;
+import '../../features/word_guess/data/datasources/word_guess_data_source.dart'
+    as _i876;
+import '../../features/word_guess/data/mapper/deck_data_mapper.dart' as _i323;
+import '../../features/word_guess/data/mapper/game_state_data_mapper.dart'
+    as _i860;
+import '../../features/word_guess/data/mapper/history_item_data_mapper.dart'
+    as _i611;
+import '../../features/word_guess/data/mapper/match_info_data_mapper.dart'
+    as _i855;
+import '../../features/word_guess/data/mapper/practice_result_data_mapper.dart'
+    as _i567;
+import '../../features/word_guess/data/mapper/room_player_data_mapper.dart'
+    as _i1027;
+import '../../features/word_guess/data/mapper/round_result_data_mapper.dart'
+    as _i324;
+import '../../features/word_guess/data/mapper/skip_proposal_data_mapper.dart'
+    as _i214;
+import '../../features/word_guess/data/mapper/word_info_data_mapper.dart'
+    as _i547;
+import '../../features/word_guess/data/repositories/word_guess_repository_impl.dart'
+    as _i127;
+import '../../features/word_guess/domain/repositories/word_guess_repository.dart'
+    as _i597;
+import '../../features/word_guess/domain/services/word_guess_bot_engine.dart'
+    as _i941;
+import '../../features/word_guess/domain/usecases/connect_guess_matchmake_use_case.dart'
+    as _i76;
+import '../../features/word_guess/domain/usecases/connect_guess_room_use_case.dart'
+    as _i929;
+import '../../features/word_guess/domain/usecases/disconnect_guess_use_case.dart'
+    as _i190;
+import '../../features/word_guess/domain/usecases/get_guess_deck_use_case.dart'
+    as _i781;
+import '../../features/word_guess/domain/usecases/get_guess_room_lookup_use_case.dart'
+    as _i514;
+import '../../features/word_guess/domain/usecases/observe_guess_game_use_case.dart'
+    as _i197;
+import '../../features/word_guess/domain/usecases/submit_guess_chat_use_case.dart'
+    as _i662;
+import '../../features/word_guess/domain/usecases/submit_guess_end_use_case.dart'
+    as _i675;
+import '../../features/word_guess/domain/usecases/submit_guess_match_record_use_case.dart'
+    as _i738;
+import '../../features/word_guess/domain/usecases/submit_guess_practice_use_case.dart'
+    as _i270;
+import '../../features/word_guess/domain/usecases/submit_guess_ready_use_case.dart'
+    as _i676;
+import '../../features/word_guess/domain/usecases/submit_guess_restart_use_case.dart'
+    as _i268;
+import '../../features/word_guess/domain/usecases/submit_guess_skip_use_case.dart'
+    as _i660;
+import '../../features/word_guess/domain/usecases/submit_guess_start_use_case.dart'
+    as _i44;
+import '../../features/word_guess/domain/usecases/submit_guess_vault_use_case.dart'
+    as _i944;
+import '../../features/word_guess/domain/usecases/submit_guess_vote_use_case.dart'
+    as _i568;
+import '../../features/word_guess/domain/usecases/submit_guess_word_use_case.dart'
+    as _i819;
+import '../../features/word_guess/presentation/bloc/word_guess_bloc.dart'
+    as _i208;
 import '../helper/app_info.dart' as _i221;
 import '../infrastructure/data/api/client/auth_app_server_api_client.dart'
     as _i695;
@@ -202,7 +299,10 @@ import '../services/local_storage/app_preferences.dart' as _i160;
 import '../services/local_storage/app_preferences_impl.dart' as _i423;
 import '../services/network/network_service.dart' as _i408;
 import '../services/socket/duel_socket_service.dart' as _i61;
+import '../services/socket/realtime_routing_service.dart' as _i345;
+import '../services/socket/social_lobby_socket_service.dart' as _i382;
 import '../services/socket/word_chain_socket_service.dart' as _i981;
+import '../services/socket/word_guess_socket_service.dart' as _i551;
 import 'register_module.dart' as _i291;
 
 extension GetItInjectableX on _i174.GetIt {
@@ -225,6 +325,18 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i502.LeaderboardPlayerDataMapper>(
       () => const _i502.LeaderboardPlayerDataMapper(),
     );
+    gh.factory<_i749.ContributionDataMapper>(
+      () => const _i749.ContributionDataMapper(),
+    );
+    gh.factory<_i652.DictionaryDetailDataMapper>(
+      () => const _i652.DictionaryDetailDataMapper(),
+    );
+    gh.factory<_i886.PronunciationAssessmentDataMapper>(
+      () => const _i886.PronunciationAssessmentDataMapper(),
+    );
+    gh.factory<_i224.WordMemoryDataMapper>(
+      () => const _i224.WordMemoryDataMapper(),
+    );
     gh.factory<_i731.BattleOptionDataMapper>(
       () => const _i731.BattleOptionDataMapper(),
     );
@@ -241,6 +353,24 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i26.SessionDataMapper>(() => const _i26.SessionDataMapper());
     gh.factory<_i189.WordDataMapper>(() => const _i189.WordDataMapper());
+    gh.factory<_i611.HistoryItemDataMapper>(
+      () => const _i611.HistoryItemDataMapper(),
+    );
+    gh.factory<_i855.MatchInfoDataMapper>(
+      () => const _i855.MatchInfoDataMapper(),
+    );
+    gh.factory<_i1027.RoomPlayerDataMapper>(
+      () => const _i1027.RoomPlayerDataMapper(),
+    );
+    gh.factory<_i324.RoundResultDataMapper>(
+      () => const _i324.RoundResultDataMapper(),
+    );
+    gh.factory<_i214.SkipProposalDataMapper>(
+      () => const _i214.SkipProposalDataMapper(),
+    );
+    gh.factory<_i547.WordInfoDataMapper>(
+      () => const _i547.WordInfoDataMapper(),
+    );
     await gh.factoryAsync<_i460.SharedPreferences>(
       () => registerModule.prefs,
       preResolve: true,
@@ -255,6 +385,9 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i239.LineErrorResponseMapper(),
     );
     gh.factory<_i181.PaginationDataMapper>(() => _i181.PaginationDataMapper());
+    gh.lazySingleton<_i941.WordGuessBotEngine>(
+      () => _i941.WordGuessBotEngine(),
+    );
     gh.lazySingleton<_i833.DeviceInfoPlugin>(
       () => registerModule.deviceInfoPlugin,
     );
@@ -264,6 +397,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i952.BattleQuestionDataMapper>(
       () => _i952.BattleQuestionDataMapper(gh<_i731.BattleOptionDataMapper>()),
     );
+    gh.factory<_i567.PracticeResultDataMapper>(
+      () => _i567.PracticeResultDataMapper(gh<_i702.UserDataMapper>()),
+    );
     gh.lazySingleton<_i522.AppAudioService>(() => _i522.AppAudioServiceImpl());
     gh.lazySingleton<_i491.FirebaseAuthService>(
       () => _i491.FirebaseAuthServiceImpl(),
@@ -272,6 +408,15 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i32.VocabularyDataMapper(
         gh<_i612.TopicDataMapper>(),
         gh<_i464.WordDataMapper>(),
+      ),
+    );
+    gh.factory<_i860.GameStateDataMapper>(
+      () => _i860.GameStateDataMapper(
+        gh<_i547.WordInfoDataMapper>(),
+        gh<_i324.RoundResultDataMapper>(),
+        gh<_i214.SkipProposalDataMapper>(),
+        gh<_i1027.RoomPlayerDataMapper>(),
+        gh<_i611.HistoryItemDataMapper>(),
       ),
     );
     gh.lazySingleton<_i160.AppPreferences>(
@@ -298,6 +443,9 @@ extension GetItInjectableX on _i174.GetIt {
     );
     gh.factory<_i31.RewardDataMapper>(
       () => _i31.RewardDataMapper(gh<_i702.UserDataMapper>()),
+    );
+    gh.factory<_i323.DeckDataMapper>(
+      () => _i323.DeckDataMapper(gh<_i464.WordDataMapper>()),
     );
     gh.factory<_i477.LeaderboardDataMapper>(
       () =>
@@ -346,6 +494,17 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i436.NoneAuthAppServerApiClient>(
       () => _i436.NoneAuthAppServerApiClient(gh<_i564.HeaderInterceptor>()),
     );
+    gh.lazySingleton<_i345.RealtimeRoutingService>(
+      () => _i345.RealtimeRoutingServiceImpl(
+        gh<_i564.NoneAuthAppServerApiClient>(),
+      ),
+    );
+    gh.lazySingleton<_i830.PracticeDataSource>(
+      () => _i830.PracticeDataSource(gh<_i564.NoneAuthAppServerApiClient>()),
+    );
+    gh.lazySingleton<_i876.WordGuessDataSource>(
+      () => _i876.WordGuessDataSource(gh<_i564.NoneAuthAppServerApiClient>()),
+    );
     gh.factory<_i1045.RefreshTokenInterceptor>(
       () => _i1045.RefreshTokenInterceptor(
         gh<_i436.NoneAuthAppServerApiClient>(),
@@ -367,18 +526,19 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i60.WordChainDataSource>(
       () => _i60.WordChainDataSource(gh<_i564.NoneAuthAppServerApiClient>()),
     );
-    gh.lazySingleton<_i695.AuthAppServerApiClient>(
-      () => _i695.AuthAppServerApiClient(
-        gh<_i564.HeaderInterceptor>(),
-        gh<_i564.AccessTokenInterceptor>(),
-        gh<_i564.RefreshTokenInterceptor>(),
-      ),
-    );
     gh.lazySingleton<_i61.DuelSocketService>(
       () => _i61.DuelSocketServiceImpl(
         gh<_i627.DeviceAuthService>(),
         gh<_i970.AuthDataSource>(),
         gh<_i491.FirebaseAuthService>(),
+        gh<_i345.RealtimeRoutingService>(),
+      ),
+    );
+    gh.lazySingleton<_i695.AuthAppServerApiClient>(
+      () => _i695.AuthAppServerApiClient(
+        gh<_i564.HeaderInterceptor>(),
+        gh<_i564.AccessTokenInterceptor>(),
+        gh<_i564.RefreshTokenInterceptor>(),
       ),
     );
     gh.lazySingleton<_i795.VocabularyRepository>(
@@ -391,6 +551,48 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i674.WordProfileDataMapper>(),
         gh<_i851.FeedbackDataMapper>(),
       ),
+    );
+    gh.lazySingleton<_i980.PracticeRepository>(
+      () => _i862.PracticeRepositoryImpl(
+        gh<_i830.PracticeDataSource>(),
+        gh<_i224.WordMemoryDataMapper>(),
+        gh<_i652.DictionaryDetailDataMapper>(),
+        gh<_i886.PronunciationAssessmentDataMapper>(),
+        gh<_i749.ContributionDataMapper>(),
+      ),
+    );
+    gh.lazySingleton<_i382.SocialLobbySocketService>(
+      () => _i382.SocialLobbySocketServiceImpl(
+        gh<_i627.DeviceAuthService>(),
+        gh<_i970.AuthDataSource>(),
+        gh<_i491.FirebaseAuthService>(),
+      ),
+    );
+    gh.lazySingleton<_i169.GetContributionsUseCase>(
+      () => _i169.GetContributionsUseCase(gh<_i980.PracticeRepository>()),
+    );
+    gh.lazySingleton<_i745.GetDictionaryDetailUseCase>(
+      () => _i745.GetDictionaryDetailUseCase(gh<_i980.PracticeRepository>()),
+    );
+    gh.lazySingleton<_i151.GetPracticeProfilesUseCase>(
+      () => _i151.GetPracticeProfilesUseCase(gh<_i980.PracticeRepository>()),
+    );
+    gh.lazySingleton<_i54.GetWeakWordsUseCase>(
+      () => _i54.GetWeakWordsUseCase(gh<_i980.PracticeRepository>()),
+    );
+    gh.lazySingleton<_i427.SubmitContributionUseCase>(
+      () => _i427.SubmitContributionUseCase(gh<_i980.PracticeRepository>()),
+    );
+    gh.lazySingleton<_i576.SubmitPracticeProfileUseCase>(
+      () => _i576.SubmitPracticeProfileUseCase(gh<_i980.PracticeRepository>()),
+    );
+    gh.lazySingleton<_i721.SubmitPronunciationAssessmentUseCase>(
+      () => _i721.SubmitPronunciationAssessmentUseCase(
+        gh<_i980.PracticeRepository>(),
+      ),
+    );
+    gh.lazySingleton<_i1039.UpdateContributionUseCase>(
+      () => _i1039.UpdateContributionUseCase(gh<_i980.PracticeRepository>()),
     );
     gh.lazySingleton<_i629.ChallengeRoomRepository>(
       () => _i240.ChallengeRoomRepositoryImpl(
@@ -411,6 +613,14 @@ extension GetItInjectableX on _i174.GetIt {
       () => _i1008.LeaderboardRepositoryImpl(
         gh<_i183.LeaderboardDataSource>(),
         gh<_i477.LeaderboardDataMapper>(),
+      ),
+    );
+    gh.lazySingleton<_i551.WordGuessSocketService>(
+      () => _i551.WordGuessSocketServiceImpl(
+        gh<_i627.DeviceAuthService>(),
+        gh<_i970.AuthDataSource>(),
+        gh<_i491.FirebaseAuthService>(),
+        gh<_i345.RealtimeRoutingService>(),
       ),
     );
     gh.lazySingleton<_i367.GetBattleDeckUseCase>(
@@ -459,6 +669,17 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i491.FirebaseAuthService>(),
         gh<_i673.GameStateDataMapper>(),
         gh<_i31.RewardDataMapper>(),
+        gh<_i345.RealtimeRoutingService>(),
+      ),
+    );
+    gh.factory<_i653.ContributionBloc>(
+      () => _i653.ContributionBloc(
+        gh<_i169.GetContributionsUseCase>(),
+        gh<_i745.GetDictionaryDetailUseCase>(),
+        gh<_i427.SubmitContributionUseCase>(),
+        gh<_i1039.UpdateContributionUseCase>(),
+        gh<_i101.DeviceUidService>(),
+        gh<_i491.FirebaseAuthService>(),
       ),
     );
     gh.lazySingleton<_i887.ClearUserCacheUseCase>(
@@ -491,19 +712,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i97.GetRoomInfoUseCase>(),
       ),
     );
-    gh.factory<_i451.VocabularyBloc>(
-      () => _i451.VocabularyBloc(
-        gh<_i367.GetBattleDeckUseCase>(),
-        gh<_i94.SubmitMatchResultUseCase>(),
-        gh<_i783.SubmitBattleRewardUseCase>(),
-        gh<_i230.SubmitWordProfilesUseCase>(),
-        gh<_i101.DeviceUidService>(),
-        gh<_i481.GetCachedUserUseCase>(),
-        gh<_i491.FirebaseAuthService>(),
-        gh<_i61.DuelSocketService>(),
-        gh<_i952.BattleQuestionDataMapper>(),
-      ),
-    );
     gh.lazySingleton<_i797.AuthBloc>(
       () => _i797.AuthBloc(
         gh<_i923.GetUserInfoUseCase>(),
@@ -517,12 +725,8 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i408.NetworkService>(),
       ),
     );
-    gh.lazySingleton<_i876.GetLeaderboardUseCase>(
-      () => _i876.GetLeaderboardUseCase(gh<_i655.LeaderboardRepository>()),
-    );
-    gh.lazySingleton<_i799.ChatDataSource>(
-      () => _i799.ChatDataSourceImpl(gh<_i981.WordChainSocketService>()),
-      dispose: (i) => i.dispose(),
+    gh.lazySingleton<_i877.GetLeaderboardUseCase>(
+      () => _i877.GetLeaderboardUseCase(gh<_i655.LeaderboardRepository>()),
     );
     gh.lazySingleton<_i571.WordChainRepository>(
       () => _i607.WordChainRepositoryImpl(
@@ -534,7 +738,48 @@ extension GetItInjectableX on _i174.GetIt {
       ),
     );
     gh.factory<_i957.LeaderboardBloc>(
-      () => _i957.LeaderboardBloc(gh<_i876.GetLeaderboardUseCase>()),
+      () => _i957.LeaderboardBloc(gh<_i877.GetLeaderboardUseCase>()),
+    );
+    gh.factory<_i250.FeedbackBloc>(
+      () => _i250.FeedbackBloc(
+        gh<_i42.GetVocabularyUseCase>(),
+        gh<_i963.GetWordProfilesUseCase>(),
+        gh<_i293.SendFeedbackUseCase>(),
+        gh<_i101.DeviceUidService>(),
+        gh<_i491.FirebaseAuthService>(),
+        gh<_i522.AppAudioService>(),
+      ),
+    );
+    gh.lazySingleton<_i799.ChatDataSource>(
+      () => _i799.ChatDataSourceImpl(
+        gh<_i981.WordChainSocketService>(),
+        gh<_i551.WordGuessSocketService>(),
+      ),
+      dispose: (i) => i.dispose(),
+    );
+    gh.lazySingleton<_i597.WordGuessRepository>(
+      () => _i127.WordGuessRepositoryImpl(
+        gh<_i876.WordGuessDataSource>(),
+        gh<_i323.DeckDataMapper>(),
+        gh<_i567.PracticeResultDataMapper>(),
+        gh<_i860.GameStateDataMapper>(),
+        gh<_i611.HistoryItemDataMapper>(),
+        gh<_i855.MatchInfoDataMapper>(),
+        gh<_i551.WordGuessSocketService>(),
+      ),
+    );
+    gh.factory<_i451.VocabularyBloc>(
+      () => _i451.VocabularyBloc(
+        gh<_i367.GetBattleDeckUseCase>(),
+        gh<_i94.SubmitMatchResultUseCase>(),
+        gh<_i783.SubmitBattleRewardUseCase>(),
+        gh<_i980.PracticeRepository>(),
+        gh<_i101.DeviceUidService>(),
+        gh<_i481.GetCachedUserUseCase>(),
+        gh<_i491.FirebaseAuthService>(),
+        gh<_i61.DuelSocketService>(),
+        gh<_i952.BattleQuestionDataMapper>(),
+      ),
     );
     gh.lazySingleton<_i440.ConnectChainMatchmakeUseCase>(
       () => _i440.ConnectChainMatchmakeUseCase(gh<_i571.WordChainRepository>()),
@@ -606,11 +851,93 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i1025.SubmitChatUseCase>(
       () => _i1025.SubmitChatUseCase(gh<_i420.ChatRepository>()),
     );
+    gh.lazySingleton<_i76.ConnectGuessMatchmakeUseCase>(
+      () => _i76.ConnectGuessMatchmakeUseCase(gh<_i597.WordGuessRepository>()),
+    );
+    gh.lazySingleton<_i929.ConnectGuessRoomUseCase>(
+      () => _i929.ConnectGuessRoomUseCase(gh<_i597.WordGuessRepository>()),
+    );
+    gh.lazySingleton<_i190.DisconnectGuessUseCase>(
+      () => _i190.DisconnectGuessUseCase(gh<_i597.WordGuessRepository>()),
+    );
+    gh.lazySingleton<_i781.GetGuessDeckUseCase>(
+      () => _i781.GetGuessDeckUseCase(gh<_i597.WordGuessRepository>()),
+    );
+    gh.lazySingleton<_i514.GetGuessRoomLookupUseCase>(
+      () => _i514.GetGuessRoomLookupUseCase(gh<_i597.WordGuessRepository>()),
+    );
+    gh.lazySingleton<_i197.ObserveGuessGameUseCase>(
+      () => _i197.ObserveGuessGameUseCase(gh<_i597.WordGuessRepository>()),
+    );
+    gh.lazySingleton<_i662.SubmitGuessChatUseCase>(
+      () => _i662.SubmitGuessChatUseCase(gh<_i597.WordGuessRepository>()),
+    );
+    gh.lazySingleton<_i675.SubmitGuessEndUseCase>(
+      () => _i675.SubmitGuessEndUseCase(gh<_i597.WordGuessRepository>()),
+    );
+    gh.lazySingleton<_i738.SubmitGuessMatchRecordUseCase>(
+      () =>
+          _i738.SubmitGuessMatchRecordUseCase(gh<_i597.WordGuessRepository>()),
+    );
+    gh.lazySingleton<_i270.SubmitGuessPracticeUseCase>(
+      () => _i270.SubmitGuessPracticeUseCase(gh<_i597.WordGuessRepository>()),
+    );
+    gh.lazySingleton<_i676.SubmitGuessReadyUseCase>(
+      () => _i676.SubmitGuessReadyUseCase(gh<_i597.WordGuessRepository>()),
+    );
+    gh.lazySingleton<_i268.SubmitGuessRestartUseCase>(
+      () => _i268.SubmitGuessRestartUseCase(gh<_i597.WordGuessRepository>()),
+    );
+    gh.lazySingleton<_i660.SubmitGuessSkipUseCase>(
+      () => _i660.SubmitGuessSkipUseCase(gh<_i597.WordGuessRepository>()),
+    );
+    gh.lazySingleton<_i44.SubmitGuessStartUseCase>(
+      () => _i44.SubmitGuessStartUseCase(gh<_i597.WordGuessRepository>()),
+    );
+    gh.lazySingleton<_i944.SubmitGuessVaultUseCase>(
+      () => _i944.SubmitGuessVaultUseCase(gh<_i597.WordGuessRepository>()),
+    );
+    gh.lazySingleton<_i568.SubmitGuessVoteUseCase>(
+      () => _i568.SubmitGuessVoteUseCase(gh<_i597.WordGuessRepository>()),
+    );
+    gh.lazySingleton<_i819.SubmitGuessWordUseCase>(
+      () => _i819.SubmitGuessWordUseCase(gh<_i597.WordGuessRepository>()),
+    );
     gh.factory<_i65.ChatBloc>(
       () => _i65.ChatBloc(
         gh<_i1025.SubmitChatUseCase>(),
         gh<_i677.GetChatStreamUseCase>(),
         gh<_i129.GetChatHistoryUseCase>(),
+      ),
+    );
+    gh.factory<_i208.WordGuessBloc>(
+      () => _i208.WordGuessBloc(
+        gh<_i781.GetGuessDeckUseCase>(),
+        gh<_i270.SubmitGuessPracticeUseCase>(),
+        gh<_i76.ConnectGuessMatchmakeUseCase>(),
+        gh<_i929.ConnectGuessRoomUseCase>(),
+        gh<_i197.ObserveGuessGameUseCase>(),
+        gh<_i190.DisconnectGuessUseCase>(),
+        gh<_i819.SubmitGuessWordUseCase>(),
+        gh<_i660.SubmitGuessSkipUseCase>(),
+        gh<_i568.SubmitGuessVoteUseCase>(),
+        gh<_i675.SubmitGuessEndUseCase>(),
+        gh<_i662.SubmitGuessChatUseCase>(),
+        gh<_i676.SubmitGuessReadyUseCase>(),
+        gh<_i44.SubmitGuessStartUseCase>(),
+        gh<_i268.SubmitGuessRestartUseCase>(),
+        gh<_i980.PracticeRepository>(),
+      ),
+    );
+    gh.factory<_i741.ReviewBloc>(
+      () => _i741.ReviewBloc(
+        gh<_i54.GetWeakWordsUseCase>(),
+        gh<_i42.GetVocabularyUseCase>(),
+        gh<_i576.SubmitPracticeProfileUseCase>(),
+        gh<_i721.SubmitPronunciationAssessmentUseCase>(),
+        gh<_i944.SubmitGuessVaultUseCase>(),
+        gh<_i101.DeviceUidService>(),
+        gh<_i491.FirebaseAuthService>(),
       ),
     );
     return this;

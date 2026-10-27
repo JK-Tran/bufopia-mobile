@@ -1,5 +1,6 @@
 import 'package:bufopia/features/vocabulary/presentation/widgets/vocabulary_answer_item.dart';
 import 'package:bufopia/features/vocabulary/presentation/widgets/vocabulary_cooldown_bagde.dart';
+import 'package:bufopia/shared/services/audio/sound_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -45,7 +46,10 @@ class PortraitAnswersGrid extends StatelessWidget {
         opponentAvatar: player2Avatar,
         isOpponentSelected: isOpponentSelected(word),
         isOpponentCorrect: isOpponentCorrect(word),
-        onTap: () => onSelectAnswer(word),
+        onTap: () {
+          SoundManager.playClick();
+          onSelectAnswer(word);
+        },
       ),
     );
   }

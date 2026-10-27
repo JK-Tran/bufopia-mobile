@@ -14,6 +14,10 @@ class WordDataMapper extends BaseDataMapper<WordData, Word> {
       topic: data?.topic ?? '',
       en: data?.en ?? '',
       vi: data?.vi ?? '',
+      phonetic: data?.phonetic ?? '',
+      partOfSpeech: data?.partOfSpeech ?? '',
+      example: data?.example ?? '',
+      exampleVi: data?.exampleVi ?? '',
     );
   }
 }

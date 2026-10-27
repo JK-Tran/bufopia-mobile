@@ -4,6 +4,7 @@ import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
 import 'package:bufopia/features/home/presentation/widgets/home_header/dialog/player_gallery_picker_dialog.dart';
 import 'package:bufopia/features/home/presentation/widgets/home_header/dialog/player_photo_crop_dialog.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -66,8 +67,10 @@ class PlayerAvatarDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     final isPaper = context.select<AppBloc, bool>((b) => b.state.isPaperTheme);
 
+    final l10n = context.l10n;
+
     return AppGameDialog(
-      title: 'Chọn ảnh đại diện',
+      title: l10n.chooseAvatarTitle,
       icon: Icons.photo_camera_rounded,
       maxWidth: 340.w,
       footerText: null,
@@ -91,8 +94,8 @@ class PlayerAvatarDialog extends StatelessWidget {
           Expanded(
             child: _buildActionCard(
               icon: Icons.camera_alt_rounded,
-              title: 'Chụp ảnh',
-              subtitle: 'Mở máy ảnh',
+              title: l10n.takePhoto,
+              subtitle: l10n.openCamera,
               gradientColors: isPaper
                   ? const [AppColors.paperGreen, AppColors.paperGreenDark]
                   : const [AppColors.blueLight, AppColors.blue],
@@ -106,8 +109,8 @@ class PlayerAvatarDialog extends StatelessWidget {
           Expanded(
             child: _buildActionCard(
               icon: Icons.photo_library_rounded,
-              title: 'Thư viện',
-              subtitle: 'Chọn từ máy',
+              title: l10n.photoGallery,
+              subtitle: l10n.chooseFromDevice,
               gradientColors: const [
                 AppColors.orange,
                 AppColors.orangeDark,

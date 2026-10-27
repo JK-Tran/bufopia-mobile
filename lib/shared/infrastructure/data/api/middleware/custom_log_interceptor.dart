@@ -82,12 +82,17 @@ class CustomLogInterceptor extends BaseInterceptor {
       return;
     }
 
+    final path = response.requestOptions.path;
+    final requestBody = _prettyResponse(
+      response.requestOptions.data,
+      path: path,
+    );
     final log = <String>[
       '\x1B[32m ************ Request Response ************',
       '🎉 ${response.requestOptions.method} ${response.requestOptions.uri}',
-      '🎉 Request Body: ${_prettyResponse(response.requestOptions.data)}',
+      '🎉 Request Body: $requestBody',
       '🎉 Success Code: ${response.statusCode}',
-      '🎉 ${_prettyResponse(response.data)}',
+      '🎉 ${_prettyResponse(response.data, path: path)}',
     ];
 
     Log.d(log.join('\n'));
@@ -113,12 +118,33 @@ class CustomLogInterceptor extends BaseInterceptor {
     handler.next(err);
   }
 
-  String _prettyResponse(dynamic data) {
-    if (data is Map || data is List) {
-      return Log.prettyJson(data);
+  String _prettyResponse(dynamic data, {String? path}) {
+    if (path != null && path.contains('/vocabulary')) {
+      if (data is Map) {
+        return '[Payload omitted for $path: '
+            'Map with ${data.keys.length} keys to prevent debug lag]';
+      }
+      if (data is List) {
+        return '[Payload omitted for $path: '
+            'List with ${data.length} items to prevent debug lag]';
+      }
+      return '[Payload omitted for $path to prevent debug lag]';
     }
 
-    return data.toString();
+    String result;
+    if (data is Map || data is List) {
+      result = Log.prettyJson(data);
+    } else {
+      result = data.toString();
+    }
+
+    if (result.length > 2000) {
+      return '${result.substring(0, 1000)}\n'
+          '... [TRUNCATED - Payload size: ${result.length} chars '
+          'to prevent console lag]';
+    }
+
+    return result;
   }
 
   Map<String, dynamic> _sanitizeHeaders(Map<String, dynamic> headers) {

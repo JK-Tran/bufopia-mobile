@@ -6,6 +6,7 @@ import 'package:bufopia/features/word_chain/data/models/game_state_data.dart';
 import 'package:bufopia/features/word_chain/data/models/reward_data.dart';
 import 'package:bufopia/shared/services/socket/base_socket_service.dart';
 import 'package:bufopia/shared/services/socket/models/socket_event.dart';
+import 'package:bufopia/shared/services/socket/realtime_routing_service.dart';
 import 'package:bufopia/shared/services/socket/socket_url_builder.dart';
 import 'package:bufopia/shared/utils/log_utils.dart';
 import 'package:injectable/injectable.dart';
@@ -61,10 +62,12 @@ class WordChainSocketServiceImpl extends BaseSocketService
     super.firebaseAuthService,
     this._gameStateMapper,
     this._rewardMapper,
+    this._routingService,
   );
 
   final GameStateDataMapper _gameStateMapper;
   final RewardDataMapper _rewardMapper;
+  final RealtimeRoutingService _routingService;
 
   String? _currentRoomCode;
   ChainStateEvent? _lastChainState;
@@ -104,11 +107,41 @@ class WordChainSocketServiceImpl extends BaseSocketService
     _lastMatchmakeArgs = {
       'uid': uid,
       'name': name,
+      'token': token,
       'avatar': avatar,
       'relaxed': relaxed,
       'lang': lang,
     };
     _lastRoomArgs = null;
+
+    final config = await _routingService.getConfig();
+    final isGo = _routingService.isGoChainMatchmaking(config: config);
+
+    if (isGo) {
+      Log.d(
+        'Routing word chain matchmaking to Go Server (First-Frame Auth)',
+        name: logTag,
+      );
+      final effectiveToken = await resolveToken(token);
+      final deviceSecret = await deviceAuthService.getDeviceSecret();
+      final url = SocketUrlBuilder.goChainMatchmakeWsUrl();
+
+      await connectUrl(
+        url,
+        firstFrameAuth: FirstFrameAuth(
+          uid: uid,
+          token: effectiveToken,
+          deviceSecret: deviceSecret,
+        ),
+      );
+      return;
+    }
+
+    // ── Fallback: Cloudflare Worker (Ticket Auth) ───────────────────
+    Log.d(
+      'Routing word chain matchmaking to Cloudflare Worker (Ticket Auth)',
+      name: logTag,
+    );
     var effectiveToken = await resolveToken(token);
     String? ticket;
     try {
@@ -118,14 +151,9 @@ class WordChainSocketServiceImpl extends BaseSocketService
         token: effectiveToken,
       );
     } on Object catch (e) {
-      Log.e(
-        'Failed to get chain matchmake socket ticket: $e',
-        name: logTag,
-      );
+      Log.e('Failed to get chain matchmake socket ticket: $e', name: logTag);
     }
 
-    // Nếu lấy vé thất bại (vd: token cũ hết hạn sau khi đăng nhập Google),
-    // thử force refresh token và lấy lại vé
     if (ticket == null || ticket.isEmpty) {
       Log.d(
         'Retrying getSocketTicket with force-refreshed token...',
@@ -197,12 +225,41 @@ class WordChainSocketServiceImpl extends BaseSocketService
       'roomCode': normalizedCode,
       'uid': uid,
       'name': name,
+      'token': token,
       'avatar': avatar,
       'relaxed': relaxed,
       'lang': lang,
     };
     _lastMatchmakeArgs = null;
 
+    final config = await _routingService.getConfig();
+    final isGo = _routingService.isGoChainRoom(normalizedCode, config: config);
+
+    if (isGo) {
+      Log.d(
+        'Routing chain room $normalizedCode to Go Server (First-Frame Auth)',
+        name: logTag,
+      );
+      final effectiveToken = await resolveToken(token);
+      final deviceSecret = await deviceAuthService.getDeviceSecret();
+      final url = SocketUrlBuilder.goChainRoomWsUrl(normalizedCode);
+
+      await connectUrl(
+        url,
+        firstFrameAuth: FirstFrameAuth(
+          uid: uid,
+          token: effectiveToken,
+          deviceSecret: deviceSecret,
+        ),
+      );
+      return;
+    }
+
+    // ── Fallback: Cloudflare Worker (Ticket Auth) ───────────────────
+    Log.d(
+      'Routing chain room $normalizedCode to Cloudflare Worker (Ticket Auth)',
+      name: logTag,
+    );
     var effectiveToken = await resolveToken(token);
     String? ticket;
     try {
@@ -218,7 +275,7 @@ class WordChainSocketServiceImpl extends BaseSocketService
     if (ticket == null || ticket.isEmpty) {
       Log.d(
         'Retrying getSocketTicket with force-refreshed token '
-        'for room $normalizedCode...',
+        'for chain room $normalizedCode...',
         name: logTag,
       );
       try {
@@ -229,7 +286,7 @@ class WordChainSocketServiceImpl extends BaseSocketService
           token: effectiveToken,
         );
       } on Object catch (e) {
-        Log.e('Retry getSocketTicket failed for room: $e', name: logTag);
+        Log.e('Retry getSocketTicket failed for chain room: $e', name: logTag);
       }
     }
 
@@ -260,6 +317,22 @@ class WordChainSocketServiceImpl extends BaseSocketService
   }
 
   @override
+  void onWelcome(Map<String, dynamic> json) {
+    if (_lastMatchmakeArgs != null) {
+      final name = _lastMatchmakeArgs!['name'] as String? ?? 'Player';
+      final avatar = _lastMatchmakeArgs!['avatar'] as String? ?? '';
+      final relaxed = _lastMatchmakeArgs!['relaxed'] as bool? ?? false;
+      Log.d('Sending join frame to Go chain matchmaker queue', name: logTag);
+      sendRaw({
+        'type': 'join',
+        'name': name,
+        'avatar': avatar,
+        'relaxed': relaxed,
+      });
+    }
+  }
+
+  @override
   Future<void> reconnect() async {
     if (_lastRoomArgs != null) {
       final args = _lastRoomArgs!;
@@ -267,6 +340,7 @@ class WordChainSocketServiceImpl extends BaseSocketService
         roomCode: args['roomCode'] as String,
         uid: args['uid'] as String,
         name: args['name'] as String,
+        token: args['token'] as String?,
         avatar: args['avatar'] as String?,
         relaxed: args['relaxed'] as bool? ?? false,
         lang: args['lang'] as String? ?? 'en',
@@ -278,6 +352,7 @@ class WordChainSocketServiceImpl extends BaseSocketService
       await connectMatchmake(
         uid: args['uid'] as String,
         name: args['name'] as String,
+        token: args['token'] as String?,
         avatar: args['avatar'] as String?,
         relaxed: args['relaxed'] as bool? ?? false,
         lang: args['lang'] as String? ?? 'en',
@@ -346,12 +421,18 @@ class WordChainSocketServiceImpl extends BaseSocketService
       case 'queued':
         emitEvent(MatchmakeQueuedEvent.fromJson(json));
       case 'matched':
-        // Server tự đóng WS matchmaking sau khi gửi `matched`
-        // — đây là normal close.
+      case 'match_found':
         isNormalServerClose = true;
         final roomCode = json['roomCode']?.toString() ?? '';
-        final rivalName = json['rivalName']?.toString() ?? 'Đối thủ';
-        final rivalAvatar = json['rivalAvatar']?.toString() ?? '';
+        final opponent = json['opponent'] as Map<String, dynamic>?;
+        final rivalName =
+            opponent?['name']?.toString() ??
+            json['rivalName']?.toString() ??
+            'Đối thủ';
+        final rivalAvatar =
+            opponent?['avatar']?.toString() ??
+            json['rivalAvatar']?.toString() ??
+            '';
         emitEvent(
           MatchmakeMatchedEvent(
             matchId: json['matchId']?.toString() ?? '',
@@ -384,21 +465,27 @@ class WordChainSocketServiceImpl extends BaseSocketService
         }
       case 'match_start':
       case 'chain_state':
+      case 'word_accepted':
         final rawState = json['state'] as Map<String, dynamic>? ?? {};
-        final gameStateData = GameStateData.fromJson(rawState);
-        final gameState = _gameStateMapper.mapToEntity(gameStateData);
-        final event = ChainStateEvent(
-          playerIndex: json['playerIndex'] as int? ?? 0,
-          roomCode: json['roomCode']?.toString() ?? '',
-          state: gameState,
-          rivalName: json['rivalName'] as String?,
-          rivalAvatar: json['rivalAvatar'] as String?,
-          serverNow: json['serverNow'] as int?,
-          sessionId:
-              json['sessionId'] as String? ?? rawState['sessionId'] as String?,
-        );
-        _lastChainState = event;
-        emitEvent(event);
+        if (rawState.isNotEmpty) {
+          final gameStateData = GameStateData.fromJson(rawState);
+          final gameState = _gameStateMapper.mapToEntity(gameStateData);
+          final event = ChainStateEvent(
+            playerIndex: json['playerIndex'] as int? ?? 0,
+            roomCode: json['roomCode']?.toString() ?? _currentRoomCode ?? '',
+            state: gameState,
+            rivalName: json['rivalName'] as String?,
+            rivalAvatar: json['rivalAvatar'] as String?,
+            serverNow: json['serverNow'] as int?,
+            sessionId:
+                json['sessionId'] as String? ??
+                rawState['sessionId'] as String?,
+          );
+          _lastChainState = event;
+          emitEvent(event);
+        } else {
+          emitEvent(const ChainWordCheckedEvent());
+        }
       case 'word_checking':
         emitEvent(ChainWordCheckingEvent.fromJson(json));
       case 'word_checked':
@@ -425,6 +512,7 @@ class WordChainSocketServiceImpl extends BaseSocketService
         emitEvent(RoomRematchWaitingEvent.fromJson(json));
       case 'player_left':
       case 'player_disconnected':
+      case 'timeout':
         emitEvent(RoomPlayerLeftEvent.fromJson(json));
       default:
         emitEvent(SocketRawMessageEvent(json));

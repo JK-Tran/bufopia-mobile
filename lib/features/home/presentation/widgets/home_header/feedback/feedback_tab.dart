@@ -1,6 +1,7 @@
 import 'package:bufopia/components/app_button.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -79,8 +80,20 @@ class _FeedbackTabState extends State<FeedbackTab> {
     );
   }
 
+  String _categoryTitle(String key, BuildContext context) {
+    final l10n = context.l10n;
+    return switch (key) {
+      'idea' => l10n.feedbackCategoryIdea,
+      'bug' => l10n.feedbackCategoryBug,
+      'feature' => l10n.feedbackCategoryFeature,
+      'ui' => l10n.feedbackCategoryUI,
+      _ => l10n.feedbackCategoryOther,
+    };
+  }
+
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final charCount = _messageController.text.length;
 
     return Column(
@@ -88,7 +101,7 @@ class _FeedbackTabState extends State<FeedbackTab> {
       children: [
         // 1. Tiêu đề câu hỏi mở
         AppText.t3(
-          'Bạn muốn Bufopia cải thiện điều gì?',
+          l10n.feedbackQuestion,
           fontWeight: FontWeight.w700,
           fontSize: 14.sp,
           color: AppColors.paperTextDark,
@@ -102,7 +115,7 @@ class _FeedbackTabState extends State<FeedbackTab> {
           runSpacing: 4.h,
           children: _categories.map((cat) {
             final key = cat['key'] as String;
-            final title = cat['title'] as String;
+            final title = _categoryTitle(key, context);
             final icon = cat['icon'] as IconData;
             final isSelected = _selectedCategory == key;
 
@@ -168,7 +181,7 @@ class _FeedbackTabState extends State<FeedbackTab> {
         Row(
           children: [
             AppText.b2(
-              'Nội dung góp ý ',
+              '${l10n.feedbackContent} ',
               fontWeight: FontWeight.w700,
               fontSize: 12.sp,
               color: AppColors.paperTextDark,
@@ -219,9 +232,7 @@ class _FeedbackTabState extends State<FeedbackTab> {
                       fontFamily: 'Inter',
                     ),
                     decoration: InputDecoration(
-                      hintText:
-                          'Mô tả ý tưởng, báo lỗi bạn gặp phải '
-                          'hoặc điểm bạn muốn game nâng cấp...',
+                      hintText: l10n.feedbackContentHint,
                       hintStyle: TextStyle(
                         fontSize: 12.sp,
                         color: AppColors.darkOnSurfaceVariant,
@@ -251,7 +262,7 @@ class _FeedbackTabState extends State<FeedbackTab> {
           Padding(
             padding: EdgeInsets.only(top: 3.h),
             child: AppText.c1(
-              'Bạn vui lòng mô tả chi tiết hơn nhé — ít nhất 10 ký tự.',
+              l10n.feedbackMinLength,
               fontSize: 10.sp,
               color: AppColors.dialogCloseIcon,
             ),
@@ -261,7 +272,7 @@ class _FeedbackTabState extends State<FeedbackTab> {
 
         // 5. Ô Thông Tin Liên Hệ
         AppText.b2(
-          'Thông tin liên hệ (không bắt buộc)',
+          l10n.feedbackContact,
           fontWeight: FontWeight.w700,
           fontSize: 12.sp,
           color: AppColors.paperTextDark,
@@ -303,7 +314,7 @@ class _FeedbackTabState extends State<FeedbackTab> {
                     fontFamily: 'Inter',
                   ),
                   decoration: InputDecoration(
-                    hintText: 'Email, Discord hoặc cách liên hệ khác...',
+                    hintText: l10n.feedbackContactHint,
                     hintStyle: TextStyle(
                       fontSize: 12.sp,
                       color: AppColors.darkOnSurfaceVariant,
@@ -323,7 +334,7 @@ class _FeedbackTabState extends State<FeedbackTab> {
 
         // 6. Nút Gửi Góp Ý full-width 3D Game đặt ở cuối
         AppButton(
-          text: widget.isSubmitting ? 'ĐANG GỬI...' : 'GỬI GÓP Ý',
+          text: widget.isSubmitting ? l10n.sendingFeedback : l10n.sendFeedback,
           icon: widget.isSubmitting
               ? SizedBox(
                   width: 14.r,

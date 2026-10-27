@@ -2,6 +2,7 @@ import 'package:bufopia/components/app_button.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -47,6 +48,7 @@ class _PlayerEditNameDialogState extends State<PlayerEditNameDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final isPaper = context.select<AppBloc, bool>((b) => b.state.isPaperTheme);
 
     return Dialog(
@@ -95,7 +97,7 @@ class _PlayerEditNameDialogState extends State<PlayerEditNameDialog> {
                     SizedBox(width: 6.w),
                     Expanded(
                       child: AppText.t3(
-                        'Đổi tên',
+                        l10n.editName,
                         fontWeight: FontWeight.w700,
                         fontSize: 14.sp,
                         color: AppColors.white,
@@ -154,7 +156,7 @@ class _PlayerEditNameDialogState extends State<PlayerEditNameDialog> {
                                 ? AppColors.paperTextMedium
                                 : AppColors.grayMedium,
                           ),
-                          hintText: 'Nhập tên...',
+                          hintText: l10n.enterNameHint,
                           hintStyle: TextStyle(
                             fontSize: 12.sp,
                             color: isPaper
@@ -174,7 +176,7 @@ class _PlayerEditNameDialogState extends State<PlayerEditNameDialog> {
                         Expanded(
                           child: AppButton.secondary(
                             fontSize: 14.sp,
-                            text: 'Huỷ',
+                            text: l10n.cancel,
                             onPressed: () => Navigator.of(context).pop(),
                           ),
                         ),
@@ -183,7 +185,7 @@ class _PlayerEditNameDialogState extends State<PlayerEditNameDialog> {
                         Expanded(
                           child: AppButton(
                             fontSize: 14.sp,
-                            text: 'Lưu',
+                            text: l10n.save,
                             backgroundColor: isPaper
                                 ? AppColors.paperGreen
                                 : AppColors.blue,

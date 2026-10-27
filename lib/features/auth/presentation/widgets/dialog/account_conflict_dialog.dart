@@ -4,11 +4,21 @@ import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
 import 'package:bufopia/features/auth/domain/entities/account_import_result.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 enum ConflictResolutionChoice { merge, overwrite, cancel }
+
+extension on AccountConflict {
+  String get displayName =>
+      cloudLastActive.isNotEmpty ? cloudLastActive : 'Player';
+
+  int get level => cloudMatches > 0 ? cloudMatches : 1;
+
+  int get xp => cloudElo;
+}
 
 class AccountConflictDialog extends StatelessWidget {
   const AccountConflictDialog({
@@ -31,6 +41,7 @@ class AccountConflictDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final isPaper = context.select<AppBloc, bool>((b) => b.state.isPaperTheme);
 
     final cardBg = isPaper ? AppColors.paperSurface : AppColors.lightBackground;
@@ -41,9 +52,9 @@ class AccountConflictDialog extends StatelessWidget {
         : AppColors.grayMedium;
 
     return AppGameDialog(
-      title: 'Xung đột tài khoản',
-      icon: Icons.sync_problem_rounded,
-      maxWidth: 340.w,
+      title: l10n.googleCloudSave,
+      icon: Icons.cloud_done_rounded,
+      maxWidth: 320.w,
       backgroundColor: isPaper ? AppColors.paperCardBg : AppColors.white,
       borderColor: isPaper ? AppColors.paperBorder : AppColors.blueLight,
       headerGradientColors: isPaper
@@ -53,16 +64,7 @@ class AccountConflictDialog extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          AppText.b2(
-            conflict.message.isNotEmpty
-                ? conflict.message
-                : 'Tài khoản Google này đã có dữ liệu lưu trữ đám mây.',
-            color: textDark,
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: 12.h),
-
-          // Thông tin tài khoản Google đám mây
+          // Thẻ tài khoản đám mây gọn gàng
           Container(
             padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
             decoration: BoxDecoration(
@@ -70,74 +72,98 @@ class AccountConflictDialog extends StatelessWidget {
               borderRadius: BorderRadius.circular(10.r),
               border: Border.all(color: cardBorder, width: 1.w),
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: Row(
               children: [
-                Row(
-                  children: [
-                    Icon(
-                      Icons.cloud_done_rounded,
-                      size: 18.w,
-                      color: isPaper ? AppColors.paperGreen : AppColors.blue,
-                    ),
-                    SizedBox(width: 6.w),
-                    AppText.t3(
-                      'Bản lưu trên Google',
-                      fontWeight: FontWeight.w700,
-                      color: textDark,
-                      fontSize: 14.sp,
-                    ),
-                  ],
+                Container(
+                  width: 36.r,
+                  height: 36.r,
+                  decoration: BoxDecoration(
+                    color: (isPaper ? AppColors.paperGreen : AppColors.blue)
+                        .withValues(alpha: 0.15),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Icons.cloud_done_rounded,
+                    size: 20.r,
+                    color: isPaper ? AppColors.paperGreen : AppColors.blue,
+                  ),
                 ),
-                SizedBox(height: 6.h),
-                if (conflict.cloudElo > 0)
-                  AppText.b2(
-                    'Điểm Elo: ${conflict.cloudElo}',
-                    color: textMuted,
+                SizedBox(width: 10.w),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      AppText.t3(
+                        conflict.displayName,
+                        fontWeight: FontWeight.w700,
+                        color: textDark,
+                        fontSize: 13.5.sp,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      SizedBox(height: 2.h),
+                      Row(
+                        children: [
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 6.w,
+                              vertical: 1.h,
+                            ),
+                            decoration: BoxDecoration(
+                              color: AppColors.orange.withValues(alpha: 0.15),
+                              borderRadius: BorderRadius.circular(4.r),
+                            ),
+                            child: AppText.c1(
+                              'Cấp ${conflict.level}',
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.orangeDark,
+                              fontSize: 10.5.sp,
+                            ),
+                          ),
+                          SizedBox(width: 6.w),
+                          AppText.c1(
+                            '${conflict.xp} XP',
+                            color: textMuted,
+                            fontSize: 11.sp,
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                if (conflict.cloudMatches > 0)
-                  AppText.b2(
-                    'Số trận đã đấu: ${conflict.cloudMatches}',
-                    color: textMuted,
-                  ),
-                if (conflict.cloudLastActive.isNotEmpty)
-                  AppText.b2(
-                    'Hoạt động gần nhất: ${conflict.cloudLastActive}',
-                    color: textMuted,
-                  ),
+                ),
               ],
             ),
           ),
-          SizedBox(height: 14.h),
+          SizedBox(height: 12.h),
 
-          // Nút Gộp dữ liệu (Merge)
+          AppText.b2(
+            l10n.syncCloudPrompt,
+            color: textMuted,
+            textAlign: TextAlign.center,
+            fontSize: 12.sp,
+          ),
+          SizedBox(height: 12.h),
+
+          // Nút Đồng bộ bản lưu
           AppButton(
-            text: 'GỘP TIẾN ĐỘ (KHUYÊN DÙNG)',
+            text: l10n.syncCloudSave,
             backgroundColor: isPaper ? AppColors.paperGreen : AppColors.green,
             extrusionColor: isPaper
                 ? AppColors.paperGreenExtrusion
                 : AppColors.greenDark,
-            fontSize: 12.sp,
-            onPressed: () =>
-                Navigator.of(context).pop(ConflictResolutionChoice.merge),
-          ),
-          SizedBox(height: 8.h),
-
-          // Nút Dùng bản lưu đám mây (Overwrite)
-          AppButton.secondary(
-            text: 'Dùng dữ liệu đám mây (Ghi đè)',
+            height: 34.h,
             fontSize: 12.sp,
             onPressed: () =>
                 Navigator.of(context).pop(ConflictResolutionChoice.overwrite),
           ),
-          SizedBox(height: 6.h),
+          SizedBox(height: 4.h),
 
           // Huỷ
           TextButton(
             onPressed: () =>
                 Navigator.of(context).pop(ConflictResolutionChoice.cancel),
             child: AppText.c1(
-              'Huỷ bỏ',
+              l10n.cancel,
               color: textMuted,
             ),
           ),

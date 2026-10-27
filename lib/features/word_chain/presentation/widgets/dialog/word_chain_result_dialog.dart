@@ -5,6 +5,7 @@ import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
 import 'package:bufopia/features/word_chain/domain/entities/reward.dart';
 import 'package:bufopia/features/word_chain/presentation/bloc/word_chain_bloc.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -62,10 +63,10 @@ class WordChainResultDialog extends StatelessWidget {
     WordChainBloc? bloc,
     String? finishReason,
     Reward? reward,
-    String player1Name = 'Bạn',
+    String? player1Name,
     String? player1Avatar,
     int player1Lives = 3,
-    String player2Name = 'Đối thủ',
+    String? player2Name,
     String? player2Avatar,
     int player2Lives = 3,
     int p1CorrectCount = 0,
@@ -77,6 +78,7 @@ class WordChainResultDialog extends StatelessWidget {
     String p1Streak = '0',
     String p2Streak = '0',
   }) {
+    final l10n = context.l10n;
     return showDialog<void>(
       context: context,
       barrierDismissible: false,
@@ -86,10 +88,10 @@ class WordChainResultDialog extends StatelessWidget {
           isWinner: isWinner,
           finishReason: finishReason,
           reward: reward,
-          player1Name: player1Name,
+          player1Name: player1Name ?? l10n.you,
           player1Avatar: player1Avatar,
           player1Lives: player1Lives,
-          player2Name: player2Name,
+          player2Name: player2Name ?? l10n.humanOpponent,
           player2Avatar: player2Avatar,
           player2Lives: player2Lives,
           p1CorrectCount: p1CorrectCount,
@@ -111,23 +113,20 @@ class WordChainResultDialog extends StatelessWidget {
     );
   }
 
-  String _getReasonText() {
+  String _getReasonText(BuildContext context) {
+    final l10n = context.l10n;
     switch (finishReason) {
       case 'lives_depleted':
-        return isWinner ? 'Đối thủ đã hết số mạng!' : 'Bạn đã hết số mạng!';
+        return isWinner ? l10n.opponentLivesDepleted : l10n.myLivesDepleted;
       case 'timeout':
-        return isWinner ? 'Đối thủ đã hết thời gian!' : 'Bạn đã hết thời gian!';
+        return isWinner ? l10n.opponentTimeout : l10n.myTimeout;
       case 'surrender':
-        return isWinner
-            ? 'Đối thủ đã đầu hàng!'
-            : 'Bạn đã kết thúc sớm ván đấu!';
+        return isWinner ? l10n.opponentSurrendered : l10n.mySurrendered;
       case 'left':
       case 'abandoned':
-        return 'Đối thủ đã thoát khỏi trận đấu!';
+        return l10n.opponentAbandoned;
       default:
-        return isWinner
-            ? 'Chiến thắng thuộc về bạn!'
-            : 'Chúc bạn may mắn lần sau!';
+        return isWinner ? l10n.victoryBelongsToYou : l10n.betterLuckNextTime;
     }
   }
 
@@ -135,6 +134,7 @@ class WordChainResultDialog extends StatelessWidget {
   Widget build(BuildContext context) {
     final isPaper = context.select<AppBloc, bool>((b) => b.state.isPaperTheme);
 
+    final l10n = context.l10n;
     // Xây dựng danh sách badges cho Player 1
     final gainedXp = reward != null
         ? reward!.gainedXp
@@ -154,7 +154,7 @@ class WordChainResultDialog extends StatelessWidget {
     // Xây dựng danh sách badges cho Player 2
     final p2Badges = <Widget>[
       AppResultBadgeChip.rival(),
-      if (!isWinner) AppResultBadgeChip.rival(text: 'Dẫn đầu lượt luyện'),
+      if (!isWinner) AppResultBadgeChip.rival(text: l10n.leadingTurn),
     ];
 
     final p1Card = AppResultPlayerCard(
@@ -162,7 +162,7 @@ class WordChainResultDialog extends StatelessWidget {
       avatarUrl: player1Avatar,
       isLeader: isWinner,
       lives: player1Lives.clamp(0, 3),
-      correctCount: '$p1CorrectCount từ',
+      correctCount: l10n.wordsCount(p1CorrectCount),
       fastestTime: p1FastestTime,
       accuracy: p1Accuracy,
       streak: p1Streak,
@@ -176,7 +176,7 @@ class WordChainResultDialog extends StatelessWidget {
       nameColor: const Color(0xFF1E88E5),
       isLeader: !isWinner,
       lives: player2Lives.clamp(0, 3),
-      correctCount: '$p2CorrectCount từ',
+      correctCount: l10n.wordsCount(p2CorrectCount),
       fastestTime: p2FastestTime,
       accuracy: p2Accuracy,
       streak: p2Streak,
@@ -222,7 +222,7 @@ class WordChainResultDialog extends StatelessWidget {
                   children: [
                     // Tiêu đề trận đấu
                     AppText.h1(
-                      isWinner ? '🎉 CHIẾN THẮNG!' : '😢 KẾT THÚC VÁN ĐẤU',
+                      isWinner ? l10n.victory : '😢 ${l10n.matchEnd}',
                       color: isWinner
                           ? (isPaper
                                 ? AppColors.paperGreenDark
@@ -233,7 +233,7 @@ class WordChainResultDialog extends StatelessWidget {
                     ),
                     SizedBox(height: 3.h),
                     AppText.c1(
-                      _getReasonText(),
+                      _getReasonText(context),
                       color: isPaper
                           ? AppColors.paperTextMedium
                           : AppColors.grayMedium,
@@ -256,7 +256,7 @@ class WordChainResultDialog extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         AppButton.secondary(
-                          text: 'VỀ TRANG CHỦ',
+                          text: l10n.backToHome,
                           icon: const Icon(
                             Icons.home_rounded,
                             size: 16,
@@ -285,6 +285,7 @@ class WordChainResultDialog extends StatelessWidget {
   }
 
   Widget _buildRematchButton(BuildContext context) {
+    final l10n = context.l10n;
     WordChainState? chainState;
     try {
       chainState = context.watch<WordChainBloc>().state;
@@ -298,7 +299,7 @@ class WordChainResultDialog extends StatelessWidget {
     final String btnText;
     final Widget btnIcon;
     if (isRematchPending) {
-      btnText = 'ĐANG CHỜ ĐỐI PHƯƠNG...';
+      btnText = l10n.waitingForOpponent;
       btnIcon = const SizedBox(
         width: 14,
         height: 14,
@@ -308,14 +309,14 @@ class WordChainResultDialog extends StatelessWidget {
         ),
       );
     } else if (isRivalReady) {
-      btnText = 'ĐỐI THỦ ĐÃ SẴN SÀNG!';
+      btnText = l10n.rivalReady;
       btnIcon = const Icon(
         Icons.replay_rounded,
         size: 16,
         color: Colors.white,
       );
     } else {
-      btnText = 'CHƠI LẠI';
+      btnText = l10n.playAgain.toUpperCase();
       btnIcon = const Icon(
         Icons.replay_rounded,
         size: 16,

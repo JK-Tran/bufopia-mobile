@@ -37,8 +37,10 @@ class UrlConstants {
     }
   }
 
-  /// WebSocket base URL
-  static String get webSocketBaseUrl {
+  /// WebSocket base URL (Legacy Cloudflare Worker)
+  static String get webSocketBaseUrl => workerWebSocketBaseUrl;
+
+  static String get workerWebSocketBaseUrl {
     switch (EnvConstants.flavor) {
       case Flavor.develop:
       case Flavor.qa:
@@ -47,4 +49,39 @@ class UrlConstants {
         return 'wss://word-duel-worker.lvthanh-work.workers.dev/ws';
     }
   }
+
+  static String get workerWsBaseUrl {
+    switch (EnvConstants.flavor) {
+      case Flavor.develop:
+      case Flavor.qa:
+      case Flavor.staging:
+      case Flavor.production:
+        return 'wss://word-duel-worker.lvthanh-work.workers.dev';
+    }
+  }
+
+  /// Go Realtime Server Base WebSocket URL
+  static String get goRealtimeWsBaseUrl {
+    switch (EnvConstants.flavor) {
+      case Flavor.develop:
+      case Flavor.qa:
+      case Flavor.staging:
+      case Flavor.production:
+        return 'wss://dictionary-api.bufopia.com';
+    }
+  }
+
+  /// Go Realtime Server Base HTTP URL
+  static String get goRealtimeHttpBaseUrl {
+    switch (EnvConstants.flavor) {
+      case Flavor.develop:
+      case Flavor.qa:
+      case Flavor.staging:
+      case Flavor.production:
+        return 'https://dictionary-api.bufopia.com';
+    }
+  }
+
+  /// Realtime dynamic routing config URL (Worker HTTP GET)
+  static String get realtimeConfigUrl => '$appApiBaseUrl/realtime/config';
 }

@@ -58,12 +58,15 @@ class AppDialog extends StatelessWidget {
             opacity: anim1,
             child: BackdropFilter(
               filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
-              child: AppDialog(
-                title: title,
-                leading: leading,
-                showCloseButton: showCloseButton,
-                onClose: onClose,
-                child: child,
+              child: IgnorePointer(
+                ignoring: anim1.status == AnimationStatus.reverse,
+                child: AppDialog(
+                  title: title,
+                  leading: leading,
+                  showCloseButton: showCloseButton,
+                  onClose: onClose,
+                  child: child,
+                ),
               ),
             ),
           ),
@@ -74,7 +77,17 @@ class AppDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final effectiveRadius = borderRadius ?? BorderRadius.circular(16.r);
+    final effectiveRadius = borderRadius ?? BorderRadius.circular(20.r);
+    final isPaper = context.select<AppBloc, bool>((b) => b.state.isPaperTheme);
+
+    final dialogBg = isPaper ? AppColors.paperCardBg : AppColors.white;
+    final dialogBorder = isPaper
+        ? AppColors.paperBorder
+        : AppColors.classicBorder;
+    final dialogExtrusion = isPaper
+        ? AppColors.paperExtrusion
+        : AppColors.grayExtrusion;
+    final titleColor = isPaper ? AppColors.paperTextDark : AppColors.grayDark;
 
     return Center(
       child: Material(
@@ -82,22 +95,22 @@ class AppDialog extends StatelessWidget {
         child: Container(
           width: width ?? 345.w,
           margin: EdgeInsets.symmetric(horizontal: 16.w),
-          padding: padding ?? EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 18.h),
+          padding: padding ?? EdgeInsets.fromLTRB(18.w, 16.h, 18.w, 18.h),
           decoration: BoxDecoration(
-            color: AppColors.white,
+            color: dialogBg,
             borderRadius: effectiveRadius,
             border: Border.all(
-              color: AppColors.white,
-              width: 2.5.w,
+              color: dialogBorder,
+              width: 2.w,
             ),
             boxShadow: [
               BoxShadow(
-                color: AppColors.dialogCloseIcon,
+                color: dialogExtrusion,
                 offset: Offset(0, extrusionHeight.h),
               ),
               BoxShadow(
-                color: AppColors.black.withValues(alpha: 0.16),
-                offset: Offset(0, (extrusionHeight + 5).h),
+                color: AppColors.black.withValues(alpha: 0.14),
+                offset: Offset(0, (extrusionHeight + 4).h),
                 blurRadius: 16,
               ),
             ],
@@ -117,8 +130,8 @@ class AppDialog extends StatelessWidget {
                         child: AppText.t2(
                           title!,
                           fontSize: 18.sp,
-                          fontWeight: FontWeight.w700,
-                          color: AppColors.grayDark,
+                          fontWeight: FontWeight.w800,
+                          color: titleColor,
                           letterSpacing: 0.4,
                         ),
                       )
@@ -160,6 +173,7 @@ class _AppDialogCloseButtonState extends State<_AppDialogCloseButton>
     with SingleTickerProviderStateMixin {
   late final AnimationController _pressController;
   late final Animation<double> _translateAnimation;
+  bool _hasTapped = false;
 
   static const double _extrusionHeight = 3;
 
@@ -187,6 +201,19 @@ class _AppDialogCloseButtonState extends State<_AppDialogCloseButton>
 
   @override
   Widget build(BuildContext context) {
+    final isPaper = context.select<AppBloc, bool>((b) => b.state.isPaperTheme);
+
+    final closeBg = isPaper ? AppColors.paperSurface : AppColors.dialogCloseBg;
+    final closeBorder = isPaper
+        ? AppColors.paperBorder
+        : AppColors.dialogCloseBorder;
+    final closeExtrusion = isPaper
+        ? AppColors.paperExtrusion
+        : AppColors.dialogCloseExtrusion;
+    final closeIcon = isPaper
+        ? AppColors.paperTextMedium
+        : AppColors.dialogCloseIcon;
+
     return AnimatedBuilder(
       animation: _pressController,
       builder: (context, child) {
@@ -202,15 +229,15 @@ class _AppDialogCloseButtonState extends State<_AppDialogCloseButton>
             width: 34.w,
             height: 34.h,
             decoration: BoxDecoration(
-              color: AppColors.dialogCloseBg,
+              color: closeBg,
               shape: BoxShape.circle,
               border: Border.all(
-                color: AppColors.dialogCloseIcon,
+                color: closeBorder,
                 width: 1.5.w,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: AppColors.dialogCloseIcon,
+                  color: closeExtrusion,
                   offset: Offset(0, currentExtrusion),
                 ),
               ],
@@ -221,6 +248,8 @@ class _AppDialogCloseButtonState extends State<_AppDialogCloseButton>
               child: InkWell(
                 customBorder: const CircleBorder(),
                 onTap: () {
+                  if (_hasTapped) return;
+                  _hasTapped = true;
                   context.read<AppBloc>().add(
                     const AppEvent.clickSoundPlayed(),
                   );
@@ -232,7 +261,7 @@ class _AppDialogCloseButtonState extends State<_AppDialogCloseButton>
                 child: Center(
                   child: Icon(
                     Icons.close_rounded,
-                    color: AppColors.dialogCloseIcon,
+                    color: closeIcon,
                     size: 18.w,
                   ),
                 ),

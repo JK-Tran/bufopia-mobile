@@ -101,27 +101,18 @@ class _VocabularyAnswerItemState extends State<VocabularyAnswerItem> {
       extrusionColor = isPaper
           ? AppColors.paperGreenExtrusion
           : AppColors.greenDark;
-    } else if (widget.status == VocabularyAnswerStatus.wrong) {
+    } else if (widget.status == VocabularyAnswerStatus.wrong ||
+        (widget.isOpponentSelected && widget.isOpponentCorrect == false)) {
       cardBgColor = AppColors.red;
       textColor = AppColors.white;
       borderColor = AppColors.redLight;
       extrusionColor = AppColors.redDark;
     } else if (widget.isOpponentSelected) {
-      // Đối thủ đã chọn ô này: Đánh dấu viền để người chơi nhận biết
-      if (widget.isOpponentCorrect == false) {
-        borderColor = AppColors.red;
-        extrusionColor = AppColors.redDark.withValues(alpha: 0.6);
-        cardBgColor = isPaper
-            ? AppColors.white
-            : AppColors.red.withValues(alpha: 0.06);
-      } else {
-        borderColor = isPaper
-            ? AppColors.playerBlueBorder
-            : AppColors.playerBlue;
-        extrusionColor = isPaper
-            ? AppColors.playerBlueExtrusion
-            : AppColors.playerBlueExtrusion;
-      }
+      // Đối thủ đã chọn ô này và đang chờ kết quả: Đánh dấu viền xanh
+      borderColor = isPaper ? AppColors.playerBlueBorder : AppColors.playerBlue;
+      extrusionColor = isPaper
+          ? AppColors.playerBlueExtrusion
+          : AppColors.playerBlueExtrusion;
     } else if (widget.isPlayerSelected) {
       borderColor = isPaper ? AppColors.playerPinkBorder : AppColors.playerPink;
       extrusionColor = isPaper

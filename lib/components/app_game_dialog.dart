@@ -1,6 +1,7 @@
 import 'package:bufopia/components/app_button.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -12,7 +13,7 @@ class AppGameDialog extends StatelessWidget {
     super.key,
     this.icon,
     this.headerTrailing,
-    this.footerText = '⭐ Học vui mỗi ngày - Rèn luyện từ vựng tiếng Anh ⭐',
+    this.footerText = _defaultFooter,
     this.footerChild,
     this.onClose,
     this.maxWidth,
@@ -29,6 +30,7 @@ class AppGameDialog extends StatelessWidget {
     this.footerTextColor,
     this.headerTitleColor,
   });
+  static const String _defaultFooter = '__DEFAULT_GAME_DIALOG_FOOTER__';
 
   final String title;
   final Widget child;
@@ -57,7 +59,7 @@ class AppGameDialog extends StatelessWidget {
     required String title,
     IconData? icon,
     Widget? headerTrailing,
-    String? footerText,
+    String? footerText = _defaultFooter,
     Widget? footerChild,
     VoidCallback? onClose,
     double? maxWidth,
@@ -125,7 +127,7 @@ class AppGameDialog extends StatelessWidget {
       backgroundColor: Colors.transparent,
       insetPadding: insetPad,
       child: Container(
-        height: height ?? (!isScrollable ? resolvedMaxHeight : null),
+        height: height,
         constraints: BoxConstraints(
           maxWidth: resolvedMaxWidth,
           maxHeight: resolvedMaxHeight,
@@ -155,7 +157,7 @@ class AppGameDialog extends StatelessWidget {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(isLandscape ? 16 : 18.w),
           child: Column(
-            mainAxisSize: isScrollable ? MainAxisSize.min : MainAxisSize.max,
+            mainAxisSize: height != null ? MainAxisSize.max : MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // ── 1. Header Bar ──────────────────────────────────────────
@@ -170,12 +172,17 @@ class AppGameDialog extends StatelessWidget {
                     child: child,
                   ),
                 )
-              else
+              else if (height != null)
                 Expanded(
                   child: Padding(
                     padding: bodyPad,
                     child: child,
                   ),
+                )
+              else
+                Padding(
+                  padding: bodyPad,
+                  child: child,
                 ),
 
               // ── 3. Footer Bar ──────────────────────────────────────────
@@ -259,7 +266,10 @@ class AppGameDialog extends StatelessWidget {
     if (footerChild != null) {
       return footerChild!;
     }
-    if (footerText == null || footerText!.isEmpty) {
+    final text = footerText == _defaultFooter
+        ? context.l10n.defaultGameDialogFooter
+        : footerText;
+    if (text == null || text.isEmpty) {
       return const SizedBox.shrink();
     }
     return Container(
@@ -274,10 +284,10 @@ class AppGameDialog extends StatelessWidget {
       ),
       child: Center(
         child: AppText.c1(
-          footerText!,
+          text,
           color: footerTextColor ?? AppColors.skyDark,
           fontWeight: FontWeight.w700,
-          fontSize: isLandscape ? 10 : 10.sp,
+          fontSize: isLandscape ? 12 : 12.sp,
         ),
       ),
     );

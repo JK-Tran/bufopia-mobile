@@ -8,6 +8,7 @@ import 'package:bufopia/features/auth/domain/usecases/get_cached_user_use_case.d
 import 'package:bufopia/features/vocabulary/domain/entities/word_profile.dart';
 import 'package:bufopia/features/vocabulary/domain/usecases/get_word_profiles_use_case.dart';
 import 'package:bufopia/shared/di/di.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:bufopia/shared/services/device/device_uid_service.dart';
 import 'package:bufopia/shared/services/firebase/firebase_auth_service.dart';
 import 'package:flutter/material.dart';
@@ -31,7 +32,7 @@ class VocabularyReviewWordsDialog extends StatefulWidget {
 
     return AppGameDialog.show(
       context: context,
-      title: 'ÔN TẬP TỪ YẾU (SRS)',
+      title: context.l10n.weakWordsSRS,
       icon: Icons.psychology_rounded,
       maxWidth: 630.w,
       maxHeight: 295.h,
@@ -59,8 +60,7 @@ class VocabularyReviewWordsDialog extends StatefulWidget {
               ),
             ]
           : null,
-      footerText:
-          '⭐ Thuật toán Spaced Repetition tự động nhắc từ bạn hay quên ⭐',
+      footerText: context.l10n.srsAlgorithmDesc,
       footerBackgroundColor: isPaper ? AppColors.paperSurface : null,
       footerBorderColor: isPaper ? AppColors.paperBorder : null,
       footerTextColor: isPaper ? AppColors.paperTextMedium : null,
@@ -133,13 +133,13 @@ class _VocabularyReviewWordsDialogState
             ),
             SizedBox(height: 8.h),
             AppText.b1(
-              'Chưa có từ yếu nào cần ôn tập!',
+              context.l10n.noWeakWordsTitle,
               fontWeight: FontWeight.bold,
               color: AppColors.grayDark,
             ),
             SizedBox(height: 4.h),
             AppText.c1(
-              'Hãy tham gia Quick Battle để tích lũy và kiểm tra vốn từ!',
+              context.l10n.noWeakWordsSubtitle,
               color: AppColors.grayMedium,
             ),
           ],
@@ -156,7 +156,7 @@ class _VocabularyReviewWordsDialogState
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               AppText.b2(
-                'Tổng cộng: ${_profiles.length} từ trong hồ sơ ghi nhớ',
+                context.l10n.totalWordsInProfile(_profiles.length),
                 fontWeight: FontWeight.bold,
                 color: AppColors.purpleDark,
               ),
@@ -168,7 +168,7 @@ class _VocabularyReviewWordsDialogState
                   },
                   icon: const Icon(Icons.play_arrow_rounded, size: 16),
                   label: AppText.c1(
-                    'Luyện tập ngay',
+                    context.l10n.practiceNow,
                     color: AppColors.white,
                     fontWeight: FontWeight.bold,
                   ),
@@ -232,7 +232,10 @@ class _VocabularyReviewWordsDialogState
                             color: AppColors.grayDark,
                           ),
                           AppText.c1(
-                            'Quen thuộc: ${p.familiarity}/5 • Lặp lại: ${p.interval} ngày',
+                            context.l10n.familiarityInterval(
+                              p.familiarity,
+                              p.interval,
+                            ),
                             color: AppColors.grayMedium,
                           ),
                         ],
@@ -250,7 +253,9 @@ class _VocabularyReviewWordsDialogState
                         borderRadius: BorderRadius.circular(8.w),
                       ),
                       child: AppText.c1(
-                        isWeak ? 'Hay quên (${p.lapses})' : 'Đã nhớ tốt',
+                        isWeak
+                            ? context.l10n.frequentlyForgotten(p.lapses)
+                            : context.l10n.wellRemembered,
                         fontWeight: FontWeight.bold,
                         color: isWeak ? AppColors.redDark : AppColors.greenDark,
                       ),

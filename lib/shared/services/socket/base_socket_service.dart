@@ -8,6 +8,30 @@ import 'package:bufopia/shared/services/socket/models/socket_event.dart';
 import 'package:bufopia/shared/utils/log_utils.dart';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
+/// Dữ liệu xác thực qua First-Frame Handshake (Go Realtime Server)
+class FirstFrameAuth {
+  const FirstFrameAuth({
+    required this.uid,
+    this.token,
+    this.deviceSecret,
+  });
+
+  final String uid;
+  final String? token;
+  final String? deviceSecret;
+
+  Map<String, dynamic> toJson() {
+    final t = token;
+    final ds = deviceSecret;
+    return {
+      'type': 'authenticate',
+      'uid': uid,
+      if (t != null && t.isNotEmpty) 'token': t,
+      if (ds != null && ds.isNotEmpty) 'deviceSecret': ds,
+    };
+  }
+}
+
 /// Lớp cơ sở trừu tượng quản lý kết nối WebSocket tầng thấp:
 /// vòng đời kết nối, heartbeat ping/pong, tự động kết nối lại khi rớt mạng,
 /// quản lý stream sự kiện và gửi nhận raw message.
@@ -38,6 +62,7 @@ abstract class BaseSocketService {
 
   int _sessionId = 0;
   String? _lastConnectedUrl;
+  FirstFrameAuth? _lastFirstFrameAuth;
   bool _isManuallyClosed = false;
   bool isNormalServerClose = false;
 
@@ -70,13 +95,18 @@ abstract class BaseSocketService {
     return deviceAuthService.getDeviceSecret();
   }
 
-  /// Kết nối đến WebSocket URL
-  Future<void> connectUrl(String url, {bool isReconnecting = false}) async {
+  /// Kết nối đến WebSocket URL (hỗ trợ cả First-Frame Auth và Ticket Auth)
+  Future<void> connectUrl(
+    String url, {
+    FirstFrameAuth? firstFrameAuth,
+    bool isReconnecting = false,
+  }) async {
     if (!isReconnecting) {
       await disconnect();
       _isManuallyClosed = false;
       _reconnectAttempts = 0;
       _lastConnectedUrl = url;
+      _lastFirstFrameAuth = firstFrameAuth;
     } else {
       stopHeartbeat();
       _sessionId++;
@@ -99,7 +129,8 @@ abstract class BaseSocketService {
           : SocketConnectionState.connecting,
     );
     Log.d(
-      'Connecting to WebSocket: $url (reconnect: $isReconnecting)',
+      'Connecting to WebSocket: $url (reconnect: $isReconnecting, '
+      'firstFrame: ${firstFrameAuth != null})',
       name: logTag,
     );
 
@@ -118,15 +149,6 @@ abstract class BaseSocketService {
       }
 
       _channel = newChannel;
-      updateState(SocketConnectionState.connected);
-      Log.d('WebSocket connected successfully', name: logTag);
-
-      if (isReconnecting) {
-        _reconnectAttempts = 0;
-        emitEvent(const SocketReconnectedEvent());
-      }
-
-      startHeartbeat();
 
       _channelSubscription = _channel?.stream.listen(
         _handleIncomingMessage,
@@ -134,6 +156,25 @@ abstract class BaseSocketService {
         onDone: _handleDone,
         cancelOnError: true,
       );
+
+      if (firstFrameAuth != null) {
+        // Giao thức Auth B: First-Frame WebSocket Handshake (Go Server)
+        final authPayload = jsonEncode(firstFrameAuth.toJson());
+        Log.d('Sending First-Frame Authenticate: $authPayload', name: logTag);
+        newChannel.sink.add(authPayload);
+        // Socket vẫn ở trạng thái connecting cho đến khi nhận được 'welcome'
+      } else {
+        // Giao thức Auth A: Ticket-based WebSocket (Cloudflare Worker)
+        updateState(SocketConnectionState.connected);
+        Log.d('WebSocket connected successfully', name: logTag);
+
+        if (isReconnecting) {
+          _reconnectAttempts = 0;
+          emitEvent(const SocketReconnectedEvent());
+        }
+
+        startHeartbeat();
+      }
     } on Object catch (e, stackTrace) {
       if (_sessionId != currentSession || _isManuallyClosed) return;
       Log.e(
@@ -180,6 +221,19 @@ abstract class BaseSocketService {
 
       final type = json['type'] as String? ?? '';
       switch (type) {
+        case 'welcome':
+          Log.d('First-Frame Welcome received: $json', name: logTag);
+          if (_connectionState != SocketConnectionState.connected) {
+            updateState(SocketConnectionState.connected);
+            Log.d('WebSocket ready after First-Frame Welcome', name: logTag);
+            if (_reconnectAttempts > 0) {
+              _reconnectAttempts = 0;
+              emitEvent(const SocketReconnectedEvent());
+            }
+            startHeartbeat();
+          }
+          await onWelcome(json);
+          return;
         case 'pong':
           return;
         case 'ping':
@@ -204,6 +258,9 @@ abstract class BaseSocketService {
   /// Hàm trừu tượng để lớp con xử lý các sự kiện riêng của từng chế độ game
   FutureOr<void> handleGameEvent(String type, Map<String, dynamic> json);
 
+  /// Hook được gọi sau khi nhận gói tin 'welcome' từ Go Realtime Server
+  FutureOr<void> onWelcome(Map<String, dynamic> json) {}
+
   void _handleError(Object error) {
     Log.e('WebSocket stream error: $error', name: logTag);
     stopHeartbeat();
@@ -215,7 +272,11 @@ abstract class BaseSocketService {
   }
 
   void _handleDone() {
-    Log.d('WebSocket stream closed', name: logTag);
+    Log.d(
+      'WebSocket stream closed. closeCode: ${_channel?.closeCode}, '
+      'closeReason: ${_channel?.closeReason}',
+      name: logTag,
+    );
     stopHeartbeat();
     if (isNormalServerClose || _isManuallyClosed || _lastConnectedUrl == null) {
       isNormalServerClose = false;
@@ -262,7 +323,11 @@ abstract class BaseSocketService {
   /// (ticket) trước khi mở lại WebSocket connection.
   Future<void> reconnect() async {
     if (!_isManuallyClosed && _lastConnectedUrl != null) {
-      await connectUrl(_lastConnectedUrl!, isReconnecting: true);
+      await connectUrl(
+        _lastConnectedUrl!,
+        firstFrameAuth: _lastFirstFrameAuth,
+        isReconnecting: true,
+      );
     }
   }
 
@@ -325,6 +390,7 @@ abstract class BaseSocketService {
     _reconnectTimer = null;
     _reconnectAttempts = 0;
     _lastConnectedUrl = null;
+    _lastFirstFrameAuth = null;
 
     stopHeartbeat();
     _sessionId++;

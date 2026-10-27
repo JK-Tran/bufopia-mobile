@@ -1,9 +1,10 @@
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-enum FeedbackActiveTab { history, general }
+enum FeedbackActiveTab { history, general, wordList }
 
 class FeedbackHeader extends StatelessWidget {
   const FeedbackHeader({
@@ -22,6 +23,7 @@ class FeedbackHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isTabHistory = activeTab == FeedbackActiveTab.history;
+    final l10n = context.l10n;
 
     return Row(
       children: [
@@ -30,7 +32,7 @@ class FeedbackHeader extends StatelessWidget {
           child: _TabButton(
             isSelected: isTabHistory,
             icon: Icons.history_rounded,
-            label: 'Lịch sử từ đã chơi',
+            label: l10n.historyWordsTab,
             badgeText: '$historyCount',
             onTap: () => onTabChanged(FeedbackActiveTab.history),
           ),
@@ -41,7 +43,7 @@ class FeedbackHeader extends StatelessWidget {
           child: _TabButton(
             isSelected: !isTabHistory,
             icon: Icons.auto_awesome_rounded,
-            label: 'Góp ý chung / Khác',
+            label: l10n.generalFeedbackTab,
             onTap: () => onTabChanged(FeedbackActiveTab.general),
           ),
         ),

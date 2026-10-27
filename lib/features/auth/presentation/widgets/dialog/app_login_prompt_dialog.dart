@@ -4,6 +4,7 @@ import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
 import 'package:bufopia/features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -24,7 +25,7 @@ class AppLoginPromptDialog extends StatelessWidget {
     context.read<AppBloc>().add(const AppEvent.clickSoundPlayed());
     return AppDialog.show(
       context,
-      title: 'YÊU CẦU ĐĂNG NHẬP',
+      title: context.l10n.loginPromptTitle,
       leading: Container(
         padding: EdgeInsets.all(4.w),
         decoration: BoxDecoration(
@@ -51,7 +52,7 @@ class AppLoginPromptDialog extends StatelessWidget {
     final bodyColor = isPaper
         ? AppColors.paperTextMedium
         : AppColors.grayMedium;
-    final featureText = featureName ?? 'chế độ Thi đấu Online & Phòng riêng';
+    final featureText = featureName ?? context.l10n.defaultOnlineModeName;
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -97,7 +98,7 @@ class AppLoginPromptDialog extends StatelessWidget {
 
         // Tiêu đề giải thích
         AppText.t3(
-          'Đăng nhập để mở khóa',
+          context.l10n.loginToUnlock,
           textAlign: TextAlign.center,
           fontSize: 14.sp,
           fontWeight: FontWeight.w700,
@@ -110,8 +111,7 @@ class AppLoginPromptDialog extends StatelessWidget {
         Padding(
           padding: EdgeInsets.symmetric(horizontal: 10.w),
           child: AppText.c1(
-            'Bạn đang chơi ở tài khoản Khách. Vui lòng đăng nhập Google'
-            ' để trải nghiệm $featureText và lưu thành tích lên Bảng xếp hạng!',
+            context.l10n.loginPromptDesc(featureText),
             textAlign: TextAlign.center,
             color: bodyColor,
             fontSize: 10.sp,
@@ -126,7 +126,7 @@ class AppLoginPromptDialog extends StatelessWidget {
             Expanded(
               flex: 4,
               child: AppButton.secondary(
-                text: 'ĐỂ SAU',
+                text: context.l10n.maybeLater,
                 fontSize: 12.sp,
                 height: 38.h,
                 onPressed: () {
@@ -146,7 +146,7 @@ class AppLoginPromptDialog extends StatelessWidget {
                   size: 16.r,
                   color: AppColors.white,
                 ),
-                text: 'ĐĂNG NHẬP GOOGLE',
+                text: context.l10n.loginGoogle,
                 backgroundColor: isPaper
                     ? AppColors.paperGreen
                     : AppColors.blue,

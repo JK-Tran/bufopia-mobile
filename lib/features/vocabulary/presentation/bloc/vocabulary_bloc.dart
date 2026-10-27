@@ -3,6 +3,9 @@ import 'dart:math';
 
 import 'package:bufopia/core/base/base_bloc.dart';
 import 'package:bufopia/features/auth/domain/usecases/get_cached_user_use_case.dart';
+import 'package:bufopia/features/practice/domain/entities/word_memory.dart';
+import 'package:bufopia/features/practice/domain/repositories/practice_repository.dart';
+import 'package:bufopia/features/practice/domain/services/srs_engine.dart';
 import 'package:bufopia/features/vocabulary/data/mapper/battle_question_data_mapper.dart';
 import 'package:bufopia/features/vocabulary/data/models/battle_question_data.dart';
 import 'package:bufopia/features/vocabulary/domain/entities/battle_deck.dart';
@@ -10,11 +13,11 @@ import 'package:bufopia/features/vocabulary/domain/entities/battle_option.dart';
 import 'package:bufopia/features/vocabulary/domain/entities/battle_question.dart';
 import 'package:bufopia/features/vocabulary/domain/entities/battle_reward.dart';
 import 'package:bufopia/features/vocabulary/domain/entities/match_record.dart';
-import 'package:bufopia/features/vocabulary/domain/entities/word_profile.dart';
 import 'package:bufopia/features/vocabulary/domain/usecases/get_battle_deck_use_case.dart';
 import 'package:bufopia/features/vocabulary/domain/usecases/submit_battle_reward_use_case.dart';
 import 'package:bufopia/features/vocabulary/domain/usecases/submit_match_result_use_case.dart';
-import 'package:bufopia/features/vocabulary/domain/usecases/submit_word_profiles_use_case.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
+import 'package:bufopia/shared/services/audio/sound_manager.dart';
 import 'package:bufopia/shared/services/device/device_uid_service.dart';
 import 'package:bufopia/shared/services/firebase/firebase_auth_service.dart';
 import 'package:bufopia/shared/services/socket/duel_socket_service.dart';
@@ -33,7 +36,7 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
     this._getBattleDeckUseCase,
     this._submitMatchResultUseCase,
     this._submitBattleRewardUseCase,
-    this._submitWordProfilesUseCase,
+    this._practiceRepository,
     this._deviceUidService,
     this._getCachedUserUseCase,
     this._firebaseAuthService,
@@ -65,12 +68,15 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
   final GetBattleDeckUseCase _getBattleDeckUseCase;
   final SubmitMatchResultUseCase _submitMatchResultUseCase;
   final SubmitBattleRewardUseCase _submitBattleRewardUseCase;
-  final SubmitWordProfilesUseCase _submitWordProfilesUseCase;
+  final PracticeRepository _practiceRepository;
   final DeviceUidService _deviceUidService;
   final GetCachedUserUseCase _getCachedUserUseCase;
   final FirebaseAuthService _firebaseAuthService;
   final DuelSocketService _socketService;
   final BattleQuestionDataMapper _questionMapper;
+
+  final Map<String, double> _questionElapsedSeconds = {};
+  final Map<String, bool> _questionAnswers = {};
 
   /// Helper giải quyết UID chuẩn:
   /// ưu tiên providedUid -> cached user -> Firebase UID -> DeviceUid
@@ -207,6 +213,8 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
         _cooldownTimerP1?.cancel();
         _cooldownTimerP2?.cancel();
         _lockedUntilMs = 0;
+        _questionElapsedSeconds.clear();
+        _questionAnswers.clear();
         await _socketSubscription?.cancel();
         _socketSubscription = null;
 
@@ -346,7 +354,7 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
           safeEmit(
             state.copyWith(
               isLoading: false,
-              errorMessage: 'Không thể tải bộ câu hỏi từ máy chủ',
+              errorMessage: S.current.cannotLoadQuestionsFromServer,
             ),
           );
           return;
@@ -465,7 +473,14 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
         event.selectedWord == currentQ.en || event.selectedWord == currentQ.vi;
 
     if (event.isPlayer1) {
+      final elapsedMs =
+          DateTime.now().millisecondsSinceEpoch - _localRoundStartTime;
+      final elapsedSeconds = elapsedMs / 1000.0;
+      _questionElapsedSeconds[currentQ.id] = elapsedSeconds;
+      _questionAnswers[currentQ.id] = isCorrect;
+
       if (isCorrect) {
+        SoundManager.playCorrect();
         _countdownTimer?.cancel();
         _botTimer?.cancel();
 
@@ -486,6 +501,7 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
         );
         _scheduleNextRound();
       } else {
+        SoundManager.playWrong();
         final updatedWrong = List<String>.from(state.wrongWordsP1);
         if (!updatedWrong.contains(event.selectedWord)) {
           updatedWrong.add(event.selectedWord);
@@ -502,13 +518,22 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
         _startCooldownP1();
       }
     } else {
+      final selectedOpt = currentQ.options.firstWhere(
+        (o) => o.en == event.selectedWord || o.vi == event.selectedWord,
+        orElse: () => const BattleOption(),
+      );
+
       if (isCorrect) {
+        SoundManager.playCorrect();
         _countdownTimer?.cancel();
         _botTimer?.cancel();
 
         safeEmit(
           state.copyWith(
             selectedWordP2: event.selectedWord,
+            selectedOptionIdP2: selectedOpt.id.isNotEmpty
+                ? selectedOpt.id
+                : null,
             isP2Correct: true,
             isRoundLocked: true,
             player2Score: state.player2Score + 100,
@@ -516,6 +541,7 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
         );
         _scheduleNextRound();
       } else {
+        SoundManager.playWrong();
         final updatedWrong = List<String>.from(state.wrongWordsP2);
         if (!updatedWrong.contains(event.selectedWord)) {
           updatedWrong.add(event.selectedWord);
@@ -524,6 +550,9 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
         safeEmit(
           state.copyWith(
             selectedWordP2: event.selectedWord,
+            selectedOptionIdP2: selectedOpt.id.isNotEmpty
+                ? selectedOpt.id
+                : null,
             isP2Correct: false,
             wrongWordsP2: updatedWrong,
             isRoundLocked: false,
@@ -554,10 +583,19 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
       final remainingSeconds = ((12000 - elapsedMs) / 1000).ceil().clamp(0, 12);
       if (remainingSeconds != state.remainingSeconds) {
         safeEmit(state.copyWith(remainingSeconds: remainingSeconds));
+        if (remainingSeconds <= 5 && remainingSeconds > 0) {
+          SoundManager.playClick();
+        }
       }
       if (remainingSeconds <= 0) {
+        SoundManager.playWrong();
         safeEmit(state.copyWith(remainingSeconds: 0, isRoundLocked: true));
         _countdownTimer?.cancel();
+        final currentQ = state.currentQuestion;
+        if (currentQ != null && _questionAnswers[currentQ.id] == null) {
+          _questionAnswers[currentQ.id] = false;
+          _questionElapsedSeconds[currentQ.id] = 12.0;
+        }
       }
       return;
     }
@@ -567,11 +605,20 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
     final remainingSeconds = ((10000 - elapsedMs) / 1000).ceil().clamp(0, 10);
     if (remainingSeconds != state.remainingSeconds) {
       safeEmit(state.copyWith(remainingSeconds: remainingSeconds));
+      if (remainingSeconds <= 5 && remainingSeconds > 0) {
+        SoundManager.playClick();
+      }
     }
     if (remainingSeconds <= 0) {
+      SoundManager.playWrong();
       safeEmit(state.copyWith(remainingSeconds: 0, isRoundLocked: true));
       _countdownTimer?.cancel();
       _botTimer?.cancel();
+      final currentQ = state.currentQuestion;
+      if (currentQ != null && _questionAnswers[currentQ.id] == null) {
+        _questionAnswers[currentQ.id] = false;
+        _questionElapsedSeconds[currentQ.id] = 10.0;
+      }
       _scheduleNextRound();
     }
   }
@@ -678,6 +725,9 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
 
         final uid = await _resolveUid(state.currentUid);
         final isWin = state.player1Score >= state.player2Score;
+        if (isWin) {
+          SoundManager.playWin();
+        }
 
         BattleReward? finalReward;
         try {
@@ -731,28 +781,32 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
           );
         } on Object catch (_) {}
 
-        // 3. Đồng bộ tiến trình học SRS của 15 từ vựng (Phase 3)
+        // 3. Đồng bộ tiến trình học SRS của các từ vựng lên server
+        // theo đúng chuẩn Web useBattleGame.js
         try {
-          final nowMs = DateTime.now().millisecondsSinceEpoch;
-          final profiles = state.questions.map((q) {
-            final isP1Correct = state.answersP1[q.id] == true;
-            final interval = isP1Correct ? 6 : 1;
-            return WordProfile(
-              wordId: q.id,
-              familiarity: isP1Correct ? 3 : 1,
-              interval: interval,
-              easeFactor: isP1Correct ? 2.6 : 2.4,
-              nextReview: nowMs + (interval * 24 * 60 * 60 * 1000),
-              lapses: isP1Correct ? 0 : 1,
-            );
-          }).toList();
+          final token = await _firebaseAuthService.getIdToken();
+          final updatedMemories = <WordMemory>[];
 
-          await _submitWordProfilesUseCase.execute(
-            SubmitWordProfilesInput(
+          for (final q in state.questions) {
+            final isCorrect = _questionAnswers[q.id] == true;
+            final elapsed = _questionElapsedSeconds[q.id] ?? 12.0;
+            final wordKey = q.id.startsWith('vocab_') ? q.id : 'vocab_${q.id}';
+
+            final memory = SrsEngine.updateMemory(
+              wordId: wordKey,
+              correct: isCorrect,
+              seconds: elapsed,
+            );
+            updatedMemories.add(memory);
+          }
+
+          if (updatedMemories.isNotEmpty) {
+            await _practiceRepository.submitBatchProfiles(
               uid: uid,
-              profiles: profiles,
-            ),
-          );
+              memories: updatedMemories,
+              token: token,
+            );
+          }
         } on Object catch (_) {}
       },
       doOnError: (e) {
@@ -897,7 +951,7 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
       safeEmit(
         state.copyWith(
           isLoading: false,
-          errorMessage: 'Lỗi đồng bộ bộ đề từ máy chủ: $e',
+          errorMessage: S.current.errorSyncingQuestions('$e'),
         ),
       );
     }
@@ -978,9 +1032,11 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
 
     if (isMe) {
       if (!event.isCorrect) {
+        SoundManager.playWrong();
         _lockedUntilMs = DateTime.now().millisecondsSinceEpoch + 2000;
         _startCooldownP1();
       } else {
+        SoundManager.playCorrect();
         _lockedUntilMs = 0;
         _pendingAnswerTimer?.cancel();
         _cooldownTimerP1?.cancel();
@@ -988,6 +1044,11 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
 
       final updatedAnswers = Map<String, bool>.from(state.answersP1);
       if (currentQ != null) {
+        final elapsedMs =
+            DateTime.now().millisecondsSinceEpoch - _localRoundStartTime;
+        final elapsedSeconds = elapsedMs / 1000.0;
+        _questionElapsedSeconds[currentQ.id] = elapsedSeconds;
+        _questionAnswers[currentQ.id] = event.isCorrect;
         updatedAnswers[currentQ.id] = event.isCorrect;
       }
 
@@ -1016,8 +1077,10 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
       );
     } else {
       if (!event.isCorrect) {
+        SoundManager.playWrong();
         _startCooldownP2();
       } else {
+        SoundManager.playCorrect();
         _cooldownTimerP2?.cancel();
       }
 
@@ -1053,11 +1116,17 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
     _SocketRoundTimeout event,
     Emitter<VocabularyState> emit,
   ) {
+    SoundManager.playWrong();
     _countdownTimer?.cancel();
     _pendingAnswerTimer?.cancel();
     _cooldownTimerP1?.cancel();
     _cooldownTimerP2?.cancel();
     _lockedUntilMs = 0;
+    final currentQ = state.currentQuestion;
+    if (currentQ != null && _questionAnswers[currentQ.id] == null) {
+      _questionAnswers[currentQ.id] = false;
+      _questionElapsedSeconds[currentQ.id] = 12.0;
+    }
     safeEmit(
       state.copyWith(
         remainingSeconds: 0,
@@ -1213,6 +1282,7 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
     _SocketOpponentLeft event,
     Emitter<VocabularyState> emit,
   ) {
+    SoundManager.playWin();
     _countdownTimer?.cancel();
     _botTimer?.cancel();
     _nextRoundTimer?.cancel();
@@ -1222,7 +1292,7 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
     safeEmit(
       state.copyWith(
         isOpponentLeft: true,
-        opponentLeftMessage: event.message ?? 'Đối thủ đã thoát khỏi trận đấu!',
+        opponentLeftMessage: event.message ?? S.current.opponentLeftMatch,
         isRoundLocked: true,
         isRematchRequested: false,
         isOpponentWantRematch: false,

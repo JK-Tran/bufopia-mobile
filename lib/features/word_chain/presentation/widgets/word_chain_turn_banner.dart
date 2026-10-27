@@ -1,6 +1,7 @@
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -24,6 +25,7 @@ class WordChainTurnBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     final isPaper = context.select<AppBloc, bool>((b) => b.state.isPaperTheme);
 
     // 1. Trường hợp có lỗi / từ bị từ chối
@@ -86,7 +88,7 @@ class WordChainTurnBanner extends StatelessWidget {
             ),
             SizedBox(width: 6.w),
             AppText.c1(
-              'Chính xác: $lastCorrectWord',
+              l10n.correctWordLabel(lastCorrectWord!),
               color: isPaper ? AppColors.paperGreenDark : AppColors.green,
               fontSize: 12.sp,
               fontWeight: FontWeight.w700,
@@ -135,9 +137,9 @@ class WordChainTurnBanner extends StatelessWidget {
             child: AppText.c1(
               isMyTurn
                   ? (letter.isNotEmpty
-                        ? 'Đến lượt bạn — hãy nhập từ bắt đầu bằng $letter'
-                        : 'Đến lượt bạn — hãy nhập một từ bất kỳ để bắt đầu')
-                  : '$rivalName đang nghĩ từ nối...',
+                        ? l10n.yourTurnLetter(letter)
+                        : l10n.yourTurnAny)
+                  : l10n.rivalThinking(rivalName),
               color: isPaper ? AppColors.paperTextDark : AppColors.grayDark,
               fontSize: 10.sp,
               fontWeight: FontWeight.w600,

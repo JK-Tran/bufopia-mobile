@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:bufopia/features/chat/data/models/chat_data.dart';
 import 'package:bufopia/shared/services/socket/models/socket_event.dart';
 import 'package:bufopia/shared/services/socket/word_chain_socket_service.dart';
+import 'package:bufopia/shared/services/socket/word_guess_socket_service.dart';
+import 'package:get_it/get_it.dart';
 import 'package:injectable/injectable.dart';
 
 abstract class ChatDataSource {
@@ -14,12 +16,21 @@ abstract class ChatDataSource {
 
 @LazySingleton(as: ChatDataSource)
 class ChatDataSourceImpl implements ChatDataSource {
-  ChatDataSourceImpl(this._socketService) {
+  ChatDataSourceImpl(
+    this._socketService, [
+    WordGuessSocketService? guessSocketService,
+  ]) : _guessSocketService =
+           guessSocketService ?? GetIt.instance<WordGuessSocketService>() {
     _subscription = _socketService.eventStream.listen(_handleSocketEvent);
+    _guessSubscription = _guessSocketService.eventStream.listen(
+      _handleSocketEvent,
+    );
   }
 
   final WordChainSocketService _socketService;
+  final WordGuessSocketService _guessSocketService;
   StreamSubscription<SocketEvent>? _subscription;
+  StreamSubscription<SocketEvent>? _guessSubscription;
 
   final _messageController = StreamController<ChatData>.broadcast();
   final _historyController = StreamController<List<ChatData>>.broadcast();
@@ -59,13 +70,18 @@ class ChatDataSourceImpl implements ChatDataSource {
 
   @override
   void sendChat(String text) {
-    _socketService.sendChat(text);
+    if (_guessSocketService.isConnected) {
+      _guessSocketService.sendChat(text);
+    } else {
+      _socketService.sendChat(text);
+    }
   }
 
   @override
   @disposeMethod
   void dispose() {
     _subscription?.cancel();
+    _guessSubscription?.cancel();
     _messageController.close();
     _historyController.close();
   }

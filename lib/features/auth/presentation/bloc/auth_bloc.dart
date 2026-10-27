@@ -348,11 +348,21 @@ class AuthBloc extends BaseBloc<AuthEvent, AuthState> {
 
         final res = importOutput.result;
         if (res?.isConflict == true && res?.conflict != null) {
+          safeEmit(state.copyWith(pendingIdToken: googleIdToken));
+
+          // Nếu tài khoản khách là mới (xp == 0):
+          // Mục tiêu đăng nhập Google là lấy lại tài khoản cũ.
+          // Tự động overwrite và đăng nhập thẳng vào nick cũ!
+          final isFreshGuest = (state.currentUser?.xp ?? 0) == 0;
+          if (isFreshGuest) {
+            add(const AuthEvent.resolveAccountConflict(action: 'overwrite'));
+            return;
+          }
+
           safeEmit(
             state.copyWith(
               isLoading: false,
               conflict: res!.conflict,
-              pendingIdToken: googleIdToken,
             ),
           );
           return;
@@ -485,10 +495,11 @@ class AuthBloc extends BaseBloc<AuthEvent, AuthState> {
     );
   }
 
-  void _onCancelAccountConflict(
+  FutureOr<void> _onCancelAccountConflict(
     _CancelAccountConflict event,
     Emitter<AuthState> emit,
-  ) {
+  ) async {
+    await _firebaseAuthService.signOut();
     safeEmit(state.copyWith(conflict: null, pendingIdToken: null));
   }
 

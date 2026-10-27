@@ -1,6 +1,6 @@
 name: bufopia
 description: A Very Good Project created by Very Good CLI.
-version: 1.0.0+5
+version: 1.0.0+6
 publish_to: none
 
 environment:
@@ -96,12 +96,12 @@ flutter_launcher_icons:
 
 flutter_native_splash:
   color: "#FFFFFF"
-  image: "assets/images/splash_android12.png"
+  image: "assets/images/playstore.png"
   color_dark: "#FFFFFF"
-  image_dark: "assets/images/splash_android12.png"
+  image_dark: "assets/images/playstore.png"
   android_12:
-    image: "assets/images/splash_android12.png"
+    image: "assets/images/playstore.png"
     icon_background_color: "#FFFFFF"
-    image_dark: "assets/images/splash_android12.png"
+    image_dark: "assets/images/playstore.png"
     icon_background_color_dark: "#FFFFFF"
   fullscreen: true

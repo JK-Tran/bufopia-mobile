@@ -1,6 +1,7 @@
 import 'package:bufopia/components/components.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -55,7 +56,7 @@ class ChallengeJoin extends StatelessWidget {
                 color: isPaper ? AppColors.paperTextDark : AppColors.grayDark,
               ),
               decoration: InputDecoration(
-                hintText: 'NHẬP 6 SỐ HOẶC LINK...',
+                hintText: context.l10n.enterCodeOrLinkHint,
                 hintStyle: TextStyle(
                   fontSize: fontSize,
                   fontWeight: FontWeight.w700,
@@ -77,7 +78,7 @@ class ChallengeJoin extends StatelessWidget {
         // Nút chuẩn AppButton
         if (isPaper)
           AppButton(
-            text: 'VÀO',
+            text: context.l10n.enter,
             icon: Icon(
               Icons.arrow_forward_rounded,
               size: iconSize,
@@ -98,7 +99,7 @@ class ChallengeJoin extends StatelessWidget {
           )
         else
           AppButton.primary(
-            text: 'VÀO',
+            text: context.l10n.enter,
             icon: Icon(
               Icons.arrow_forward_rounded,
               size: iconSize,

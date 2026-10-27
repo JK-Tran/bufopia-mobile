@@ -2,6 +2,7 @@ import 'package:bufopia/components/app_avatar.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/leaderboard/domain/entities/leaderboard.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:bufopia/shared/utils/number_format_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -72,7 +73,7 @@ class LeaderboardListItem extends StatelessWidget {
                 AppText.c1(
                   player.displayName.isNotEmpty
                       ? player.displayName
-                      : 'Ẩn danh',
+                      : context.l10n.anonymous,
                   fontSize: 12.sp,
                   fontWeight: FontWeight.w700,
                   color: isPaper ? AppColors.paperTextDark : AppColors.grayDark,
@@ -80,7 +81,7 @@ class LeaderboardListItem extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
                 AppText.c1(
-                  'Cấp ${player.level}',
+                  context.l10n.levelBadge(player.level),
                   fontSize: 10.sp,
                   color: isPaper
                       ? AppColors.paperTextMuted

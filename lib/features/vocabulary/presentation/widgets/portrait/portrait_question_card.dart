@@ -1,6 +1,7 @@
 import 'package:bufopia/components/app_countdown_timer.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -65,8 +66,8 @@ class PortraitQuestionCard extends StatelessWidget {
           );
 
     final topicText = topicName.isNotEmpty
-        ? 'CHỦ ĐỀ: ${topicName.toUpperCase()}'
-        : 'DỊCH SANG TIẾNG ANH';
+        ? context.l10n.topicHeader(topicName.toUpperCase())
+        : context.l10n.translateToEnglish;
 
     final clockSize = 46.r;
     final halfClock = clockSize / 2;
@@ -89,44 +90,6 @@ class PortraitQuestionCard extends StatelessWidget {
           child: Stack(
             alignment: Alignment.center,
             children: [
-              // Nút loa phát âm
-              Positioned(
-                left: 2.w,
-                child: GestureDetector(
-                  onTap: onSpeakerTap,
-                  child: Container(
-                    width: 38.r,
-                    height: 38.r,
-                    decoration: BoxDecoration(
-                      color: isPaper
-                          ? AppColors.white
-                          : AppColors.lightBackground,
-                      shape: BoxShape.circle,
-                      border: Border.all(
-                        color: isPaper
-                            ? AppColors.paperBorder
-                            : AppColors.grayLight,
-                        width: 1.5.w,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.black.withValues(alpha: 0.08),
-                          offset: Offset(0, 2.h),
-                          blurRadius: 3.r,
-                        ),
-                      ],
-                    ),
-                    child: Icon(
-                      Icons.volume_up_rounded,
-                      size: 18.r,
-                      color: isPaper
-                          ? AppColors.paperTextDark
-                          : AppColors.grayDark,
-                    ),
-                  ),
-                ),
-              ),
-
               // Tiêu đề chủ đề và Từ vựng mục tiêu (Chính giữa thẻ)
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 44.w),

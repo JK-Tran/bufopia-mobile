@@ -3,6 +3,7 @@ import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
 import 'package:bufopia/features/word_chain/domain/entities/turn_message.dart';
 import 'package:bufopia/features/word_chain/presentation/widgets/word_chain_message_item.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -50,14 +51,14 @@ class WordChainMessageList extends StatelessWidget {
               ),
               SizedBox(height: 10.h),
               AppText.t3(
-                'Bắt đầu chuỗi từ mới',
+                context.l10n.startNewChain,
                 color: isPaper ? AppColors.paperTextDark : AppColors.grayDark,
                 fontSize: 14.sp,
                 fontWeight: FontWeight.w700,
               ),
               SizedBox(height: 4.h),
               AppText.c1(
-                'Nhập một từ tiếng Anh bất kỳ để khởi động ván đấu!',
+                context.l10n.startNewChainDesc,
                 color: isPaper
                     ? AppColors.paperTextMuted
                     : AppColors.grayMedium,
@@ -72,7 +73,8 @@ class WordChainMessageList extends StatelessWidget {
 
     return ListView.builder(
       controller: scrollController,
-      padding: EdgeInsets.symmetric(vertical: 8.h),
+      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+      padding: EdgeInsets.only(top: 8.h, bottom: 20.h),
       itemCount: messages.length,
       itemBuilder: (context, index) {
         final message = messages[index];

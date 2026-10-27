@@ -31,4 +31,7 @@ abstract final class StorageKeys {
   static const String subUser = 'sub_user';
   static const String zaloAccessToken = 'zalo_access_token';
   static const String zaloRefreshToken = 'zalo_refresh_token';
+
+  /// Cấp độ trình độ từ vựng Word Guess (easy | medium | hard)
+  static const String wordGuessDifficulty = 'bufo_practice_level';
 }

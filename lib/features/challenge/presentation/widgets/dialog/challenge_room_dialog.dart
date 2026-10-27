@@ -8,6 +8,7 @@ import 'package:bufopia/features/challenge/presentation/widgets/challenge_invita
 import 'package:bufopia/features/challenge/presentation/widgets/challenge_join.dart';
 import 'package:bufopia/features/challenge/presentation/widgets/challenge_rivals.dart';
 import 'package:bufopia/features/challenge/presentation/widgets/challenge_tabs.dart';
+import 'package:bufopia/shared/services/audio/sound_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -86,6 +87,7 @@ class _ChallengeRoomViewState extends State<ChallengeRoomView> {
     return BlocConsumer<ChallengeRoomBloc, ChallengeRoomState>(
       listener: (context, state) {
         if (state.errorMessage != null) {
+          SoundManager.playWrong();
           AppToast.showError(context, state.errorMessage!);
         } else if (state.successMessage != null) {
           AppToast.showSuccess(context, state.successMessage!);

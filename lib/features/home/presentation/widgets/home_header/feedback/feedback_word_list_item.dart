@@ -1,6 +1,7 @@
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/vocabulary/domain/entities/word.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -250,7 +251,7 @@ class _FeedbackWordListItemState extends State<FeedbackWordListItem> {
                       ),
                       SizedBox(width: 3.w),
                       AppText.c1(
-                        'Báo lỗi',
+                        context.l10n.report,
                         fontSize: 10.sp,
                         fontWeight: FontWeight.w700,
                         color: AppColors.redDeep,

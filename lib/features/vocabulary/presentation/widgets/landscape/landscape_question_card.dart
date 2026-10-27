@@ -1,6 +1,7 @@
 import 'package:bufopia/components/app_countdown_timer.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 
 /// Thẻ câu hỏi mục tiêu có huy hiệu đồng hồ nổi đính trên đỉnh
@@ -69,8 +70,8 @@ class LandscapeQuestionCard extends StatelessWidget {
           );
 
     final topicText = topicName.isNotEmpty
-        ? 'CHỦ ĐỀ: ${topicName.toUpperCase()}'
-        : 'DỊCH SANG TIẾNG ANH';
+        ? context.l10n.topicHeader(topicName.toUpperCase())
+        : context.l10n.translateToEnglish;
 
     return SizedBox(
       height: totalHeight,
@@ -90,44 +91,6 @@ class LandscapeQuestionCard extends StatelessWidget {
               child: Stack(
                 alignment: Alignment.center,
                 children: [
-                  // Nút Loa phát âm tròn bên trái
-                  Positioned(
-                    left: 2,
-                    child: GestureDetector(
-                      onTap: onSpeakerTap,
-                      child: Container(
-                        width: 32,
-                        height: 32,
-                        decoration: BoxDecoration(
-                          color: isPaper
-                              ? AppColors.white
-                              : AppColors.lightBackground,
-                          shape: BoxShape.circle,
-                          border: Border.all(
-                            color: isPaper
-                                ? AppColors.paperBorder
-                                : AppColors.grayExtrusion,
-                            width: 1.2,
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AppColors.black.withValues(alpha: 0.08),
-                              offset: const Offset(0, 1.5),
-                              blurRadius: 2,
-                            ),
-                          ],
-                        ),
-                        child: Icon(
-                          Icons.volume_up_rounded,
-                          size: 16,
-                          color: isPaper
-                              ? AppColors.paperTextDark
-                              : AppColors.grayDark,
-                        ),
-                      ),
-                    ),
-                  ),
-
                   // Chủ đề & Từ vựng Tiếng Việt mục tiêu (Căn giữa 100%)
                   // Chừa lề đỉnh top: 10 để cách xa đáy đồng hồ
                   Padding(

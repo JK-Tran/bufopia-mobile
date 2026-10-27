@@ -13,6 +13,7 @@ import 'package:bufopia/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:bufopia/features/word_chain/data/datasources/word_chain_data_source.dart';
 import 'package:bufopia/features/word_chain/data/models/word_chain_social_models.dart';
 import 'package:bufopia/shared/di/di.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:bufopia/shared/services/firebase/firebase_auth_service.dart';
 import 'package:bufopia/shared/services/socket/models/socket_event.dart';
 import 'package:bufopia/shared/services/socket/word_chain_socket_service.dart';
@@ -62,7 +63,7 @@ class WordChainRoomDialog extends StatefulWidget {
 }
 
 class _WordChainRoomDialogState extends State<WordChainRoomDialog>
-    with TickerProviderStateMixin, WidgetsBindingObserver {
+    with TickerProviderStateMixin {
   late final WordChainSocketService _socketService;
   late final WordChainDataSource _dataSource;
 
@@ -94,7 +95,6 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addObserver(this);
 
     _socketService = GetIt.instance.get<WordChainSocketService>();
     _dataSource = GetIt.instance.get<WordChainDataSource>();
@@ -116,19 +116,8 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
   }
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    if (state == AppLifecycleState.paused ||
-        state == AppLifecycleState.inactive) {
-      _stopSocialPolling();
-    } else if (state == AppLifecycleState.resumed) {
-      _startSocialPolling();
-    }
-  }
-
-  @override
   void dispose() {
     _isDisposed = true;
-    WidgetsBinding.instance.removeObserver(this);
     _codeController.dispose();
     _radarPulseController.dispose();
     _stopSocialPolling();
@@ -159,7 +148,7 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
     final displayName = currentUser?.displayName;
     return (displayName != null && displayName.isNotEmpty)
         ? displayName
-        : 'Bạn';
+        : context.l10n.you;
   }
 
   // ── 1. Quản lý Polling Social & Lời mời ─────────────────────────
@@ -261,7 +250,7 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
         });
         AppToast.showError(
           context,
-          'Chưa nhận được xác nhận tạo phòng. Hãy thử lại.',
+          context.l10n.roomCreationNotConfirmed,
         );
       }
     });
@@ -327,7 +316,7 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
       _createdRoomCode = null;
     });
 
-    AppToast.showWarning(context, 'Đã hủy phòng thi đấu.');
+    AppToast.showWarning(context, context.l10n.roomCancelled);
   }
 
   // ── 3. Xử lý Vào phòng (Guest - Nhập mã hoặc link) ───────────────
@@ -343,7 +332,7 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
     if (validCode == null || validCode.length < 6) {
       AppToast.showWarning(
         context,
-        'Vui lòng nhập đúng mã phòng gồm 6 chữ số!',
+        context.l10n.enterValid6DigitCode,
       );
       return;
     }
@@ -380,12 +369,12 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
     if (ok) {
       AppToast.showSuccess(
         context,
-        'Đã mời ${rival.name}. Lời mời có hiệu lực trong 2 phút.',
+        context.l10n.invitationValidFor2Min(rival.name),
       );
     } else {
       AppToast.showWarning(
         context,
-        'Chờ 10 giây trước khi gửi tiếp lời mời.',
+        context.l10n.inviteCooldownWait,
       );
     }
   }
@@ -443,77 +432,88 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
     final dialogBg = isPaper ? AppColors.paperCardBg : AppColors.white;
     final dialogBorder = isPaper ? AppColors.paperBorder : AppColors.blueLight;
 
-    return AppGameDialog(
-      title: 'PHÒNG ĐẤU NỐI TỪ',
-      icon: Icons.sports_kabaddi_rounded,
-      maxWidth: isLandscape ? 490.0 : 360.w,
-      maxHeight: isLandscape ? 335.0 : 540.h,
-      backgroundColor: dialogBg,
-      borderColor: dialogBorder,
-      headerGradientColors: isPaper
-          ? const [AppColors.paperGreen, AppColors.paperGreenDark]
-          : const [AppColors.blueLight, AppColors.blueDark],
-      boxShadow: isPaper
-          ? [
-              BoxShadow(
-                color: AppColors.paperExtrusion,
-                offset: Offset(0, 4.h),
-              ),
-              BoxShadow(
-                color: AppColors.black.withValues(alpha: 0.12),
-                blurRadius: 16.r,
-                offset: Offset(0, 8.h),
-              ),
-            ]
-          : null,
-      footerText: '⭐ Thách đấu nối từ cùng bạn bè trực tuyến ⭐',
-      footerBackgroundColor: isPaper ? AppColors.paperSurface : null,
-      footerBorderColor: isPaper ? AppColors.paperBorder : null,
-      footerTextColor: isPaper ? AppColors.paperTextMedium : null,
-      padding: isLandscape
-          ? const EdgeInsets.fromLTRB(16, 10, 16, 8)
-          : EdgeInsets.fromLTRB(14.w, 8.h, 14.w, 6.h),
-      onClose: () {
-        if (_isRoomCreated) {
-          _socketService.disconnect();
+    return BlocListener<AppBloc, AppState>(
+      listenWhen: (prev, curr) => prev.lifecycleState != curr.lifecycleState,
+      listener: (context, state) {
+        if (state.lifecycleState == AppLifecycleState.paused ||
+            state.lifecycleState == AppLifecycleState.inactive) {
+          _stopSocialPolling();
+        } else if (state.lifecycleState == AppLifecycleState.resumed) {
+          _startSocialPolling();
         }
-        Navigator.of(context).pop();
       },
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          // ── 1. Thanh chuyển tab (NHẬP MÃ / TẠO PHÒNG) ──────────────
-          _buildTabs(isPaper, isLandscape),
+      child: AppGameDialog(
+        title: context.l10n.wordChainRoomTitle,
+        icon: Icons.sports_kabaddi_rounded,
+        maxWidth: isLandscape ? 490.0 : 360.w,
+        maxHeight: isLandscape ? 335.0 : 540.h,
+        backgroundColor: dialogBg,
+        borderColor: dialogBorder,
+        headerGradientColors: isPaper
+            ? const [AppColors.paperGreen, AppColors.paperGreenDark]
+            : const [AppColors.blueLight, AppColors.blueDark],
+        boxShadow: isPaper
+            ? [
+                BoxShadow(
+                  color: AppColors.paperExtrusion,
+                  offset: Offset(0, 4.h),
+                ),
+                BoxShadow(
+                  color: AppColors.black.withValues(alpha: 0.12),
+                  blurRadius: 16.r,
+                  offset: Offset(0, 8.h),
+                ),
+              ]
+            : null,
+        footerText: context.l10n.wordChainRoomFooter,
+        footerBackgroundColor: isPaper ? AppColors.paperSurface : null,
+        footerBorderColor: isPaper ? AppColors.paperBorder : null,
+        footerTextColor: isPaper ? AppColors.paperTextMedium : null,
+        padding: isLandscape
+            ? const EdgeInsets.fromLTRB(16, 10, 16, 8)
+            : EdgeInsets.fromLTRB(14.w, 8.h, 14.w, 6.h),
+        onClose: () {
+          if (_isRoomCreated) {
+            _socketService.disconnect();
+          }
+          Navigator.of(context).pop();
+        },
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // ── 1. Thanh chuyển tab (NHẬP MÃ / TẠO PHÒNG) ──────────────
+            _buildTabs(isPaper, isLandscape),
 
-          SizedBox(height: isLandscape ? 10 : 8.h),
+            SizedBox(height: isLandscape ? 10 : 8.h),
 
-          // ── 2. Nội dung Tab ───────────────────────────────────────
-          if (_currentTab == WordChainRoomTab.join)
-            _buildJoinTab(isPaper, isLandscape)
-          else
-            _buildCreateTab(isPaper, isLandscape),
+            // ── 2. Nội dung Tab ───────────────────────────────────────
+            if (_currentTab == WordChainRoomTab.join)
+              _buildJoinTab(isPaper, isLandscape)
+            else
+              _buildCreateTab(isPaper, isLandscape),
 
-          SizedBox(height: isLandscape ? 8 : 6.h),
-          Divider(
-            height: isLandscape ? 14 : 12.h,
-            color: isPaper ? AppColors.paperBorder : AppColors.skyBorder,
-          ),
-          SizedBox(height: isLandscape ? 4 : 4.h),
+            SizedBox(height: isLandscape ? 8 : 6.h),
+            Divider(
+              height: isLandscape ? 14 : 12.h,
+              color: isPaper ? AppColors.paperBorder : AppColors.skyBorder,
+            ),
+            SizedBox(height: isLandscape ? 4 : 4.h),
 
-          // ── 3. Mục Lời mời đến ────────────────────────────────────
-          _buildInvitationsSection(isPaper, isLandscape),
+            // ── 3. Mục Lời mời đến ────────────────────────────────────
+            _buildInvitationsSection(isPaper, isLandscape),
 
-          SizedBox(height: isLandscape ? 8 : 6.h),
-          Divider(
-            height: isLandscape ? 14 : 12.h,
-            color: isPaper ? AppColors.paperBorder : AppColors.skyBorder,
-          ),
-          SizedBox(height: isLandscape ? 4 : 4.h),
+            SizedBox(height: isLandscape ? 8 : 6.h),
+            Divider(
+              height: isLandscape ? 14 : 12.h,
+              color: isPaper ? AppColors.paperBorder : AppColors.skyBorder,
+            ),
+            SizedBox(height: isLandscape ? 4 : 4.h),
 
-          // ── 4. Mục 5 đối thủ gần nhất ─────────────────────────────
-          _buildRivalsSection(isPaper, isLandscape),
-        ],
+            // ── 4. Mục 5 đối thủ gần nhất ─────────────────────────────
+            _buildRivalsSection(isPaper, isLandscape),
+          ],
+        ),
       ),
     );
   }
@@ -601,7 +601,7 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
                         ),
                         SizedBox(width: isLandscape ? 6.0 : 6.w),
                         AppText.t3(
-                          'NHẬP MÃ',
+                          context.l10n.enterCodeTab,
                           fontSize: fontSize,
                           fontWeight: FontWeight.w700,
                           color: isJoin ? activeColor : inactiveColor,
@@ -633,7 +633,7 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
                         ),
                         SizedBox(width: isLandscape ? 6.0 : 6.w),
                         AppText.t3(
-                          'TẠO PHÒNG',
+                          context.l10n.createRoomTab,
                           fontSize: fontSize,
                           fontWeight: FontWeight.w700,
                           color: !isJoin ? activeColor : inactiveColor,
@@ -683,7 +683,7 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
                 color: isPaper ? AppColors.paperTextDark : AppColors.grayDark,
               ),
               decoration: InputDecoration(
-                hintText: 'NHẬP 6 SỐ HOẶC LINK...',
+                hintText: context.l10n.enterCodeOrLinkHint,
                 hintStyle: TextStyle(
                   fontSize: fontSize,
                   fontWeight: FontWeight.w700,
@@ -702,7 +702,7 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
         SizedBox(width: isLandscape ? 8.0 : 8.w),
         if (isPaper)
           AppButton(
-            text: 'VÀO',
+            text: context.l10n.enter,
             icon: Icon(
               Icons.arrow_forward_rounded,
               size: iconSize,
@@ -723,7 +723,7 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
           )
         else
           AppButton(
-            text: 'VÀO',
+            text: context.l10n.enter,
             icon: Icon(
               Icons.arrow_forward_rounded,
               size: iconSize,
@@ -751,7 +751,9 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
       return Padding(
         padding: EdgeInsets.symmetric(vertical: isLandscape ? 4.0 : 4.h),
         child: AppButton(
-          text: _isCreatingRoom ? 'ĐANG TẠO PHÒNG...' : 'TẠO PHÒNG NGAY',
+          text: _isCreatingRoom
+              ? context.l10n.creatingRoom
+              : context.l10n.createRoomNow,
           icon: Icon(
             Icons.sensors_rounded,
             size: isLandscape ? 16.0 : 14.r,
@@ -832,7 +834,7 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
               ),
               SizedBox(width: isLandscape ? 6.0 : 6.w),
               AppText.c1(
-                'CHỜ ĐỐI THỦ VÀO PHÒNG...',
+                context.l10n.waitingForOpponentToJoin,
                 fontSize: isLandscape ? 12.0 : 12.sp,
                 fontWeight: FontWeight.w700,
                 color: statusColor,
@@ -848,7 +850,7 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
               Clipboard.setData(ClipboardData(text: code));
               AppToast.showSuccess(
                 context,
-                'Đã sao chép mã phòng $code',
+                context.l10n.copiedRoomCode(code),
               );
             },
             child: Row(
@@ -868,7 +870,7 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
               // Nút Chép mã
               if (isPaper)
                 AppButton(
-                  text: 'CHÉP MÃ',
+                  text: context.l10n.copyCodeCaps,
                   icon: Icon(
                     Icons.copy_rounded,
                     size: iconSize,
@@ -887,13 +889,13 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
                     Clipboard.setData(ClipboardData(text: code));
                     AppToast.showSuccess(
                       context,
-                      'Đã sao chép mã phòng $code',
+                      context.l10n.copiedRoomCode(code),
                     );
                   },
                 )
               else
                 AppButton.secondary(
-                  text: 'CHÉP MÃ',
+                  text: context.l10n.copyCodeCaps,
                   icon: Icon(
                     Icons.copy_rounded,
                     size: iconSize,
@@ -908,7 +910,7 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
                     Clipboard.setData(ClipboardData(text: code));
                     AppToast.showSuccess(
                       context,
-                      'Đã sao chép mã phòng $code',
+                      context.l10n.copiedRoomCode(code),
                     );
                   },
                 ),
@@ -917,7 +919,7 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
               // Nút Chép link chuẩn bufopia web
               if (isPaper)
                 AppButton(
-                  text: 'CHÉP LINK',
+                  text: context.l10n.copyLinkCaps,
                   icon: Icon(
                     Icons.link_rounded,
                     size: iconSize,
@@ -940,13 +942,13 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
                     );
                     AppToast.showSuccess(
                       context,
-                      'Đã sao chép liên kết vào phòng!',
+                      context.l10n.copiedInviteLink,
                     );
                   },
                 )
               else
                 AppButton.secondary(
-                  text: 'CHÉP LINK',
+                  text: context.l10n.copyLinkCaps,
                   icon: Icon(
                     Icons.link_rounded,
                     size: iconSize,
@@ -965,7 +967,7 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
                     );
                     AppToast.showSuccess(
                       context,
-                      'Đã sao chép liên kết vào phòng!',
+                      context.l10n.copiedInviteLink,
                     );
                   },
                 ),
@@ -973,7 +975,7 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
 
               // Nút Hủy phòng
               AppButton(
-                text: 'HỦY',
+                text: context.l10n.cancel.toUpperCase(),
                 icon: Icon(
                   Icons.close_rounded,
                   size: iconSize,
@@ -1050,7 +1052,7 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         AppText.t3(
-          'Lời mời đến',
+          context.l10n.incomingInvitations,
           fontSize: titleFontSize,
           fontWeight: FontWeight.w700,
           color: isPaper ? AppColors.paperTextDark : AppColors.grayDark,
@@ -1060,7 +1062,7 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
           Padding(
             padding: EdgeInsets.symmetric(vertical: isLandscape ? 2.0 : 2.h),
             child: AppText.b2(
-              'Chưa có lời mời mới.',
+              context.l10n.noNewInvitations,
               fontSize: emptyFontSize,
               color: isPaper ? AppColors.paperTextMuted : AppColors.grayMedium,
             ),
@@ -1101,7 +1103,10 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
                   SizedBox(width: isLandscape ? 8.0 : 8.w),
                   Expanded(
                     child: AppText.b2(
-                      '${inv.fromName} mời vào phòng #${inv.roomCode}',
+                      context.l10n.invitationCardDesc(
+                        inv.fromName,
+                        inv.roomCode,
+                      ),
                       fontSize: textFontSize,
                       fontWeight: FontWeight.w700,
                       color: isPaper
@@ -1112,7 +1117,7 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
                   SizedBox(width: 6.w),
                   // Nút Vào
                   AppButton(
-                    text: 'VÀO',
+                    text: context.l10n.enter,
                     height: btnHeight,
                     fontSize: btnFontSize,
                     padding: EdgeInsets.symmetric(
@@ -1167,7 +1172,7 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         AppText.t3(
-          '5 đối thủ gần nhất',
+          context.l10n.recentOpponents(_rivals.length),
           fontSize: titleFontSize,
           fontWeight: FontWeight.w700,
           color: isPaper ? AppColors.paperTextDark : AppColors.grayDark,
@@ -1177,7 +1182,7 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
           Padding(
             padding: EdgeInsets.symmetric(vertical: isLandscape ? 2.0 : 2.h),
             child: AppText.b2(
-              'Chơi một trận online để lưu đối thủ tại đây.',
+              context.l10n.playOnlineToSaveOpponents,
               fontSize: emptyFontSize,
               color: isPaper ? AppColors.paperTextMuted : AppColors.grayMedium,
             ),
@@ -1215,7 +1220,7 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
                                 : AppColors.grayDark,
                           ),
                           AppText.c1(
-                            'Đã chơi gần đây',
+                            context.l10n.playedRecently,
                             fontSize: subFontSize,
                             fontWeight: FontWeight.w600,
                             color: isPaper
@@ -1229,7 +1234,7 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
                     if (canInvite)
                       if (isPaper)
                         AppButton(
-                          text: 'Mời',
+                          text: context.l10n.invite,
                           height: btnHeight,
                           fontSize: btnFontSize,
                           padding: btnPad,
@@ -1243,7 +1248,7 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
                         )
                       else
                         AppButton.secondary(
-                          text: 'Mời',
+                          text: context.l10n.invite,
                           height: btnHeight,
                           fontSize: btnFontSize,
                           padding: btnPad,
@@ -1264,7 +1269,7 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
                       )
                     else if (isPaper)
                       AppButton(
-                        text: 'Mời',
+                        text: context.l10n.invite,
                         height: btnHeight,
                         fontSize: btnFontSize,
                         padding: btnPad,
@@ -1278,7 +1283,7 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
                       )
                     else
                       AppButton.disabled(
-                        text: 'Mời',
+                        text: context.l10n.invite,
                         height: btnHeight,
                         fontSize: btnFontSize,
                         padding: btnPad,

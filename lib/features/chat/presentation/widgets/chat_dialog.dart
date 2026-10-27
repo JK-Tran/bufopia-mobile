@@ -5,6 +5,7 @@ import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
 import 'package:bufopia/features/chat/domain/entities/chat.dart';
 import 'package:bufopia/features/chat/presentation/bloc/chat_bloc.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -18,6 +19,7 @@ class ChatDialog extends StatefulWidget {
     this.isBotMode = false,
     this.isWaiting = false,
     this.myPlayerIndex = 0,
+    this.noteText,
     super.key,
   });
 
@@ -26,6 +28,7 @@ class ChatDialog extends StatefulWidget {
   final bool isBotMode;
   final bool isWaiting;
   final int myPlayerIndex;
+  final String? noteText;
 
   static Future<void> show(
     BuildContext context, {
@@ -34,6 +37,7 @@ class ChatDialog extends StatefulWidget {
     bool isBotMode = false,
     bool isWaiting = false,
     int myPlayerIndex = 0,
+    String? noteText,
   }) {
     final chatBloc = context.read<ChatBloc>()
       ..add(ChatEvent.openChat(myPlayerIndex: myPlayerIndex));
@@ -49,6 +53,7 @@ class ChatDialog extends StatefulWidget {
           isBotMode: isBotMode,
           isWaiting: isWaiting,
           myPlayerIndex: myPlayerIndex,
+          noteText: noteText,
         ),
       ),
     ).then((_) {
@@ -134,7 +139,7 @@ class _ChatDialogState extends State<ChatDialog> {
     const noteColor = AppColors.orangeDark;
     final rivalDisplayName = widget.rivalName.isNotEmpty
         ? widget.rivalName
-        : 'đối thủ';
+        : context.l10n.humanOpponent.toLowerCase();
 
     return Dialog(
       backgroundColor: Colors.transparent,
@@ -178,7 +183,7 @@ class _ChatDialogState extends State<ChatDialog> {
                       SizedBox(width: 8.w),
                       Expanded(
                         child: AppText.t2(
-                          'Trò chuyện với $rivalDisplayName',
+                          context.l10n.chatWithRival(rivalDisplayName),
                           color: titleColor,
                           fontSize: 16.sp,
                           fontWeight: FontWeight.w700,
@@ -216,15 +221,6 @@ class _ChatDialogState extends State<ChatDialog> {
                           size: 15.r,
                           color: noteColor,
                         ),
-                        SizedBox(width: 6.w),
-                        Expanded(
-                          child: AppText.c1(
-                            'Tin nhắn ở đây không được tính là từ nối. '
-                            'Đồng hồ ván đấu vẫn tiếp tục đếm.',
-                            color: noteColor,
-                            fontSize: 12.sp,
-                          ),
-                        ),
                       ],
                     ),
                   ),
@@ -257,8 +253,7 @@ class _ChatDialogState extends State<ChatDialog> {
                                 ),
                                 SizedBox(height: 8.h),
                                 AppText.c1(
-                                  'Chưa có tin nhắn nào.\n'
-                                  'Hãy gửi lời chào đến bạn cùng chơi!',
+                                  context.l10n.noMessagesYet,
                                   color: AppColors.grayMedium,
                                   fontSize: 12.sp,
                                   textAlign: TextAlign.center,
@@ -332,8 +327,8 @@ class _ChatDialogState extends State<ChatDialog> {
                             decoration: InputDecoration(
                               counterText: '',
                               hintText: widget.isWaiting
-                                  ? 'Đang chờ đối thủ...'
-                                  : 'Nhắn cho bạn cùng luyện...',
+                                  ? context.l10n.chatWaiting
+                                  : context.l10n.chatHint,
                               hintStyle: TextStyle(
                                 color: AppColors.grayMedium,
                                 fontSize: 12.sp,

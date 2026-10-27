@@ -1,5 +1,6 @@
 import 'package:bufopia/components/app_button.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -27,7 +28,7 @@ class PrivacyFooter extends StatelessWidget {
       width: double.infinity,
       child: AppButton(
         icon: Icon(Icons.check_rounded, color: AppColors.white, size: 16.r),
-        text: 'TÔI ĐÃ HIỂU VÀ ĐỒNG Ý',
+        text: context.l10n.privacyUnderstoodAgreed,
         backgroundColor: bg,
         extrusionColor: extrusion,
         fontSize: 12,

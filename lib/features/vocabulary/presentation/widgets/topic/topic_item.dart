@@ -3,12 +3,13 @@ import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
 import 'package:bufopia/features/vocabulary/domain/entities/topic.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
+import 'package:bufopia/shared/services/audio/sound_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-/// Phần tử chủ đề từ vựng phong cách kẹp ghim
-/// (3D Game Style - Hỗ trợ Paper & Classic theme)
+/// Thẻ chủ đề từ vựng phong cách kẹp ghim 3D chuẩn Web
 class TopicItem extends StatefulWidget {
   const TopicItem({
     required this.topic,
@@ -37,49 +38,41 @@ class _TopicItemState extends State<TopicItem> {
         context.select<AppBloc, bool>((b) => b.state.isPaperTheme);
 
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTapDown: (_) => setState(() => _isPressed = true),
       onTapUp: (_) => setState(() => _isPressed = false),
       onTapCancel: () => setState(() => _isPressed = false),
-      onTap: widget.onTap,
+      onTap: () {
+        SoundManager.playClick();
+        widget.onTap();
+      },
       child: AnimatedScale(
         scale: _isPressed ? 0.98 : 1.0,
         duration: const Duration(milliseconds: 90),
-        curve: Curves.easeInOut,
         child: AnimatedSlide(
-          offset: Offset(0, _isPressed ? 0.025 : 0),
+          offset: Offset(0, _isPressed ? 0.02 : 0),
           duration: const Duration(milliseconds: 90),
-          curve: Curves.easeInOut,
           child: Stack(
             clipBehavior: Clip.none,
             children: [
-              // 1. Thân phần tử 3D
-              _ItemBody(
-                topic: widget.topic,
-                isSelected: widget.isSelected,
-                isPressed: _isPressed,
-                isPaperTheme: isPaper,
-              ),
-
-              // 2. Kẹp ghim vàng bên trái
+              _buildCard(isPaper),
+              // Kẹp ghim trang trí 2 bên
               Positioned(
-                top: -6.h,
-                left: 12.w,
-                child: AppPaperClip(width: 9.w, height: 18.h),
+                top: -8.h,
+                left: 18.w,
+                child: AppPaperClip(width: 12.w, height: 26.h),
               ),
-
-              // 3. Kẹp ghim vàng bên phải
               Positioned(
-                top: -6.h,
-                right: 12.w,
-                child: AppPaperClip(width: 9.w, height: 18.h),
+                top: -8.h,
+                right: 18.w,
+                child: AppPaperClip(width: 12.w, height: 26.h),
               ),
-
-              // 4. Chip trạng thái "Đã chọn" 3D
+              // Huy hiệu "Đã chọn"
               if (widget.isSelected)
                 Positioned(
                   top: -5.h,
                   left: -2.w,
-                  child: _SelectedChip(isPaperTheme: isPaper),
+                  child: _buildSelectedBadge(isPaper),
                 ),
             ],
           ),
@@ -87,148 +80,57 @@ class _TopicItemState extends State<TopicItem> {
       ),
     );
   }
-}
 
-/// Khung thân phần tử 3D có gờ đáy nổi đặc và bóng đổ 2 lớp chuẩn UI guidelines
-class _ItemBody extends StatelessWidget {
-  const _ItemBody({
-    required this.topic,
-    required this.isSelected,
-    required this.isPressed,
-    required this.isPaperTheme,
-  });
+  /// Khung thân thẻ với hiệu ứng nổi 3D và viền chủ đề
+  Widget _buildCard(bool isPaper) {
+    final borderColor = widget.isSelected
+        ? (isPaper ? AppColors.paperGreen : AppColors.modeBotButton)
+        : (isPaper ? AppColors.paperBorder : AppColors.peach);
 
-  final Topic topic;
-  final bool isSelected;
-  final bool isPressed;
-  final bool isPaperTheme;
-
-  @override
-  Widget build(BuildContext context) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 90),
-      curve: Curves.easeInOut,
-      padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 5.h),
+      padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 8.h),
       decoration: BoxDecoration(
-        gradient: isPaperTheme
-            ? const LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: isPaper
+              ? [
                   AppColors.paperCardGradientStart,
                   AppColors.paperCardGradientEnd,
-                ],
-              )
-            : const LinearGradient(
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-                colors: [
-                  AppColors.white,
-                  AppColors.woodParchmentLight,
-                ],
-              ),
+                ]
+              : [AppColors.white, AppColors.woodParchmentLight],
+        ),
         borderRadius: BorderRadius.circular(14.r),
         border: Border.all(
-          color: isSelected
-              ? (isPaperTheme ? AppColors.paperGreen : AppColors.modeBotButton)
-              : (isPaperTheme ? AppColors.paperBorder : AppColors.peach),
-          width: isSelected ? 2.5.w : (isPaperTheme ? 1.5.w : 2.w),
+          color: borderColor,
+          width: widget.isSelected ? 2.5.w : (isPaper ? 1.5.w : 2.w),
         ),
-        boxShadow: _buildBoxShadow(),
+        boxShadow: _buildShadows(isPaper),
       ),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          SizedBox(height: 2.h),
-          SizedBox(
-            height: 44.h,
-            child: Center(child: _ItemIllustration(topic: topic)),
+          Expanded(
+            child: Center(
+              child: _buildIllustration(),
+            ),
           ),
-          _ItemInfo(
-            name: topic.name,
-            subtitle: topic.subtitle,
-            isPaperTheme: isPaperTheme,
-          ),
-          _ItemBadges(
-            topic: topic,
-            isPaperTheme: isPaperTheme,
-          ),
+
+          _buildInfo(isPaper),
+          SizedBox(height: 10.h),
+          _buildBadges(isPaper),
+          SizedBox(height: 10.h),
         ],
       ),
     );
   }
 
-  List<BoxShadow> _buildBoxShadow() {
-    if (isPaperTheme) {
-      if (isSelected) {
-        return [
-          BoxShadow(
-            color: AppColors.paperGreenExtrusion,
-            offset: Offset(0, isPressed ? 1.h : 2.5.h),
-          ),
-          BoxShadow(
-            color: AppColors.paperGreen.withValues(alpha: 0.25),
-            blurRadius: 4.r,
-            offset: Offset(0, isPressed ? 1.5.h : 3.h),
-          ),
-        ];
-      }
-      return [
-        BoxShadow(
-          color: AppColors.paperExtrusion,
-          offset: Offset(0, isPressed ? 1.h : 2.h),
-        ),
-        BoxShadow(
-          color: AppColors.black.withValues(alpha: 0.08),
-          blurRadius: 3.r,
-          offset: Offset(0, isPressed ? 1.5.h : 2.5.h),
-        ),
-      ];
-    }
-
-    if (isSelected) {
-      return [
-        // Gờ đáy nổi 3D đặc (Solid Extrusion) màu xanh ngọc sâu
-        BoxShadow(
-          color: AppColors.modeBotButtonExtrusion,
-          offset: Offset(0, isPressed ? 1.h : 2.h),
-        ),
-        // Lớp bóng mờ lan tỏa xuống nền
-        BoxShadow(
-          color: AppColors.modeBotButton.withValues(alpha: 0.45),
-          blurRadius: 4.r,
-          offset: Offset(0, isPressed ? 2.h : 4.h),
-        ),
-      ];
-    }
-    return [
-      // Gờ đáy nổi 3D đặc (Solid Extrusion) tông vàng đào/gỗ ấm
-      BoxShadow(
-        color: AppColors.woodDark.withValues(alpha: 0.45),
-        offset: Offset(0, isPressed ? 1.h : 2.h),
-      ),
-      // Lớp bóng mờ lan tỏa xuống nền trời
-      BoxShadow(
-        color: AppColors.black.withValues(alpha: 0.12),
-        blurRadius: 4.r,
-        offset: Offset(0, isPressed ? 2.h : 4.h),
-      ),
-    ];
-  }
-}
-
-/// Hình minh họa chủ đề hoặc icon ngôi sao ngẫu nhiên
-class _ItemIllustration extends StatelessWidget {
-  const _ItemIllustration({required this.topic});
-
-  final Topic topic;
-
-  @override
-  Widget build(BuildContext context) {
-    if (topic.isAuto) {
+  /// Ảnh minh họa hoặc icon ngẫu nhiên nếu là tự động
+  Widget _buildIllustration() {
+    if (widget.topic.isAuto) {
       return Container(
-        width: 38.r,
-        height: 38.r,
+        width: 52.r,
+        height: 52.r,
         decoration: BoxDecoration(
           shape: BoxShape.circle,
           gradient: const LinearGradient(
@@ -250,62 +152,48 @@ class _ItemIllustration extends StatelessWidget {
         ),
         child: Icon(
           Icons.auto_awesome_rounded,
-          size: 20.r,
+          size: 28.r,
           color: AppColors.white,
         ),
       );
     }
 
     return Image.asset(
-      topic.imagePath!,
-      height: 44.h,
+      widget.topic.imagePath ?? '',
+      height: 100.h,
       fit: BoxFit.contain,
-      errorBuilder: (context, error, stackTrace) => Icon(
+      errorBuilder: (_, _, _) => Icon(
         Icons.menu_book_rounded,
-        size: 28.r,
+        size: 36.r,
         color: AppColors.brownDark,
       ),
     );
   }
-}
 
-/// Tên chủ đề và mô tả phụ
-class _ItemInfo extends StatelessWidget {
-  const _ItemInfo({
-    required this.name,
-    required this.subtitle,
-    required this.isPaperTheme,
-  });
-
-  final String name;
-  final String subtitle;
-  final bool isPaperTheme;
-
-  @override
-  Widget build(BuildContext context) {
+  /// Tên và phụ đề của chủ đề
+  Widget _buildInfo(bool isPaper) {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
         FittedBox(
           fit: BoxFit.scaleDown,
           child: AppText.t3(
-            name,
-            fontSize: 12.sp,
+            widget.topic.displayName,
+            fontSize: 14.sp,
             fontWeight: FontWeight.w700,
-            color: isPaperTheme ? AppColors.paperTextDark : AppColors.grayDark,
+            color: isPaper ? AppColors.paperTextDark : AppColors.grayDark,
             maxLines: 1,
             textAlign: TextAlign.center,
           ),
         ),
-        SizedBox(height: 1.h),
+        SizedBox(height: 4.h),
         FittedBox(
           fit: BoxFit.scaleDown,
           child: AppText.c1(
-            subtitle,
-            fontSize: 10.sp,
-            color: isPaperTheme
-                ? AppColors.paperTextMuted
-                : AppColors.grayMedium,
+            widget.topic.subtitle,
+            fontSize: 12.sp,
+            fontWeight: FontWeight.w500,
+            color: isPaper ? AppColors.paperTextMuted : AppColors.grayMedium,
             maxLines: 1,
             textAlign: TextAlign.center,
           ),
@@ -313,94 +201,12 @@ class _ItemInfo extends StatelessWidget {
       ],
     );
   }
-}
 
-/// Bảng phối màu và biểu tượng theo cấp độ khó
-class _DifficultyTheme {
-  const _DifficultyTheme({
-    required this.bgColor,
-    required this.textColor,
-    required this.borderColor,
-    required this.icon,
-  });
-
-  factory _DifficultyTheme.from(
-    String difficulty, {
-    bool isPaperTheme = false,
-  }) {
-    if (isPaperTheme) {
-      return switch (difficulty) {
-        'Dễ' => const _DifficultyTheme(
-          bgColor: AppColors.topicEasyBg,
-          textColor: AppColors.paperGreenDark,
-          borderColor: AppColors.paperGreenBorder,
-          icon: Icons.spa_rounded,
-        ),
-        'Nâng cao' => const _DifficultyTheme(
-          bgColor: AppColors.playerPinkTagBg,
-          textColor: AppColors.playerPinkDark,
-          borderColor: AppColors.playerPinkBorder,
-          icon: Icons.diamond_rounded,
-        ),
-        _ => const _DifficultyTheme(
-          bgColor: AppColors.paperAmberBadgeBg,
-          textColor: AppColors.paperAmberBadgeText,
-          borderColor: AppColors.paperAmberBadgeBorder,
-          icon: Icons.auto_awesome_rounded,
-        ),
-      };
-    }
-
-    return switch (difficulty) {
-      'Dễ' => const _DifficultyTheme(
-        bgColor: AppColors.topicEasyBg,
-        textColor: AppColors.modeBotButtonDark,
-        borderColor: AppColors.modeBotBorder,
-        icon: Icons.spa_rounded,
-      ),
-      'Nâng cao' => const _DifficultyTheme(
-        bgColor: AppColors.playerPinkTagBg,
-        textColor: AppColors.playerPinkDark,
-        borderColor: AppColors.playerPinkBorder,
-        icon: Icons.diamond_rounded,
-      ),
-      'Tự động' => const _DifficultyTheme(
-        bgColor: AppColors.topicMediumBg,
-        textColor: AppColors.orangeDark,
-        borderColor: AppColors.modeOnlineBorder,
-        icon: Icons.auto_awesome_rounded,
-      ),
-      _ => const _DifficultyTheme(
-        bgColor: AppColors.topicMediumBg,
-        textColor: AppColors.orangeDark,
-        borderColor: AppColors.modeOnlineBorder,
-        icon: Icons.military_tech_rounded,
-      ),
-    };
-  }
-
-  final Color bgColor;
-  final Color textColor;
-  final Color borderColor;
-  final IconData icon;
-}
-
-/// Nhóm badge dưới cùng (Độ khó & Số từ vựng) - 100% đồng bộ cho tất cả các thẻ
-class _ItemBadges extends StatelessWidget {
-  const _ItemBadges({
-    required this.topic,
-    required this.isPaperTheme,
-  });
-
-  final Topic topic;
-  final bool isPaperTheme;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = _DifficultyTheme.from(
-      topic.difficulty,
-      isPaperTheme: isPaperTheme,
-    );
+  /// Hàng badge dưới cùng: Độ khó và Số lượng từ
+  Widget _buildBadges(bool isPaper) {
+    final displayDiff = widget.topic.displayDifficulty;
+    final style = _getDifficultyStyle(displayDiff, isPaper);
+    final countText = widget.topic.displayWordCount;
 
     return FittedBox(
       fit: BoxFit.scaleDown,
@@ -408,113 +214,85 @@ class _ItemBadges extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          if (topic.difficulty.isNotEmpty)
-            Container(
-              padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
-              decoration: BoxDecoration(
-                color: theme.bgColor,
-                borderRadius: BorderRadius.circular(6.r),
-                border: Border.all(color: theme.borderColor, width: 1.w),
-                boxShadow: [
-                  BoxShadow(
-                    color: isPaperTheme
-                        ? theme.borderColor.withValues(alpha: 0.25)
-                        : theme.borderColor.withValues(alpha: 0.4),
-                    offset: Offset(0, 1.h),
-                  ),
-                ],
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(theme.icon, size: 9.r, color: theme.textColor),
-                  SizedBox(width: 2.w),
-                  AppText.c1(
-                    topic.difficulty,
-                    fontSize: 10.sp,
-                    fontWeight: FontWeight.w700,
-                    color: theme.textColor,
-                  ),
-                ],
-              ),
+          // Badge độ khó
+          if (displayDiff.isNotEmpty)
+            _buildPill(
+              bgColor: style.bg,
+              borderColor: style.border,
+              icon: style.icon,
+              label: displayDiff,
+              textColor: style.text,
+              shadowColor: isPaper
+                  ? style.border.withValues(alpha: 0.25)
+                  : style.border.withValues(alpha: 0.4),
             ),
-          SizedBox(width: 3.w),
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 2.h),
-            decoration: BoxDecoration(
-              color: isPaperTheme ? AppColors.paperCardBg : AppColors.white,
-              borderRadius: BorderRadius.circular(6.r),
-              border: Border.all(
-                color: isPaperTheme
-                    ? AppColors.paperBorder
-                    : AppColors.grayLight,
-                width: 1.w,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: isPaperTheme
-                      ? AppColors.paperExtrusion
-                      : AppColors.grayExtrusion.withValues(alpha: 0.6),
-                  offset: Offset(0, 1.h),
-                ),
-              ],
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(
-                  Icons.auto_stories_rounded,
-                  size: 9.r,
-                  color: isPaperTheme
-                      ? AppColors.paperTextMedium
-                      : AppColors.grayMedium,
-                ),
-                SizedBox(width: 2.w),
-                AppText.c1(
-                  topic.isAuto
-                      ? 'Đa chủ đề'
-                      : '${topic.wordCount > 0 ? topic.wordCount : 100} từ',
-                  fontSize: 10.sp,
-                  color: isPaperTheme
-                      ? AppColors.paperTextMedium
-                      : AppColors.grayMedium,
-                  fontWeight: FontWeight.w700,
-                ),
-              ],
-            ),
+          SizedBox(width: 4.w),
+          // Badge số từ
+          _buildPill(
+            bgColor: isPaper ? AppColors.paperCardBg : AppColors.white,
+            borderColor: isPaper ? AppColors.paperBorder : AppColors.grayLight,
+
+            label: countText,
+            textColor: isPaper
+                ? AppColors.paperTextMedium
+                : AppColors.grayMedium,
+            shadowColor: isPaper
+                ? AppColors.paperExtrusion
+                : AppColors.grayExtrusion.withValues(alpha: 0.6),
           ),
         ],
       ),
     );
   }
-}
 
-/// Chip trạng thái "Đã chọn" nổi khối 3D
-class _SelectedChip extends StatelessWidget {
-  const _SelectedChip({required this.isPaperTheme});
+  /// Widget viên thuốc nhỏ (Pill) dùng chung cho độ khó và số từ
+  Widget _buildPill({
+    required Color bgColor,
+    required Color borderColor,
+    required String label,
+    required Color textColor,
+    required Color shadowColor,
+    IconData? icon,
+  }) {
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 3.h),
+      decoration: BoxDecoration(
+        color: bgColor,
+        borderRadius: BorderRadius.circular(6.r),
+        border: Border.all(color: borderColor, width: 1.w),
+        boxShadow: [
+          BoxShadow(color: shadowColor, offset: Offset(0, 1.h)),
+        ],
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          AppText.c1(
+            label,
+            fontSize: 12.sp,
+            fontWeight: FontWeight.w700,
+            color: textColor,
+          ),
+        ],
+      ),
+    );
+  }
 
-  final bool isPaperTheme;
-
-  @override
-  Widget build(BuildContext context) {
-    final chipBg = isPaperTheme
-        ? AppColors.paperGreen
-        : AppColors.modeBotButton;
-    final chipExtrusion = isPaperTheme
+  /// Badge góc trên báo thẻ đang được chọn
+  Widget _buildSelectedBadge(bool isPaper) {
+    final bg = isPaper ? AppColors.paperGreen : AppColors.modeBotButton;
+    final extrusion = isPaper
         ? AppColors.paperGreenExtrusion
         : AppColors.modeBotButtonExtrusion;
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 5.w, vertical: 2.h),
+      padding: EdgeInsets.symmetric(horizontal: 6.w, vertical: 2.h),
       decoration: BoxDecoration(
-        color: chipBg,
+        color: bg,
         borderRadius: BorderRadius.circular(6.r),
         border: Border.all(color: AppColors.white, width: 1.w),
         boxShadow: [
-          BoxShadow(
-            color: chipExtrusion,
-            offset: Offset(0, 1.5.h),
-          ),
+          BoxShadow(color: extrusion, offset: Offset(0, 1.5.h)),
           BoxShadow(
             color: AppColors.black.withValues(alpha: 0.16),
             blurRadius: 3.r,
@@ -525,10 +303,10 @@ class _SelectedChip extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(Icons.check_circle_rounded, size: 9.r, color: AppColors.white),
+          Icon(Icons.check_circle_rounded, size: 10.r, color: AppColors.white),
           SizedBox(width: 2.w),
           AppText.c1(
-            'Đã chọn',
+            context.l10n.selectedBadge,
             fontSize: 10.sp,
             fontWeight: FontWeight.w700,
             color: AppColors.white,
@@ -536,5 +314,95 @@ class _SelectedChip extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  /// Màu sắc & icon tương ứng với cấp độ khó
+  ({Color bg, Color text, Color border, IconData icon}) _getDifficultyStyle(
+    String difficulty,
+    bool isPaper,
+  ) {
+    final lower = difficulty.trim().toLowerCase();
+    if (lower == 'dễ' || lower == 'easy') {
+      return (
+        bg: AppColors.topicEasyBg,
+        text: isPaper ? AppColors.paperGreenDark : AppColors.modeBotButtonDark,
+        border: isPaper ? AppColors.paperGreenBorder : AppColors.modeBotBorder,
+        icon: Icons.spa_rounded,
+      );
+    }
+    if (lower == 'nâng cao' ||
+        lower == 'advanced' ||
+        lower == 'hard' ||
+        lower == 'khó') {
+      return (
+        bg: AppColors.playerPinkTagBg,
+        text: AppColors.playerPinkDark,
+        border: AppColors.playerPinkBorder,
+        icon: Icons.diamond_rounded,
+      );
+    }
+    return (
+      bg: isPaper ? AppColors.paperAmberBadgeBg : AppColors.topicMediumBg,
+      text: isPaper ? AppColors.paperAmberBadgeText : AppColors.orangeDark,
+      border: isPaper
+          ? AppColors.paperAmberBadgeBorder
+          : AppColors.modeOnlineBorder,
+      icon: (lower == 'tự động' || lower == 'auto')
+          ? Icons.auto_awesome_rounded
+          : Icons.military_tech_rounded,
+    );
+  }
+
+  /// Tạo bóng đổ và hiệu ứng đùn 3D cho thẻ
+  List<BoxShadow> _buildShadows(bool isPaper) {
+    final offset = _isPressed ? 1.0.h : 2.0.h;
+    if (isPaper) {
+      if (widget.isSelected) {
+        return [
+          BoxShadow(
+            color: AppColors.paperGreenExtrusion,
+            offset: Offset(0, offset),
+          ),
+          BoxShadow(
+            color: AppColors.paperGreen.withValues(alpha: 0.25),
+            blurRadius: 4.r,
+            offset: Offset(0, offset + 1.h),
+          ),
+        ];
+      }
+      return [
+        BoxShadow(color: AppColors.paperExtrusion, offset: Offset(0, offset)),
+        BoxShadow(
+          color: AppColors.black.withValues(alpha: 0.08),
+          blurRadius: 3.r,
+          offset: Offset(0, offset + 0.5.h),
+        ),
+      ];
+    }
+
+    if (widget.isSelected) {
+      return [
+        BoxShadow(
+          color: AppColors.modeBotButtonExtrusion,
+          offset: Offset(0, offset),
+        ),
+        BoxShadow(
+          color: AppColors.modeBotButton.withValues(alpha: 0.45),
+          blurRadius: 4.r,
+          offset: Offset(0, offset + 2.h),
+        ),
+      ];
+    }
+    return [
+      BoxShadow(
+        color: AppColors.woodDark.withValues(alpha: 0.45),
+        offset: Offset(0, offset),
+      ),
+      BoxShadow(
+        color: AppColors.black.withValues(alpha: 0.12),
+        blurRadius: 4.r,
+        offset: Offset(0, offset + 2.h),
+      ),
+    ];
   }
 }

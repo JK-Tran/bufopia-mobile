@@ -1,6 +1,7 @@
 import 'package:bufopia/features/auth/data/models/account_import_data.dart';
 import 'package:bufopia/features/auth/data/models/socket_ticket_data.dart';
 import 'package:bufopia/features/auth/data/models/user_data.dart';
+import 'package:bufopia/shared/exception/remote/remote_exception.dart';
 import 'package:bufopia/shared/infrastructure/infrastructure.dart';
 import 'package:bufopia/shared/model/typedef.dart';
 import 'package:dio/dio.dart';
@@ -114,6 +115,20 @@ class AuthDataSource {
             decoder: (data) =>
                 AccountImportResponseData.fromJson(data! as JSON),
           );
+    } on RemoteException catch (e) {
+      if (e.httpErrorCode == 409) {
+        final root = e.rootException;
+        if (root is DioException && root.response?.data is Map) {
+          return AccountImportResponseData.fromJson(
+            Map<String, dynamic>.from(root.response!.data as Map),
+          );
+        }
+        return AccountImportResponseData(
+          code: 'account_exists_conflict',
+          message: e.generalServerMessage,
+        );
+      }
+      rethrow;
     } on DioException catch (e) {
       if (e.response?.statusCode == 409 && e.response?.data is Map) {
         return AccountImportResponseData.fromJson(

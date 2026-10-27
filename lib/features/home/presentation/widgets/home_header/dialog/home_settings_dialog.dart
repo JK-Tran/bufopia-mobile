@@ -7,6 +7,7 @@ import 'package:bufopia/features/home/presentation/widgets/home_header/dialog/ho
 import 'package:bufopia/features/home/presentation/widgets/home_header/dialog/player_info_dialog.dart';
 import 'package:bufopia/features/home/presentation/widgets/home_header/dialog/privacy_policy_dialog.dart';
 import 'package:bufopia/features/home/presentation/widgets/home_header/settings/settings.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -38,11 +39,8 @@ class HomeSettingsDialog extends StatelessWidget {
             conflict: state.conflict!,
           );
           if (!context.mounted) return;
-          if (choice == ConflictResolutionChoice.merge) {
-            context.read<AuthBloc>().add(
-              const AuthEvent.resolveAccountConflict(action: 'merge'),
-            );
-          } else if (choice == ConflictResolutionChoice.overwrite) {
+          if (choice == ConflictResolutionChoice.overwrite ||
+              choice == ConflictResolutionChoice.merge) {
             context.read<AuthBloc>().add(
               const AuthEvent.resolveAccountConflict(action: 'overwrite'),
             );
@@ -59,8 +57,6 @@ class HomeSettingsDialog extends StatelessWidget {
             builder: (context, authState) {
               final isClassic = appState.isClassicTheme;
               final isPaper = appState.isPaperTheme;
-              final isSoundEnabled =
-                  appState.isMusicEnabled || appState.isSfxEnabled;
 
               final primaryBg = isClassic
                   ? AppColors.classicButtonBlue
@@ -83,8 +79,9 @@ class HomeSettingsDialog extends StatelessWidget {
                   ? const EdgeInsets.symmetric(horizontal: 10, vertical: 4)
                   : EdgeInsets.symmetric(horizontal: 10.w, vertical: 4.h);
 
+              final l10n = context.l10n;
               return AppGameDialog(
-                title: 'Cài đặt trò chơi',
+                title: l10n.settingsTitle,
                 icon: Icons.settings_rounded,
                 maxWidth: isLandscape ? 440.0 : 340.w,
                 maxHeight: isLandscape ? 330.0 : 560.h,
@@ -112,8 +109,7 @@ class HomeSettingsDialog extends StatelessWidget {
                 footerBackgroundColor: isPaper ? AppColors.paperSurface : null,
                 footerBorderColor: isPaper ? AppColors.paperBorder : null,
                 footerTextColor: isPaper ? AppColors.paperTextMedium : null,
-                footerText:
-                    '⭐ Chúc bạn có trải nghiệm tuyệt vời cùng Bufopia! ⭐',
+                footerText: l10n.settingsFooterWish,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -127,15 +123,15 @@ class HomeSettingsDialog extends StatelessWidget {
                             authState.currentUser?.displayName.isNotEmpty ==
                                 true
                             ? authState.currentUser!.displayName
-                            : 'Khách';
+                            : l10n.guest;
 
                         if (isGoogleLinked) {
                           return SettingsItem(
                             showTopDivider: false,
-                            title: 'Tài khoản',
+                            title: l10n.account,
                             subtitle: 'Google: ${fbUser.email ?? userName}',
                             action: AppButton(
-                              text: 'HỒ SƠ',
+                              text: l10n.profileBtn,
                               backgroundColor: primaryBg,
                               extrusionColor: primaryExtrusion,
                               fontSize: btnFontSize,
@@ -152,14 +148,14 @@ class HomeSettingsDialog extends StatelessWidget {
 
                         return SettingsItem(
                           showTopDivider: false,
-                          title: 'Tài khoản',
-                          subtitle: 'Khách: $userName (Chưa liên kết Google)',
+                          title: l10n.account,
+                          subtitle: l10n.guestNotLinked(userName),
                           action: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               AppIconButton(
                                 icon: Icons.person_rounded,
-                                tooltip: 'Xem hồ sơ',
+                                tooltip: l10n.viewProfile,
                                 size: btnHeight,
                                 iconSize: 14.r,
                                 backgroundColor: isPaper
@@ -199,7 +195,7 @@ class HomeSettingsDialog extends StatelessWidget {
                                         size: 14.w,
                                         color: AppColors.white,
                                       ),
-                                text: 'ĐĂNG NHẬP',
+                                text: l10n.logIn,
                                 backgroundColor: primaryBg,
                                 extrusionColor: primaryExtrusion,
                                 fontSize: btnFontSize,
@@ -222,8 +218,8 @@ class HomeSettingsDialog extends StatelessWidget {
 
                     // ── 2. Ngôn ngữ ─────────────────────────────────────
                     SettingsItem(
-                      title: 'Ngôn ngữ',
-                      subtitle: 'Ngôn ngữ hiển thị của trò chơi',
+                      title: l10n.language,
+                      subtitle: l10n.languageSubtitle,
                       action: SettingsLanguageSwitcher(
                         currentLanguage: appState.languageCode,
                         isPaper: isPaper,
@@ -235,8 +231,8 @@ class HomeSettingsDialog extends StatelessWidget {
 
                     // ── 3. Giao diện ─────────────────────────────────────
                     SettingsItem(
-                      title: 'Giao diện',
-                      subtitle: 'Đổi phong cách hiển thị',
+                      title: l10n.theme,
+                      subtitle: l10n.themeSubtitle,
                       action: SettingsThemeSwitcher(
                         currentTheme: appState.appTheme,
                         isPaper: isPaper,
@@ -246,23 +242,25 @@ class HomeSettingsDialog extends StatelessWidget {
                       ),
                     ),
 
-                    // ── 4. Âm thanh & hiệu ứng ──────────────────────────
+                    // ── 4. Nhạc nền (BGM) ───────────────────────────────
                     SettingsItem(
-                      title: 'Âm thanh & hiệu ứng',
-                      subtitle: 'Âm thắng, thua và đồng hồ',
+                      title: l10n.music,
+                      subtitle: l10n.musicSubtitle,
                       action: AppButton(
                         icon: Icon(
-                          isSoundEnabled
-                              ? Icons.volume_up_rounded
-                              : Icons.volume_off_rounded,
+                          appState.isMusicEnabled
+                              ? Icons.music_note_rounded
+                              : Icons.music_off_rounded,
                           color: AppColors.white,
                           size: 12.r,
                         ),
-                        text: isSoundEnabled ? 'ĐANG BẬT' : 'ĐÃ TẮT',
-                        backgroundColor: isSoundEnabled
+                        text: appState.isMusicEnabled
+                            ? l10n.onState
+                            : l10n.offState,
+                        backgroundColor: appState.isMusicEnabled
                             ? soundBg
                             : AppColors.neutralDisabled,
-                        extrusionColor: isSoundEnabled
+                        extrusionColor: appState.isMusicEnabled
                             ? soundExtrusion
                             : AppColors.neutralDisabledExtrusion,
                         fontSize: btnFontSize,
@@ -270,40 +268,57 @@ class HomeSettingsDialog extends StatelessWidget {
                         borderRadius: BorderRadius.circular(8.r),
                         padding: btnPadding,
                         onPressed: () {
-                          if (isSoundEnabled) {
-                            if (appState.isMusicEnabled) {
-                              context.read<AppBloc>().add(
-                                const AppEvent.musicToggled(),
-                              );
-                            }
-                            if (appState.isSfxEnabled) {
-                              context.read<AppBloc>().add(
-                                const AppEvent.sfxToggled(),
-                              );
-                            }
-                          } else {
-                            context.read<AppBloc>().add(
-                              const AppEvent.musicToggled(),
-                            );
-                            context.read<AppBloc>().add(
-                              const AppEvent.sfxToggled(),
-                            );
-                          }
+                          context.read<AppBloc>().add(
+                            const AppEvent.musicToggled(),
+                          );
                         },
                       ),
                     ),
 
-                    // ── 5. Góp ý ─────────────────────────────────────────
+                    // ── 5. Hiệu ứng âm thanh (SFX) ──────────────────────
                     SettingsItem(
-                      title: 'Góp ý cho Bufopia',
-                      subtitle: 'Chia sẻ ý tưởng, báo lỗi hoặc góp ý giao diện',
+                      title: l10n.soundEffects,
+                      subtitle: l10n.soundEffectsSubtitle,
+                      action: AppButton(
+                        icon: Icon(
+                          appState.isSfxEnabled
+                              ? Icons.volume_up_rounded
+                              : Icons.volume_off_rounded,
+                          color: AppColors.white,
+                          size: 12.r,
+                        ),
+                        text: appState.isSfxEnabled
+                            ? l10n.onState
+                            : l10n.offState,
+                        backgroundColor: appState.isSfxEnabled
+                            ? soundBg
+                            : AppColors.neutralDisabled,
+                        extrusionColor: appState.isSfxEnabled
+                            ? soundExtrusion
+                            : AppColors.neutralDisabledExtrusion,
+                        fontSize: btnFontSize,
+                        height: btnHeight,
+                        borderRadius: BorderRadius.circular(8.r),
+                        padding: btnPadding,
+                        onPressed: () {
+                          context.read<AppBloc>().add(
+                            const AppEvent.sfxToggled(),
+                          );
+                        },
+                      ),
+                    ),
+
+                    // ── 6. Góp ý ─────────────────────────────────────────
+                    SettingsItem(
+                      title: l10n.feedback,
+                      subtitle: l10n.feedbackSubtitle,
                       action: AppButton(
                         icon: Icon(
                           Icons.chat_bubble_rounded,
                           color: AppColors.white,
                           size: 12.r,
                         ),
-                        text: 'GÓP Ý',
+                        text: l10n.badgeFeedback,
                         backgroundColor: primaryBg,
                         extrusionColor: primaryExtrusion,
                         fontSize: btnFontSize,
@@ -314,17 +329,17 @@ class HomeSettingsDialog extends StatelessWidget {
                       ),
                     ),
 
-                    // ── 6. Chính sách ────────────────────────────────────
+                    // ── 7. Chính sách ────────────────────────────────────
                     SettingsItem(
-                      title: 'Chính sách & Quyền riêng tư',
-                      subtitle: 'Bảo vệ dữ liệu, điều khoản và quy tắc',
+                      title: l10n.privacyPolicy,
+                      subtitle: l10n.privacyPolicySubtitle,
                       action: AppButton(
                         icon: Icon(
                           Icons.verified_user_rounded,
                           color: AppColors.white,
                           size: 12.r,
                         ),
-                        text: 'CHÍNH SÁCH',
+                        text: l10n.privacyPolicy,
                         backgroundColor: primaryBg,
                         extrusionColor: primaryExtrusion,
                         fontSize: btnFontSize,

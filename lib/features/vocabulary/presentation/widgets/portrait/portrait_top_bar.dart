@@ -1,6 +1,7 @@
 import 'package:bufopia/components/app_icon_button.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -21,6 +22,7 @@ class PortraitTopBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = context.l10n;
     return SizedBox(
       height: 50.h,
       child: Stack(
@@ -32,7 +34,7 @@ class PortraitTopBar extends StatelessWidget {
               alignment: Alignment.centerLeft,
               child: AppIconButton(
                 icon: Icons.arrow_back_ios_new_rounded,
-                tooltip: 'Rời trận',
+                tooltip: l10n.leaveBattle,
                 size: 38.r,
                 iconSize: 18.r,
                 iconColor: isPaper
@@ -105,7 +107,7 @@ class PortraitTopBar extends StatelessWidget {
                 ),
                 SizedBox(width: 6.w),
                 AppText.t3(
-                  'VÒNG $currentRound / $totalRounds',
+                  l10n.roundBadge(currentRound, totalRounds),
                   fontSize: 12.sp,
                   fontWeight: FontWeight.w700,
                   color: isPaper ? AppColors.paperTextDark : AppColors.white,

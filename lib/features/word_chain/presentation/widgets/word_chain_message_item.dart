@@ -4,6 +4,7 @@ import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
 import 'package:bufopia/features/word_chain/domain/entities/turn_message.dart';
 import 'package:bufopia/shared/services/audio/app_audio_service.dart';
+import 'package:bufopia/shared/utils/string_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -208,7 +209,9 @@ class WordChainMessageItem extends StatelessWidget {
                                   ),
                                 ),
                                 child: AppText.c1(
-                                  entry.partOfSpeech!,
+                                  StringUtils.formatPartOfSpeech(
+                                    entry.partOfSpeech,
+                                  ),
                                   color: isPaper
                                       ? AppColors.paperTextDark
                                       : AppColors.grayDark,

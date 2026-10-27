@@ -19,28 +19,27 @@ class App extends StatefulWidget {
   State<App> createState() => _AppState();
 }
 
-class _AppState extends State<App> with WidgetsBindingObserver {
+class _AppState extends State<App> {
   late final AppBloc _appBloc;
+  late final AppLifecycleListener _lifecycleListener;
 
   @override
   void initState() {
     super.initState();
     SystemChrome.setPreferredOrientations(UiConstants.mobileOrientation);
-    WidgetsBinding.instance.addObserver(this);
     _appBloc = sl<AppBloc>()..add(const AppEvent.initiated());
+    _lifecycleListener = AppLifecycleListener(
+      onStateChange: (state) {
+        Log.d('AppLifecycleState: ${state.name}');
+        _appBloc.add(AppEvent.lifecycleChanged(state));
+      },
+    );
   }
 
   @override
   void dispose() {
-    WidgetsBinding.instance.removeObserver(this);
+    _lifecycleListener.dispose();
     super.dispose();
-  }
-
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    super.didChangeAppLifecycleState(state);
-    Log.d('AppLifecycleState: ${state.name}');
-    _appBloc.add(AppEvent.lifecycleChanged(state));
   }
 
   @override

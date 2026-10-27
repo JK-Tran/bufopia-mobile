@@ -2,6 +2,7 @@ import 'package:bufopia/components/app_avatar.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/leaderboard/domain/entities/leaderboard.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:bufopia/shared/utils/number_format_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -79,12 +80,12 @@ class LeaderboardPodiumCard extends StatelessWidget {
   final List<Color>? gradientColors;
   final Color? borderColor;
 
-  static String _unit(String metric) {
+  static String _unit(BuildContext context, String metric) {
     switch (metric) {
       case 'win_streak':
-        return 'trận';
+        return context.l10n.matches;
       case 'streak':
-        return 'ngày';
+        return context.l10n.days;
       default:
         return 'XP';
     }
@@ -255,7 +256,7 @@ class LeaderboardPodiumCard extends StatelessWidget {
                       child: AppText.c1(
                         player!.displayName.isNotEmpty
                             ? player!.displayName
-                            : 'Ẩn danh',
+                            : context.l10n.anonymous,
                         fontSize: isCenter ? 12.sp : 10.sp,
                         fontWeight: FontWeight.w700,
                         color: AppColors.grayDark,
@@ -265,7 +266,7 @@ class LeaderboardPodiumCard extends StatelessWidget {
                     ),
                     SizedBox(width: 2.w),
                     AppText.c1(
-                      'Cấp ${player!.level}',
+                      context.l10n.levelBadge(player!.level),
                       fontSize: 10.sp,
                       color: AppColors.grayMedium,
                     ),
@@ -288,7 +289,7 @@ class LeaderboardPodiumCard extends StatelessWidget {
                     ),
                     SizedBox(width: 2.w),
                     AppText.c1(
-                      _unit(metric),
+                      _unit(context, metric),
                       fontSize: 10.sp,
                       fontWeight: FontWeight.w700,
                       color: AppColors.grayMedium,
