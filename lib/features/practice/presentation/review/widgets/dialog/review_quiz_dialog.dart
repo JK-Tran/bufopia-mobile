@@ -121,15 +121,17 @@ class _ReviewQuizDialogState extends State<ReviewQuizDialog> {
   List<String> _generateOptions() {
     final cleanFallback = _cleanWordFallback;
     final current = _currentWord;
-    final correctMeaning =
-        current?.vi.isNotEmpty == true ? current!.vi : cleanFallback;
+    final correctMeaning = current?.vi.isNotEmpty == true
+        ? current!.vi
+        : cleanFallback;
 
-    final pool = widget.vocabMap.values
-        .where((w) => w.vi.isNotEmpty && w.vi != correctMeaning)
-        .map((w) => w.vi)
-        .toSet()
-        .toList()
-      ..shuffle();
+    final pool =
+        widget.vocabMap.values
+            .where((w) => w.vi.isNotEmpty && w.vi != correctMeaning)
+            .map((w) => w.vi)
+            .toSet()
+            .toList()
+          ..shuffle();
 
     final wrongOptions = pool.take(3).toList();
     while (wrongOptions.length < 3) {
@@ -365,8 +367,7 @@ class _ReviewQuizDialogState extends State<ReviewQuizDialog> {
       width: double.infinity,
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 16.h),
       decoration: BoxDecoration(
-        color:
-            isPaper ? AppColors.paperSurfaceWarm : AppColors.lightBackground,
+        color: isPaper ? AppColors.paperSurfaceWarm : AppColors.lightBackground,
         borderRadius: BorderRadius.circular(14.r),
         border: Border.all(
           color: isPaper ? AppColors.paperBorder : AppColors.grayLight,
@@ -381,8 +382,7 @@ class _ReviewQuizDialogState extends State<ReviewQuizDialog> {
               Flexible(
                 child: AppText.h1(
                   wordTitle,
-                  color:
-                      isPaper ? AppColors.paperTextDark : AppColors.grayDark,
+                  color: isPaper ? AppColors.paperTextDark : AppColors.grayDark,
                   fontWeight: FontWeight.w700,
                   textAlign: TextAlign.center,
                 ),
@@ -403,8 +403,9 @@ class _ReviewQuizDialogState extends State<ReviewQuizDialog> {
               padding: EdgeInsets.only(top: 4.h),
               child: AppText.b2(
                 phonetic,
-                color:
-                    isPaper ? AppColors.paperTextMuted : AppColors.grayMedium,
+                color: isPaper
+                    ? AppColors.paperTextMuted
+                    : AppColors.grayMedium,
               ),
             ),
         ],
@@ -455,12 +456,15 @@ class _QuizOptionStyle {
         );
       case _QuizOptionVisualState.defaultNormal:
         return _QuizOptionStyle(
-          backgroundColor:
-              isPaperTheme ? AppColors.paperCardBg : AppColors.white,
-          borderColor:
-              isPaperTheme ? AppColors.paperBorder : AppColors.grayLight,
-          textColor:
-              isPaperTheme ? AppColors.paperTextDark : AppColors.grayDark,
+          backgroundColor: isPaperTheme
+              ? AppColors.paperCardBg
+              : AppColors.white,
+          borderColor: isPaperTheme
+              ? AppColors.paperBorder
+              : AppColors.grayLight,
+          textColor: isPaperTheme
+              ? AppColors.paperTextDark
+              : AppColors.grayDark,
         );
     }
   }

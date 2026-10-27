@@ -392,10 +392,9 @@ class _ReviewPageState extends BasePageState<ReviewPage, ReviewBloc> {
                                                       decoration: BoxDecoration(
                                                         color: badgeBg,
                                                         borderRadius:
-                                                            BorderRadius
-                                                                .circular(
-                                                          10.r,
-                                                        ),
+                                                            BorderRadius.circular(
+                                                              10.r,
+                                                            ),
                                                         border: Border.all(
                                                           color: badgeBorder,
                                                           width: 1.w,

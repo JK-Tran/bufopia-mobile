@@ -34,7 +34,8 @@ class WordGuessHistoryList extends StatelessWidget {
       }
     }
 
-    final hasHistory = uniqueHistory.isNotEmpty ||
+    final hasHistory =
+        uniqueHistory.isNotEmpty ||
         (lastWrongGuess != null && lastWrongGuess!.isNotEmpty);
 
     return Container(

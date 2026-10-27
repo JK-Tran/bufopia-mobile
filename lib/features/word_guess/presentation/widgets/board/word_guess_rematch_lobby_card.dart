@@ -40,10 +40,12 @@ class WordGuessRematchLobbyCard extends StatelessWidget {
         otherGuests.isNotEmpty && otherGuests.every((p) => p.isReady);
 
     final cardBg = isPaper ? AppColors.paperCardBg : AppColors.white;
-    final cardBorder =
-        isPaper ? AppColors.paperBorder : AppColors.classicBorder;
-    final dividerColor =
-        isPaper ? AppColors.paperDottedLine : AppColors.grayLight;
+    final cardBorder = isPaper
+        ? AppColors.paperBorder
+        : AppColors.classicBorder;
+    final dividerColor = isPaper
+        ? AppColors.paperDottedLine
+        : AppColors.grayLight;
 
     return Center(
       child: Container(
@@ -58,8 +60,9 @@ class WordGuessRematchLobbyCard extends StatelessWidget {
           ),
           boxShadow: [
             BoxShadow(
-              color:
-                  isPaper ? AppColors.paperExtrusion : AppColors.grayExtrusion,
+              color: isPaper
+                  ? AppColors.paperExtrusion
+                  : AppColors.grayExtrusion,
               offset: Offset(0, 4.h),
             ),
             BoxShadow(
@@ -85,8 +88,9 @@ class WordGuessRematchLobbyCard extends StatelessWidget {
                 Expanded(
                   child: AppText.b1(
                     context.l10n.wordGuessRoomTitle,
-                    color:
-                        isPaper ? AppColors.paperTextDark : AppColors.grayDark,
+                    color: isPaper
+                        ? AppColors.paperTextDark
+                        : AppColors.grayDark,
                     fontSize: 16.sp,
                     fontWeight: FontWeight.w700,
                   ),
@@ -146,9 +150,7 @@ class WordGuessRematchLobbyCard extends StatelessWidget {
 
             AppText.c1(
               context.l10n.preparingMatchDesc,
-              color: isPaper
-                  ? AppColors.paperTextMedium
-                  : AppColors.grayMedium,
+              color: isPaper ? AppColors.paperTextMedium : AppColors.grayMedium,
               fontSize: 12.sp,
               textAlign: TextAlign.center,
             ),
@@ -248,8 +250,8 @@ class WordGuessRematchLobbyCard extends StatelessWidget {
                                 size: 12.r,
                                 color: p.isReady
                                     ? (isPaper
-                                        ? AppColors.paperGreen
-                                        : AppColors.green)
+                                          ? AppColors.paperGreen
+                                          : AppColors.green)
                                     : AppColors.orange,
                               ),
                               SizedBox(width: 3.w),
@@ -259,8 +261,8 @@ class WordGuessRematchLobbyCard extends StatelessWidget {
                                     : context.l10n.waiting,
                                 color: p.isReady
                                     ? (isPaper
-                                        ? AppColors.paperGreenDark
-                                        : AppColors.greenDark)
+                                          ? AppColors.paperGreenDark
+                                          : AppColors.greenDark)
                                     : AppColors.orangeDark,
                                 fontSize: 10.sp,
                                 fontWeight: FontWeight.w700,
@@ -283,8 +285,9 @@ class WordGuessRematchLobbyCard extends StatelessWidget {
                   text: context.l10n.startGame,
                   height: 40.h,
                   fontSize: 12.sp,
-                  backgroundColor:
-                      isPaper ? AppColors.paperGreen : AppColors.green,
+                  backgroundColor: isPaper
+                      ? AppColors.paperGreen
+                      : AppColors.green,
                   borderColor: isPaper
                       ? AppColors.paperGreenBorder
                       : AppColors.white.withValues(alpha: 0.3),
@@ -298,11 +301,11 @@ class WordGuessRematchLobbyCard extends StatelessWidget {
                   ),
                   onPressed: () {
                     context.read<AppBloc>().add(
-                          const AppEvent.clickSoundPlayed(),
-                        );
+                      const AppEvent.clickSoundPlayed(),
+                    );
                     context.read<WordGuessBloc>().add(
-                          const WordGuessEvent.startGame(),
-                        );
+                      const WordGuessEvent.startGame(),
+                    );
                   },
                 ),
                 SizedBox(height: 8.h),
@@ -311,8 +314,9 @@ class WordGuessRematchLobbyCard extends StatelessWidget {
                   text: context.l10n.readyBtn,
                   height: 40.h,
                   fontSize: 12.sp,
-                  backgroundColor:
-                      isPaper ? AppColors.paperGreen : AppColors.green,
+                  backgroundColor: isPaper
+                      ? AppColors.paperGreen
+                      : AppColors.green,
                   borderColor: isPaper
                       ? AppColors.paperGreenBorder
                       : AppColors.white.withValues(alpha: 0.3),
@@ -326,11 +330,11 @@ class WordGuessRematchLobbyCard extends StatelessWidget {
                   ),
                   onPressed: () {
                     context.read<AppBloc>().add(
-                          const AppEvent.clickSoundPlayed(),
-                        );
+                      const AppEvent.clickSoundPlayed(),
+                    );
                     context.read<WordGuessBloc>().add(
-                          const WordGuessEvent.toggleReady(),
-                        );
+                      const WordGuessEvent.toggleReady(),
+                    );
                   },
                 ),
                 SizedBox(height: 8.h),

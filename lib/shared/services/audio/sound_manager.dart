@@ -39,11 +39,10 @@ class SoundManager {
   static Future<void> playWordGuessSuccess({
     int streak = 0,
     String? customMessage,
-  }) async =>
-      _audio?.playWordGuessSuccess(
-        streak: streak,
-        customMessage: customMessage,
-      );
+  }) async => _audio?.playWordGuessSuccess(
+    streak: streak,
+    customMessage: customMessage,
+  );
 
   /// Giọng đọc từ vựng tiếng Anh
   static Future<void> speak(String text, {String language = 'en-US'}) async =>

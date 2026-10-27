@@ -45,6 +45,12 @@ class HomeFeedbackDialog extends StatelessWidget {
     sl<AppAudioService>().speakWord(word.en);
   }
 
+  void _onToggleFullDictionary(BuildContext context) {
+    context.read<FeedbackBloc>().add(
+      const FeedbackEvent.toggleFullDictionaryMode(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final isPaper = context.select<AppBloc, bool>((b) => b.state.isPaperTheme);
@@ -177,10 +183,7 @@ class HomeFeedbackDialog extends StatelessWidget {
                                   ),
                               onPlayAudio: _onPlayAudio,
                               onSearchAllVocabulary: () =>
-                                  context.read<FeedbackBloc>().add(
-                                    const FeedbackEvent
-                                        .toggleFullDictionaryMode(),
-                                  ),
+                                  _onToggleFullDictionary(context),
                             ),
                     ),
                   ],

@@ -276,8 +276,9 @@ class WordGuessBloc extends BaseBloc<WordGuessEvent, WordGuessState> {
                   word: currentWord.en,
                   meaning: currentWord.vi,
                   solvedBy: state.myUid,
-                  playerName:
-                      state.myName.isNotEmpty ? state.myName : S.current.you,
+                  playerName: state.myName.isNotEmpty
+                      ? state.myName
+                      : S.current.you,
                   guess: answer,
                   isCorrect: true,
                 ),
@@ -904,15 +905,18 @@ class WordGuessBloc extends BaseBloc<WordGuessEvent, WordGuessState> {
             final res = e.state.result!;
             final reason = res['reason']?.toString();
             if (reason == 'solved') {
-              final word = res['en']?.toString() ??
+              final word =
+                  res['en']?.toString() ??
                   res['word']?.toString() ??
                   e.state.roundResultFullWord;
               final sUid = res['solvedByUid']?.toString();
-              final sName = res['solvedBy']?.toString() ??
+              final sName =
+                  res['solvedBy']?.toString() ??
                   (sUid != null && sUid == effectiveMyUid
                       ? state.myName
                       : S.current.humanOpponent);
-              final byMe = (sUid != null && sUid == effectiveMyUid) ||
+              final byMe =
+                  (sUid != null && sUid == effectiveMyUid) ||
                   (sName == state.myName && state.myName.isNotEmpty);
 
               solvedBannerWord = word;
@@ -922,7 +926,8 @@ class WordGuessBloc extends BaseBloc<WordGuessEvent, WordGuessState> {
           }
 
           // Mở toàn bộ chữ cái (đáp án) vào ô chữ
-          final targetWord = solvedBannerWord ??
+          final targetWord =
+              solvedBannerWord ??
               e.state.roundResultFullWord ??
               finalWordInfo?.en ??
               state.gameState.wordInfo?.en;
@@ -930,7 +935,8 @@ class WordGuessBloc extends BaseBloc<WordGuessEvent, WordGuessState> {
             finalWordInfo = (finalWordInfo ?? const WordInfo()).copyWith(
               masked: targetWord.toUpperCase(),
               en: targetWord,
-              vi: e.state.roundResultMeaning ??
+              vi:
+                  e.state.roundResultMeaning ??
                   finalWordInfo?.vi ??
                   state.gameState.wordInfo?.vi ??
                   '',
@@ -960,12 +966,13 @@ class WordGuessBloc extends BaseBloc<WordGuessEvent, WordGuessState> {
           final rival = e.state.players
               .where((p) => p.uid != effectiveMyUid)
               .firstOrNull;
-          safeEmit(state.copyWith(
-            opponentLeftRivalName:
-                rival?.name.isNotEmpty == true
-                    ? rival!.name
-                    : S.current.humanOpponent,
-          ));
+          safeEmit(
+            state.copyWith(
+              opponentLeftRivalName: rival?.name.isNotEmpty == true
+                  ? rival!.name
+                  : S.current.humanOpponent,
+            ),
+          );
         }
 
         safeEmit(
@@ -992,10 +999,11 @@ class WordGuessBloc extends BaseBloc<WordGuessEvent, WordGuessState> {
             // Khách tự động Ready để chủ phòng Web/Mobile bắt đầu ngay lập tức
             unawaited(_submitReadyUseCase.execute(const EmptyInput()));
           } else if (isHost) {
-            final otherGuests =
-                cleanedState.players.where((p) => !p.isHost).toList();
-            final allGuestsReady = otherGuests.isNotEmpty &&
-                otherGuests.every((p) => p.isReady);
+            final otherGuests = cleanedState.players
+                .where((p) => !p.isHost)
+                .toList();
+            final allGuestsReady =
+                otherGuests.isNotEmpty && otherGuests.every((p) => p.isReady);
             if (allGuestsReady) {
               // Chủ phòng tự động bắt đầu trận khi mọi người đã sẵn sàng
               unawaited(_submitStartUseCase.execute(const EmptyInput()));
@@ -1076,11 +1084,13 @@ class WordGuessBloc extends BaseBloc<WordGuessEvent, WordGuessState> {
             (solverName == state.myName && state.myName.isNotEmpty);
 
         if (isMySolve) {
-          final myFound = (state.gameState.players
-                  .where((p) => p.uid == effectiveMyUid)
-                  .firstOrNull
-                  ?.foundCount ??
-              0) + 1;
+          final myFound =
+              (state.gameState.players
+                      .where((p) => p.uid == effectiveMyUid)
+                      .firstOrNull
+                      ?.foundCount ??
+                  0) +
+              1;
           SoundManager.playWordGuessSuccess(streak: myFound);
         }
 
@@ -1231,10 +1241,13 @@ class WordGuessBloc extends BaseBloc<WordGuessEvent, WordGuessState> {
         if (e.uid != state.myUid &&
             state.gameState.status != 'finished' &&
             state.opponentLeftRivalName == null) {
-          safeEmit(state.copyWith(
-            opponentLeftRivalName:
-                e.name.isNotEmpty ? e.name : S.current.humanOpponent,
-          ));
+          safeEmit(
+            state.copyWith(
+              opponentLeftRivalName: e.name.isNotEmpty
+                  ? e.name
+                  : S.current.humanOpponent,
+            ),
+          );
         }
       },
       error: (e) {

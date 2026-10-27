@@ -42,9 +42,7 @@ class WordGuessRoomTabs extends StatelessWidget {
       decoration: BoxDecoration(
         color: barBg,
         borderRadius: BorderRadius.circular(12.r),
-        border: isPaper
-            ? Border.all(color: const Color(0xFFE2D8C7))
-            : null,
+        border: isPaper ? Border.all(color: const Color(0xFFE2D8C7)) : null,
       ),
       child: Stack(
         children: [
@@ -80,9 +78,9 @@ class WordGuessRoomTabs extends StatelessWidget {
                   behavior: HitTestBehavior.opaque,
                   onTap: () {
                     if (!isCreate) {
-                      context
-                          .read<AppBloc>()
-                          .add(const AppEvent.clickSoundPlayed());
+                      context.read<AppBloc>().add(
+                        const AppEvent.clickSoundPlayed(),
+                      );
                       onTabChanged(0);
                     }
                   },
@@ -112,9 +110,9 @@ class WordGuessRoomTabs extends StatelessWidget {
                   behavior: HitTestBehavior.opaque,
                   onTap: () {
                     if (isCreate) {
-                      context
-                          .read<AppBloc>()
-                          .add(const AppEvent.clickSoundPlayed());
+                      context.read<AppBloc>().add(
+                        const AppEvent.clickSoundPlayed(),
+                      );
                       onTabChanged(1);
                     }
                   },

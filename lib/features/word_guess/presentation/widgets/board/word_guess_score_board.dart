@@ -44,8 +44,9 @@ class WordGuessScoreBoard extends StatelessWidget {
     final isPaper = context.select<AppBloc, bool>((b) => b.state.isPaperTheme);
     final showTimer = hasTimer ?? (!isSolo && secondsLeft > 0);
     final l10n = context.l10n;
-    final resolvedMyName =
-        (myName.isNotEmpty && myName != 'Bạn') ? myName : l10n.you;
+    final resolvedMyName = (myName.isNotEmpty && myName != 'Bạn')
+        ? myName
+        : l10n.you;
 
     if (isSolo || players.isEmpty) {
       // ── HUD Solo Practice ──────────────────────────────────────────

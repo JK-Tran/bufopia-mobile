@@ -69,8 +69,7 @@ class _PrivacyPolicyDialogState extends State<PrivacyPolicyDialog> {
       builder: (context, state) {
         final isClassic = state.isClassicTheme;
         final isPaper = state.isPaperTheme;
-        final currentTab =
-            LegalPoliciesData.getTabs(context.l10n)[_tabIndex];
+        final currentTab = LegalPoliciesData.getTabs(context.l10n)[_tabIndex];
 
         final isLandscape =
             MediaQuery.of(context).orientation == Orientation.landscape;

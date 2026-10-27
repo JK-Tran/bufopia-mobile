@@ -260,8 +260,8 @@ class _VocabularyMatchmakingDialogState
           borderRadius: BorderRadius.circular(10.r),
           border: Border.all(
             color: isPaper
-              ? AppColors.paperCardBg.withValues(alpha: 0.4)
-              : AppColors.white.withValues(alpha: 0.35),
+                ? AppColors.paperCardBg.withValues(alpha: 0.4)
+                : AppColors.white.withValues(alpha: 0.35),
           ),
         ),
         child: AppText.c1(

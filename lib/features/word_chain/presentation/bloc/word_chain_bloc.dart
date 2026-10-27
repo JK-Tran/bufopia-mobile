@@ -336,8 +336,9 @@ class WordChainBloc extends BaseBloc<WordChainEvent, WordChainState> {
     if (requiredLetter.isNotEmpty && !word.startsWith(requiredLetter)) {
       safeEmit(
         state.copyWith(
-          rejectedReason: S.current
-              .wordChainStartLetterError(requiredLetter.toUpperCase()),
+          rejectedReason: S.current.wordChainStartLetterError(
+            requiredLetter.toUpperCase(),
+          ),
         ),
       );
       return;

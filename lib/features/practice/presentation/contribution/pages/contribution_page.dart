@@ -142,209 +142,213 @@ class _ContributionPageState
                 padding: EdgeInsets.fromLTRB(12.w, 6.h, 12.w, 16.h),
                 child: Column(
                   children: [
-                  // 1. Top Bar
-                  Row(
-                    children: [
-                      AppIconButton(
-                        icon: Icons.arrow_back_ios_new_rounded,
-                        tooltip: context.l10n.back,
-                        size: 36.r,
-                        iconSize: 18.r,
-                        backgroundColor: isPaper
-                            ? AppColors.paperCardBg
-                            : AppColors.white,
-                        iconColor: isPaper
-                            ? AppColors.paperTextDark
-                            : AppColors.grayDark,
-                        borderColor: isPaper
-                            ? AppColors.paperBorder
-                            : AppColors.grayLight,
-                        extrusionColor: isPaper
-                            ? AppColors.paperExtrusion
-                            : AppColors.grayExtrusion,
-                        extrusionHeight: 2.5,
-                        onPressed: () {
-                          context.read<AppBloc>().add(
-                            const AppEvent.clickSoundPlayed(),
+                    // 1. Top Bar
+                    Row(
+                      children: [
+                        AppIconButton(
+                          icon: Icons.arrow_back_ios_new_rounded,
+                          tooltip: context.l10n.back,
+                          size: 36.r,
+                          iconSize: 18.r,
+                          backgroundColor: isPaper
+                              ? AppColors.paperCardBg
+                              : AppColors.white,
+                          iconColor: isPaper
+                              ? AppColors.paperTextDark
+                              : AppColors.grayDark,
+                          borderColor: isPaper
+                              ? AppColors.paperBorder
+                              : AppColors.grayLight,
+                          extrusionColor: isPaper
+                              ? AppColors.paperExtrusion
+                              : AppColors.grayExtrusion,
+                          extrusionHeight: 2.5,
+                          onPressed: () {
+                            context.read<AppBloc>().add(
+                              const AppEvent.clickSoundPlayed(),
+                            );
+                            if (context.canPop()) {
+                              context.pop();
+                            } else {
+                              context.go(AppRouter.home);
+                            }
+                          },
+                        ),
+
+                        Expanded(
+                          child: Center(
+                            child: ContributionHeader(isPaperTheme: isPaper),
+                          ),
+                        ),
+
+                        AppIconButton(
+                          icon: Icons.settings_rounded,
+                          tooltip: context.l10n.settings,
+                          size: 36.r,
+                          iconSize: 18.r,
+                          backgroundColor: isPaper
+                              ? AppColors.paperCardBg
+                              : AppColors.white,
+                          iconColor: isPaper
+                              ? AppColors.paperHeaderIcon
+                              : AppColors.sky,
+                          borderColor: isPaper
+                              ? AppColors.paperBorder
+                              : AppColors.grayLight,
+                          extrusionColor: isPaper
+                              ? AppColors.paperExtrusion
+                              : AppColors.grayExtrusion,
+                          extrusionHeight: 2.5,
+                          onPressed: () => HomeSettingsDialog.show(context),
+                        ),
+                      ],
+                    ),
+
+                    SizedBox(height: 10.h),
+
+                    // 2. Main Content Card
+                    Expanded(
+                      child: BlocBuilder<ContributionBloc, ContributionState>(
+                        builder: (context, state) {
+                          return LayoutBuilder(
+                            builder: (context, constraints) {
+                              final isWideScreen = constraints.maxWidth >= 600;
+                              final historyCount = state.contributions.length;
+
+                              if (isWideScreen) {
+                                // 2 Columns side-by-side matching Image 2
+                                return Row(
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
+                                  children: [
+                                    // Left Form Box
+                                    Expanded(
+                                      flex: 11,
+                                      child: _buildOuterCard(
+                                        isPaper: isPaper,
+                                        child: ContributionForm(
+                                          isPaperTheme: isPaper,
+                                          isSubmitting: state.isSubmitting,
+                                          initialContribution:
+                                              _editingContribution,
+                                          autofilledDetail:
+                                              state.lookedUpDetail,
+                                          onWordBlur: _onWordBlur,
+                                          onSubmit: _onFormSubmit,
+                                        ),
+                                      ),
+                                    ),
+                                    SizedBox(width: 12.w),
+                                    // Right History Box
+                                    Expanded(
+                                      flex: 9,
+                                      child: _buildOuterCard(
+                                        isPaper: isPaper,
+                                        child: ContributionHistoryList(
+                                          contributions: state.contributions,
+                                          isPaperTheme: isPaper,
+                                          isLoading: state.isLoading,
+                                          onRefresh: _loadContributions,
+                                          onEditContribution:
+                                              _onEditContribution,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                );
+                              }
+
+                              // Mobile Portrait: Segmented Switcher + Active Tab
+                              return _buildOuterCard(
+                                isPaper: isPaper,
+                                child: Column(
+                                  children: [
+                                    // Segmented Tab bar
+                                    Padding(
+                                      padding: EdgeInsets.fromLTRB(
+                                        12.w,
+                                        10.h,
+                                        12.w,
+                                        6.h,
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            child: _ContributionTabButton(
+                                              label:
+                                                  context.l10n.newContribution,
+                                              isSelected: _activeTabIndex == 0,
+                                              isPaper: isPaper,
+                                              icon: Icons
+                                                  .add_circle_outline_rounded,
+                                              onTap: () {
+                                                context.read<AppBloc>().add(
+                                                  const AppEvent.clickSoundPlayed(),
+                                                );
+                                                setState(
+                                                  () => _activeTabIndex = 0,
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                          SizedBox(width: 8.w),
+                                          Expanded(
+                                            child: _ContributionTabButton(
+                                              label: context
+                                                  .l10n
+                                                  .contributionHistory,
+                                              badgeText: '$historyCount',
+                                              isSelected: _activeTabIndex == 1,
+                                              isPaper: isPaper,
+                                              icon: Icons.history_rounded,
+                                              onTap: () {
+                                                context.read<AppBloc>().add(
+                                                  const AppEvent.clickSoundPlayed(),
+                                                );
+                                                setState(
+                                                  () => _activeTabIndex = 1,
+                                                );
+                                              },
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+
+                                    Expanded(
+                                      child: _activeTabIndex == 0
+                                          ? ContributionForm(
+                                              isPaperTheme: isPaper,
+                                              isSubmitting: state.isSubmitting,
+                                              initialContribution:
+                                                  _editingContribution,
+                                              autofilledDetail:
+                                                  state.lookedUpDetail,
+                                              onWordBlur: _onWordBlur,
+                                              onSubmit: _onFormSubmit,
+                                            )
+                                          : ContributionHistoryList(
+                                              contributions:
+                                                  state.contributions,
+                                              isPaperTheme: isPaper,
+                                              isLoading: state.isLoading,
+                                              onRefresh: _loadContributions,
+                                              onEditContribution:
+                                                  _onEditContribution,
+                                            ),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
                           );
-                          if (context.canPop()) {
-                            context.pop();
-                          } else {
-                            context.go(AppRouter.home);
-                          }
                         },
                       ),
-
-                      Expanded(
-                        child: Center(
-                          child: ContributionHeader(isPaperTheme: isPaper),
-                        ),
-                      ),
-
-                      AppIconButton(
-                        icon: Icons.settings_rounded,
-                        tooltip: context.l10n.settings,
-                        size: 36.r,
-                        iconSize: 18.r,
-                        backgroundColor: isPaper
-                            ? AppColors.paperCardBg
-                            : AppColors.white,
-                        iconColor: isPaper
-                            ? AppColors.paperHeaderIcon
-                            : AppColors.sky,
-                        borderColor: isPaper
-                            ? AppColors.paperBorder
-                            : AppColors.grayLight,
-                        extrusionColor: isPaper
-                            ? AppColors.paperExtrusion
-                            : AppColors.grayExtrusion,
-                        extrusionHeight: 2.5,
-                        onPressed: () => HomeSettingsDialog.show(context),
-                      ),
-                    ],
-                  ),
-
-                  SizedBox(height: 10.h),
-
-                  // 2. Main Content Card
-                  Expanded(
-                    child: BlocBuilder<ContributionBloc, ContributionState>(
-                      builder: (context, state) {
-                        return LayoutBuilder(
-                          builder: (context, constraints) {
-                            final isWideScreen = constraints.maxWidth >= 600;
-                            final historyCount = state.contributions.length;
-
-                            if (isWideScreen) {
-                              // 2 Columns side-by-side matching Image 2
-                              return Row(
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
-                                  // Left Form Box
-                                  Expanded(
-                                    flex: 11,
-                                    child: _buildOuterCard(
-                                      isPaper: isPaper,
-                                      child: ContributionForm(
-                                        isPaperTheme: isPaper,
-                                        isSubmitting: state.isSubmitting,
-                                        initialContribution:
-                                            _editingContribution,
-                                        autofilledDetail: state.lookedUpDetail,
-                                        onWordBlur: _onWordBlur,
-                                        onSubmit: _onFormSubmit,
-                                      ),
-                                    ),
-                                  ),
-                                  SizedBox(width: 12.w),
-                                  // Right History Box
-                                  Expanded(
-                                    flex: 9,
-                                    child: _buildOuterCard(
-                                      isPaper: isPaper,
-                                      child: ContributionHistoryList(
-                                        contributions: state.contributions,
-                                        isPaperTheme: isPaper,
-                                        isLoading: state.isLoading,
-                                        onRefresh: _loadContributions,
-                                        onEditContribution: _onEditContribution,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              );
-                            }
-
-                            // Mobile Portrait: Segmented Switcher + Active Tab
-                            return _buildOuterCard(
-                              isPaper: isPaper,
-                              child: Column(
-                                children: [
-                                  // Segmented Tab bar
-                                  Padding(
-                                    padding: EdgeInsets.fromLTRB(
-                                      12.w,
-                                      10.h,
-                                      12.w,
-                                      6.h,
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        Expanded(
-                                          child: _ContributionTabButton(
-                                            label: context.l10n.newContribution,
-                                            isSelected: _activeTabIndex == 0,
-                                            isPaper: isPaper,
-                                            icon: Icons
-                                                .add_circle_outline_rounded,
-                                            onTap: () {
-                                              context.read<AppBloc>().add(
-                                                const AppEvent
-                                                    .clickSoundPlayed(),
-                                              );
-                                              setState(
-                                                () => _activeTabIndex = 0,
-                                              );
-                                            },
-                                          ),
-                                        ),
-                                        SizedBox(width: 8.w),
-                                        Expanded(
-                                          child: _ContributionTabButton(
-                                            label: context
-                                                .l10n.contributionHistory,
-                                            badgeText: '$historyCount',
-                                            isSelected: _activeTabIndex == 1,
-                                            isPaper: isPaper,
-                                            icon: Icons.history_rounded,
-                                            onTap: () {
-                                              context.read<AppBloc>().add(
-                                                const AppEvent
-                                                    .clickSoundPlayed(),
-                                              );
-                                              setState(
-                                                () => _activeTabIndex = 1,
-                                              );
-                                            },
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-
-                                  Expanded(
-                                    child: _activeTabIndex == 0
-                                        ? ContributionForm(
-                                            isPaperTheme: isPaper,
-                                            isSubmitting: state.isSubmitting,
-                                            initialContribution:
-                                                _editingContribution,
-                                            autofilledDetail:
-                                                state.lookedUpDetail,
-                                            onWordBlur: _onWordBlur,
-                                            onSubmit: _onFormSubmit,
-                                          )
-                                        : ContributionHistoryList(
-                                            contributions: state.contributions,
-                                            isPaperTheme: isPaper,
-                                            isLoading: state.isLoading,
-                                            onRefresh: _loadContributions,
-                                            onEditContribution:
-                                                _onEditContribution,
-                                          ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
-                        );
-                      },
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-          ),
           ],
         ),
       ),
@@ -378,7 +382,6 @@ class _ContributionPageState
       child: child,
     );
   }
-
 }
 
 class _ContributionTabButton extends StatefulWidget {
@@ -420,9 +423,9 @@ class _ContributionTabButtonState extends State<_ContributionTabButton> {
 
     final shadowColor = isSelected
         ? (isPaper ? AppColors.feedbackMossGreenDark : AppColors.blueDeep)
-            .withValues(alpha: 0.35)
+              .withValues(alpha: 0.35)
         : (isPaper ? AppColors.feedbackSandBorder : AppColors.grayLight)
-            .withValues(alpha: 0.35);
+              .withValues(alpha: 0.35);
 
     final fgColor = isSelected
         ? AppColors.white

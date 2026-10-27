@@ -34,10 +34,9 @@ class WordGuessOpponentLeftDialog extends StatelessWidget {
     String? rivalName,
   }) {
     final isPaper = context.read<AppBloc>().state.isPaperTheme;
-    final effectiveRival =
-        (rivalName != null && rivalName.trim().isNotEmpty)
-            ? rivalName
-            : context.l10n.humanOpponent;
+    final effectiveRival = (rivalName != null && rivalName.trim().isNotEmpty)
+        ? rivalName
+        : context.l10n.humanOpponent;
 
     final isLandscape =
         MediaQuery.of(context).orientation == Orientation.landscape;
@@ -86,10 +85,9 @@ class WordGuessOpponentLeftDialog extends StatelessWidget {
         isPaperTheme ??
         context.select<AppBloc, bool>((b) => b.state.isPaperTheme);
 
-    final effectiveRival =
-        (rivalName != null && rivalName!.trim().isNotEmpty)
-            ? rivalName!
-            : l10n.humanOpponent;
+    final effectiveRival = (rivalName != null && rivalName!.trim().isNotEmpty)
+        ? rivalName!
+        : l10n.humanOpponent;
 
     return Column(
       mainAxisSize: MainAxisSize.min,

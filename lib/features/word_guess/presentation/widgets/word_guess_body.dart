@@ -72,11 +72,13 @@ class WordGuessBody extends StatelessWidget {
       currentRound = state.currentQuestionIndex + 1;
       foundCount = state.practiceCorrectCount;
     } else {
-      final isRoundResult = state.gameState.isRoundResult ||
+      final isRoundResult =
+          state.gameState.isRoundResult ||
           state.solvedBannerWord != null ||
           state.isDelayingNextRound;
       final wordInfo = state.gameState.wordInfo;
-      final targetSolvedWord = state.solvedBannerWord ??
+      final targetSolvedWord =
+          state.solvedBannerWord ??
           state.gameState.roundResultFullWord ??
           wordInfo?.en;
 
@@ -91,14 +93,16 @@ class WordGuessBody extends StatelessWidget {
         wordEn = wordInfo?.en;
       }
 
-      viMeaning = (isRoundResult &&
+      viMeaning =
+          (isRoundResult &&
               state.gameState.roundResultMeaning?.isNotEmpty == true)
           ? state.gameState.roundResultMeaning!
           : (wordInfo?.vi ?? '');
       phonetic = wordInfo?.phonetic.isNotEmpty == true
           ? wordInfo!.phonetic
           : null;
-      wordLength = wordInfo?.length ??
+      wordLength =
+          wordInfo?.length ??
           wordEn?.length ??
           maskedWord.replaceAll(' ', '').length;
       currentRound = state.gameState.currentRound;
@@ -188,8 +192,9 @@ class WordGuessBody extends StatelessWidget {
                             boxShadow: [
                               BoxShadow(
                                 color: isPaper
-                                    ? AppColors.paperExtrusion
-                                        .withValues(alpha: 0.45)
+                                    ? AppColors.paperExtrusion.withValues(
+                                        alpha: 0.45,
+                                      )
                                     : AppColors.black.withValues(alpha: 0.12),
                                 offset: Offset(0, 4.h),
                                 blurRadius: 12.r,
@@ -270,84 +275,87 @@ class WordGuessBody extends StatelessWidget {
                                           isPaperTheme: isPaper,
                                         ),
 
-                                  // Banner chúc mừng khi đoán đúng
-                                  if (state.solvedBannerSolver != null) ...[
-                                    SizedBox(height: 4.h),
-                                    WordGuessSolvedBanner(
-                                      solverName: state.solvedBannerSolver!,
-                                      isMe: state.isSolvedByMe,
-                                      isPaperTheme: isPaper,
-                                      onCheer: () {
-                                        context.read<WordGuessBloc>().add(
-                                          const WordGuessEvent.sendChat(
-                                            'Tuyệt vời! 👍',
+                                        // Banner chúc mừng khi đoán đúng
+                                        if (state.solvedBannerSolver !=
+                                            null) ...[
+                                          SizedBox(height: 4.h),
+                                          WordGuessSolvedBanner(
+                                            solverName:
+                                                state.solvedBannerSolver!,
+                                            isMe: state.isSolvedByMe,
+                                            isPaperTheme: isPaper,
+                                            onCheer: () {
+                                              context.read<WordGuessBloc>().add(
+                                                const WordGuessEvent.sendChat(
+                                                  'Tuyệt vời! 👍',
+                                                ),
+                                              );
+                                            },
                                           ),
-                                        );
-                                      },
-                                    ),
-                                  ],
+                                        ],
 
-                                  // Lịch sử các từ đã thử (Đã thử: ...)
-                                  SizedBox(height: 6.h),
-                                  WordGuessHistoryList(
-                                    history: state.gameState.history,
-                                    lastWrongGuess: state.lastWrongGuess,
-                                    isPaperTheme: isPaper,
+                                        // Lịch sử các từ đã thử (Đã thử: ...)
+                                        SizedBox(height: 6.h),
+                                        WordGuessHistoryList(
+                                          history: state.gameState.history,
+                                          lastWrongGuess: state.lastWrongGuess,
+                                          isPaperTheme: isPaper,
+                                        ),
+
+                                        // Banner biểu quyết Bỏ qua (Phòng đối kháng)
+                                        if (!isSolo &&
+                                            state.gameState.activeProposal !=
+                                                null) ...[
+                                          SizedBox(height: 6.h),
+                                          WordGuessSkipBanner(
+                                            proposal:
+                                                state.gameState.activeProposal!,
+                                            isPaperTheme: isPaper,
+                                            onVoteAgree: () {
+                                              context.read<WordGuessBloc>().add(
+                                                WordGuessEvent.voteSkip(
+                                                  proposalId: state
+                                                      .gameState
+                                                      .activeProposal!
+                                                      .proposalId,
+                                                  agree: true,
+                                                ),
+                                              );
+                                            },
+                                            onVoteDisagree: () {
+                                              context.read<WordGuessBloc>().add(
+                                                WordGuessEvent.voteSkip(
+                                                  proposalId: state
+                                                      .gameState
+                                                      .activeProposal!
+                                                      .proposalId,
+                                                  agree: false,
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ],
+                                      ],
+                                    ),
                                   ),
+                                ),
 
-                                  // Banner biểu quyết Bỏ qua (Phòng đối kháng)
-                                  if (!isSolo &&
-                                      state.gameState.activeProposal !=
-                                          null) ...[
-                                    SizedBox(height: 6.h),
-                                    WordGuessSkipBanner(
-                                      proposal: state.gameState.activeProposal!,
-                                      isPaperTheme: isPaper,
-                                      onVoteAgree: () {
-                                        context.read<WordGuessBloc>().add(
-                                          WordGuessEvent.voteSkip(
-                                            proposalId: state
-                                                .gameState
-                                                .activeProposal!
-                                                .proposalId,
-                                            agree: true,
-                                          ),
-                                        );
-                                      },
-                                      onVoteDisagree: () {
-                                        context.read<WordGuessBloc>().add(
-                                          WordGuessEvent.voteSkip(
-                                            proposalId: state
-                                                .gameState
-                                                .activeProposal!
-                                                .proposalId,
-                                            agree: false,
-                                          ),
-                                        );
-                                      },
-                                    ),
-                                  ],
-                                ],
-                              ),
+                                // ── C. Đáy bàn đấu: Thanh dock nhập từ ──────────
+                                WordGuessInputBar(
+                                  controller: textController,
+                                  focusNode: focusNode,
+                                  isEnabled: canInteract,
+                                  isSubmitting: state.isSubmitting,
+                                  isPaperTheme: isPaper,
+                                  lastWrongGuess: state.lastWrongGuess,
+                                  onChanged: onInputChanged,
+                                  onSubmit: onSubmit,
+                                  onSkip: onSkip,
+                                ),
+                              ],
                             ),
                           ),
-
-                          // ── C. Đáy bàn đấu: Thanh dock nhập từ ──────────
-                          WordGuessInputBar(
-                            controller: textController,
-                            focusNode: focusNode,
-                            isEnabled: canInteract,
-                            isSubmitting: state.isSubmitting,
-                            isPaperTheme: isPaper,
-                            lastWrongGuess: state.lastWrongGuess,
-                            onChanged: onInputChanged,
-                            onSubmit: onSubmit,
-                            onSkip: onSkip,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
+                        ),
                 ),
               ),
             ),

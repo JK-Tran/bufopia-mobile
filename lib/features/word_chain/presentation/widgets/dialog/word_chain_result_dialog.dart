@@ -121,16 +121,12 @@ class WordChainResultDialog extends StatelessWidget {
       case 'timeout':
         return isWinner ? l10n.opponentTimeout : l10n.myTimeout;
       case 'surrender':
-        return isWinner
-            ? l10n.opponentSurrendered
-            : l10n.mySurrendered;
+        return isWinner ? l10n.opponentSurrendered : l10n.mySurrendered;
       case 'left':
       case 'abandoned':
         return l10n.opponentAbandoned;
       default:
-        return isWinner
-            ? l10n.victoryBelongsToYou
-            : l10n.betterLuckNextTime;
+        return isWinner ? l10n.victoryBelongsToYou : l10n.betterLuckNextTime;
     }
   }
 

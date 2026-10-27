@@ -122,7 +122,8 @@ class _WordGuessModeDialogState extends State<WordGuessModeDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final isPaper = widget.isPaperTheme ??
+    final isPaper =
+        widget.isPaperTheme ??
         context.select<AppBloc, bool>((b) => b.state.isPaperTheme);
     final isGuest = context.select<AuthBloc, bool>((b) => b.state.isGuest);
     final l10n = context.l10n;
@@ -290,10 +291,12 @@ class _WordGuessDifficultySelector extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final containerBg =
-        isPaper ? AppColors.paperSurfaceWarm : const Color(0xFFF8FAFC);
-    final containerBorder =
-        isPaper ? AppColors.paperBorder : const Color(0xFFE2E8F0);
+    final containerBg = isPaper
+        ? AppColors.paperSurfaceWarm
+        : const Color(0xFFF8FAFC);
+    final containerBorder = isPaper
+        ? AppColors.paperBorder
+        : const Color(0xFFE2E8F0);
     final shadowColor = isPaper
         ? AppColors.paperExtrusion
         : const Color(0xFFCBD5E1);
@@ -365,9 +368,7 @@ class _WordGuessDifficultySelector extends StatelessWidget {
               SizedBox(width: 6.w),
               AppText.b2(
                 'TRÌNH ĐỘ TỪ VỰNG',
-                color: isPaper
-                    ? AppColors.paperTextDark
-                    : AppColors.grayDark,
+                color: isPaper ? AppColors.paperTextDark : AppColors.grayDark,
                 fontSize: 12.sp,
                 fontWeight: FontWeight.w700,
               ),
@@ -558,8 +559,9 @@ class _WordGuessDifficultyTabItem extends StatelessWidget {
 
     // Inactive styling
     final inactiveBg = isPaper ? AppColors.paperCardBg : AppColors.white;
-    final inactiveBorder =
-        isPaper ? AppColors.paperBorder : const Color(0xFFE2E8F0);
+    final inactiveBorder = isPaper
+        ? AppColors.paperBorder
+        : const Color(0xFFE2E8F0);
     final inactiveExtrusion = isPaper
         ? AppColors.paperExtrusion
         : const Color(0xFFCBD5E1);
@@ -629,8 +631,8 @@ class _WordGuessDifficultyTabItem extends StatelessWidget {
                 color: isSelected
                     ? AppColors.white.withValues(alpha: 0.2)
                     : (isPaper
-                        ? AppColors.paperBadgeBg.withValues(alpha: 0.5)
-                        : const Color(0xFFF1F5F9)),
+                          ? AppColors.paperBadgeBg.withValues(alpha: 0.5)
+                          : const Color(0xFFF1F5F9)),
                 borderRadius: BorderRadius.circular(4.r),
               ),
               child: AppText.c1(

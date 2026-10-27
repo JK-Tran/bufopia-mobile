@@ -37,11 +37,11 @@ class WordGuessTileItem extends StatelessWidget {
 
     final extrusionColor = isRevealed
         ? (isPaperTheme
-            ? AppColors.paperGreenExtrusion
-            : AppColors.greenDark.withValues(alpha: 0.5))
+              ? AppColors.paperGreenExtrusion
+              : AppColors.greenDark.withValues(alpha: 0.5))
         : (isPaperTheme
-            ? AppColors.paperExtrusion
-            : AppColors.grayExtrusion.withValues(alpha: 0.5));
+              ? AppColors.paperExtrusion
+              : AppColors.grayExtrusion.withValues(alpha: 0.5));
 
     final textColor = isRevealed
         ? (isPaperTheme ? AppColors.paperGreenDark : AppColors.greenDark)

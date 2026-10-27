@@ -516,15 +516,15 @@ class _WordGuessViewState extends State<_WordGuessView> {
       rivalName: rivalName,
       onHome: () {
         context.read<WordGuessBloc>().add(
-              const WordGuessEvent.leaveGame(),
-            );
+          const WordGuessEvent.leaveGame(),
+        );
         context.go(AppRouter.home);
       },
       onContinueSolo: () {
         _isOpponentLeftShown = false;
         context.read<WordGuessBloc>().add(
-              const WordGuessEvent.switchToSolo(),
-            );
+          const WordGuessEvent.switchToSolo(),
+        );
         _focusInput();
       },
     );
@@ -636,7 +636,8 @@ class _WordGuessViewState extends State<_WordGuessView> {
         }
 
         // Đối thủ thoát phòng khi đang thi đấu
-        final effectiveRivalName = state.opponentLeftRivalName ??
+        final effectiveRivalName =
+            state.opponentLeftRivalName ??
             state.gameState.players
                 .where((p) => p.uid != state.myUid)
                 .firstOrNull
@@ -766,7 +767,7 @@ class _WordGuessViewState extends State<_WordGuessView> {
                                 rivalPlayer?.name.isNotEmpty == true
                                 ? rivalPlayer!.name
                                 : (widget.rivalName ??
-                                    context.l10n.humanOpponent);
+                                      context.l10n.humanOpponent);
                             final rivalAvatar =
                                 rivalPlayer?.avatar ?? widget.rivalAvatar;
                             ChatDialog.show(

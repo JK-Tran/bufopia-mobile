@@ -109,9 +109,7 @@ class _VocabularyAnswerItemState extends State<VocabularyAnswerItem> {
       extrusionColor = AppColors.redDark;
     } else if (widget.isOpponentSelected) {
       // Đối thủ đã chọn ô này và đang chờ kết quả: Đánh dấu viền xanh
-      borderColor = isPaper
-          ? AppColors.playerBlueBorder
-          : AppColors.playerBlue;
+      borderColor = isPaper ? AppColors.playerBlueBorder : AppColors.playerBlue;
       extrusionColor = isPaper
           ? AppColors.playerBlueExtrusion
           : AppColors.playerBlueExtrusion;

@@ -30,18 +30,22 @@ class WordGuessSolvedBanner extends StatelessWidget {
       bannerBg = isPaperTheme
           ? AppColors.paperGreen.withValues(alpha: 0.15)
           : AppColors.green.withValues(alpha: 0.15);
-      bannerBorder =
-          isPaperTheme ? AppColors.paperGreenBorder : AppColors.green;
-      contentColor =
-          isPaperTheme ? AppColors.paperGreenDark : AppColors.greenDark;
+      bannerBorder = isPaperTheme
+          ? AppColors.paperGreenBorder
+          : AppColors.green;
+      contentColor = isPaperTheme
+          ? AppColors.paperGreenDark
+          : AppColors.greenDark;
     } else {
       bannerBg = isPaperTheme
           ? AppColors.paperAmberBadgeBg
           : AppColors.orangeLight.withValues(alpha: 0.15);
-      bannerBorder =
-          isPaperTheme ? AppColors.paperAmberBadgeBorder : AppColors.orange;
-      contentColor =
-          isPaperTheme ? AppColors.paperAmberBadgeText : AppColors.orangeDark;
+      bannerBorder = isPaperTheme
+          ? AppColors.paperAmberBadgeBorder
+          : AppColors.orange;
+      contentColor = isPaperTheme
+          ? AppColors.paperAmberBadgeText
+          : AppColors.orangeDark;
     }
 
     return Container(

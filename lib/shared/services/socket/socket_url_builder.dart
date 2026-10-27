@@ -163,8 +163,7 @@ class SocketUrlBuilder {
       'name': name,
       'ticket': ticket,
       if (avatar != null && avatar.isNotEmpty) 'avatar': avatar,
-      if (difficulty != null && difficulty.isNotEmpty)
-        'difficulty': difficulty,
+      if (difficulty != null && difficulty.isNotEmpty) 'difficulty': difficulty,
     };
     final uri = Uri.parse(
       '${UrlConstants.webSocketBaseUrl}/guess-matchmake',
@@ -188,8 +187,7 @@ class SocketUrlBuilder {
       'ticket': ticket,
       if (topic != null && topic.isNotEmpty) 'topic': topic,
       if (avatar != null && avatar.isNotEmpty) 'avatar': avatar,
-      if (difficulty != null && difficulty.isNotEmpty)
-        'difficulty': difficulty,
+      if (difficulty != null && difficulty.isNotEmpty) 'difficulty': difficulty,
     };
     final uri = Uri.parse(
       '${UrlConstants.webSocketBaseUrl}/guess/$roomCode',

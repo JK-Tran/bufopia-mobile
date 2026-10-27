@@ -60,9 +60,7 @@ class _WordGuessTimerItemState extends State<WordGuessTimerItem>
 
   Color _getColor() {
     if (widget.secondsLeft <= 10) {
-      return widget.isPaperTheme
-          ? AppColors.paperStreakFlame
-          : AppColors.error;
+      return widget.isPaperTheme ? AppColors.paperStreakFlame : AppColors.error;
     }
     if (widget.secondsLeft <= 30) {
       return widget.isPaperTheme

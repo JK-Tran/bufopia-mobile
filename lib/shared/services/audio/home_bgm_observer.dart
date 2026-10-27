@@ -47,7 +47,8 @@ class HomeBgmObserver extends NavigatorObserver {
     if (route is PopupRoute) return;
 
     final name = route.settings.name;
-    final isHome = name == 'home' ||
+    final isHome =
+        name == 'home' ||
         name == '/home' ||
         name == '/' ||
         name == AppRouter.home ||

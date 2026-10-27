@@ -40,8 +40,8 @@ class GameStateDataMapper extends BaseDataMapper<GameStateData, GameState> {
       currentRound: data?.currentWordIndex != null
           ? data!.currentWordIndex! + 1
           : (data?.currentRound != null && data!.currentRound! > 0
-              ? data.currentRound!
-              : 1),
+                ? data.currentRound!
+                : 1),
       totalRounds: data?.totalRounds ?? 10,
       topicId: data?.topicId ?? '',
       durationSeconds: data?.durationSeconds ?? 300,

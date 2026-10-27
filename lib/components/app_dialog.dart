@@ -81,10 +81,12 @@ class AppDialog extends StatelessWidget {
     final isPaper = context.select<AppBloc, bool>((b) => b.state.isPaperTheme);
 
     final dialogBg = isPaper ? AppColors.paperCardBg : AppColors.white;
-    final dialogBorder =
-        isPaper ? AppColors.paperBorder : AppColors.classicBorder;
-    final dialogExtrusion =
-        isPaper ? AppColors.paperExtrusion : AppColors.grayExtrusion;
+    final dialogBorder = isPaper
+        ? AppColors.paperBorder
+        : AppColors.classicBorder;
+    final dialogExtrusion = isPaper
+        ? AppColors.paperExtrusion
+        : AppColors.grayExtrusion;
     final titleColor = isPaper ? AppColors.paperTextDark : AppColors.grayDark;
 
     return Center(
@@ -202,12 +204,15 @@ class _AppDialogCloseButtonState extends State<_AppDialogCloseButton>
     final isPaper = context.select<AppBloc, bool>((b) => b.state.isPaperTheme);
 
     final closeBg = isPaper ? AppColors.paperSurface : AppColors.dialogCloseBg;
-    final closeBorder =
-        isPaper ? AppColors.paperBorder : AppColors.dialogCloseBorder;
-    final closeExtrusion =
-        isPaper ? AppColors.paperExtrusion : AppColors.dialogCloseExtrusion;
-    final closeIcon =
-        isPaper ? AppColors.paperTextMedium : AppColors.dialogCloseIcon;
+    final closeBorder = isPaper
+        ? AppColors.paperBorder
+        : AppColors.dialogCloseBorder;
+    final closeExtrusion = isPaper
+        ? AppColors.paperExtrusion
+        : AppColors.dialogCloseExtrusion;
+    final closeIcon = isPaper
+        ? AppColors.paperTextMedium
+        : AppColors.dialogCloseIcon;
 
     return AnimatedBuilder(
       animation: _pressController,

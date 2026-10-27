@@ -50,10 +50,12 @@ class MatchmakeMatchedEvent extends SocketEvent {
       matchId: json['matchId'] as String? ?? '',
       roomCode: json['roomCode']?.toString() ?? '',
       playerIndex: json['playerIndex'] as int? ?? 0,
-      rivalName: opponent?['name'] as String? ??
+      rivalName:
+          opponent?['name'] as String? ??
           json['rivalName'] as String? ??
           'Đối thủ',
-      rivalAvatar: opponent?['avatar'] as String? ??
+      rivalAvatar:
+          opponent?['avatar'] as String? ??
           json['rivalAvatar'] as String? ??
           '',
       topicId: json['topicId'] as String? ?? 'auto',
@@ -163,7 +165,8 @@ class RoomMatchStartEvent extends SocketEvent {
   });
 
   factory RoomMatchStartEvent.fromJson(Map<String, dynamic> json) {
-    final rawDeck = (json['deck'] as List<dynamic>?) ??
+    final rawDeck =
+        (json['deck'] as List<dynamic>?) ??
         (json['questions'] as List<dynamic>?);
     return RoomMatchStartEvent(
       matchId: json['matchId'] as String? ?? '',
@@ -173,9 +176,7 @@ class RoomMatchStartEvent extends SocketEvent {
       rivalAvatar: json['rivalAvatar'] as String? ?? '',
       matchRound: json['matchRound'] as int? ?? 1,
       deck:
-          rawDeck
-              ?.map((e) => Map<String, dynamic>.from(e as Map))
-              .toList() ??
+          rawDeck?.map((e) => Map<String, dynamic>.from(e as Map)).toList() ??
           const [],
       gameState: json['gameState'] as Map<String, dynamic>?,
     );
@@ -709,16 +710,19 @@ class GuessAttemptEvent extends SocketEvent {
 
   factory GuessAttemptEvent.fromJson(Map<String, dynamic> json) {
     final history = json['historyItem'] as Map<String, dynamic>?;
-    final guess = history?['guess'] as String? ??
+    final guess =
+        history?['guess'] as String? ??
         json['guess'] as String? ??
         json['word'] as String? ??
         '';
-    final isCorrect = history?['isCorrect'] as bool? ??
+    final isCorrect =
+        history?['isCorrect'] as bool? ??
         json['isWin'] as bool? ??
         json['isCorrect'] as bool? ??
         json['correct'] as bool? ??
         false;
-    final playerUid = json['playerUid'] as String? ??
+    final playerUid =
+        json['playerUid'] as String? ??
         json['uid']?.toString() ??
         history?['playerUid'] as String?;
 

@@ -425,10 +425,12 @@ class WordChainSocketServiceImpl extends BaseSocketService
         isNormalServerClose = true;
         final roomCode = json['roomCode']?.toString() ?? '';
         final opponent = json['opponent'] as Map<String, dynamic>?;
-        final rivalName = opponent?['name']?.toString() ??
+        final rivalName =
+            opponent?['name']?.toString() ??
             json['rivalName']?.toString() ??
             'Đối thủ';
-        final rivalAvatar = opponent?['avatar']?.toString() ??
+        final rivalAvatar =
+            opponent?['avatar']?.toString() ??
             json['rivalAvatar']?.toString() ??
             '';
         emitEvent(

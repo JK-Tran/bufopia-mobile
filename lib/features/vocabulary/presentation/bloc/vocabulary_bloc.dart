@@ -531,8 +531,9 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
         safeEmit(
           state.copyWith(
             selectedWordP2: event.selectedWord,
-            selectedOptionIdP2:
-                selectedOpt.id.isNotEmpty ? selectedOpt.id : null,
+            selectedOptionIdP2: selectedOpt.id.isNotEmpty
+                ? selectedOpt.id
+                : null,
             isP2Correct: true,
             isRoundLocked: true,
             player2Score: state.player2Score + 100,
@@ -549,8 +550,9 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
         safeEmit(
           state.copyWith(
             selectedWordP2: event.selectedWord,
-            selectedOptionIdP2:
-                selectedOpt.id.isNotEmpty ? selectedOpt.id : null,
+            selectedOptionIdP2: selectedOpt.id.isNotEmpty
+                ? selectedOpt.id
+                : null,
             isP2Correct: false,
             wrongWordsP2: updatedWrong,
             isRoundLocked: false,
