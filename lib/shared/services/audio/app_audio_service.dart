@@ -89,8 +89,22 @@ class AppAudioServiceImpl implements AppAudioService {
   bool _isSfxEnabled = true;
   bool _isPlayingBgm = false;
   bool _isHomeActive = false;
+  bool _isTransitioningBgm = false;
   bool _isInitialized = false;
   bool _isTtsInitialized = false;
+
+  static final AudioContext _audioCtx = AudioContext(
+    android: const AudioContextAndroid(
+      usageType: AndroidUsageType.game,
+      contentType: AndroidContentType.sonification,
+      audioFocus: AndroidAudioFocus.none,
+    ),
+    iOS: AudioContextIOS(
+      options: const {
+        AVAudioSessionOptions.mixWithOthers,
+      },
+    ),
+  );
 
   @override
   bool get isMusicEnabled => _isMusicEnabled;
@@ -105,18 +119,28 @@ class AppAudioServiceImpl implements AppAudioService {
   Future<void> init() async {
     if (_isInitialized) return;
     try {
+      await AudioPlayer.global.setAudioContext(_audioCtx);
+
+      await _bgmPlayer.setAudioContext(_audioCtx);
       await _bgmPlayer.setReleaseMode(ReleaseMode.loop);
       await _bgmPlayer.setPlayerMode(PlayerMode.mediaPlayer);
-      await _bgmPlayer.setSource(AssetSource(_bgmAssetPath));
+      await _bgmPlayer.setVolume(0.5);
 
+      _bgmPlayer.onPlayerStateChanged.listen((playerState) {
+        _isPlayingBgm = playerState == PlayerState.playing;
+      });
+
+      await _clickPlayer.setAudioContext(_audioCtx);
       await _clickPlayer.setReleaseMode(ReleaseMode.stop);
       await _clickPlayer.setPlayerMode(PlayerMode.lowLatency);
       await _clickPlayer.setVolume(1);
 
+      await _feedbackPlayer.setAudioContext(_audioCtx);
       await _feedbackPlayer.setReleaseMode(ReleaseMode.stop);
       await _feedbackPlayer.setPlayerMode(PlayerMode.lowLatency);
       await _feedbackPlayer.setVolume(1);
 
+      await _ttsPlayer.setAudioContext(_audioCtx);
       await _ttsPlayer.setReleaseMode(ReleaseMode.stop);
       await _ttsPlayer.setPlayerMode(PlayerMode.mediaPlayer);
 
@@ -167,23 +191,31 @@ class AppAudioServiceImpl implements AppAudioService {
   @override
   Future<void> playBgm() async {
     if (!_isMusicEnabled || !_isHomeActive) return;
+    if (_isTransitioningBgm) return;
+    _isTransitioningBgm = true;
+
     try {
-      if (_isPlayingBgm) return;
-      if (_bgmPlayer.source == null) {
-        await _bgmPlayer.setSource(AssetSource(_bgmAssetPath));
-      }
-      await _bgmPlayer.resume();
+      if (_isPlayingBgm && _bgmPlayer.state == PlayerState.playing) return;
+      await _bgmPlayer.setReleaseMode(ReleaseMode.loop);
+      await _bgmPlayer.setVolume(0.5);
+      await _bgmPlayer.play(
+        AssetSource(_bgmAssetPath),
+        mode: PlayerMode.mediaPlayer,
+        ctx: _audioCtx,
+      );
       _isPlayingBgm = true;
     } on Object catch (e, stackTrace) {
       Log.e('Error playing BGM: $e', stackTrace: stackTrace);
+    } finally {
+      _isTransitioningBgm = false;
     }
   }
 
   @override
   Future<void> pauseBgm() async {
+    _isPlayingBgm = false;
     try {
       await _bgmPlayer.pause();
-      _isPlayingBgm = false;
     } on Object catch (e, stackTrace) {
       Log.e('Error pausing BGM: $e', stackTrace: stackTrace);
     }
@@ -192,22 +224,14 @@ class AppAudioServiceImpl implements AppAudioService {
   @override
   Future<void> resumeBgm() async {
     if (!_isMusicEnabled || !_isHomeActive) return;
-    try {
-      if (!_isPlayingBgm) {
-        await _bgmPlayer.resume();
-        _isPlayingBgm = true;
-      }
-    } on Object catch (e, stackTrace) {
-      Log.e('Error resuming BGM: $e', stackTrace: stackTrace);
-    }
+    await playBgm();
   }
 
   @override
   Future<void> stopBgm() async {
+    _isPlayingBgm = false;
     try {
-      await _bgmPlayer.pause();
-      await _bgmPlayer.seek(Duration.zero);
-      _isPlayingBgm = false;
+      await _bgmPlayer.stop();
     } on Object catch (e, stackTrace) {
       Log.e('Error stopping BGM: $e', stackTrace: stackTrace);
     }
@@ -225,6 +249,7 @@ class AppAudioServiceImpl implements AppAudioService {
       await _clickPlayer.play(
         AssetSource(_clickAssetPath),
         mode: PlayerMode.lowLatency,
+        ctx: _audioCtx,
       );
     } on Object catch (e, stackTrace) {
       Log.e(
@@ -246,6 +271,7 @@ class AppAudioServiceImpl implements AppAudioService {
       await _feedbackPlayer.play(
         AssetSource(_correctAssetPath),
         mode: PlayerMode.lowLatency,
+        ctx: _audioCtx,
       );
     } on Object catch (e, stackTrace) {
       Log.e(
@@ -267,6 +293,7 @@ class AppAudioServiceImpl implements AppAudioService {
       await _feedbackPlayer.play(
         AssetSource(_wrongAssetPath),
         mode: PlayerMode.lowLatency,
+        ctx: _audioCtx,
       );
     } on Object catch (e, stackTrace) {
       Log.e(
@@ -288,6 +315,7 @@ class AppAudioServiceImpl implements AppAudioService {
       await _feedbackPlayer.play(
         AssetSource(_perfectAssetPath),
         mode: PlayerMode.lowLatency,
+        ctx: _audioCtx,
       );
     } on Object catch (e, stackTrace) {
       Log.e(
@@ -309,6 +337,7 @@ class AppAudioServiceImpl implements AppAudioService {
       await _feedbackPlayer.play(
         AssetSource(_winAssetPath),
         mode: PlayerMode.lowLatency,
+        ctx: _audioCtx,
       );
     } on Object catch (e, stackTrace) {
       Log.e(
@@ -378,7 +407,7 @@ class AppAudioServiceImpl implements AppAudioService {
     if (enabled && _isHomeActive) {
       await playBgm();
     } else {
-      await pauseBgm();
+      await stopBgm();
     }
   }
 

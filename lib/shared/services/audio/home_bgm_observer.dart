@@ -1,4 +1,5 @@
 import 'package:bufopia/core/router/app_router.dart';
+import 'package:bufopia/features/home/home.dart';
 import 'package:bufopia/shared/services/audio/sound_manager.dart';
 import 'package:flutter/material.dart';
 
@@ -10,12 +11,23 @@ class HomeBgmObserver extends NavigatorObserver {
   @override
   void didPush(Route<dynamic> route, Route<dynamic>? previousRoute) {
     super.didPush(route, previousRoute);
+    if (route is PopupRoute) return;
     _handleRouteChange(route);
   }
 
   @override
   void didPop(Route<dynamic> route, Route<dynamic>? previousRoute) {
     super.didPop(route, previousRoute);
+    if (route is PopupRoute) return;
+    if (previousRoute != null) {
+      _handleRouteChange(previousRoute);
+    }
+  }
+
+  @override
+  void didRemove(Route<dynamic> route, Route<dynamic>? previousRoute) {
+    super.didRemove(route, previousRoute);
+    if (route is PopupRoute) return;
     if (previousRoute != null) {
       _handleRouteChange(previousRoute);
     }
@@ -24,6 +36,7 @@ class HomeBgmObserver extends NavigatorObserver {
   @override
   void didReplace({Route<dynamic>? newRoute, Route<dynamic>? oldRoute}) {
     super.didReplace(newRoute: newRoute, oldRoute: oldRoute);
+    if (newRoute is PopupRoute) return;
     if (newRoute != null) {
       _handleRouteChange(newRoute);
     }
@@ -34,7 +47,12 @@ class HomeBgmObserver extends NavigatorObserver {
     if (route is PopupRoute) return;
 
     final name = route.settings.name;
-    final isHome = name == 'home' || name == '/home' || name == AppRouter.home;
+    final isHome = name == 'home' ||
+        name == '/home' ||
+        name == '/' ||
+        name == AppRouter.home ||
+        (route.settings is MaterialPage &&
+            (route.settings as MaterialPage<dynamic>).child is HomePage);
 
     if (isHome) {
       SoundManager.onEnterHome();

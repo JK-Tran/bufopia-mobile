@@ -6,28 +6,31 @@ import 'package:get_it/get_it.dart';
 class SoundManager {
   const SoundManager._();
 
-  static AppAudioService get _audio => GetIt.instance.get<AppAudioService>();
+  static AppAudioService? get _audio {
+    if (!GetIt.instance.isRegistered<AppAudioService>()) return null;
+    return GetIt.instance.get<AppAudioService>();
+  }
 
   /// Đánh dấu đã vào màn hình Home -> Bắt đầu BGM nếu âm nhạc đang bật
-  static void onEnterHome() => _audio.onEnterHome();
+  static void onEnterHome() => _audio?.onEnterHome();
 
   /// Đánh dấu đã rời màn hình Home -> Lập tức tắt sạch BGM
-  static void onLeaveHome() => _audio.onLeaveHome();
+  static void onLeaveHome() => _audio?.onLeaveHome();
 
-  /// click-category.wav: Tương tác bấm nút, chọn thẻ, mở/đóng popup...
-  static Future<void> playClick() => _audio.playClickSfx();
+  /// click.wav: Tương tác bấm nút, chọn thẻ, mở/đóng popup...
+  static Future<void> playClick() async => _audio?.playClickSfx();
 
   /// correct.wav: Chọn đúng đáp án trắc nghiệm, trả lời chính xác
-  static Future<void> playCorrect() => _audio.playCorrectSfx();
+  static Future<void> playCorrect() async => _audio?.playCorrectSfx();
 
   /// wrong.wav: Chọn sai đáp án, hết giờ câu hỏi, nhập sai mã phòng
-  static Future<void> playWrong() => _audio.playWrongSfx();
+  static Future<void> playWrong() async => _audio?.playWrongSfx();
 
   /// perfect.wav: Giải đúng từ vựng trong Word Guess
-  static Future<void> playPerfect() => _audio.playPerfectSfx();
+  static Future<void> playPerfect() async => _audio?.playPerfectSfx();
 
   /// win.wav: Thắng ván đấu, tìm thấy đối thủ online, nhận thưởng nhiệm vụ
-  static Future<void> playWin() => _audio.playWinSfx();
+  static Future<void> playWin() async => _audio?.playWinSfx();
 
   /// Đoán đúng từ trong Word Guess kèm hiệu ứng âm thanh và câu thoại TTS:
   /// - Streak 1 - 2: "Great job!", "Good job!", "Well done!", "Awesome!"...
@@ -36,12 +39,13 @@ class SoundManager {
   static Future<void> playWordGuessSuccess({
     int streak = 0,
     String? customMessage,
-  }) => _audio.playWordGuessSuccess(
-    streak: streak,
-    customMessage: customMessage,
-  );
+  }) async =>
+      _audio?.playWordGuessSuccess(
+        streak: streak,
+        customMessage: customMessage,
+      );
 
   /// Giọng đọc từ vựng tiếng Anh
-  static Future<void> speak(String text, {String language = 'en-US'}) =>
-      _audio.speakWord(text, language: language);
+  static Future<void> speak(String text, {String language = 'en-US'}) async =>
+      _audio?.speakWord(text, language: language);
 }
