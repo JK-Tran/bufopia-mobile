@@ -7,6 +7,7 @@ import 'package:bufopia/features/practice/domain/usecases/get_contributions_use_
 import 'package:bufopia/features/practice/domain/usecases/get_dictionary_detail_use_case.dart';
 import 'package:bufopia/features/practice/domain/usecases/submit_contribution_use_case.dart';
 import 'package:bufopia/features/practice/domain/usecases/update_contribution_use_case.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:bufopia/shared/services/device/device_uid_service.dart';
 import 'package:bufopia/shared/services/firebase/firebase_auth_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -122,7 +123,7 @@ class ContributionBloc extends BaseBloc<ContributionEvent, ContributionState> {
         safeEmit(
           state.copyWith(
             contributions: updatedList,
-            successMessage: 'Đóng góp từ thành công',
+            successMessage: S.current.contributeWordSuccess,
           ),
         );
       },
@@ -163,7 +164,7 @@ class ContributionBloc extends BaseBloc<ContributionEvent, ContributionState> {
         safeEmit(
           state.copyWith(
             contributions: updatedList,
-            successMessage: 'Cập nhật từ thành công',
+            successMessage: S.current.updateWordSuccess,
           ),
         );
       },

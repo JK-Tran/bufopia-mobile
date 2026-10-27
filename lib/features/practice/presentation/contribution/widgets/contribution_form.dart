@@ -407,7 +407,7 @@ class _ContributionFormState extends State<ContributionForm> {
             SizedBox(height: 16.h),
 
             // Submit Button
-            AppButton.success(
+            AppButton(
               text: widget.isSubmitting
                   ? l10n.submitting
                   : (_editingId != null
@@ -417,6 +417,15 @@ class _ContributionFormState extends State<ContributionForm> {
               isLoading: widget.isSubmitting,
               onPressed: widget.isSubmitting ? null : _handleSubmit,
               height: 44.h,
+              backgroundColor: isPaper
+                  ? AppColors.paperGreen
+                  : AppColors.greenDark,
+              borderColor: isPaper
+                  ? AppColors.paperGreenBorder
+                  : AppColors.greenLight,
+              extrusionColor: isPaper
+                  ? AppColors.paperGreenExtrusion
+                  : AppColors.green,
             ),
           ],
         ),

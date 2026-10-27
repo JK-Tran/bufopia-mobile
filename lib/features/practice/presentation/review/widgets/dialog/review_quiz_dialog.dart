@@ -219,11 +219,15 @@ class _ReviewQuizDialogState extends State<ReviewQuizDialog> {
     final phonetic = word?.phonetic ?? '';
     final correctMeaning = word?.vi ?? cleanFallback;
 
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
+    final dialogHeight = isLandscape ? 330.0 : 520.h;
+
     return AppGameDialog(
       title: context.l10n.practiceWeakWordsTitle,
       icon: Icons.auto_stories_rounded,
       maxWidth: 340.w,
-      maxHeight: 520.h,
+      height: dialogHeight,
       isScrollable: false,
       padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 10.h),
       backgroundColor: isPaper ? AppColors.paperCardBg : AppColors.white,
