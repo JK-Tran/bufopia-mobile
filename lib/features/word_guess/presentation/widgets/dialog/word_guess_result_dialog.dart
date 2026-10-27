@@ -5,18 +5,19 @@ import 'package:bufopia/components/app_toast.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
-import 'package:bufopia/features/auth/presentation/bloc/auth_bloc.dart';
+// import 'package:bufopia/features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:bufopia/features/chat/presentation/widgets/chat_dialog.dart';
 import 'package:bufopia/features/home/presentation/widgets/home_header/dialog/home_feedback_dialog.dart';
+import 'package:bufopia/features/vocabulary/domain/entities/word.dart';
 import 'package:bufopia/features/word_guess/domain/entities/history_item.dart';
 import 'package:bufopia/features/word_guess/domain/entities/room_player.dart';
 import 'package:bufopia/features/word_guess/domain/entities/word_info.dart';
-import 'package:bufopia/features/word_guess/domain/usecases/submit_guess_vault_use_case.dart';
+// import 'package:bufopia/features/word_guess/domain/usecases/submit_guess_vault_use_case.dart';
 import 'package:bufopia/shared/di/di.dart';
 import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:bufopia/shared/services/audio/app_audio_service.dart';
 import 'package:bufopia/shared/services/audio/sound_manager.dart';
-import 'package:bufopia/shared/services/firebase/firebase_auth_service.dart';
+// import 'package:bufopia/shared/services/firebase/firebase_auth_service.dart';
 import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -97,8 +98,11 @@ class WordGuessResultDialog extends StatefulWidget {
 }
 
 class _WordGuessResultDialogState extends State<WordGuessResultDialog> {
+  // Tạm thời comment tính năng Save to Vault vì chưa có API phía backend.
+  /*
   bool _isSavingVault = false;
   final Set<String> _savedWords = {};
+  */
 
   @override
   void initState() {
@@ -110,6 +114,7 @@ class _WordGuessResultDialogState extends State<WordGuessResultDialog> {
     });
   }
 
+  /*
   Future<void> _onSaveWordToVault(
     String wordEn,
     String wordVi, {
@@ -173,6 +178,7 @@ class _WordGuessResultDialogState extends State<WordGuessResultDialog> {
       }
     }
   }
+  */
 
   String _getSolverName(BuildContext context, String word) {
     if (widget.isSolo) return context.l10n.you;
@@ -801,7 +807,7 @@ class _WordGuessResultDialogState extends State<WordGuessResultDialog> {
   Widget _buildWordCard(BuildContext context, WordInfo w, bool isPaper) {
     final l10n = context.l10n;
     final en = (w.en != null && w.en!.isNotEmpty) ? w.en! : w.masked;
-    final isSaved = _savedWords.contains(en);
+    // final isSaved = _savedWords.contains(en);
     final (exampleEn, exampleVi) = _getExamplePair(en, w.vi, w.example);
     final solverName = _getSolverName(context, en);
     final isSkipped = _isWordSkipped(en);
@@ -1046,7 +1052,8 @@ class _WordGuessResultDialogState extends State<WordGuessResultDialog> {
                 ),
               ],
               const Spacer(),
-              // Nút Lưu vào Kho 3D
+              // Tạm thời comment nút Save to Vault vì chưa có API phía backend.
+              /*
               InkWell(
                 onTap: isSaved || _isSavingVault
                     ? null
@@ -1123,13 +1130,27 @@ class _WordGuessResultDialogState extends State<WordGuessResultDialog> {
                 ),
               ),
               SizedBox(width: 6.w),
+              */
               // Nút Góp ý từ 3D
               InkWell(
                 onTap: () {
                   context.read<AppBloc>().add(
                     const AppEvent.clickSoundPlayed(),
                   );
-                  HomeFeedbackDialog.show(context);
+                  HomeFeedbackDialog.show(
+                    context,
+                    initialWordEntry: FeedbackWordEntry(
+                      word: Word(
+                        id: en,
+                        en: en,
+                        vi: w.vi,
+                        phonetic: w.phonetic,
+                        example: exampleEn,
+                        exampleVi: exampleVi,
+                      ),
+                      gameMode: 'Đoán từ',
+                    ),
+                  );
                 },
                 borderRadius: BorderRadius.circular(8.r),
                 child: Container(
@@ -1206,27 +1227,61 @@ class _WordGuessResultDialogState extends State<WordGuessResultDialog> {
           // giúp các nút có đủ chiều rộng (~150px) hiển thị trọn vẹn.
           final isNarrow = constraints.maxWidth < 480;
 
-          final replayBtn = AppButton(
-            text: l10n.practiceAgain,
-            height: 38.h,
-            fontSize: isNarrow ? 12.sp : 10.sp,
-            icon: Icon(
-              Icons.refresh_rounded,
-              size: 15.r,
-              color: AppColors.white,
-            ),
-            backgroundColor: isPaper ? AppColors.paperGreen : AppColors.green,
-            borderColor: isPaper
-                ? AppColors.paperGreenBorder
-                : AppColors.white.withValues(alpha: 0.3),
-            extrusionColor: isPaper
-                ? AppColors.paperGreenExtrusion
-                : AppColors.greenDark,
-            onPressed: () {
-              Navigator.of(context).pop();
-              widget.onReplay();
-            },
-          );
+          final isHost =
+              widget.isSolo ||
+              widget.players
+                      .firstWhereOrNull((p) => p.uid == widget.myUid)
+                      ?.isHost ==
+                  true ||
+              (widget.players.isNotEmpty &&
+                  widget.players.first.uid == widget.myUid);
+
+          final replayBtn = isHost
+              ? AppButton(
+                  text: l10n.practiceAgain,
+                  height: 38.h,
+                  fontSize: isNarrow ? 12.sp : 10.sp,
+                  icon: Icon(
+                    Icons.refresh_rounded,
+                    size: 15.r,
+                    color: AppColors.white,
+                  ),
+                  backgroundColor: isPaper
+                      ? AppColors.paperGreen
+                      : AppColors.green,
+                  borderColor: isPaper
+                      ? AppColors.paperGreenBorder
+                      : AppColors.white.withValues(alpha: 0.3),
+                  extrusionColor: isPaper
+                      ? AppColors.paperGreenExtrusion
+                      : AppColors.greenDark,
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                    widget.onReplay();
+                  },
+                )
+              : AppButton(
+                  text: 'Chờ chủ phòng...',
+                  height: 38.h,
+                  fontSize: isNarrow ? 11.sp : 9.sp,
+                  icon: Icon(
+                    Icons.hourglass_top_rounded,
+                    size: 14.r,
+                    color: AppColors.grayMedium,
+                  ),
+                  backgroundColor: isPaper
+                      ? AppColors.paperSurfaceWarm
+                      : AppColors.grayLight,
+                  borderColor: isPaper
+                      ? AppColors.paperBorder
+                      : AppColors.classicBorder,
+                  extrusionColor: isPaper
+                      ? AppColors.paperExtrusion
+                      : AppColors.grayExtrusion,
+                  textColor: isPaper
+                      ? AppColors.paperTextMuted
+                      : AppColors.grayMedium,
+                );
 
           final changeTopicBtn = AppButton(
             text: l10n.changeTopic,

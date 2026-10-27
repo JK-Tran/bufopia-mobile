@@ -15,6 +15,7 @@ abstract class GetGuessDeckInput extends BaseInput with _$GetGuessDeckInput {
     String? uid,
     @Default(20) int count,
     String? recent,
+    String? difficulty,
   }) = _GetGuessDeckInput;
 
   const GetGuessDeckInput._();
@@ -41,6 +42,7 @@ class GetGuessDeckUseCase
       uid: input.uid,
       count: input.count,
       recent: input.recent,
+      difficulty: input.difficulty,
     );
     return GetGuessDeckOutput(deck);
   }

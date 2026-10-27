@@ -272,7 +272,11 @@ abstract class BaseSocketService {
   }
 
   void _handleDone() {
-    Log.d('WebSocket stream closed', name: logTag);
+    Log.d(
+      'WebSocket stream closed. closeCode: ${_channel?.closeCode}, '
+      'closeReason: ${_channel?.closeReason}',
+      name: logTag,
+    );
     stopHeartbeat();
     if (isNormalServerClose || _isManuallyClosed || _lastConnectedUrl == null) {
       isNormalServerClose = false;

@@ -11,6 +11,7 @@ class ConnectGuessMatchmakeInput extends BaseInput {
     required this.topic,
     this.token,
     this.avatar,
+    this.difficulty,
   });
 
   final String uid;
@@ -18,6 +19,7 @@ class ConnectGuessMatchmakeInput extends BaseInput {
   final String topic;
   final String? token;
   final String? avatar;
+  final String? difficulty;
 }
 
 @lazySingleton
@@ -35,6 +37,7 @@ class ConnectGuessMatchmakeUseCase
       topic: input.topic,
       token: input.token,
       avatar: input.avatar,
+      difficulty: input.difficulty,
     );
     return const EmptyOutput();
   }

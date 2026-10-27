@@ -27,6 +27,7 @@ import 'package:bufopia/features/word_guess/domain/usecases/submit_guess_start_u
 import 'package:bufopia/features/word_guess/domain/usecases/submit_guess_vote_use_case.dart';
 import 'package:bufopia/features/word_guess/domain/usecases/submit_guess_word_use_case.dart';
 import 'package:bufopia/shared/infrastructure/domain/usecase/io/empty_input.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:bufopia/shared/services/audio/sound_manager.dart';
 import 'package:bufopia/shared/services/socket/models/socket_event.dart';
 import 'package:bufopia/shared/utils/string_utils.dart';
@@ -77,6 +78,7 @@ class WordGuessBloc extends BaseBloc<WordGuessEvent, WordGuessState> {
     on<_SendChat>(_onSendChat);
     on<_RestartGame>(_onRestartGame);
     on<_LeaveGame>(_onLeaveGame);
+    on<_SwitchToSolo>(_onSwitchToSolo);
 
     // UI & Timers
     on<_InputWordChanged>(_onInputWordChanged);
@@ -107,6 +109,7 @@ class WordGuessBloc extends BaseBloc<WordGuessEvent, WordGuessState> {
   Timer? _countdownTimer;
   Timer? _autoHintTimer;
   Timer? _delayNextRoundTimer;
+  bool _hadMultiplayer = false;
 
   static const int _autoHintIntervalSeconds = 12;
   static const int _revealDelayMs = 1800;
@@ -126,6 +129,7 @@ class WordGuessBloc extends BaseBloc<WordGuessEvent, WordGuessState> {
     _StartPractice event,
     Emitter<WordGuessState> emit,
   ) {
+    final effectiveDifficulty = event.difficulty ?? state.difficulty;
     return runBlocCatching(
       handleLoading: false,
       doOnSubscribe: () => safeEmit(
@@ -133,6 +137,7 @@ class WordGuessBloc extends BaseBloc<WordGuessEvent, WordGuessState> {
           isLoading: true,
           mode: WordGuessGameMode.practice,
           topicId: event.topic,
+          difficulty: effectiveDifficulty,
           myUid: event.uid ?? '',
           currentQuestionIndex: 0,
           practiceCorrectCount: 0,
@@ -148,6 +153,7 @@ class WordGuessBloc extends BaseBloc<WordGuessEvent, WordGuessState> {
             topic: event.topic,
             uid: event.uid,
             count: event.count,
+            difficulty: effectiveDifficulty,
           ),
         );
 
@@ -156,7 +162,7 @@ class WordGuessBloc extends BaseBloc<WordGuessEvent, WordGuessState> {
           safeEmit(
             state.copyWith(
               isLoading: false,
-              errorMessage: 'Không tìm thấy bộ đề luyện tập phù hợp.',
+              errorMessage: S.current.noPracticeQuestionsFound,
             ),
           );
           return;
@@ -189,7 +195,7 @@ class WordGuessBloc extends BaseBloc<WordGuessEvent, WordGuessState> {
         safeEmit(
           state.copyWith(
             isLoading: false,
-            errorMessage: 'Lỗi tải bộ đề luyện tập: $e',
+            errorMessage: S.current.errorLoadingPracticeQuestions('$e'),
           ),
         );
       },
@@ -216,7 +222,7 @@ class WordGuessBloc extends BaseBloc<WordGuessEvent, WordGuessState> {
       safeEmit(
         state.copyWith(
           lastWrongGuess: answer,
-          infoMessage: 'Chưa chính xác, hãy thử lại!',
+          infoMessage: S.current.incorrectTryAgain,
           inputWord: '',
         ),
       );
@@ -234,7 +240,7 @@ class WordGuessBloc extends BaseBloc<WordGuessEvent, WordGuessState> {
           isDelayingNextRound: true,
           // Mở toàn bộ từ khi đoán đúng
           practiceMaskedWord: StringUtils.formatSpacedWord(currentWord.en),
-          infoMessage: 'Chính xác! +5 XP',
+          infoMessage: S.current.correctAddXp(5),
         ),
       ),
       action: () async {
@@ -270,7 +276,8 @@ class WordGuessBloc extends BaseBloc<WordGuessEvent, WordGuessState> {
                   word: currentWord.en,
                   meaning: currentWord.vi,
                   solvedBy: state.myUid,
-                  playerName: state.myName.isNotEmpty ? state.myName : 'Bạn',
+                  playerName:
+                      state.myName.isNotEmpty ? state.myName : S.current.you,
                   guess: answer,
                   isCorrect: true,
                 ),
@@ -296,7 +303,7 @@ class WordGuessBloc extends BaseBloc<WordGuessEvent, WordGuessState> {
           state.copyWith(
             isSubmitting: false,
             isDelayingNextRound: false,
-            errorMessage: 'Lỗi nộp đáp án: $e',
+            errorMessage: S.current.errorSubmittingAnswer('$e'),
           ),
         );
       },
@@ -347,7 +354,7 @@ class WordGuessBloc extends BaseBloc<WordGuessEvent, WordGuessState> {
         gameState: state.gameState.copyWith(history: updatedHistory),
         isDelayingNextRound: true,
         practiceMaskedWord: StringUtils.formatSpacedWord(currentWord.en),
-        infoMessage: 'Từ đúng: ${currentWord.en}',
+        infoMessage: S.current.correctWordIs(currentWord.en),
         inputWord: '',
       ),
     );
@@ -393,7 +400,7 @@ class WordGuessBloc extends BaseBloc<WordGuessEvent, WordGuessState> {
           currentQuestionIndex: nextIndex,
           isDelayingNextRound: false,
           inputWord: '',
-          infoMessage: 'Bạn đã hoàn thành toàn bộ câu hỏi luyện tập!',
+          infoMessage: S.current.completedAllPracticeQuestions,
         ),
       );
     }
@@ -455,6 +462,7 @@ class WordGuessBloc extends BaseBloc<WordGuessEvent, WordGuessState> {
     Emitter<WordGuessState> emit,
   ) {
     _subscribeGameStream();
+    final effectiveDifficulty = event.difficulty ?? state.difficulty;
     return runBlocCatching(
       handleLoading: false,
       doOnSubscribe: () => safeEmit(
@@ -466,6 +474,7 @@ class WordGuessBloc extends BaseBloc<WordGuessEvent, WordGuessState> {
           myName: event.name,
           myAvatar: event.avatar ?? '',
           topicId: event.topic,
+          difficulty: effectiveDifficulty,
           errorMessage: null,
         ),
       ),
@@ -477,6 +486,7 @@ class WordGuessBloc extends BaseBloc<WordGuessEvent, WordGuessState> {
             topic: event.topic,
             avatar: event.avatar,
             token: event.token,
+            difficulty: effectiveDifficulty,
           ),
         );
         safeEmit(state.copyWith(isLoading: false));
@@ -486,7 +496,7 @@ class WordGuessBloc extends BaseBloc<WordGuessEvent, WordGuessState> {
           state.copyWith(
             isLoading: false,
             isQueued: false,
-            errorMessage: 'Không thể kết nối tìm trận: $e',
+            errorMessage: S.current.cannotConnectMatchmaking('$e'),
           ),
         );
       },
@@ -516,20 +526,28 @@ class WordGuessBloc extends BaseBloc<WordGuessEvent, WordGuessState> {
     Emitter<WordGuessState> emit,
   ) {
     _subscribeGameStream();
+    final effectiveDifficulty = event.difficulty ?? state.difficulty;
     return runBlocCatching(
       handleLoading: false,
-      doOnSubscribe: () => safeEmit(
-        state.copyWith(
-          mode: WordGuessGameMode.room,
-          isLoading: true,
-          myUid: event.uid,
-          myName: event.name,
-          myAvatar: event.avatar ?? '',
-          roomCode: event.roomCode,
-          errorMessage: null,
-          gameState: const GameState(),
-        ),
-      ),
+      doOnSubscribe: () {
+        _hadMultiplayer = false;
+        safeEmit(
+          state.copyWith(
+            mode: event.isMatchmaking
+                ? WordGuessGameMode.matchmake
+                : WordGuessGameMode.room,
+            isLoading: true,
+            myUid: event.uid,
+            myName: event.name,
+            myAvatar: event.avatar ?? '',
+            roomCode: event.roomCode,
+            difficulty: effectiveDifficulty,
+            errorMessage: null,
+            opponentLeftRivalName: null,
+            gameState: const GameState(),
+          ),
+        );
+      },
       action: () async {
         await _connectRoomUseCase.execute(
           ConnectGuessRoomInput(
@@ -538,6 +556,9 @@ class WordGuessBloc extends BaseBloc<WordGuessEvent, WordGuessState> {
             name: event.name,
             token: event.token,
             avatar: event.avatar,
+            topic: state.topicId,
+            difficulty: effectiveDifficulty,
+            isMatchmaking: event.isMatchmaking,
           ),
         );
         safeEmit(state.copyWith(isLoading: false));
@@ -546,7 +567,7 @@ class WordGuessBloc extends BaseBloc<WordGuessEvent, WordGuessState> {
         safeEmit(
           state.copyWith(
             isLoading: false,
-            errorMessage: 'Không thể kết nối vào phòng: $e',
+            errorMessage: S.current.cannotConnectRoom('$e'),
           ),
         );
       },
@@ -675,14 +696,112 @@ class WordGuessBloc extends BaseBloc<WordGuessEvent, WordGuessState> {
     return runBlocCatching(
       handleLoading: false,
       action: () async {
+        _hadMultiplayer = false;
         _stopCountdownTimer();
         _stopAutoHintTimer();
+        _delayNextRoundTimer?.cancel();
+        _delayNextRoundTimer = null;
         await _disconnectUseCase.execute(const EmptyInput());
         safeEmit(
           state.copyWith(
             mode: WordGuessGameMode.practice,
             gameState: const GameState(),
             roomCode: null,
+            solvedBannerWord: null,
+            solvedBannerSolver: null,
+            isSolvedByMe: false,
+            isDelayingNextRound: false,
+            inputWord: '',
+            opponentLeftRivalName: null,
+          ),
+        );
+      },
+    );
+  }
+
+  FutureOr<void> _onSwitchToSolo(
+    _SwitchToSolo event,
+    Emitter<WordGuessState> emit,
+  ) {
+    _hadMultiplayer = false;
+    return runBlocCatching(
+      handleLoading: false,
+      doOnSubscribe: () => safeEmit(
+        state.copyWith(
+          isLoading: true,
+          mode: WordGuessGameMode.practice,
+          opponentLeftRivalName: null,
+          currentQuestionIndex: 0,
+          practiceCorrectCount: 0,
+          practiceEarnedXp: 0,
+          inputWord: '',
+          errorMessage: null,
+          infoMessage: null,
+          gameState: const GameState(),
+          roomCode: null,
+          solvedBannerWord: null,
+          solvedBannerSolver: null,
+          isSolvedByMe: false,
+          isDelayingNextRound: false,
+        ),
+      ),
+      action: () async {
+        _stopCountdownTimer();
+        _stopAutoHintTimer();
+        _delayNextRoundTimer?.cancel();
+        _delayNextRoundTimer = null;
+        await _disconnectUseCase.execute(const EmptyInput());
+
+        final output = await _getDeckUseCase.execute(
+          GetGuessDeckInput(
+            topic: state.topicId,
+            uid: state.myUid,
+            difficulty: state.difficulty,
+          ),
+        );
+
+        final deck = output.deck;
+        if (deck.words.isEmpty) {
+          safeEmit(
+            state.copyWith(
+              isLoading: false,
+              errorMessage: S.current.noPracticeQuestionsFound,
+            ),
+          );
+          return;
+        }
+
+        final firstWord = deck.words.first;
+        final initialRevealed = StringUtils.calculateInitialRevealedIndices(
+          firstWord.en,
+        );
+        final masked = StringUtils.formatMaskedWord(
+          firstWord.en,
+          initialRevealed,
+        );
+
+        safeEmit(
+          state.copyWith(
+            isLoading: false,
+            deck: deck,
+            practiceSessionId: deck.practiceSessionId,
+            currentQuestionIndex: 0,
+            practiceRevealedIndices: initialRevealed.toList(),
+            practiceMaskedWord: masked,
+            roundTimeLeft: 300,
+            autoHintSecondsLeft: _autoHintIntervalSeconds,
+            opponentLeftRivalName: null,
+          ),
+        );
+
+        _startCountdownTimer();
+        _startAutoHintTimer();
+      },
+      doOnError: (e) {
+        safeEmit(
+          state.copyWith(
+            isLoading: false,
+            errorMessage: S.current.errorLoadingPracticeQuestions('$e'),
           ),
         );
       },
@@ -707,18 +826,13 @@ class WordGuessBloc extends BaseBloc<WordGuessEvent, WordGuessState> {
   }
 
   // ─── Game Stream Dispatcher ───────────────────────────────────────
-  bool _isCurrentWordGuessEvent(String? eventSessionId, int? eventIndex) {
+  bool _isCurrentWordGuessEvent(String? eventSessionId) {
     if (state.mode == WordGuessGameMode.practice) return true;
     final currentSessionId = state.gameState.sessionId;
     if (eventSessionId != null &&
         eventSessionId.isNotEmpty &&
         currentSessionId.isNotEmpty &&
         eventSessionId != currentSessionId) {
-      return false;
-    }
-    final currentIndex =
-        state.gameState.currentWordIndex ?? state.gameState.currentRound;
-    if (eventIndex != null && eventIndex != currentIndex) {
       return false;
     }
     return true;
@@ -730,10 +844,17 @@ class WordGuessBloc extends BaseBloc<WordGuessEvent, WordGuessState> {
   ) {
     event.event.map(
       connected: (e) {
+        final onlinePlayers = e.state.players.where((p) => p.isOnline).toList();
+        if (onlinePlayers.length >= 2) {
+          _hadMultiplayer = true;
+        }
+        final effectiveMyUid = e.myUid.isNotEmpty
+            ? e.myUid
+            : (state.myUid.isNotEmpty ? state.myUid : '');
         safeEmit(
           state.copyWith(
-            myUid: e.myUid,
-            gameState: e.state,
+            myUid: effectiveMyUid,
+            gameState: e.state.copyWith(myUid: effectiveMyUid),
             roundTimeLeft: e.state.timeLeft,
             connectionState: SocketConnectionState.connected,
           ),
@@ -754,19 +875,134 @@ class WordGuessBloc extends BaseBloc<WordGuessEvent, WordGuessState> {
             dedupedHistory.add(item);
           }
         }
-        final cleanedState = e.state.copyWith(history: dedupedHistory);
+
+        final effectiveMyUid = state.myUid.isNotEmpty
+            ? state.myUid
+            : (e.state.myUid.isNotEmpty ? e.state.myUid : '');
+
+        final isRoundResult =
+            e.state.status == 'round_result' || e.state.result != null;
+        final isPlaying = e.state.status == 'playing';
+        final isLobby = e.state.status == 'lobby';
+
+        var solvedBannerWord = state.solvedBannerWord;
+        var solvedBannerSolver = state.solvedBannerSolver;
+        var isSolvedByMe = state.isSolvedByMe;
+        var isDelaying = state.isDelayingNextRound;
+        var finalWordInfo = e.state.wordInfo;
+
+        if (isLobby || isPlaying) {
+          // KHI SERVER Ở TRẠNG THÁI PLAYING HOẶC LOBBY:
+          // Chuyển sang câu hỏi mới hoặc sảnh mới: Xóa ngay trạng thái vòng cũ
+          solvedBannerWord = null;
+          solvedBannerSolver = null;
+          isSolvedByMe = false;
+          isDelaying = false;
+        } else if (isRoundResult) {
+          isDelaying = true;
+          if (e.state.result != null) {
+            final res = e.state.result!;
+            final reason = res['reason']?.toString();
+            if (reason == 'solved') {
+              final word = res['en']?.toString() ??
+                  res['word']?.toString() ??
+                  e.state.roundResultFullWord;
+              final sUid = res['solvedByUid']?.toString();
+              final sName = res['solvedBy']?.toString() ??
+                  (sUid != null && sUid == effectiveMyUid
+                      ? state.myName
+                      : S.current.humanOpponent);
+              final byMe = (sUid != null && sUid == effectiveMyUid) ||
+                  (sName == state.myName && state.myName.isNotEmpty);
+
+              solvedBannerWord = word;
+              solvedBannerSolver = sName;
+              isSolvedByMe = byMe;
+            }
+          }
+
+          // Mở toàn bộ chữ cái (đáp án) vào ô chữ
+          final targetWord = solvedBannerWord ??
+              e.state.roundResultFullWord ??
+              finalWordInfo?.en ??
+              state.gameState.wordInfo?.en;
+          if (targetWord != null && targetWord.isNotEmpty) {
+            finalWordInfo = (finalWordInfo ?? const WordInfo()).copyWith(
+              masked: targetWord.toUpperCase(),
+              en: targetWord,
+              vi: e.state.roundResultMeaning ??
+                  finalWordInfo?.vi ??
+                  state.gameState.wordInfo?.vi ??
+                  '',
+            );
+          }
+        }
+
+        final cleanedState = e.state.copyWith(
+          history: dedupedHistory,
+          myUid: effectiveMyUid,
+          roomCode: e.state.roomCode.isNotEmpty
+              ? e.state.roomCode
+              : state.gameState.roomCode,
+          sessionId: e.state.sessionId.isNotEmpty
+              ? e.state.sessionId
+              : state.gameState.sessionId,
+          wordInfo: finalWordInfo,
+        );
+
+        final onlinePlayers = e.state.players.where((p) => p.isOnline).toList();
+        if (onlinePlayers.length >= 2) {
+          _hadMultiplayer = true;
+        } else if (_hadMultiplayer &&
+            onlinePlayers.length == 1 &&
+            e.state.status != 'finished' &&
+            state.opponentLeftRivalName == null) {
+          final rival = e.state.players
+              .where((p) => p.uid != effectiveMyUid)
+              .firstOrNull;
+          safeEmit(state.copyWith(
+            opponentLeftRivalName:
+                rival?.name.isNotEmpty == true
+                    ? rival!.name
+                    : S.current.humanOpponent,
+          ));
+        }
 
         safeEmit(
           state.copyWith(
+            myUid: effectiveMyUid,
             gameState: cleanedState,
             roundTimeLeft: e.state.timeLeft,
-            isDelayingNextRound: false,
-            solvedBannerWord: null,
-            solvedBannerSolver: null,
-            isSolvedByMe: false,
-            inputWord: '',
+            isDelayingNextRound: isDelaying,
+            solvedBannerWord: solvedBannerWord,
+            solvedBannerSolver: solvedBannerSolver,
+            isSolvedByMe: isSolvedByMe,
+            inputWord: isPlaying ? '' : state.inputWord,
           ),
         );
+
+        // Khi ở sảnh chờ ván mới (Rematch Lobby): Tự động đồng bộ Ready & Start
+        if (isLobby && state.mode != WordGuessGameMode.practice) {
+          final me = cleanedState.players
+              .where((p) => p.uid == effectiveMyUid)
+              .firstOrNull;
+          final isHost = me?.isHost ?? false;
+
+          if (!isHost && me != null && !me.isReady) {
+            // Khách tự động Ready để chủ phòng Web/Mobile bắt đầu ngay lập tức
+            unawaited(_submitReadyUseCase.execute(const EmptyInput()));
+          } else if (isHost) {
+            final otherGuests =
+                cleanedState.players.where((p) => !p.isHost).toList();
+            final allGuestsReady = otherGuests.isNotEmpty &&
+                otherGuests.every((p) => p.isReady);
+            if (allGuestsReady) {
+              // Chủ phòng tự động bắt đầu trận khi mọi người đã sẵn sàng
+              unawaited(_submitStartUseCase.execute(const EmptyInput()));
+            }
+          }
+        }
+
         if (e.state.status == 'playing' && e.state.timeLeft > 0) {
           _startCountdownTimer();
         } else {
@@ -774,39 +1010,41 @@ class WordGuessBloc extends BaseBloc<WordGuessEvent, WordGuessState> {
         }
       },
       wordHint: (e) {
-        if (!_isCurrentWordGuessEvent(e.sessionId, e.index)) return;
+        if (!_isCurrentWordGuessEvent(e.sessionId)) return;
         final currentWordInfo = state.gameState.wordInfo;
         if (currentWordInfo != null) {
           safeEmit(
             state.copyWith(
               gameState: state.gameState.copyWith(
                 wordInfo: currentWordInfo.copyWith(masked: e.masked),
+                currentWordIndex: e.index,
               ),
             ),
           );
         }
       },
       wordPhonetic: (e) {
-        if (!_isCurrentWordGuessEvent(e.sessionId, e.index)) return;
+        if (!_isCurrentWordGuessEvent(e.sessionId)) return;
         final currentWordInfo = state.gameState.wordInfo;
         if (currentWordInfo != null) {
           safeEmit(
             state.copyWith(
               gameState: state.gameState.copyWith(
                 wordInfo: currentWordInfo.copyWith(phonetic: e.phonetic),
+                currentWordIndex: e.index,
               ),
             ),
           );
         }
       },
       wordSolved: (e) {
-        if (!_isCurrentWordGuessEvent(e.sessionId, e.index)) return;
+        if (!_isCurrentWordGuessEvent(e.sessionId)) return;
         final currentWordInfo = state.gameState.wordInfo;
         final solvedWord = e.word;
         final solvedMeaning = e.meaning;
         final historyItem = e.historyItem;
 
-        // Cập nhật wordInfo: mở toàn bộ chữ cái (đáp án) vào ô chữ
+        // Cập nhật wordInfo: mở toàn bộ chữ cái (đáp án) vào ô chữ NGAY TỨC THÌ
         final updatedWordInfo = (currentWordInfo ?? const WordInfo()).copyWith(
           masked: solvedWord.toUpperCase(),
           vi: solvedMeaning.isNotEmpty
@@ -814,6 +1052,10 @@ class WordGuessBloc extends BaseBloc<WordGuessEvent, WordGuessState> {
               : (currentWordInfo?.vi ?? ''),
           en: solvedWord,
         );
+
+        final effectiveMyUid = state.myUid.isNotEmpty
+            ? state.myUid
+            : state.gameState.myUid;
 
         // Xác định người giải
         final solverUid = historyItem?.solvedBy ?? historyItem?.playerUid;
@@ -825,15 +1067,17 @@ class WordGuessBloc extends BaseBloc<WordGuessEvent, WordGuessState> {
                       .where((p) => p.uid == solverUid)
                       .firstOrNull
                       ?.name ??
-                  (solverUid == state.myUid ? state.myName : 'Đối phương'));
+                  (solverUid == effectiveMyUid
+                      ? state.myName
+                      : S.current.humanOpponent));
 
         final isMySolve =
-            solverUid == state.myUid ||
+            (solverUid != null && solverUid == effectiveMyUid) ||
             (solverName == state.myName && state.myName.isNotEmpty);
 
         if (isMySolve) {
           final myFound = (state.gameState.players
-                  .where((p) => p.uid == state.myUid)
+                  .where((p) => p.uid == effectiveMyUid)
                   .firstOrNull
                   ?.foundCount ??
               0) + 1;
@@ -879,13 +1123,27 @@ class WordGuessBloc extends BaseBloc<WordGuessEvent, WordGuessState> {
                 resolvedHistoryItem,
               ];
 
+        _stopCountdownTimer();
+
+        // Cập nhật State tức thì: set status = 'round_result' và result
+        // để UI phản ứng ngay trong microtask tick đầu tiên
         safeEmit(
           state.copyWith(
             gameState: state.gameState.copyWith(
+              status: 'round_result',
               wordInfo: updatedWordInfo,
               players: updatedPlayers,
               history: updatedHistory,
               foundCount: state.gameState.foundCount + 1,
+              currentWordIndex: e.index,
+              result: {
+                'reason': 'solved',
+                'word': solvedWord,
+                'en': solvedWord,
+                'vi': solvedMeaning,
+                'solvedBy': solverName,
+                'solvedByUid': solverUid,
+              },
             ),
             isDelayingNextRound: true,
             solvedBannerWord: solvedWord,
@@ -893,8 +1151,8 @@ class WordGuessBloc extends BaseBloc<WordGuessEvent, WordGuessState> {
             isSolvedByMe: isMySolve,
             inputWord: '',
             infoMessage: isMySolve
-                ? '$solverName đoán đúng trước · +1 điểm · chuyển câu!'
-                : '$solverName đã đoán đúng trước. Sang câu tiếp theo...',
+                ? S.current.opponentGuessedFirstScore(solverName)
+                : S.current.opponentGuessedFirstNext(solverName),
           ),
         );
       },
@@ -904,7 +1162,7 @@ class WordGuessBloc extends BaseBloc<WordGuessEvent, WordGuessState> {
           safeEmit(
             state.copyWith(
               lastWrongGuess: e.word,
-              infoMessage: e.message ?? 'Từ không chính xác',
+              infoMessage: e.message ?? S.current.wordIncorrect,
             ),
           );
         }
@@ -920,13 +1178,17 @@ class WordGuessBloc extends BaseBloc<WordGuessEvent, WordGuessState> {
         );
       },
       chatBlocked: (e) {
-        safeEmit(state.copyWith(errorMessage: 'Tin nhắn bị chặn: ${e.reason}'));
+        safeEmit(
+          state.copyWith(
+            errorMessage: S.current.messageBlocked(e.reason),
+          ),
+        );
       },
       proposalClosed: (e) {
         safeEmit(
           state.copyWith(
             gameState: state.gameState.copyWith(activeProposal: null),
-            infoMessage: 'Đề xuất bỏ qua đã kết thúc (${e.reason})',
+            infoMessage: S.current.skipVoteEnded(e.reason),
           ),
         );
       },
@@ -934,7 +1196,7 @@ class WordGuessBloc extends BaseBloc<WordGuessEvent, WordGuessState> {
         safeEmit(
           state.copyWith(
             lastPracticeResult: e.reward,
-            infoMessage: 'Nhận thưởng: +${e.reward?.gainedXp ?? 0} XP',
+            infoMessage: S.current.rewardReceivedXp(e.reward?.gainedXp ?? 0),
           ),
         );
       },
@@ -943,7 +1205,7 @@ class WordGuessBloc extends BaseBloc<WordGuessEvent, WordGuessState> {
         safeEmit(
           state.copyWith(
             isQueued: false,
-            mode: WordGuessGameMode.room,
+            mode: WordGuessGameMode.matchmake,
             matchInfo: e.matchInfo,
             roomCode: e.matchInfo.roomCode,
           ),
@@ -955,6 +1217,7 @@ class WordGuessBloc extends BaseBloc<WordGuessEvent, WordGuessState> {
             uid: state.myUid,
             name: state.myName,
             avatar: state.myAvatar,
+            isMatchmaking: true,
           ),
         );
       },
@@ -963,6 +1226,16 @@ class WordGuessBloc extends BaseBloc<WordGuessEvent, WordGuessState> {
       },
       connection: (e) {
         safeEmit(state.copyWith(connectionState: e.state));
+      },
+      playerLeft: (e) {
+        if (e.uid != state.myUid &&
+            state.gameState.status != 'finished' &&
+            state.opponentLeftRivalName == null) {
+          safeEmit(state.copyWith(
+            opponentLeftRivalName:
+                e.name.isNotEmpty ? e.name : S.current.humanOpponent,
+          ));
+        }
       },
       error: (e) {
         safeEmit(state.copyWith(errorMessage: e.message));

@@ -392,6 +392,7 @@ class RoomPlayerLeftEvent extends SocketEvent {
     this.message,
     this.uid,
     this.reason,
+    this.name,
   });
 
   factory RoomPlayerLeftEvent.fromJson(Map<String, dynamic> json) {
@@ -400,6 +401,7 @@ class RoomPlayerLeftEvent extends SocketEvent {
       message: json['message'] as String?,
       uid: json['uid'] as String?,
       reason: json['reason'] as String?,
+      name: json['name'] as String?,
     );
   }
 
@@ -407,6 +409,7 @@ class RoomPlayerLeftEvent extends SocketEvent {
   final String? message;
   final String? uid;
   final String? reason;
+  final String? name;
 }
 
 class SocketRawMessageEvent extends SocketEvent {
@@ -706,11 +709,18 @@ class GuessAttemptEvent extends SocketEvent {
 
   factory GuessAttemptEvent.fromJson(Map<String, dynamic> json) {
     final history = json['historyItem'] as Map<String, dynamic>?;
-    final guess = history?['guess'] as String? ?? json['word'] as String? ?? '';
-    final isCorrect =
-        history?['isCorrect'] as bool? ?? json['correct'] as bool? ?? false;
-    final playerUid =
-        json['playerUid'] as String? ?? history?['playerUid'] as String?;
+    final guess = history?['guess'] as String? ??
+        json['guess'] as String? ??
+        json['word'] as String? ??
+        '';
+    final isCorrect = history?['isCorrect'] as bool? ??
+        json['isWin'] as bool? ??
+        json['isCorrect'] as bool? ??
+        json['correct'] as bool? ??
+        false;
+    final playerUid = json['playerUid'] as String? ??
+        json['uid']?.toString() ??
+        history?['playerUid'] as String?;
 
     return GuessAttemptEvent(
       word: guess,

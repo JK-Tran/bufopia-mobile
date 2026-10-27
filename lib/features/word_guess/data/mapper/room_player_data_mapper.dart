@@ -19,6 +19,7 @@ class RoomPlayerDataMapper extends BaseDataMapper<RoomPlayerData, RoomPlayer> {
       isHost: data?.isHost ?? false,
       ended: data?.ended ?? false,
       playerIndex: data?.playerIndex ?? 0,
+      isOnline: data?.online ?? true,
     );
   }
 }

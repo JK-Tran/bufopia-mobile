@@ -15,6 +15,7 @@ abstract class RoomPlayerData with _$RoomPlayerData {
     @JsonKey(name: 'isHost') bool? isHost,
     @JsonKey(name: 'ended') bool? ended,
     @JsonKey(name: 'playerIndex') int? playerIndex,
+    @JsonKey(name: 'online') bool? online,
   }) = _RoomPlayerData;
 
   const RoomPlayerData._();

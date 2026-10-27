@@ -39,10 +39,13 @@ abstract class GameState with _$GameState {
 
   const GameState._();
 
-  bool get isRoundResult => status == 'round_result';
+  bool get isRoundResult =>
+      status == 'round_result' || (result != null && result!['reason'] != null);
   bool get isFinished => status == 'finished';
-  String? get roundResultFullWord => result?['en'] as String? ?? wordInfo?.en;
-  String? get roundResultMeaning => result?['vi'] as String? ?? wordInfo?.vi;
+  String? get roundResultFullWord =>
+      result?['en'] as String? ?? result?['word'] as String? ?? wordInfo?.en;
+  String? get roundResultMeaning =>
+      result?['vi'] as String? ?? result?['meaning'] as String? ?? wordInfo?.vi;
   String? get roundResultSolverName => result?['solvedBy'] as String?;
   int get totalWordsFound => foundCount > 0
       ? foundCount

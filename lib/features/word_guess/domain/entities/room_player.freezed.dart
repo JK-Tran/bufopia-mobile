@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$RoomPlayer {
 
- String get uid; String get name; String get avatar; int get score; int get foundCount; bool get isReady; bool get isHost; bool get ended; int get playerIndex;
+ String get uid; String get name; String get avatar; int get score; int get foundCount; bool get isReady; bool get isHost; bool get ended; int get playerIndex; bool get isOnline;
 /// Create a copy of RoomPlayer
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -27,20 +27,20 @@ $RoomPlayerCopyWith<RoomPlayer> get copyWith => _$RoomPlayerCopyWithImpl<RoomPla
 @override
 bool operator ==(Object other) {
   final _this = this as RoomPlayer;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RoomPlayer&&(identical(other.uid, _this.uid) || other.uid == _this.uid)&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.avatar, _this.avatar) || other.avatar == _this.avatar)&&(identical(other.score, _this.score) || other.score == _this.score)&&(identical(other.foundCount, _this.foundCount) || other.foundCount == _this.foundCount)&&(identical(other.isReady, _this.isReady) || other.isReady == _this.isReady)&&(identical(other.isHost, _this.isHost) || other.isHost == _this.isHost)&&(identical(other.ended, _this.ended) || other.ended == _this.ended)&&(identical(other.playerIndex, _this.playerIndex) || other.playerIndex == _this.playerIndex));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RoomPlayer&&(identical(other.uid, _this.uid) || other.uid == _this.uid)&&(identical(other.name, _this.name) || other.name == _this.name)&&(identical(other.avatar, _this.avatar) || other.avatar == _this.avatar)&&(identical(other.score, _this.score) || other.score == _this.score)&&(identical(other.foundCount, _this.foundCount) || other.foundCount == _this.foundCount)&&(identical(other.isReady, _this.isReady) || other.isReady == _this.isReady)&&(identical(other.isHost, _this.isHost) || other.isHost == _this.isHost)&&(identical(other.ended, _this.ended) || other.ended == _this.ended)&&(identical(other.playerIndex, _this.playerIndex) || other.playerIndex == _this.playerIndex)&&(identical(other.isOnline, _this.isOnline) || other.isOnline == _this.isOnline));
 }
 
 
 @override
 int get hashCode {
   final _this = this as RoomPlayer;
-  return Object.hash(runtimeType,_this.uid,_this.name,_this.avatar,_this.score,_this.foundCount,_this.isReady,_this.isHost,_this.ended,_this.playerIndex);
+  return Object.hash(runtimeType,_this.uid,_this.name,_this.avatar,_this.score,_this.foundCount,_this.isReady,_this.isHost,_this.ended,_this.playerIndex,_this.isOnline);
 }
 
 @override
 String toString() {
   final _this = this as RoomPlayer;
-  return 'RoomPlayer(uid: ${_this.uid}, name: ${_this.name}, avatar: ${_this.avatar}, score: ${_this.score}, foundCount: ${_this.foundCount}, isReady: ${_this.isReady}, isHost: ${_this.isHost}, ended: ${_this.ended}, playerIndex: ${_this.playerIndex})';
+  return 'RoomPlayer(uid: ${_this.uid}, name: ${_this.name}, avatar: ${_this.avatar}, score: ${_this.score}, foundCount: ${_this.foundCount}, isReady: ${_this.isReady}, isHost: ${_this.isHost}, ended: ${_this.ended}, playerIndex: ${_this.playerIndex}, isOnline: ${_this.isOnline})';
 }
 
 
@@ -51,7 +51,7 @@ abstract mixin class $RoomPlayerCopyWith<$Res>  {
   factory $RoomPlayerCopyWith(RoomPlayer value, $Res Function(RoomPlayer) _then) = _$RoomPlayerCopyWithImpl;
 @useResult
 $Res call({
- String uid, String name, String avatar, int score, int foundCount, bool isReady, bool isHost, bool ended, int playerIndex
+ String uid, String name, String avatar, int score, int foundCount, bool isReady, bool isHost, bool ended, int playerIndex, bool isOnline
 });
 
 
@@ -68,7 +68,7 @@ class _$RoomPlayerCopyWithImpl<$Res>
 
 /// Create a copy of RoomPlayer
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? uid = null,Object? name = null,Object? avatar = null,Object? score = null,Object? foundCount = null,Object? isReady = null,Object? isHost = null,Object? ended = null,Object? playerIndex = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? uid = null,Object? name = null,Object? avatar = null,Object? score = null,Object? foundCount = null,Object? isReady = null,Object? isHost = null,Object? ended = null,Object? playerIndex = null,Object? isOnline = null,}) {
   return _then(RoomPlayer(
 uid: null == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -79,7 +79,8 @@ as int,isReady: null == isReady ? _self.isReady : isReady // ignore: cast_nullab
 as bool,isHost: null == isHost ? _self.isHost : isHost // ignore: cast_nullable_to_non_nullable
 as bool,ended: null == ended ? _self.ended : ended // ignore: cast_nullable_to_non_nullable
 as bool,playerIndex: null == playerIndex ? _self.playerIndex : playerIndex // ignore: cast_nullable_to_non_nullable
-as int,
+as int,isOnline: null == isOnline ? _self.isOnline : isOnline // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 
@@ -164,10 +165,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String uid,  String name,  String avatar,  int score,  int foundCount,  bool isReady,  bool isHost,  bool ended,  int playerIndex)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String uid,  String name,  String avatar,  int score,  int foundCount,  bool isReady,  bool isHost,  bool ended,  int playerIndex,  bool isOnline)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _RoomPlayer() when $default != null:
-return $default(_that.uid,_that.name,_that.avatar,_that.score,_that.foundCount,_that.isReady,_that.isHost,_that.ended,_that.playerIndex);case _:
+return $default(_that.uid,_that.name,_that.avatar,_that.score,_that.foundCount,_that.isReady,_that.isHost,_that.ended,_that.playerIndex,_that.isOnline);case _:
   return orElse();
 
 }
@@ -185,10 +186,10 @@ return $default(_that.uid,_that.name,_that.avatar,_that.score,_that.foundCount,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String uid,  String name,  String avatar,  int score,  int foundCount,  bool isReady,  bool isHost,  bool ended,  int playerIndex)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String uid,  String name,  String avatar,  int score,  int foundCount,  bool isReady,  bool isHost,  bool ended,  int playerIndex,  bool isOnline)  $default,) {final _that = this;
 switch (_that) {
 case _RoomPlayer():
-return $default(_that.uid,_that.name,_that.avatar,_that.score,_that.foundCount,_that.isReady,_that.isHost,_that.ended,_that.playerIndex);case _:
+return $default(_that.uid,_that.name,_that.avatar,_that.score,_that.foundCount,_that.isReady,_that.isHost,_that.ended,_that.playerIndex,_that.isOnline);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -205,10 +206,10 @@ return $default(_that.uid,_that.name,_that.avatar,_that.score,_that.foundCount,_
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String uid,  String name,  String avatar,  int score,  int foundCount,  bool isReady,  bool isHost,  bool ended,  int playerIndex)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String uid,  String name,  String avatar,  int score,  int foundCount,  bool isReady,  bool isHost,  bool ended,  int playerIndex,  bool isOnline)?  $default,) {final _that = this;
 switch (_that) {
 case _RoomPlayer() when $default != null:
-return $default(_that.uid,_that.name,_that.avatar,_that.score,_that.foundCount,_that.isReady,_that.isHost,_that.ended,_that.playerIndex);case _:
+return $default(_that.uid,_that.name,_that.avatar,_that.score,_that.foundCount,_that.isReady,_that.isHost,_that.ended,_that.playerIndex,_that.isOnline);case _:
   return null;
 
 }
@@ -220,7 +221,7 @@ return $default(_that.uid,_that.name,_that.avatar,_that.score,_that.foundCount,_
 
 
 class _RoomPlayer extends RoomPlayer {
-  const _RoomPlayer({this.uid = '', this.name = '', this.avatar = '', this.score = 0, this.foundCount = 0, this.isReady = false, this.isHost = false, this.ended = false, this.playerIndex = 0}): super._();
+  const _RoomPlayer({this.uid = '', this.name = '', this.avatar = '', this.score = 0, this.foundCount = 0, this.isReady = false, this.isHost = false, this.ended = false, this.playerIndex = 0, this.isOnline = true}): super._();
   
 
 @override@JsonKey() final  String uid;
@@ -232,6 +233,7 @@ class _RoomPlayer extends RoomPlayer {
 @override@JsonKey() final  bool isHost;
 @override@JsonKey() final  bool ended;
 @override@JsonKey() final  int playerIndex;
+@override@JsonKey() final  bool isOnline;
 
 /// Create a copy of RoomPlayer
 /// with the given fields replaced by the non-null parameter values.
@@ -243,18 +245,18 @@ _$RoomPlayerCopyWith<_RoomPlayer> get copyWith => __$RoomPlayerCopyWithImpl<_Roo
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _RoomPlayer&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.name, name) || other.name == name)&&(identical(other.avatar, avatar) || other.avatar == avatar)&&(identical(other.score, score) || other.score == score)&&(identical(other.foundCount, foundCount) || other.foundCount == foundCount)&&(identical(other.isReady, isReady) || other.isReady == isReady)&&(identical(other.isHost, isHost) || other.isHost == isHost)&&(identical(other.ended, ended) || other.ended == ended)&&(identical(other.playerIndex, playerIndex) || other.playerIndex == playerIndex));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _RoomPlayer&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.name, name) || other.name == name)&&(identical(other.avatar, avatar) || other.avatar == avatar)&&(identical(other.score, score) || other.score == score)&&(identical(other.foundCount, foundCount) || other.foundCount == foundCount)&&(identical(other.isReady, isReady) || other.isReady == isReady)&&(identical(other.isHost, isHost) || other.isHost == isHost)&&(identical(other.ended, ended) || other.ended == ended)&&(identical(other.playerIndex, playerIndex) || other.playerIndex == playerIndex)&&(identical(other.isOnline, isOnline) || other.isOnline == isOnline));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,uid,name,avatar,score,foundCount,isReady,isHost,ended,playerIndex);
+    return Object.hash(runtimeType,uid,name,avatar,score,foundCount,isReady,isHost,ended,playerIndex,isOnline);
 }
 
 @override
 String toString() {
-    return 'RoomPlayer(uid: $uid, name: $name, avatar: $avatar, score: $score, foundCount: $foundCount, isReady: $isReady, isHost: $isHost, ended: $ended, playerIndex: $playerIndex)';
+    return 'RoomPlayer(uid: $uid, name: $name, avatar: $avatar, score: $score, foundCount: $foundCount, isReady: $isReady, isHost: $isHost, ended: $ended, playerIndex: $playerIndex, isOnline: $isOnline)';
 }
 
 
@@ -265,7 +267,7 @@ abstract mixin class _$RoomPlayerCopyWith<$Res> implements $RoomPlayerCopyWith<$
   factory _$RoomPlayerCopyWith(_RoomPlayer value, $Res Function(_RoomPlayer) _then) = __$RoomPlayerCopyWithImpl;
 @override @useResult
 $Res call({
- String uid, String name, String avatar, int score, int foundCount, bool isReady, bool isHost, bool ended, int playerIndex
+ String uid, String name, String avatar, int score, int foundCount, bool isReady, bool isHost, bool ended, int playerIndex, bool isOnline
 });
 
 
@@ -282,7 +284,7 @@ class __$RoomPlayerCopyWithImpl<$Res>
 
 /// Create a copy of RoomPlayer
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? uid = null,Object? name = null,Object? avatar = null,Object? score = null,Object? foundCount = null,Object? isReady = null,Object? isHost = null,Object? ended = null,Object? playerIndex = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? uid = null,Object? name = null,Object? avatar = null,Object? score = null,Object? foundCount = null,Object? isReady = null,Object? isHost = null,Object? ended = null,Object? playerIndex = null,Object? isOnline = null,}) {
   return _then(_RoomPlayer(
 uid: null == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
 as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
@@ -293,7 +295,8 @@ as int,isReady: null == isReady ? _self.isReady : isReady // ignore: cast_nullab
 as bool,isHost: null == isHost ? _self.isHost : isHost // ignore: cast_nullable_to_non_nullable
 as bool,ended: null == ended ? _self.ended : ended // ignore: cast_nullable_to_non_nullable
 as bool,playerIndex: null == playerIndex ? _self.playerIndex : playerIndex // ignore: cast_nullable_to_non_nullable
-as int,
+as int,isOnline: null == isOnline ? _self.isOnline : isOnline // ignore: cast_nullable_to_non_nullable
+as bool,
   ));
 }
 

@@ -38,6 +38,7 @@ class WordGuessPage extends StatelessWidget {
     this.durationSeconds = 180,
     this.rivalName,
     this.rivalAvatar,
+    this.difficulty,
   });
 
   final WordGuessGameMode mode;
@@ -46,6 +47,7 @@ class WordGuessPage extends StatelessWidget {
   final int durationSeconds;
   final String? rivalName;
   final String? rivalAvatar;
+  final String? difficulty;
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +60,7 @@ class WordGuessPage extends StatelessWidget {
         durationSeconds: durationSeconds,
         rivalName: rivalName,
         rivalAvatar: rivalAvatar,
+        difficulty: difficulty,
       ),
     );
   }
@@ -71,6 +74,7 @@ class _WordGuessView extends StatefulWidget {
     this.durationSeconds = 180,
     this.rivalName,
     this.rivalAvatar,
+    this.difficulty,
   });
 
   final WordGuessGameMode mode;
@@ -79,6 +83,7 @@ class _WordGuessView extends StatefulWidget {
   final int durationSeconds;
   final String? rivalName;
   final String? rivalAvatar;
+  final String? difficulty;
 
   @override
   State<_WordGuessView> createState() => _WordGuessViewState();
@@ -121,8 +126,25 @@ class _WordGuessViewState extends State<_WordGuessView> {
     final uid = user?.uid.isNotEmpty == true ? user!.uid : 'guest';
     final name = (user?.displayName.isNotEmpty == true)
         ? user!.displayName
-        : 'Người chơi';
+        : context.l10n.player;
     final avatar = user?.avatarUrl;
+
+    final hasRoomCode = widget.roomCode != null && widget.roomCode!.isNotEmpty;
+    final isMatchmaking = widget.mode == WordGuessGameMode.matchmake;
+
+    if (hasRoomCode) {
+      bloc.add(
+        WordGuessEvent.joinRoom(
+          roomCode: widget.roomCode!,
+          uid: uid,
+          name: name,
+          avatar: avatar,
+          difficulty: widget.difficulty,
+          isMatchmaking: isMatchmaking,
+        ),
+      );
+      return;
+    }
 
     switch (widget.mode) {
       case WordGuessGameMode.practice:
@@ -130,6 +152,7 @@ class _WordGuessViewState extends State<_WordGuessView> {
           WordGuessEvent.startPractice(
             topic: widget.topic,
             uid: uid,
+            difficulty: widget.difficulty,
           ),
         );
       case WordGuessGameMode.matchmake:
@@ -139,19 +162,11 @@ class _WordGuessViewState extends State<_WordGuessView> {
             uid: uid,
             name: name,
             avatar: avatar,
+            difficulty: widget.difficulty,
           ),
         );
       case WordGuessGameMode.room:
-        if (widget.roomCode != null && widget.roomCode!.isNotEmpty) {
-          bloc.add(
-            WordGuessEvent.joinRoom(
-              roomCode: widget.roomCode!,
-              uid: uid,
-              name: name,
-              avatar: avatar,
-            ),
-          );
-        }
+        break;
     }
   }
 
@@ -251,7 +266,8 @@ class _WordGuessViewState extends State<_WordGuessView> {
   void _onSkipTapped() {
     context.read<AppBloc>().add(const AppEvent.clickSoundPlayed());
     final bloc = context.read<WordGuessBloc>();
-    if (widget.mode == WordGuessGameMode.practice) {
+    final isSolo = bloc.state.mode == WordGuessGameMode.practice;
+    if (isSolo) {
       bloc.add(const WordGuessEvent.skipPracticeQuestion());
     } else {
       bloc.add(const WordGuessEvent.skipWord());
@@ -319,7 +335,9 @@ class _WordGuessViewState extends State<_WordGuessView> {
                       isPopping = true;
                       Navigator.of(dialogCtx).pop();
                       final bloc = context.read<WordGuessBloc>();
-                      if (widget.mode == WordGuessGameMode.practice) {
+                      final isSolo =
+                          bloc.state.mode == WordGuessGameMode.practice;
+                      if (isSolo) {
                         _showResultDialog(bloc.state);
                       } else {
                         bloc.add(const WordGuessEvent.endGame());
@@ -346,7 +364,8 @@ class _WordGuessViewState extends State<_WordGuessView> {
     context.read<AppBloc>().add(const AppEvent.clickSoundPlayed());
 
     bloc.add(WordGuessEvent.inputWordChanged(text));
-    if (widget.mode == WordGuessGameMode.practice) {
+    final isSolo = bloc.state.mode == WordGuessGameMode.practice;
+    if (isSolo) {
       bloc.add(const WordGuessEvent.submitPracticeAnswer());
     } else {
       bloc.add(const WordGuessEvent.submitGuess());
@@ -488,13 +507,26 @@ class _WordGuessViewState extends State<_WordGuessView> {
     );
   }
 
-  void _showOpponentLeftDialog() {
+  void _showOpponentLeftDialog([String? rivalName]) {
     if (_isOpponentLeftShown || !mounted) return;
     _isOpponentLeftShown = true;
 
     WordGuessOpponentLeftDialog.show(
       context,
-      onHome: () => context.go(AppRouter.home),
+      rivalName: rivalName,
+      onHome: () {
+        context.read<WordGuessBloc>().add(
+              const WordGuessEvent.leaveGame(),
+            );
+        context.go(AppRouter.home);
+      },
+      onContinueSolo: () {
+        _isOpponentLeftShown = false;
+        context.read<WordGuessBloc>().add(
+              const WordGuessEvent.switchToSolo(),
+            );
+        _focusInput();
+      },
     );
   }
 
@@ -568,7 +600,6 @@ class _WordGuessViewState extends State<_WordGuessView> {
   Widget build(BuildContext context) {
     final isPaper = context.select<AppBloc, bool>((b) => b.state.isPaperTheme);
     final topicTitle = _getTopicTitle(widget.topic, context);
-    final isSolo = widget.mode == WordGuessGameMode.practice;
 
     return BlocConsumer<WordGuessBloc, WordGuessState>(
       listenWhen: (previous, current) {
@@ -588,10 +619,14 @@ class _WordGuessViewState extends State<_WordGuessView> {
             previous.isGameOver != current.isGameOver ||
             (previous.gameState.players.length >
                 current.gameState.players.length) ||
+            previous.opponentLeftRivalName != current.opponentLeftRivalName ||
+            previous.mode != current.mode ||
             roundChanged ||
             guessAttempted;
       },
       listener: (context, state) {
+        final isSolo = state.mode == WordGuessGameMode.practice;
+
         if (state.errorMessage != null &&
             state.errorMessage!.isNotEmpty &&
             state.errorMessage != _lastErrorMessage) {
@@ -601,12 +636,18 @@ class _WordGuessViewState extends State<_WordGuessView> {
         }
 
         // Đối thủ thoát phòng khi đang thi đấu
+        final effectiveRivalName = state.opponentLeftRivalName ??
+            state.gameState.players
+                .where((p) => p.uid != state.myUid)
+                .firstOrNull
+                ?.name;
         if (!isSolo &&
-            state.gameState.status == 'playing' &&
-            state.gameState.players.length < 2 &&
+            (state.opponentLeftRivalName != null ||
+                (state.gameState.status == 'playing' &&
+                    state.gameState.players.length < 2)) &&
             !_isOpponentLeftShown &&
             !_isResultShown) {
-          _showOpponentLeftDialog();
+          _showOpponentLeftDialog(effectiveRivalName);
           return;
         }
 
@@ -630,6 +671,7 @@ class _WordGuessViewState extends State<_WordGuessView> {
         }
       },
       builder: (context, state) {
+        final isSolo = state.mode == WordGuessGameMode.practice;
         final canInteract =
             !state.isLoading &&
             !state.isSubmitting &&

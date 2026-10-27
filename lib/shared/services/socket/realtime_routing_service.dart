@@ -11,6 +11,8 @@ class RealtimeConfig {
     this.matchmaking = 'go',
     this.quizRooms = 'go',
     this.chainRooms = 'go',
+    this.guessMatchmake = 'go',
+    this.guessRooms = 'go',
   });
 
   factory RealtimeConfig.fromJson(Map<String, dynamic> json) {
@@ -19,6 +21,8 @@ class RealtimeConfig {
       matchmaking: json['matchmaking'] as String? ?? 'go',
       quizRooms: json['quizRooms'] as String? ?? 'go',
       chainRooms: json['chainRooms'] as String? ?? 'go',
+      guessMatchmake: json['guessMatchmake'] as String? ?? 'go',
+      guessRooms: json['guessRooms'] as String? ?? 'go',
     );
   }
 
@@ -26,12 +30,16 @@ class RealtimeConfig {
   final String matchmaking;
   final String quizRooms;
   final String chainRooms;
+  final String guessMatchmake;
+  final String guessRooms;
 
   Map<String, dynamic> toJson() => {
     'protocolVersion': protocolVersion,
     'matchmaking': matchmaking,
     'quizRooms': quizRooms,
     'chainRooms': chainRooms,
+    'guessMatchmake': guessMatchmake,
+    'guessRooms': guessRooms,
   };
 }
 
@@ -44,6 +52,8 @@ abstract class RealtimeRoutingService {
   bool isGoQuizRoom(String roomCode, {RealtimeConfig? config});
   bool isGoChainRoom(String roomCode, {RealtimeConfig? config});
   bool isGoChainMatchmaking({RealtimeConfig? config});
+  bool isGoGuessMatchmaking({RealtimeConfig? config});
+  bool isGoGuessRoom(String roomCode, {RealtimeConfig? config});
 }
 
 @LazySingleton(as: RealtimeRoutingService)
@@ -139,6 +149,28 @@ class RealtimeRoutingServiceImpl implements RealtimeRoutingService {
   bool isGoChainMatchmaking({RealtimeConfig? config}) {
     final cfg = config ?? _cachedConfig;
     return cfg.chainRooms.toLowerCase() == 'go' ||
+        cfg.matchmaking.toLowerCase() == 'go';
+  }
+
+  @override
+  bool isGoGuessMatchmaking({RealtimeConfig? config}) {
+    final cfg = config ?? _cachedConfig;
+    return cfg.guessMatchmake.toLowerCase() == 'go' ||
+        cfg.matchmaking.toLowerCase() == 'go';
+  }
+
+  @override
+  bool isGoGuessRoom(String roomCode, {RealtimeConfig? config}) {
+    final normalized = roomCode.trim().toUpperCase();
+    if (normalized.startsWith('GGS-') || normalized.startsWith('GGU-')) {
+      return true;
+    }
+    // Phòng 6 chữ số cũ luôn thuộc Cloudflare Worker
+    if (RegExp(r'^\d{6}$').hasMatch(normalized)) {
+      return false;
+    }
+    final cfg = config ?? _cachedConfig;
+    return cfg.guessRooms.toLowerCase() == 'go' ||
         cfg.matchmaking.toLowerCase() == 'go';
   }
 }

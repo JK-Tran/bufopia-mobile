@@ -34,11 +34,13 @@ class WordGuessRoomDialog extends StatefulWidget {
     required this.onEnterRoom,
     required this.topicId,
     this.topicTitle = 'Luyện ngẫu nhiên',
+    this.difficulty = 'medium',
     super.key,
   });
 
   final String topicId;
   final String topicTitle;
+  final String difficulty;
   final void Function(String roomCode, int durationSeconds) onEnterRoom;
 
   static Future<void> show(
@@ -46,6 +48,7 @@ class WordGuessRoomDialog extends StatefulWidget {
     required String topicId,
     required void Function(String roomCode, int durationSeconds) onEnterRoom,
     String topicTitle = 'Luyện ngẫu nhiên',
+    String difficulty = 'medium',
   }) {
     return showDialog<void>(
       context: context,
@@ -53,6 +56,7 @@ class WordGuessRoomDialog extends StatefulWidget {
       builder: (_) => WordGuessRoomDialog(
         topicId: topicId,
         topicTitle: topicTitle,
+        difficulty: difficulty,
         onEnterRoom: onEnterRoom,
       ),
     );
@@ -189,6 +193,8 @@ class _WordGuessRoomDialogState extends State<WordGuessRoomDialog> {
         name: name,
         token: token,
         avatar: avatar,
+        topic: widget.topicId,
+        difficulty: widget.difficulty,
       );
 
       _socketService.sendUpdateConfig(

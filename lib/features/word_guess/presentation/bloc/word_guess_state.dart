@@ -16,6 +16,7 @@ abstract class WordGuessState with _$WordGuessState {
     // Chế độ chơi & cấu hình
     @Default(WordGuessGameMode.practice) WordGuessGameMode mode,
     @Default('daily') String topicId,
+    @Default('medium') String difficulty,
     @Default('') String myUid,
     @Default('') String myName,
     @Default('') String myAvatar,
@@ -48,6 +49,9 @@ abstract class WordGuessState with _$WordGuessState {
     String? solvedBannerWord,
     String? solvedBannerSolver,
     @Default(false) bool isSolvedByMe,
+
+    // Trạng thái đối thủ thoát phòng
+    String? opponentLeftRivalName,
   }) = _WordGuessState;
 
   const WordGuessState._();

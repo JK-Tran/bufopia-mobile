@@ -9,6 +9,7 @@ import 'package:bufopia/features/home/presentation/widgets/home_header/dialog/pl
 import 'package:bufopia/features/vocabulary/domain/entities/topic.dart';
 import 'package:bufopia/features/vocabulary/presentation/widgets/topic/topic_grid.dart';
 import 'package:bufopia/features/vocabulary/presentation/widgets/topic/topic_header.dart';
+import 'package:bufopia/features/word_guess/domain/entities/word_guess_difficulty.dart';
 import 'package:bufopia/features/word_guess/presentation/bloc/word_guess_bloc.dart';
 import 'package:bufopia/features/word_guess/presentation/widgets/dialog/word_guess_matchmaking_dialog.dart';
 import 'package:bufopia/features/word_guess/presentation/widgets/dialog/word_guess_mode_dialog.dart';
@@ -58,18 +59,19 @@ class _WordGuessTopicPageState extends State<WordGuessTopicPage> {
       onChangeTopic: () {
         // Đã đóng modal, người chơi chọn lại chủ đề trên màn hình
       },
-      onSoloPractice: () => _startSoloPractice(topicId),
-      onOnlineMatch: () => _startOnlineMatch(topicId),
-      onCustomRoom: () => _startCustomRoom(topicId),
+      onSoloPractice: (difficulty) => _startSoloPractice(topicId, difficulty),
+      onOnlineMatch: (difficulty) => _startOnlineMatch(topicId, difficulty),
+      onCustomRoom: (difficulty) => _startCustomRoom(topicId, difficulty),
     );
   }
 
-  void _startSoloPractice(String topicId) {
+  void _startSoloPractice(String topicId, WordGuessDifficulty difficulty) {
     context.push(
       AppRouter.wordGuess,
       extra: {
         'mode': WordGuessGameMode.practice,
         'topic': topicId,
+        'difficulty': difficulty.key,
       },
     );
   }
@@ -104,13 +106,17 @@ class _WordGuessTopicPageState extends State<WordGuessTopicPage> {
     return false;
   }
 
-  Future<void> _startOnlineMatch(String topicId) async {
+  Future<void> _startOnlineMatch(
+    String topicId,
+    WordGuessDifficulty difficulty,
+  ) async {
     final hasValidName = await _ensureValidPlayerName();
     if (!hasValidName || !mounted) return;
 
     await WordGuessMatchmakingDialog.show(
       context,
       topic: topicId,
+      difficulty: difficulty.key,
       onMatched: (roomCode, rivalName, rivalAvatar) {
         AppToast.showSuccess(
           context,
@@ -124,13 +130,17 @@ class _WordGuessTopicPageState extends State<WordGuessTopicPage> {
             'roomCode': roomCode,
             'rivalName': rivalName,
             'rivalAvatar': rivalAvatar,
+            'difficulty': difficulty.key,
           },
         );
       },
     );
   }
 
-  Future<void> _startCustomRoom(String topicId) async {
+  Future<void> _startCustomRoom(
+    String topicId,
+    WordGuessDifficulty difficulty,
+  ) async {
     final hasValidName = await _ensureValidPlayerName();
     if (!hasValidName || !mounted) return;
 
@@ -145,6 +155,7 @@ class _WordGuessTopicPageState extends State<WordGuessTopicPage> {
       context,
       topicId: topicId,
       topicTitle: topicTitle,
+      difficulty: difficulty.key,
       onEnterRoom: (roomCode, durationSeconds) {
         context.push(
           AppRouter.wordGuess,
@@ -153,6 +164,7 @@ class _WordGuessTopicPageState extends State<WordGuessTopicPage> {
             'topic': topicId,
             'roomCode': roomCode,
             'durationSeconds': durationSeconds,
+            'difficulty': difficulty.key,
           },
         );
       },

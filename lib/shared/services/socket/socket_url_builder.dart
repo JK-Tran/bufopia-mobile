@@ -40,6 +40,19 @@ class SocketUrlBuilder {
     return '${UrlConstants.goRealtimeWsBaseUrl}/api/v1/realtime/ws';
   }
 
+  /// URL tìm trận Word Guess qua Go Server (/realtime/guess-matchmake)
+  static String goGuessMatchmakeWsUrl() {
+    return '${UrlConstants.goRealtimeWsBaseUrl}'
+        '/api/v1/realtime/guess-matchmake';
+  }
+
+  /// URL phòng thi đấu Word Guess qua Go Server (/realtime/guess/:roomCode)
+  static String goGuessRoomWsUrl(String roomCode) {
+    final cleanCode = roomCode.trim();
+    return '${UrlConstants.goRealtimeWsBaseUrl}'
+        '/api/v1/realtime/guess/$cleanCode';
+  }
+
   // ══════════════════════════════════════════════════════════════════
   // 2. CLOUDFLARE WORKER ENDPOINTS (Ticket-based Auth)
   // ══════════════════════════════════════════════════════════════════
@@ -142,6 +155,7 @@ class SocketUrlBuilder {
     required String ticket,
     String topic = 'daily',
     String? avatar,
+    String? difficulty,
   }) {
     final query = <String, String>{
       'topic': topic,
@@ -149,6 +163,8 @@ class SocketUrlBuilder {
       'name': name,
       'ticket': ticket,
       if (avatar != null && avatar.isNotEmpty) 'avatar': avatar,
+      if (difficulty != null && difficulty.isNotEmpty)
+        'difficulty': difficulty,
     };
     final uri = Uri.parse(
       '${UrlConstants.webSocketBaseUrl}/guess-matchmake',
@@ -162,13 +178,18 @@ class SocketUrlBuilder {
     required String uid,
     required String name,
     required String ticket,
+    String? topic,
     String? avatar,
+    String? difficulty,
   }) {
     final query = <String, String>{
       'uid': uid,
       'name': name,
       'ticket': ticket,
+      if (topic != null && topic.isNotEmpty) 'topic': topic,
       if (avatar != null && avatar.isNotEmpty) 'avatar': avatar,
+      if (difficulty != null && difficulty.isNotEmpty)
+        'difficulty': difficulty,
     };
     final uri = Uri.parse(
       '${UrlConstants.webSocketBaseUrl}/guess/$roomCode',

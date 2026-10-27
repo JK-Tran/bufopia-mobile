@@ -32,6 +32,7 @@ class WordGuessDataSource {
     int count = 20,
     String? recent,
     String? token,
+    String? difficulty,
   }) async {
     return _apiClient.request(
       method: RestMethod.get,
@@ -45,6 +46,8 @@ class WordGuessDataSource {
         'count': count,
         if (uid != null && uid.isNotEmpty) 'uid': uid,
         if (recent != null && recent.isNotEmpty) 'recent': recent,
+        if (difficulty != null && difficulty.isNotEmpty)
+          'difficulty': difficulty,
       },
       decoder: (data) => DeckData.fromJson(data! as JSON),
     );

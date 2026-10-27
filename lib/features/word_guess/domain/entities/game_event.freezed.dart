@@ -56,7 +56,7 @@ extension GameEventPatterns on GameEvent {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _GameEventConnected value)?  connected,TResult Function( _GameEventStateUpdated value)?  stateUpdated,TResult Function( _GameEventWordHint value)?  wordHint,TResult Function( _GameEventWordPhonetic value)?  wordPhonetic,TResult Function( _GameEventWordSolved value)?  wordSolved,TResult Function( _GameEventGuessAttempt value)?  guessAttempt,TResult Function( _GameEventChat value)?  chat,TResult Function( _GameEventChatBlocked value)?  chatBlocked,TResult Function( _GameEventProposalClosed value)?  proposalClosed,TResult Function( _GameEventSessionReward value)?  sessionReward,TResult Function( _GameEventMatched value)?  matched,TResult Function( _GameEventQueued value)?  queued,TResult Function( _GameEventConnection value)?  connection,TResult Function( _GameEventError value)?  error,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _GameEventConnected value)?  connected,TResult Function( _GameEventStateUpdated value)?  stateUpdated,TResult Function( _GameEventWordHint value)?  wordHint,TResult Function( _GameEventWordPhonetic value)?  wordPhonetic,TResult Function( _GameEventWordSolved value)?  wordSolved,TResult Function( _GameEventGuessAttempt value)?  guessAttempt,TResult Function( _GameEventChat value)?  chat,TResult Function( _GameEventChatBlocked value)?  chatBlocked,TResult Function( _GameEventProposalClosed value)?  proposalClosed,TResult Function( _GameEventSessionReward value)?  sessionReward,TResult Function( _GameEventMatched value)?  matched,TResult Function( _GameEventQueued value)?  queued,TResult Function( _GameEventPlayerLeft value)?  playerLeft,TResult Function( _GameEventConnection value)?  connection,TResult Function( _GameEventError value)?  error,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _GameEventConnected() when connected != null:
@@ -71,7 +71,8 @@ return chatBlocked(_that);case _GameEventProposalClosed() when proposalClosed !=
 return proposalClosed(_that);case _GameEventSessionReward() when sessionReward != null:
 return sessionReward(_that);case _GameEventMatched() when matched != null:
 return matched(_that);case _GameEventQueued() when queued != null:
-return queued(_that);case _GameEventConnection() when connection != null:
+return queued(_that);case _GameEventPlayerLeft() when playerLeft != null:
+return playerLeft(_that);case _GameEventConnection() when connection != null:
 return connection(_that);case _GameEventError() when error != null:
 return error(_that);case _:
   return orElse();
@@ -91,7 +92,7 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _GameEventConnected value)  connected,required TResult Function( _GameEventStateUpdated value)  stateUpdated,required TResult Function( _GameEventWordHint value)  wordHint,required TResult Function( _GameEventWordPhonetic value)  wordPhonetic,required TResult Function( _GameEventWordSolved value)  wordSolved,required TResult Function( _GameEventGuessAttempt value)  guessAttempt,required TResult Function( _GameEventChat value)  chat,required TResult Function( _GameEventChatBlocked value)  chatBlocked,required TResult Function( _GameEventProposalClosed value)  proposalClosed,required TResult Function( _GameEventSessionReward value)  sessionReward,required TResult Function( _GameEventMatched value)  matched,required TResult Function( _GameEventQueued value)  queued,required TResult Function( _GameEventConnection value)  connection,required TResult Function( _GameEventError value)  error,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _GameEventConnected value)  connected,required TResult Function( _GameEventStateUpdated value)  stateUpdated,required TResult Function( _GameEventWordHint value)  wordHint,required TResult Function( _GameEventWordPhonetic value)  wordPhonetic,required TResult Function( _GameEventWordSolved value)  wordSolved,required TResult Function( _GameEventGuessAttempt value)  guessAttempt,required TResult Function( _GameEventChat value)  chat,required TResult Function( _GameEventChatBlocked value)  chatBlocked,required TResult Function( _GameEventProposalClosed value)  proposalClosed,required TResult Function( _GameEventSessionReward value)  sessionReward,required TResult Function( _GameEventMatched value)  matched,required TResult Function( _GameEventQueued value)  queued,required TResult Function( _GameEventPlayerLeft value)  playerLeft,required TResult Function( _GameEventConnection value)  connection,required TResult Function( _GameEventError value)  error,}){
 final _that = this;
 switch (_that) {
 case _GameEventConnected():
@@ -106,7 +107,8 @@ return chatBlocked(_that);case _GameEventProposalClosed():
 return proposalClosed(_that);case _GameEventSessionReward():
 return sessionReward(_that);case _GameEventMatched():
 return matched(_that);case _GameEventQueued():
-return queued(_that);case _GameEventConnection():
+return queued(_that);case _GameEventPlayerLeft():
+return playerLeft(_that);case _GameEventConnection():
 return connection(_that);case _GameEventError():
 return error(_that);case _:
   throw StateError('Unexpected subclass');
@@ -125,7 +127,7 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _GameEventConnected value)?  connected,TResult? Function( _GameEventStateUpdated value)?  stateUpdated,TResult? Function( _GameEventWordHint value)?  wordHint,TResult? Function( _GameEventWordPhonetic value)?  wordPhonetic,TResult? Function( _GameEventWordSolved value)?  wordSolved,TResult? Function( _GameEventGuessAttempt value)?  guessAttempt,TResult? Function( _GameEventChat value)?  chat,TResult? Function( _GameEventChatBlocked value)?  chatBlocked,TResult? Function( _GameEventProposalClosed value)?  proposalClosed,TResult? Function( _GameEventSessionReward value)?  sessionReward,TResult? Function( _GameEventMatched value)?  matched,TResult? Function( _GameEventQueued value)?  queued,TResult? Function( _GameEventConnection value)?  connection,TResult? Function( _GameEventError value)?  error,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _GameEventConnected value)?  connected,TResult? Function( _GameEventStateUpdated value)?  stateUpdated,TResult? Function( _GameEventWordHint value)?  wordHint,TResult? Function( _GameEventWordPhonetic value)?  wordPhonetic,TResult? Function( _GameEventWordSolved value)?  wordSolved,TResult? Function( _GameEventGuessAttempt value)?  guessAttempt,TResult? Function( _GameEventChat value)?  chat,TResult? Function( _GameEventChatBlocked value)?  chatBlocked,TResult? Function( _GameEventProposalClosed value)?  proposalClosed,TResult? Function( _GameEventSessionReward value)?  sessionReward,TResult? Function( _GameEventMatched value)?  matched,TResult? Function( _GameEventQueued value)?  queued,TResult? Function( _GameEventPlayerLeft value)?  playerLeft,TResult? Function( _GameEventConnection value)?  connection,TResult? Function( _GameEventError value)?  error,}){
 final _that = this;
 switch (_that) {
 case _GameEventConnected() when connected != null:
@@ -140,7 +142,8 @@ return chatBlocked(_that);case _GameEventProposalClosed() when proposalClosed !=
 return proposalClosed(_that);case _GameEventSessionReward() when sessionReward != null:
 return sessionReward(_that);case _GameEventMatched() when matched != null:
 return matched(_that);case _GameEventQueued() when queued != null:
-return queued(_that);case _GameEventConnection() when connection != null:
+return queued(_that);case _GameEventPlayerLeft() when playerLeft != null:
+return playerLeft(_that);case _GameEventConnection() when connection != null:
 return connection(_that);case _GameEventError() when error != null:
 return error(_that);case _:
   return null;
@@ -159,7 +162,7 @@ return error(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String myUid,  GameState state)?  connected,TResult Function( GameState state)?  stateUpdated,TResult Function( String sessionId,  int index,  String masked)?  wordHint,TResult Function( String sessionId,  int index,  String phonetic,  String? phoneticSource,  bool? phoneticEstimated)?  wordPhonetic,TResult Function( String sessionId,  int index,  String word,  String meaning,  HistoryItem? historyItem)?  wordSolved,TResult Function( String word,  bool isCorrect,  String? message)?  guessAttempt,TResult Function( String senderUid,  String text,  String? senderName,  String? avatar)?  chat,TResult Function( String reason)?  chatBlocked,TResult Function( String reason)?  proposalClosed,TResult Function( String sessionId,  PracticeResult? reward)?  sessionReward,TResult Function( MatchInfo matchInfo)?  matched,TResult Function( String topicId)?  queued,TResult Function( SocketConnectionState state)?  connection,TResult Function( String message)?  error,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String myUid,  GameState state)?  connected,TResult Function( GameState state)?  stateUpdated,TResult Function( String sessionId,  int index,  String masked)?  wordHint,TResult Function( String sessionId,  int index,  String phonetic,  String? phoneticSource,  bool? phoneticEstimated)?  wordPhonetic,TResult Function( String sessionId,  int index,  String word,  String meaning,  HistoryItem? historyItem)?  wordSolved,TResult Function( String word,  bool isCorrect,  String? message)?  guessAttempt,TResult Function( String senderUid,  String text,  String? senderName,  String? avatar)?  chat,TResult Function( String reason)?  chatBlocked,TResult Function( String reason)?  proposalClosed,TResult Function( String sessionId,  PracticeResult? reward)?  sessionReward,TResult Function( MatchInfo matchInfo)?  matched,TResult Function( String topicId)?  queued,TResult Function( String uid,  String name)?  playerLeft,TResult Function( SocketConnectionState state)?  connection,TResult Function( String message)?  error,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _GameEventConnected() when connected != null:
 return connected(_that.myUid,_that.state);case _GameEventStateUpdated() when stateUpdated != null:
@@ -173,7 +176,8 @@ return chatBlocked(_that.reason);case _GameEventProposalClosed() when proposalCl
 return proposalClosed(_that.reason);case _GameEventSessionReward() when sessionReward != null:
 return sessionReward(_that.sessionId,_that.reward);case _GameEventMatched() when matched != null:
 return matched(_that.matchInfo);case _GameEventQueued() when queued != null:
-return queued(_that.topicId);case _GameEventConnection() when connection != null:
+return queued(_that.topicId);case _GameEventPlayerLeft() when playerLeft != null:
+return playerLeft(_that.uid,_that.name);case _GameEventConnection() when connection != null:
 return connection(_that.state);case _GameEventError() when error != null:
 return error(_that.message);case _:
   return orElse();
@@ -193,7 +197,7 @@ return error(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String myUid,  GameState state)  connected,required TResult Function( GameState state)  stateUpdated,required TResult Function( String sessionId,  int index,  String masked)  wordHint,required TResult Function( String sessionId,  int index,  String phonetic,  String? phoneticSource,  bool? phoneticEstimated)  wordPhonetic,required TResult Function( String sessionId,  int index,  String word,  String meaning,  HistoryItem? historyItem)  wordSolved,required TResult Function( String word,  bool isCorrect,  String? message)  guessAttempt,required TResult Function( String senderUid,  String text,  String? senderName,  String? avatar)  chat,required TResult Function( String reason)  chatBlocked,required TResult Function( String reason)  proposalClosed,required TResult Function( String sessionId,  PracticeResult? reward)  sessionReward,required TResult Function( MatchInfo matchInfo)  matched,required TResult Function( String topicId)  queued,required TResult Function( SocketConnectionState state)  connection,required TResult Function( String message)  error,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String myUid,  GameState state)  connected,required TResult Function( GameState state)  stateUpdated,required TResult Function( String sessionId,  int index,  String masked)  wordHint,required TResult Function( String sessionId,  int index,  String phonetic,  String? phoneticSource,  bool? phoneticEstimated)  wordPhonetic,required TResult Function( String sessionId,  int index,  String word,  String meaning,  HistoryItem? historyItem)  wordSolved,required TResult Function( String word,  bool isCorrect,  String? message)  guessAttempt,required TResult Function( String senderUid,  String text,  String? senderName,  String? avatar)  chat,required TResult Function( String reason)  chatBlocked,required TResult Function( String reason)  proposalClosed,required TResult Function( String sessionId,  PracticeResult? reward)  sessionReward,required TResult Function( MatchInfo matchInfo)  matched,required TResult Function( String topicId)  queued,required TResult Function( String uid,  String name)  playerLeft,required TResult Function( SocketConnectionState state)  connection,required TResult Function( String message)  error,}) {final _that = this;
 switch (_that) {
 case _GameEventConnected():
 return connected(_that.myUid,_that.state);case _GameEventStateUpdated():
@@ -207,7 +211,8 @@ return chatBlocked(_that.reason);case _GameEventProposalClosed():
 return proposalClosed(_that.reason);case _GameEventSessionReward():
 return sessionReward(_that.sessionId,_that.reward);case _GameEventMatched():
 return matched(_that.matchInfo);case _GameEventQueued():
-return queued(_that.topicId);case _GameEventConnection():
+return queued(_that.topicId);case _GameEventPlayerLeft():
+return playerLeft(_that.uid,_that.name);case _GameEventConnection():
 return connection(_that.state);case _GameEventError():
 return error(_that.message);case _:
   throw StateError('Unexpected subclass');
@@ -226,7 +231,7 @@ return error(_that.message);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String myUid,  GameState state)?  connected,TResult? Function( GameState state)?  stateUpdated,TResult? Function( String sessionId,  int index,  String masked)?  wordHint,TResult? Function( String sessionId,  int index,  String phonetic,  String? phoneticSource,  bool? phoneticEstimated)?  wordPhonetic,TResult? Function( String sessionId,  int index,  String word,  String meaning,  HistoryItem? historyItem)?  wordSolved,TResult? Function( String word,  bool isCorrect,  String? message)?  guessAttempt,TResult? Function( String senderUid,  String text,  String? senderName,  String? avatar)?  chat,TResult? Function( String reason)?  chatBlocked,TResult? Function( String reason)?  proposalClosed,TResult? Function( String sessionId,  PracticeResult? reward)?  sessionReward,TResult? Function( MatchInfo matchInfo)?  matched,TResult? Function( String topicId)?  queued,TResult? Function( SocketConnectionState state)?  connection,TResult? Function( String message)?  error,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String myUid,  GameState state)?  connected,TResult? Function( GameState state)?  stateUpdated,TResult? Function( String sessionId,  int index,  String masked)?  wordHint,TResult? Function( String sessionId,  int index,  String phonetic,  String? phoneticSource,  bool? phoneticEstimated)?  wordPhonetic,TResult? Function( String sessionId,  int index,  String word,  String meaning,  HistoryItem? historyItem)?  wordSolved,TResult? Function( String word,  bool isCorrect,  String? message)?  guessAttempt,TResult? Function( String senderUid,  String text,  String? senderName,  String? avatar)?  chat,TResult? Function( String reason)?  chatBlocked,TResult? Function( String reason)?  proposalClosed,TResult? Function( String sessionId,  PracticeResult? reward)?  sessionReward,TResult? Function( MatchInfo matchInfo)?  matched,TResult? Function( String topicId)?  queued,TResult? Function( String uid,  String name)?  playerLeft,TResult? Function( SocketConnectionState state)?  connection,TResult? Function( String message)?  error,}) {final _that = this;
 switch (_that) {
 case _GameEventConnected() when connected != null:
 return connected(_that.myUid,_that.state);case _GameEventStateUpdated() when stateUpdated != null:
@@ -240,7 +245,8 @@ return chatBlocked(_that.reason);case _GameEventProposalClosed() when proposalCl
 return proposalClosed(_that.reason);case _GameEventSessionReward() when sessionReward != null:
 return sessionReward(_that.sessionId,_that.reward);case _GameEventMatched() when matched != null:
 return matched(_that.matchInfo);case _GameEventQueued() when queued != null:
-return queued(_that.topicId);case _GameEventConnection() when connection != null:
+return queued(_that.topicId);case _GameEventPlayerLeft() when playerLeft != null:
+return playerLeft(_that.uid,_that.name);case _GameEventConnection() when connection != null:
 return connection(_that.state);case _GameEventError() when error != null:
 return error(_that.message);case _:
   return null;
@@ -1144,6 +1150,76 @@ class __$GameEventQueuedCopyWithImpl<$Res>
 @pragma('vm:prefer-inline') $Res call({Object? topicId = null,}) {
   return _then(_GameEventQueued(
 topicId: null == topicId ? _self.topicId : topicId // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
+
+/// @nodoc
+
+
+class _GameEventPlayerLeft implements GameEvent {
+  const _GameEventPlayerLeft({required this.uid, required this.name});
+  
+
+ final  String uid;
+ final  String name;
+
+/// Create a copy of GameEvent
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$GameEventPlayerLeftCopyWith<_GameEventPlayerLeft> get copyWith => __$GameEventPlayerLeftCopyWithImpl<_GameEventPlayerLeft>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _GameEventPlayerLeft&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.name, name) || other.name == name));
+}
+
+
+@override
+int get hashCode {
+    return Object.hash(runtimeType,uid,name);
+}
+
+@override
+String toString() {
+    return 'GameEvent.playerLeft(uid: $uid, name: $name)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$GameEventPlayerLeftCopyWith<$Res> implements $GameEventCopyWith<$Res> {
+  factory _$GameEventPlayerLeftCopyWith(_GameEventPlayerLeft value, $Res Function(_GameEventPlayerLeft) _then) = __$GameEventPlayerLeftCopyWithImpl;
+@useResult
+$Res call({
+ String uid, String name
+});
+
+
+
+
+}
+/// @nodoc
+class __$GameEventPlayerLeftCopyWithImpl<$Res>
+    implements _$GameEventPlayerLeftCopyWith<$Res> {
+  __$GameEventPlayerLeftCopyWithImpl(this._self, this._then);
+
+  final _GameEventPlayerLeft _self;
+  final $Res Function(_GameEventPlayerLeft) _then;
+
+/// Create a copy of GameEvent
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? uid = null,Object? name = null,}) {
+  return _then(_GameEventPlayerLeft(
+uid: null == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
+as String,name: null == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String,
   ));
 }

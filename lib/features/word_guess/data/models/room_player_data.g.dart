@@ -17,6 +17,7 @@ _RoomPlayerData _$RoomPlayerDataFromJson(Map<String, dynamic> json) =>
       isHost: json['isHost'] as bool?,
       ended: json['ended'] as bool?,
       playerIndex: (json['playerIndex'] as num?)?.toInt(),
+      online: json['online'] as bool?,
     );
 
 Map<String, dynamic> _$RoomPlayerDataToJson(_RoomPlayerData instance) =>
@@ -30,4 +31,5 @@ Map<String, dynamic> _$RoomPlayerDataToJson(_RoomPlayerData instance) =>
       'isHost': instance.isHost,
       'ended': instance.ended,
       'playerIndex': instance.playerIndex,
+      'online': instance.online,
     };

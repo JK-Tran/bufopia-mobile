@@ -65,6 +65,7 @@ class WordGuessTileList extends StatelessWidget {
                 return Padding(
                   padding: EdgeInsets.symmetric(horizontal: spacing / 2),
                   child: WordGuessTileItem(
+                    key: ValueKey('tile_${index}_${letter}_$isRevealed'),
                     letter: isRevealed ? letter : '-',
                     isRevealed: isRevealed,
                     width: boxWidth,

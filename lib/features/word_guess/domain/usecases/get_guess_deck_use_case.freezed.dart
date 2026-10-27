@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$GetGuessDeckInput {
 
- String get topic; String? get uid; int get count; String? get recent;
+ String get topic; String? get uid; int get count; String? get recent; String? get difficulty;
 /// Create a copy of GetGuessDeckInput
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -27,20 +27,20 @@ $GetGuessDeckInputCopyWith<GetGuessDeckInput> get copyWith => _$GetGuessDeckInpu
 @override
 bool operator ==(Object other) {
   final _this = this as GetGuessDeckInput;
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is GetGuessDeckInput&&(identical(other.topic, _this.topic) || other.topic == _this.topic)&&(identical(other.uid, _this.uid) || other.uid == _this.uid)&&(identical(other.count, _this.count) || other.count == _this.count)&&(identical(other.recent, _this.recent) || other.recent == _this.recent));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is GetGuessDeckInput&&(identical(other.topic, _this.topic) || other.topic == _this.topic)&&(identical(other.uid, _this.uid) || other.uid == _this.uid)&&(identical(other.count, _this.count) || other.count == _this.count)&&(identical(other.recent, _this.recent) || other.recent == _this.recent)&&(identical(other.difficulty, _this.difficulty) || other.difficulty == _this.difficulty));
 }
 
 
 @override
 int get hashCode {
   final _this = this as GetGuessDeckInput;
-  return Object.hash(runtimeType,_this.topic,_this.uid,_this.count,_this.recent);
+  return Object.hash(runtimeType,_this.topic,_this.uid,_this.count,_this.recent,_this.difficulty);
 }
 
 @override
 String toString() {
   final _this = this as GetGuessDeckInput;
-  return 'GetGuessDeckInput(topic: ${_this.topic}, uid: ${_this.uid}, count: ${_this.count}, recent: ${_this.recent})';
+  return 'GetGuessDeckInput(topic: ${_this.topic}, uid: ${_this.uid}, count: ${_this.count}, recent: ${_this.recent}, difficulty: ${_this.difficulty})';
 }
 
 
@@ -51,7 +51,7 @@ abstract mixin class $GetGuessDeckInputCopyWith<$Res>  {
   factory $GetGuessDeckInputCopyWith(GetGuessDeckInput value, $Res Function(GetGuessDeckInput) _then) = _$GetGuessDeckInputCopyWithImpl;
 @useResult
 $Res call({
- String topic, String? uid, int count, String? recent
+ String topic, String? uid, int count, String? recent, String? difficulty
 });
 
 
@@ -68,12 +68,13 @@ class _$GetGuessDeckInputCopyWithImpl<$Res>
 
 /// Create a copy of GetGuessDeckInput
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? topic = null,Object? uid = freezed,Object? count = null,Object? recent = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? topic = null,Object? uid = freezed,Object? count = null,Object? recent = freezed,Object? difficulty = freezed,}) {
   return _then(GetGuessDeckInput(
 topic: null == topic ? _self.topic : topic // ignore: cast_nullable_to_non_nullable
 as String,uid: freezed == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
 as String?,count: null == count ? _self.count : count // ignore: cast_nullable_to_non_nullable
 as int,recent: freezed == recent ? _self.recent : recent // ignore: cast_nullable_to_non_nullable
+as String?,difficulty: freezed == difficulty ? _self.difficulty : difficulty // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }
@@ -159,10 +160,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String topic,  String? uid,  int count,  String? recent)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String topic,  String? uid,  int count,  String? recent,  String? difficulty)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _GetGuessDeckInput() when $default != null:
-return $default(_that.topic,_that.uid,_that.count,_that.recent);case _:
+return $default(_that.topic,_that.uid,_that.count,_that.recent,_that.difficulty);case _:
   return orElse();
 
 }
@@ -180,10 +181,10 @@ return $default(_that.topic,_that.uid,_that.count,_that.recent);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String topic,  String? uid,  int count,  String? recent)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String topic,  String? uid,  int count,  String? recent,  String? difficulty)  $default,) {final _that = this;
 switch (_that) {
 case _GetGuessDeckInput():
-return $default(_that.topic,_that.uid,_that.count,_that.recent);case _:
+return $default(_that.topic,_that.uid,_that.count,_that.recent,_that.difficulty);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -200,10 +201,10 @@ return $default(_that.topic,_that.uid,_that.count,_that.recent);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String topic,  String? uid,  int count,  String? recent)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String topic,  String? uid,  int count,  String? recent,  String? difficulty)?  $default,) {final _that = this;
 switch (_that) {
 case _GetGuessDeckInput() when $default != null:
-return $default(_that.topic,_that.uid,_that.count,_that.recent);case _:
+return $default(_that.topic,_that.uid,_that.count,_that.recent,_that.difficulty);case _:
   return null;
 
 }
@@ -215,13 +216,14 @@ return $default(_that.topic,_that.uid,_that.count,_that.recent);case _:
 
 
 class _GetGuessDeckInput extends GetGuessDeckInput {
-  const _GetGuessDeckInput({required this.topic, this.uid, this.count = 20, this.recent}): super._();
+  const _GetGuessDeckInput({required this.topic, this.uid, this.count = 20, this.recent, this.difficulty}): super._();
   
 
 @override final  String topic;
 @override final  String? uid;
 @override@JsonKey() final  int count;
 @override final  String? recent;
+@override final  String? difficulty;
 
 /// Create a copy of GetGuessDeckInput
 /// with the given fields replaced by the non-null parameter values.
@@ -233,18 +235,18 @@ _$GetGuessDeckInputCopyWith<_GetGuessDeckInput> get copyWith => __$GetGuessDeckI
 
 @override
 bool operator ==(Object other) {
-    return identical(this, other) || (other.runtimeType == runtimeType&&other is _GetGuessDeckInput&&(identical(other.topic, topic) || other.topic == topic)&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.count, count) || other.count == count)&&(identical(other.recent, recent) || other.recent == recent));
+    return identical(this, other) || (other.runtimeType == runtimeType&&other is _GetGuessDeckInput&&(identical(other.topic, topic) || other.topic == topic)&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.count, count) || other.count == count)&&(identical(other.recent, recent) || other.recent == recent)&&(identical(other.difficulty, difficulty) || other.difficulty == difficulty));
 }
 
 
 @override
 int get hashCode {
-    return Object.hash(runtimeType,topic,uid,count,recent);
+    return Object.hash(runtimeType,topic,uid,count,recent,difficulty);
 }
 
 @override
 String toString() {
-    return 'GetGuessDeckInput(topic: $topic, uid: $uid, count: $count, recent: $recent)';
+    return 'GetGuessDeckInput(topic: $topic, uid: $uid, count: $count, recent: $recent, difficulty: $difficulty)';
 }
 
 
@@ -255,7 +257,7 @@ abstract mixin class _$GetGuessDeckInputCopyWith<$Res> implements $GetGuessDeckI
   factory _$GetGuessDeckInputCopyWith(_GetGuessDeckInput value, $Res Function(_GetGuessDeckInput) _then) = __$GetGuessDeckInputCopyWithImpl;
 @override @useResult
 $Res call({
- String topic, String? uid, int count, String? recent
+ String topic, String? uid, int count, String? recent, String? difficulty
 });
 
 
@@ -272,12 +274,13 @@ class __$GetGuessDeckInputCopyWithImpl<$Res>
 
 /// Create a copy of GetGuessDeckInput
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? topic = null,Object? uid = freezed,Object? count = null,Object? recent = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? topic = null,Object? uid = freezed,Object? count = null,Object? recent = freezed,Object? difficulty = freezed,}) {
   return _then(_GetGuessDeckInput(
 topic: null == topic ? _self.topic : topic // ignore: cast_nullable_to_non_nullable
 as String,uid: freezed == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
 as String?,count: null == count ? _self.count : count // ignore: cast_nullable_to_non_nullable
 as int,recent: freezed == recent ? _self.recent : recent // ignore: cast_nullable_to_non_nullable
+as String?,difficulty: freezed == difficulty ? _self.difficulty : difficulty // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }

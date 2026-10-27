@@ -8,6 +8,7 @@ abstract class WordGuessEvent with _$WordGuessEvent {
     required String topic,
     String? uid,
     @Default(20) int count,
+    String? difficulty,
   }) = _StartPractice;
 
   /// Nộp đáp án trong chế độ Solo
@@ -27,6 +28,7 @@ abstract class WordGuessEvent with _$WordGuessEvent {
     required String topic,
     String? avatar,
     String? token,
+    String? difficulty,
   }) = _StartOnlineMatchmake;
 
   /// Hủy tìm trận ngẫu nhiên
@@ -39,6 +41,8 @@ abstract class WordGuessEvent with _$WordGuessEvent {
     required String name,
     String? avatar,
     String? token,
+    String? difficulty,
+    @Default(false) bool isMatchmaking,
   }) = _JoinRoom;
 
   /// Sẵn sàng / Hủy sẵn sàng ở sảnh chờ
@@ -76,6 +80,10 @@ abstract class WordGuessEvent with _$WordGuessEvent {
 
   /// Rời phòng hoặc thoát trận
   const factory WordGuessEvent.leaveGame() = _LeaveGame;
+
+  /// Chuyển từ phòng nhiều người sang tự chơi 1 mình (Solo Practice)
+  /// khi đối thủ thoát phòng
+  const factory WordGuessEvent.switchToSolo() = _SwitchToSolo;
 
   // ── 3. Tương tác UI & Bộ đếm thời gian ──────────────────────────
   /// Thay đổi ký tự đang nhập trong ô đoán từ

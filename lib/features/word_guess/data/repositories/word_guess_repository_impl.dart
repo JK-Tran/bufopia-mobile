@@ -44,12 +44,14 @@ class WordGuessRepositoryImpl implements WordGuessRepository {
     String? uid,
     int count = 20,
     String? recent,
+    String? difficulty,
   }) async {
     final response = await _dataSource.getDeck(
       topic: topic,
       uid: uid,
       count: count,
       recent: recent,
+      difficulty: difficulty,
     );
     return _deckMapper.mapToEntity(response);
   }
@@ -131,6 +133,7 @@ class WordGuessRepositoryImpl implements WordGuessRepository {
     required String topic,
     String? token,
     String? avatar,
+    String? difficulty,
   }) {
     return _socketService.connectMatchmake(
       uid: uid,
@@ -138,6 +141,7 @@ class WordGuessRepositoryImpl implements WordGuessRepository {
       topic: topic,
       token: token,
       avatar: avatar,
+      difficulty: difficulty,
     );
   }
 
@@ -148,6 +152,9 @@ class WordGuessRepositoryImpl implements WordGuessRepository {
     required String name,
     String? token,
     String? avatar,
+    String? topic,
+    String? difficulty,
+    bool isMatchmaking = false,
   }) {
     return _socketService.connectRoom(
       roomCode: roomCode,
@@ -155,6 +162,9 @@ class WordGuessRepositoryImpl implements WordGuessRepository {
       name: name,
       token: token,
       avatar: avatar,
+      topic: topic,
+      difficulty: difficulty,
+      isMatchmaking: isMatchmaking,
     );
   }
 
@@ -338,6 +348,12 @@ class WordGuessRepositoryImpl implements WordGuessRepository {
             game: 'guess',
           ),
         ),
+      );
+    }
+    if (event is RoomPlayerLeftEvent) {
+      return GameEvent.playerLeft(
+        uid: event.uid ?? '',
+        name: event.name ?? 'Đối thủ',
       );
     }
     if (event is SocketConnectionChangedEvent) {

@@ -1,7 +1,7 @@
 import 'dart:async';
 
+import 'package:bufopia/components/app_avatar.dart';
 import 'package:bufopia/components/app_button.dart';
-import 'package:bufopia/components/app_game_dialog.dart';
 import 'package:bufopia/components/app_radar_scanner.dart';
 import 'package:bufopia/components/app_toast.dart';
 import 'package:bufopia/core/constants/app_text.dart';
@@ -27,10 +27,12 @@ class WordGuessMatchmakingDialog extends StatefulWidget {
   const WordGuessMatchmakingDialog({
     required this.onMatched,
     required this.topic,
+    this.difficulty = 'medium',
     super.key,
   });
 
   final String topic;
+  final String difficulty;
   final void Function(
     String roomCode,
     String rivalName,
@@ -47,12 +49,14 @@ class WordGuessMatchmakingDialog extends StatefulWidget {
       String rivalAvatar,
     )
     onMatched,
+    String difficulty = 'medium',
   }) {
     return showDialog<void>(
       context: context,
       barrierColor: AppColors.black.withValues(alpha: 0.55),
       builder: (_) => WordGuessMatchmakingDialog(
         topic: topic,
+        difficulty: difficulty,
         onMatched: onMatched,
       ),
     );
@@ -93,7 +97,11 @@ class _WordGuessMatchmakingDialogState extends State<WordGuessMatchmakingDialog>
     );
 
     _startTimer();
-    _connectMatchmake();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _connectMatchmake();
+      }
+    });
   }
 
   void _startTimer() {
@@ -121,9 +129,11 @@ class _WordGuessMatchmakingDialogState extends State<WordGuessMatchmakingDialog>
       _handleSocketEvent,
       onError: (Object error) {
         if (!mounted) return;
-        setState(() => _errorMessage = context.l10n.connectionError(
-          error.toString(),
-        ));
+        setState(
+          () => _errorMessage = context.l10n.connectionError(
+            error.toString(),
+          ),
+        );
       },
     );
 
@@ -133,6 +143,7 @@ class _WordGuessMatchmakingDialogState extends State<WordGuessMatchmakingDialog>
       topic: widget.topic,
       token: token,
       avatar: avatar,
+      difficulty: widget.difficulty,
     );
   }
 
@@ -147,7 +158,7 @@ class _WordGuessMatchmakingDialogState extends State<WordGuessMatchmakingDialog>
       });
       SoundManager.playWin();
 
-      Future<void>.delayed(const Duration(milliseconds: 1200), () {
+      Future<void>.delayed(const Duration(milliseconds: 2200), () {
         if (!mounted) return;
         Navigator.of(context).pop();
         widget.onMatched(
@@ -188,69 +199,490 @@ class _WordGuessMatchmakingDialogState extends State<WordGuessMatchmakingDialog>
   Widget build(BuildContext context) {
     final isPaper = context.select<AppBloc, bool>((b) => b.state.isPaperTheme);
     final user = context.select<AuthBloc, User?>((b) => b.state.currentUser);
-    final l10n = context.l10n;
 
-    return AppGameDialog(
-      title: l10n.findMatchOnline,
-      icon: Icons.sensors_rounded,
-      maxWidth: 390.w,
-      maxHeight: 246.h,
-      padding: EdgeInsets.symmetric(horizontal: 14.w, vertical: 8.h),
-      backgroundColor: isPaper ? AppColors.paperCardBg : AppColors.white,
-      borderColor: isPaper ? AppColors.paperBorder : AppColors.blueLight,
-      headerGradientColors: isPaper
-          ? const [
-              AppColors.paperGreen,
-              AppColors.paperGreenDark,
-            ]
-          : const [
-              AppColors.blueLight,
-              AppColors.blueDark,
-            ],
-      boxShadow: isPaper
-          ? [
-              BoxShadow(
-                color: AppColors.paperExtrusion,
-                offset: Offset(0, 4.h),
-              ),
-              BoxShadow(
-                color: AppColors.black.withValues(alpha: 0.12),
-                blurRadius: 16.r,
-                offset: Offset(0, 8.h),
-              ),
-            ]
-          : null,
-      headerTrailing: Container(
-        padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
-        decoration: BoxDecoration(
-          color: isPaper
-              ? AppColors.paperCardBg.withValues(alpha: 0.25)
-              : AppColors.white.withValues(alpha: 0.2),
-          borderRadius: BorderRadius.circular(10.r),
-          border: Border.all(
-            color: isPaper
-                ? AppColors.paperCardBg.withValues(alpha: 0.4)
-                : AppColors.white.withValues(alpha: 0.35),
+    return Dialog(
+      backgroundColor: Colors.transparent,
+      insetPadding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 16.h),
+      child: Center(
+        child: ConstrainedBox(
+          constraints: BoxConstraints(maxWidth: 350.w),
+          child: AnimatedSwitcher(
+            duration: const Duration(milliseconds: 280),
+            child: _isMatched
+                ? _buildMatchedVsView(context, isPaper, user)
+                : _buildSearchingView(context, isPaper, user),
           ),
         ),
-        child: AppText.c1(
-          l10n.oneVsOneRandom,
-          fontWeight: FontWeight.w700,
-          fontSize: 10.sp,
-          color: AppColors.white,
-        ),
       ),
-      footerText: null,
-      onClose: _onCancel,
+    );
+  }
+
+  /// ── GIAO DIỆN TÌM TRẬN THÀNH CÔNG (MATCHED VS SCREEN GIỐNG WEB 100%) ─────
+  Widget _buildMatchedVsView(
+    BuildContext context,
+    bool isPaper,
+    User? user,
+  ) {
+    final l10n = context.l10n;
+    final myName = (user?.displayName.isNotEmpty == true)
+        ? user!.displayName
+        : l10n.player;
+    final rivalName = (_matchedEvent?.rivalName.isNotEmpty == true)
+        ? _matchedEvent!.rivalName
+        : l10n.humanOpponent;
+
+    return Container(
+      key: const ValueKey('matched_vs_view'),
+      padding: EdgeInsets.fromLTRB(18.w, 18.h, 18.w, 18.h),
+      decoration: BoxDecoration(
+        color: isPaper ? AppColors.paperCardBg : AppColors.white,
+        borderRadius: BorderRadius.circular(22.r),
+        border: Border.all(
+          color: isPaper ? AppColors.paperBorder : AppColors.classicBorder,
+          width: 1.5.w,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: isPaper ? AppColors.paperExtrusion : AppColors.grayExtrusion,
+            offset: Offset(0, 4.h),
+          ),
+          BoxShadow(
+            color: AppColors.black.withValues(alpha: 0.12),
+            blurRadius: 16.r,
+            offset: Offset(0, 8.h),
+          ),
+        ],
+      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          // ── 1. Status Row: Đang tìm đối thủ + Bộ đếm giờ ─────────────
-          _buildStatusRow(context, isPaper),
+          // 1. Huy hiệu "🗡️ ĐÃ TÌM THẤY ĐỐI THỦ"
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 4.h),
+            decoration: BoxDecoration(
+              color: AppColors.levelBadgeBg,
+              borderRadius: BorderRadius.circular(16.r),
+              border: Border.all(
+                color: AppColors.levelBadgeBorder,
+                width: 1.w,
+              ),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.sports_kabaddi_rounded,
+                  size: 14.r,
+                  color: AppColors.levelBadgeText,
+                ),
+                SizedBox(width: 4.w),
+                AppText.c1(
+                  l10n.matchedOpponentFound,
+                  fontSize: 10.sp,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.levelBadgeText,
+                ),
+              ],
+            ),
+          ),
 
-          // Thông báo lỗi nếu có
-          if (_errorMessage != null && !_isMatched) ...[
-            SizedBox(height: 4.h),
+          SizedBox(height: 10.h),
+
+          // 2. Tiêu đề "SẴN SÀNG TRANH TÀI"
+          AppText.t2(
+            l10n.readyToCompete,
+            fontSize: 18.sp,
+            fontWeight: FontWeight.w700,
+            color: isPaper ? AppColors.paperTextDark : AppColors.grayDark,
+            letterSpacing: 0.5,
+          ),
+
+          SizedBox(height: 18.h),
+
+          // 3. Đấu trường VS Arena: Bạn vs Đối thủ
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Cột bên trái: Người chơi (Bạn)
+              Expanded(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(2.r),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: AppColors.playerPink,
+                          width: 3.w,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.playerPink.withValues(alpha: 0.25),
+                            blurRadius: 8.r,
+                            offset: Offset(0, 3.h),
+                          ),
+                        ],
+                      ),
+                      child: AppAvatar(
+                        avatarUrl: user?.avatarUrl,
+                        size: 64.r,
+                      ),
+                    ),
+                    SizedBox(height: 8.h),
+                    AppText.b2(
+                      myName,
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w700,
+                      color: isPaper
+                          ? AppColors.paperTextDark
+                          : AppColors.grayDark,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    SizedBox(height: 4.h),
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 10.w,
+                        vertical: 2.h,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.playerPinkTagBg,
+                        borderRadius: BorderRadius.circular(6.r),
+                        border: Border.all(
+                          color: AppColors.playerPinkBorder,
+                          width: 1.w,
+                        ),
+                      ),
+                      child: AppText.c1(
+                        l10n.you,
+                        fontSize: 10.sp,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.playerPinkDark,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              // Huy hiệu tròn "VS" rực rỡ ở chính giữa
+              Container(
+                width: 38.r,
+                height: 38.r,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  gradient: const LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: [
+                      AppColors.orange,
+                      AppColors.red,
+                    ],
+                  ),
+                  border: Border.all(
+                    color: AppColors.white,
+                    width: 2.w,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppColors.redDark,
+                      offset: Offset(0, 2.h),
+                    ),
+                  ],
+                ),
+                child: Center(
+                  child: AppText.t3(
+                    'VS',
+                    color: AppColors.white,
+                    fontSize: 14.sp,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+
+              // Cột bên phải: Đối thủ
+              Expanded(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.all(2.r),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        border: Border.all(
+                          color: AppColors.playerBlue,
+                          width: 3.w,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.playerBlue.withValues(alpha: 0.25),
+                            blurRadius: 8.r,
+                            offset: Offset(0, 3.h),
+                          ),
+                        ],
+                      ),
+                      child: AppAvatar(
+                        avatarUrl: _matchedEvent?.rivalAvatar,
+                        size: 64.r,
+                      ),
+                    ),
+                    SizedBox(height: 8.h),
+                    AppText.b2(
+                      rivalName,
+                      fontSize: 14.sp,
+                      fontWeight: FontWeight.w700,
+                      color: isPaper
+                          ? AppColors.paperTextDark
+                          : AppColors.grayDark,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                    SizedBox(height: 4.h),
+                    Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 10.w,
+                        vertical: 2.h,
+                      ),
+                      decoration: BoxDecoration(
+                        color: AppColors.playerBlueTagBg,
+                        borderRadius: BorderRadius.circular(6.r),
+                        border: Border.all(
+                          color: AppColors.playerBlueBorder,
+                          width: 1.w,
+                        ),
+                      ),
+                      child: AppText.c1(
+                        l10n.humanOpponent,
+                        fontSize: 10.sp,
+                        fontWeight: FontWeight.w700,
+                        color: AppColors.playerBlueDark,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+
+          SizedBox(height: 18.h),
+
+          // 4. Trạng thái "Đang chờ đối thủ sẵn sàng..."
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                width: 14.r,
+                height: 14.r,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2.w,
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    isPaper
+                        ? AppColors.paperGreenDark
+                        : AppColors.modeBotButtonDark,
+                  ),
+                ),
+              ),
+              SizedBox(width: 8.w),
+              AppText.c1(
+                l10n.waitingForOpponentReadyDesc,
+                fontSize: 12.sp,
+                fontWeight: FontWeight.w600,
+                color: isPaper ? AppColors.paperGreenDark : AppColors.grayDark,
+              ),
+            ],
+          ),
+
+          SizedBox(height: 16.h),
+
+          // 5. Nút "Về trang chủ"
+          AppButton(
+            text: l10n.home,
+            height: 32.h,
+            width: 120.w,
+            fontSize: 12.sp,
+            backgroundColor: isPaper
+                ? AppColors.feedbackWarmBeigeDark
+                : AppColors.white,
+            borderColor: isPaper
+                ? AppColors.feedbackSandBorder
+                : AppColors.grayLight,
+            extrusionColor: isPaper
+                ? AppColors.feedbackSandExtrusion
+                : AppColors.grayExtrusion,
+            textColor: isPaper
+                ? AppColors.feedbackTextBrown
+                : AppColors.grayDark,
+            extrusionHeight: 2.h,
+            borderRadius: BorderRadius.circular(8.r),
+            onPressed: _onCancel,
+          ),
+        ],
+      ),
+    );
+  }
+
+  /// ── GIAO DIỆN QUÉT RADAR ĐANG TÌM TRẬN ────────────────────────────────────
+  Widget _buildSearchingView(
+    BuildContext context,
+    bool isPaper,
+    User? user,
+  ) {
+    final l10n = context.l10n;
+
+    return Container(
+      key: const ValueKey('searching_view'),
+      padding: EdgeInsets.fromLTRB(16.w, 14.h, 16.w, 16.h),
+      decoration: BoxDecoration(
+        color: isPaper ? AppColors.paperCardBg : AppColors.white,
+        borderRadius: BorderRadius.circular(22.r),
+        border: Border.all(
+          color: isPaper ? AppColors.paperBorder : AppColors.classicBorder,
+          width: 1.5.w,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: isPaper ? AppColors.paperExtrusion : AppColors.grayExtrusion,
+            offset: Offset(0, 4.h),
+          ),
+          BoxShadow(
+            color: AppColors.black.withValues(alpha: 0.12),
+            blurRadius: 16.r,
+            offset: Offset(0, 8.h),
+          ),
+        ],
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // 1. Header Bar: Icon, Tiêu đề, Timer, Nút đóng X
+          Row(
+            children: [
+              Container(
+                padding: EdgeInsets.all(4.r),
+                decoration: BoxDecoration(
+                  color: isPaper
+                      ? AppColors.paperGreen.withValues(alpha: 0.12)
+                      : AppColors.sky.withValues(alpha: 0.12),
+                  borderRadius: BorderRadius.circular(8.r),
+                ),
+                child: Icon(
+                  Icons.sensors_rounded,
+                  size: 16.r,
+                  color: isPaper ? AppColors.paperGreenDark : AppColors.skyDark,
+                ),
+              ),
+              SizedBox(width: 8.w),
+              Expanded(
+                child: AppText.t3(
+                  l10n.findMatchOnline,
+                  fontSize: 14.sp,
+                  fontWeight: FontWeight.w700,
+                  color: isPaper ? AppColors.paperTextDark : AppColors.grayDark,
+                ),
+              ),
+              // Timer Capsule
+              Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 8.w,
+                  vertical: 2.h,
+                ),
+                decoration: BoxDecoration(
+                  color: isPaper
+                      ? AppColors.paperSurface
+                      : AppColors.skySurface,
+                  borderRadius: BorderRadius.circular(12.r),
+                  border: Border.all(
+                    color: isPaper
+                        ? AppColors.paperBorder
+                        : AppColors.skyBorder,
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.timer_outlined,
+                      size: 12.r,
+                      color: isPaper
+                          ? AppColors.paperTextDark
+                          : AppColors.skyDark,
+                    ),
+                    SizedBox(width: 4.w),
+                    AppText.c1(
+                      StringUtils.formatDuration(_secondsElapsed),
+                      fontWeight: FontWeight.w700,
+                      fontSize: 10.sp,
+                      color: isPaper
+                          ? AppColors.paperTextDark
+                          : AppColors.skyDark,
+                    ),
+                  ],
+                ),
+              ),
+              SizedBox(width: 6.w),
+              GestureDetector(
+                onTap: _onCancel,
+                child: Container(
+                  padding: EdgeInsets.all(4.r),
+                  decoration: BoxDecoration(
+                    color: AppColors.dialogCloseBg,
+                    shape: BoxShape.circle,
+                    border: Border.all(color: AppColors.dialogCloseBorder),
+                  ),
+                  child: Icon(
+                    Icons.close_rounded,
+                    size: 14.r,
+                    color: AppColors.dialogCloseIcon,
+                  ),
+                ),
+              ),
+            ],
+          ),
+
+          SizedBox(height: 10.h),
+
+          // 2. Chấm xanh nhấp nháy + Thông điệp đang tìm kiếm
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              ScaleTransition(
+                scale: _pulseAnimation,
+                child: Container(
+                  width: 8.r,
+                  height: 8.r,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: isPaper
+                        ? AppColors.paperGreen
+                        : AppColors.radarGreenLight,
+                    boxShadow: [
+                      BoxShadow(
+                        color:
+                            (isPaper
+                                    ? AppColors.paperGreen
+                                    : AppColors.radarGreenLight)
+                                .withValues(alpha: 0.6),
+                        blurRadius: 4.r,
+                        spreadRadius: 1.r,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              SizedBox(width: 6.w),
+              AppText.c1(
+                widget.topic != 'auto'
+                    ? l10n.findingTopic(widget.topic.toUpperCase())
+                    : l10n.findingOpponent,
+                fontWeight: FontWeight.w600,
+                fontSize: 12.sp,
+                color: isPaper ? AppColors.paperGreenDark : AppColors.grayDark,
+              ),
+            ],
+          ),
+
+          if (_errorMessage != null) ...[
+            SizedBox(height: 6.h),
             Container(
               padding: EdgeInsets.symmetric(
                 horizontal: 8.w,
@@ -270,166 +702,37 @@ class _WordGuessMatchmakingDialogState extends State<WordGuessMatchmakingDialog>
             ),
           ],
 
-          SizedBox(height: 8.h),
+          SizedBox(height: 12.h),
 
-          // ── 2. Radar Scanner Box ────────────────────────────────────
+          // 3. Radar Scanner
           AppRadarScanner(
             avatarUrl: user?.avatarUrl,
-            isMatched: _isMatched,
+            isMatched: false,
             isPaperTheme: isPaper,
-            rivalAvatar: _matchedEvent?.rivalAvatar,
+            size: 86.r,
           ),
 
-          SizedBox(height: 10.h),
+          SizedBox(height: 14.h),
 
-          // ── 3. Nút hành động: HỦY TÌM TRẬN hoặc VÀO TRẬN ─────────────
-          _buildActionButton(context, isPaper),
+          // 4. Nút HỦY TÌM TRẬN
+          AppButton(
+            height: 30.h,
+            width: 136.w,
+            fontSize: 12.sp,
+            onPressed: _onCancel,
+            backgroundColor: AppColors.dialogCloseBg,
+            borderColor: AppColors.dialogCloseBorder,
+            extrusionColor: AppColors.dialogCloseExtrusion,
+            textColor: AppColors.dialogCloseIcon,
+            icon: Icon(
+              Icons.close_rounded,
+              size: 14.r,
+              color: AppColors.dialogCloseIcon,
+            ),
+            text: l10n.cancelMatchmaking,
+          ),
         ],
       ),
     );
-  }
-
-  /// Chấm xanh nhấp nháy + "ĐANG TÌM ĐỐI THỦ..." + Capsule đếm giờ
-  Widget _buildStatusRow(BuildContext context, bool isPaper) {
-    final l10n = context.l10n;
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ScaleTransition(
-              scale: _pulseAnimation,
-              child: Container(
-                width: 8.r,
-                height: 8.r,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: _isMatched
-                      ? AppColors.radarGreen
-                      : (isPaper
-                            ? AppColors.paperGreen
-                            : AppColors.radarGreenLight),
-                  boxShadow: [
-                    BoxShadow(
-                      color:
-                          (isPaper
-                                  ? AppColors.paperGreen
-                                  : AppColors.radarGreenLight)
-                              .withValues(alpha: 0.6),
-                      blurRadius: 6.r,
-                      spreadRadius: 1.r,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            SizedBox(width: 8.w),
-            AppText.t3(
-              _isMatched
-                  ? (_matchedEvent != null
-                        ? l10n.opponentFoundRival(
-                            _matchedEvent!.rivalName.toUpperCase(),
-                          )
-                        : l10n.opponentFound)
-                  : (widget.topic != 'auto'
-                        ? l10n.findingTopic(widget.topic.toUpperCase())
-                        : l10n.findingOpponent),
-              fontWeight: FontWeight.w700,
-              fontSize: 12.sp,
-              color: _isMatched
-                  ? AppColors.radarGreen
-                  : (isPaper ? AppColors.paperGreenDark : AppColors.radarGreen),
-            ),
-          ],
-        ),
-
-        // Capsule hiển thị đồng hồ bấm giờ 00:00
-        Container(
-          padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 2.h),
-          decoration: BoxDecoration(
-            color: isPaper ? AppColors.paperSurface : AppColors.skySurface,
-            borderRadius: BorderRadius.circular(12.r),
-            border: Border.all(
-              color: isPaper ? AppColors.paperBorder : AppColors.skyBorder,
-            ),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(
-                Icons.timer_outlined,
-                size: 12.r,
-                color: isPaper ? AppColors.paperTextDark : AppColors.skyDark,
-              ),
-              SizedBox(width: 4.w),
-              AppText.c1(
-                StringUtils.formatDuration(_secondsElapsed),
-                fontWeight: FontWeight.w700,
-                fontSize: 10.sp,
-                color: isPaper ? AppColors.paperTextDark : AppColors.skyDark,
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
-  }
-
-  /// Nút hành động: HỦY TÌM TRẬN hoặc VÀO TRẬN NGAY
-  Widget _buildActionButton(BuildContext context, bool isPaper) {
-    final l10n = context.l10n;
-    if (!_isMatched) {
-      if (isPaper) {
-        return AppButton(
-          height: 28.h,
-          width: 136.w,
-          fontSize: 10.sp,
-          onPressed: _onCancel,
-          backgroundColor: AppColors.dialogCloseBg,
-          borderColor: AppColors.dialogCloseBorder,
-          extrusionColor: AppColors.dialogCloseExtrusion,
-          textColor: AppColors.dialogCloseIcon,
-          icon: Icon(
-            Icons.close_rounded,
-            size: 14.r,
-            color: AppColors.dialogCloseIcon,
-          ),
-          text: l10n.cancelMatchmaking,
-        );
-      }
-      return AppButton.danger(
-        height: 28.h,
-        width: 136.w,
-        fontSize: 10.sp,
-        onPressed: _onCancel,
-        icon: Icon(
-          Icons.close_rounded,
-          size: 14.r,
-          color: AppColors.white,
-        ),
-        text: l10n.cancelMatchmaking,
-      );
-    } else {
-      if (isPaper) {
-        return AppButton(
-          text: l10n.enteringMatch,
-          isLoading: true,
-          height: 28.h,
-          width: 140.w,
-          fontSize: 10.sp,
-          backgroundColor: AppColors.paperGreen,
-          borderColor: AppColors.paperGreenBorder,
-          extrusionColor: AppColors.paperGreenExtrusion,
-        );
-      }
-      return AppButton.success(
-        text: l10n.enteringMatch,
-        isLoading: true,
-        height: 28.h,
-        width: 140.w,
-        fontSize: 10.sp,
-      );
-    }
   }
 }

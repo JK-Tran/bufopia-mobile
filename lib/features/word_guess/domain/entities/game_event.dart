@@ -67,6 +67,11 @@ abstract class GameEvent with _$GameEvent {
 
   const factory GameEvent.queued({required String topicId}) = _GameEventQueued;
 
+  const factory GameEvent.playerLeft({
+    required String uid,
+    required String name,
+  }) = _GameEventPlayerLeft;
+
   const factory GameEvent.connection(SocketConnectionState state) =
       _GameEventConnection;
 

@@ -11,6 +11,9 @@ class ConnectGuessRoomInput extends BaseInput {
     required this.name,
     this.token,
     this.avatar,
+    this.topic,
+    this.difficulty,
+    this.isMatchmaking = false,
   });
 
   final String roomCode;
@@ -18,6 +21,9 @@ class ConnectGuessRoomInput extends BaseInput {
   final String name;
   final String? token;
   final String? avatar;
+  final String? topic;
+  final String? difficulty;
+  final bool isMatchmaking;
 }
 
 @lazySingleton
@@ -35,6 +41,9 @@ class ConnectGuessRoomUseCase
       name: input.name,
       token: input.token,
       avatar: input.avatar,
+      topic: input.topic,
+      difficulty: input.difficulty,
+      isMatchmaking: input.isMatchmaking,
     );
     return const EmptyOutput();
   }

@@ -72,19 +72,41 @@ class WordGuessBody extends StatelessWidget {
       currentRound = state.currentQuestionIndex + 1;
       foundCount = state.practiceCorrectCount;
     } else {
+      final isRoundResult = state.gameState.isRoundResult ||
+          state.solvedBannerWord != null ||
+          state.isDelayingNextRound;
       final wordInfo = state.gameState.wordInfo;
-      maskedWord = wordInfo?.masked ?? '';
-      viMeaning = wordInfo?.vi ?? '';
+      final targetSolvedWord = state.solvedBannerWord ??
+          state.gameState.roundResultFullWord ??
+          wordInfo?.en;
+
+      // Khi ở round_result hoặc có người giải đúng (từ word_solved / result.en): hiển thị ngay từ đầy đủ
+      if (isRoundResult &&
+          targetSolvedWord != null &&
+          targetSolvedWord.isNotEmpty) {
+        maskedWord = targetSolvedWord.toUpperCase();
+        wordEn = targetSolvedWord;
+      } else {
+        maskedWord = wordInfo?.masked ?? '';
+        wordEn = wordInfo?.en;
+      }
+
+      viMeaning = (isRoundResult &&
+              state.gameState.roundResultMeaning?.isNotEmpty == true)
+          ? state.gameState.roundResultMeaning!
+          : (wordInfo?.vi ?? '');
       phonetic = wordInfo?.phonetic.isNotEmpty == true
           ? wordInfo!.phonetic
           : null;
-      wordEn = wordInfo?.en;
-      wordLength = wordInfo?.length ?? wordInfo?.en?.length ?? 0;
+      wordLength = wordInfo?.length ??
+          wordEn?.length ??
+          maskedWord.replaceAll(' ', '').length;
       currentRound = state.gameState.currentRound;
       foundCount = state.gameState.totalWordsFound;
     }
 
     final isKeyboardOpen = MediaQuery.of(context).viewInsets.bottom > 0;
+    final isLobby = !isSolo && state.gameState.status == 'lobby';
     final boardBg = isPaper ? AppColors.paperBackground : AppColors.white;
     final boardBorder = isPaper
         ? AppColors.paperBorder
@@ -144,101 +166,109 @@ class WordGuessBody extends StatelessWidget {
               child: Center(
                 child: ConstrainedBox(
                   constraints: BoxConstraints(maxWidth: 580.w),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: boardBg,
-                      borderRadius: BorderRadius.circular(20.r),
-                      border: Border.all(
-                        color: boardBorder,
-                        width: 2.w,
-                      ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: isPaper
-                              ? AppColors.paperExtrusion.withValues(alpha: 0.45)
-                              : AppColors.black.withValues(alpha: 0.12),
-                          offset: Offset(0, 4.h),
-                          blurRadius: 12.r,
-                        ),
-                      ],
-                    ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(18.r),
-                      child: Column(
-                        children: [
-                          // ── A. Bảng điểm đỉnh bàn chơi (Score Board HUD) ─
-                          Padding(
-                            padding: EdgeInsets.fromLTRB(
-                              12.w,
-                              isKeyboardOpen ? 8.h : 12.h,
-                              12.w,
-                              isKeyboardOpen ? 6.h : 10.h,
-                            ),
-                            child: WordGuessScoreBoard(
-                              currentRound: currentRound,
-                              foundCount: foundCount,
-                              secondsLeft: state.roundTimeLeft,
-                              isPaperTheme: isPaper,
-                              players: state.gameState.players,
-                              myUid: state.myUid,
-                              isSolo: isSolo,
-                              myName: state.myName,
-                              myAvatar: state.myAvatar,
-                              hasTimer: hasTimer,
+                  child: isLobby
+                      ? Center(
+                          child: SingleChildScrollView(
+                            physics: const BouncingScrollPhysics(),
+                            child: WordGuessRematchLobbyCard(
+                              state: state,
+                              isPaper: isPaper,
+                              onLeave: onBack,
                             ),
                           ),
-
-                          // Đường kẻ nét đứt phân cách (AppDotted)
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 12.w),
-                            child: AppDotted(
-                              color: dividerColor,
-                              height: 1.2,
-                              dashWidth: 4,
+                        )
+                      : Container(
+                          decoration: BoxDecoration(
+                            color: boardBg,
+                            borderRadius: BorderRadius.circular(20.r),
+                            border: Border.all(
+                              color: boardBorder,
+                              width: 2.w,
                             ),
-                          ),
-
-                          // ── B. Vùng nội dung cuộn (Tiles, Clue, History) ──
-                          Expanded(
-                            child: SingleChildScrollView(
-                              physics: const BouncingScrollPhysics(),
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 12.w,
-                                vertical: isKeyboardOpen ? 4.h : 8.h,
+                            boxShadow: [
+                              BoxShadow(
+                                color: isPaper
+                                    ? AppColors.paperExtrusion
+                                        .withValues(alpha: 0.45)
+                                    : AppColors.black.withValues(alpha: 0.12),
+                                offset: Offset(0, 4.h),
+                                blurRadius: 12.r,
                               ),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.stretch,
-                                children: [
-                                  SizedBox(height: isKeyboardOpen ? 2.h : 6.h),
+                            ],
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(18.r),
+                            child: Column(
+                              children: [
+                                // ── A. Bảng điểm đỉnh bàn chơi ─
+                                Padding(
+                                  padding: EdgeInsets.fromLTRB(
+                                    12.w,
+                                    isKeyboardOpen ? 8.h : 12.h,
+                                    12.w,
+                                    isKeyboardOpen ? 6.h : 10.h,
+                                  ),
+                                  child: WordGuessScoreBoard(
+                                    currentRound: currentRound,
+                                    foundCount: foundCount,
+                                    secondsLeft: state.roundTimeLeft,
+                                    isPaperTheme: isPaper,
+                                    players: state.gameState.players,
+                                    myUid: state.myUid,
+                                    isSolo: isSolo,
+                                    myName: state.myName,
+                                    myAvatar: state.myAvatar,
+                                    hasTimer: hasTimer,
+                                  ),
+                                ),
 
-                                  // Sảnh chờ ván mới (Rematch Lobby)
-                                  if (!isSolo &&
-                                      state.gameState.status == 'lobby')
-                                    WordGuessRematchLobbyCard(
-                                      state: state,
-                                      isPaper: isPaper,
-                                    )
-                                  else ...[
-                                    // Hàng ô chữ cái khuyết 3D
-                                    WordGuessTileList(
-                                      maskedWord: maskedWord,
-                                      isPaperTheme: isPaper,
-                                    ),
+                                // Đường kẻ nét đứt phân cách (AppDotted)
+                                Padding(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 12.w,
+                                  ),
+                                  child: AppDotted(
+                                    color: dividerColor,
+                                    height: 1.2,
+                                    dashWidth: 4,
+                                  ),
+                                ),
 
-                                    SizedBox(
-                                      height: isKeyboardOpen ? 6.h : 10.h,
+                                // ── B. Vùng nội dung cuộn ──
+                                Expanded(
+                                  child: SingleChildScrollView(
+                                    physics: const BouncingScrollPhysics(),
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 12.w,
+                                      vertical: isKeyboardOpen ? 4.h : 8.h,
                                     ),
+                                    child: Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.stretch,
+                                      children: [
+                                        SizedBox(
+                                          height: isKeyboardOpen ? 2.h : 6.h,
+                                        ),
 
-                                    // Hộp gợi ý nghĩa tiếng Việt & Phiên âm
-                                    WordGuessClueItem(
-                                      meaning: viMeaning,
-                                      phonetic: phonetic,
-                                      wordEn: wordEn,
-                                      length: wordLength,
-                                      isPaperTheme: isPaper,
-                                    ),
-                                  ],
+                                        // Hàng ô chữ cái khuyết 3D
+                                        WordGuessTileList(
+                                          maskedWord: maskedWord,
+                                          isPaperTheme: isPaper,
+                                        ),
+
+                                        SizedBox(
+                                          height: isKeyboardOpen ? 6.h : 10.h,
+                                        ),
+
+                                        // Hộp gợi ý nghĩa tiếng Việt & Phiên âm
+                                        WordGuessClueItem(
+                                          meaning: viMeaning,
+                                          phonetic: phonetic,
+                                          wordEn: wordEn,
+                                          length: wordLength,
+                                          isPaperTheme: isPaper,
+                                        ),
 
                                   // Banner chúc mừng khi đoán đúng
                                   if (state.solvedBannerSolver != null) ...[

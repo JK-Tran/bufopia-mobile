@@ -9,6 +9,7 @@ abstract class WordGuessRepository {
     String? uid,
     int count = 20,
     String? recent,
+    String? difficulty,
   });
 
   /// Xác thực đáp án luyện tập Solo & nhận XP (POST /api/practice)
@@ -55,6 +56,7 @@ abstract class WordGuessRepository {
     required String topic,
     String? token,
     String? avatar,
+    String? difficulty,
   });
 
   /// Tham gia phòng chơi qua WebSocket (/ws/guess/{roomCode})
@@ -64,6 +66,9 @@ abstract class WordGuessRepository {
     required String name,
     String? token,
     String? avatar,
+    String? topic,
+    String? difficulty,
+    bool isMatchmaking = false,
   });
 
   /// Gửi đáp án đoán từ (bắt buộc đúng sessionId và roundIndex trùng

@@ -14,6 +14,7 @@ abstract class RoomPlayer with _$RoomPlayer {
     @Default(false) bool isHost,
     @Default(false) bool ended,
     @Default(0) int playerIndex,
+    @Default(true) bool isOnline,
   }) = _RoomPlayer;
 
   const RoomPlayer._();
