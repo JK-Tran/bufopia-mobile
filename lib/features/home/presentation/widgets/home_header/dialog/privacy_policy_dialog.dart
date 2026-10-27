@@ -72,11 +72,15 @@ class _PrivacyPolicyDialogState extends State<PrivacyPolicyDialog> {
         final currentTab =
             LegalPoliciesData.getTabs(context.l10n)[_tabIndex];
 
+        final isLandscape =
+            MediaQuery.of(context).orientation == Orientation.landscape;
+        final dialogHeight = isLandscape ? 330.0 : 540.h;
+
         return AppGameDialog(
           title: context.l10n.privacyPolicyTitle,
           icon: Icons.verified_user_rounded,
           maxWidth: 340.w,
-          maxHeight: 560.h,
+          height: dialogHeight,
           isScrollable: false,
           footerText: context.l10n.privacyFooter,
           padding: EdgeInsets.fromLTRB(10.w, 8.h, 10.w, 6.h),

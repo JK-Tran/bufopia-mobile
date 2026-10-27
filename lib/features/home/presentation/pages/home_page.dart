@@ -83,19 +83,12 @@ class _HomePageState extends BasePageState<HomePage, HomeBloc> {
     await WordChainModeDialog.show(
       context,
       onBotTimed: () {
-        Navigator.of(context).push(
-          MaterialPageRoute<void>(
-            builder: (_) => const WordChainPage(),
-          ),
-        );
+        context.push(AppRouter.wordChain);
       },
       onBotRelax: () {
-        Navigator.of(context).push(
-          MaterialPageRoute<void>(
-            builder: (_) => const WordChainPage(
-              relaxed: true,
-            ),
-          ),
+        context.push(
+          AppRouter.wordChain,
+          extra: {'relaxed': true},
         );
       },
       onOnlineTimed: () {
@@ -106,13 +99,12 @@ class _HomePageState extends BasePageState<HomePage, HomeBloc> {
               context,
               'Đã tìm thấy đối thủ $rivalName! Vào trận...',
             );
-            Navigator.of(context).push(
-              MaterialPageRoute<void>(
-                builder: (_) => WordChainPage(
-                  mode: WordChainGameMode.room,
-                  roomCode: roomCode,
-                ),
-              ),
+            context.push(
+              AppRouter.wordChain,
+              extra: {
+                'mode': WordChainGameMode.room,
+                'roomCode': roomCode,
+              },
             );
           },
         );
@@ -126,14 +118,13 @@ class _HomePageState extends BasePageState<HomePage, HomeBloc> {
               context,
               'Đã tìm thấy đối thủ $rivalName! Vào trận...',
             );
-            Navigator.of(context).push(
-              MaterialPageRoute<void>(
-                builder: (_) => WordChainPage(
-                  mode: WordChainGameMode.room,
-                  roomCode: roomCode,
-                  relaxed: true,
-                ),
-              ),
+            context.push(
+              AppRouter.wordChain,
+              extra: {
+                'mode': WordChainGameMode.room,
+                'roomCode': roomCode,
+                'relaxed': true,
+              },
             );
           },
         );
@@ -146,13 +137,12 @@ class _HomePageState extends BasePageState<HomePage, HomeBloc> {
               context,
               'Đã vào phòng thi đấu #$roomCode!',
             );
-            Navigator.of(context).push(
-              MaterialPageRoute<void>(
-                builder: (_) => WordChainPage(
-                  mode: WordChainGameMode.room,
-                  roomCode: roomCode,
-                ),
-              ),
+            context.push(
+              AppRouter.wordChain,
+              extra: {
+                'mode': WordChainGameMode.room,
+                'roomCode': roomCode,
+              },
             );
           },
         );
@@ -166,14 +156,13 @@ class _HomePageState extends BasePageState<HomePage, HomeBloc> {
               context,
               'Đã vào phòng thi đấu #$roomCode!',
             );
-            Navigator.of(context).push(
-              MaterialPageRoute<void>(
-                builder: (_) => WordChainPage(
-                  mode: WordChainGameMode.room,
-                  roomCode: roomCode,
-                  relaxed: true,
-                ),
-              ),
+            context.push(
+              AppRouter.wordChain,
+              extra: {
+                'mode': WordChainGameMode.room,
+                'roomCode': roomCode,
+                'relaxed': true,
+              },
             );
           },
         );

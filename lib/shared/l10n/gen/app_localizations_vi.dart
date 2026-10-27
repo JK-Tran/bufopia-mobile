@@ -637,6 +637,12 @@ class AppLocalizationsVi extends AppLocalizations {
   String get useCloudDataOverwrite => 'Dùng dữ liệu đám mây (Ghi đè)';
 
   @override
+  String get syncCloudSave => 'ĐỒNG BỘ BẢN LƯU';
+
+  @override
+  String get syncCloudPrompt => 'Đồng bộ bản lưu này để tiếp tục hành trình?';
+
+  @override
   String get weakWordsPractice => 'LUYỆN TẬP TỪ YẾU';
 
   @override
@@ -721,6 +727,14 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get opponentLeftTitle => 'ĐỐI THỦ ĐÃ RỜI PHÒNG';
+
+  @override
+  String opponentLeftPrompt(String rivalName) {
+    return 'Đối thủ ($rivalName) đã rời phòng. Bạn muốn kết thúc trận hay tiếp tục tự chơi một mình?';
+  }
+
+  @override
+  String get continueSolo => 'Tự chơi 1 mình';
 
   @override
   String get honoraryVictory => 'CHIẾN THẮNG DANH DỰ! 🏆';
@@ -1186,6 +1200,21 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get matchmakingCancelled => 'Đã hủy tìm trận đấu.';
+
+  @override
+  String get matchedOpponentFound => 'ĐÃ TÌM THẤY ĐỐI THỦ';
+
+  @override
+  String get readyToCompete => 'SẴN SÀNG TRANH TÀI';
+
+  @override
+  String get waitingForOpponentReadyDesc => 'Đang chờ đối thủ sẵn sàng...';
+
+  @override
+  String get preparingMatch => 'Đang chuẩn bị trận...';
+
+  @override
+  String get preparingMatchDesc => 'Hai bạn sẽ vào trận ngay khi kết nối và bộ từ sẵn sàng.';
 
   @override
   String connectionError(String error) {
@@ -1940,4 +1969,147 @@ class AppLocalizationsVi extends AppLocalizations {
 
   @override
   String get posUnknown => 'Không xác định';
+
+  @override
+  String get autoDifficulty => 'Tự động';
+
+  @override
+  String get settingsFooterWish => '⭐ Chúc bạn có trải nghiệm tuyệt vời cùng Bufopia! ⭐';
+
+  @override
+  String get guest => 'Khách';
+
+  @override
+  String get noPracticeQuestionsFound => 'Không tìm thấy bộ đề luyện tập phù hợp.';
+
+  @override
+  String errorLoadingPracticeQuestions(String error) {
+    return 'Lỗi tải bộ đề luyện tập: $error';
+  }
+
+  @override
+  String get incorrectTryAgain => 'Chưa chính xác, hãy thử lại!';
+
+  @override
+  String correctAddXp(int count) {
+    return 'Chính xác! +$count XP';
+  }
+
+  @override
+  String errorSubmittingAnswer(String error) {
+    return 'Lỗi nộp đáp án: $error';
+  }
+
+  @override
+  String correctWordIs(String word) {
+    return 'Từ đúng: $word';
+  }
+
+  @override
+  String get completedAllPracticeQuestions => 'Bạn đã hoàn thành toàn bộ câu hỏi luyện tập!';
+
+  @override
+  String cannotConnectMatchmaking(String error) {
+    return 'Không thể kết nối tìm trận: $error';
+  }
+
+  @override
+  String cannotConnectRoom(String error) {
+    return 'Không thể kết nối vào phòng: $error';
+  }
+
+  @override
+  String opponentGuessedFirstScore(String name) {
+    return '$name đoán đúng trước · +1 điểm · chuyển câu!';
+  }
+
+  @override
+  String opponentGuessedFirstNext(String name) {
+    return '$name đã đoán đúng trước. Sang câu tiếp theo...';
+  }
+
+  @override
+  String get wordIncorrect => 'Từ không chính xác';
+
+  @override
+  String messageBlocked(String reason) {
+    return 'Tin nhắn bị chặn: $reason';
+  }
+
+  @override
+  String skipVoteEnded(String reason) {
+    return 'Đề xuất bỏ qua đã kết thúc ($reason)';
+  }
+
+  @override
+  String rewardReceivedXp(int xp) {
+    return 'Nhận thưởng: +$xp XP';
+  }
+
+  @override
+  String get botRivalName => 'Máy (Bot)';
+
+  @override
+  String errorInitPracticeSession(String error) {
+    return 'Không thể khởi tạo phiên luyện tập: $error';
+  }
+
+  @override
+  String errorConnectMatchmaking(String error) {
+    return 'Lỗi kết nối tìm trận: $error';
+  }
+
+  @override
+  String errorEnteringRoom(String error) {
+    return 'Lỗi vào phòng thi đấu: $error';
+  }
+
+  @override
+  String get wordChainLengthError => 'Từ phải gồm từ 2 đến 32 chữ cái và chỉ chứa ký tự chữ cái!';
+
+  @override
+  String wordChainStartLetterError(String letter) {
+    return 'Từ phải bắt đầu bằng chữ \"$letter\"';
+  }
+
+  @override
+  String wordAlreadyUsed(String word) {
+    return 'Từ \"$word\" đã được dùng trước đó!';
+  }
+
+  @override
+  String get errorSendingWord => 'Lỗi gửi từ, vui lòng thử lại!';
+
+  @override
+  String wordNotInDictionary(String word) {
+    return 'Từ \"$word\" không có trong từ điển!';
+  }
+
+  @override
+  String invalidOrUsedWordPenalty(int penalty) {
+    return 'Từ chưa hợp lệ hoặc đã dùng — không mất tim (phạt ${penalty}s)!';
+  }
+
+  @override
+  String get invalidOrUsedWordNoHeart => 'Từ chưa hợp lệ hoặc đã dùng — không mất tim';
+
+  @override
+  String get cannotLoadQuestionsFromServer => 'Không thể tải bộ câu hỏi từ máy chủ';
+
+  @override
+  String errorSyncingQuestions(String error) {
+    return 'Lỗi đồng bộ bộ đề từ máy chủ: $error';
+  }
+
+  @override
+  String get enterValidRoomCode => 'Vui lòng nhập đúng mã phòng gồm 6 chữ số!';
+
+  @override
+  String get roomCreatedSuccess => 'Tạo phòng thách đấu thành công!';
+
+  @override
+  String get contributeWordSuccess => 'Đóng góp từ thành công';
+
+  @override
+  String get updateWordSuccess => 'Cập nhật từ thành công';
 }

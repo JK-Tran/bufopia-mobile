@@ -95,7 +95,11 @@ class _VocabularyMatchmakingDialogState
     );
 
     _startTimer();
-    _connectMatchmake();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _connectMatchmake();
+      }
+    });
   }
 
   void _startTimer() {

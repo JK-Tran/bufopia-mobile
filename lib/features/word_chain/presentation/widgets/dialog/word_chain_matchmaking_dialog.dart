@@ -97,7 +97,11 @@ class _WordChainMatchmakingDialogState extends State<WordChainMatchmakingDialog>
     );
 
     _startTimer();
-    _connectMatchmake();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _connectMatchmake();
+      }
+    });
   }
 
   void _startTimer() {

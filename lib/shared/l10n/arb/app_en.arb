@@ -291,6 +291,8 @@
   },
   "mergeProgressRecommended": "MERGE PROGRESS (RECOMMENDED)",
   "useCloudDataOverwrite": "Use cloud data (Overwrite)",
+  "syncCloudSave": "SYNC CLOUD SAVE",
+  "syncCloudPrompt": "Sync this cloud save to continue your journey?",
   "weakWordsPractice": "WEAK WORDS PRACTICE",
   "questionIndex": "Question {current}/{total}",
   "@questionIndex": {
@@ -338,6 +340,13 @@
   "chatExchange": "EXCHANGE",
   "chatRoomOnlyToast": "Chat feature is only available in friend rooms!",
   "opponentLeftTitle": "OPPONENT LEFT",
+  "opponentLeftPrompt": "Opponent ({rivalName}) left the room. Do you want to end the match or continue playing solo?",
+  "@opponentLeftPrompt": {
+    "placeholders": {
+      "rivalName": { "type": "String" }
+    }
+  },
+  "continueSolo": "Play Solo",
   "honoraryVictory": "HONORABLE VICTORY! 🏆",
   "opponentLeftMidwayDesc": "The opponent left the match midway.\nVictory is yours!",
   "backToHome": "BACK TO HOME",
@@ -604,6 +613,11 @@
   },
   "copiedInviteLink": "Copied invite link!",
   "matchmakingCancelled": "Matchmaking cancelled.",
+  "matchedOpponentFound": "OPPONENT FOUND",
+  "readyToCompete": "READY TO COMPETE",
+  "waitingForOpponentReadyDesc": "Waiting for opponent to be ready...",
+  "preparingMatch": "Preparing match...",
+  "preparingMatchDesc": "You will enter the match as soon as connection and deck are ready.",
   "connectionError": "Connection error: {error}",
   "@connectionError": {
     "placeholders": {
@@ -1036,5 +1050,136 @@
   "posAdjective": "Adjective",
   "posAdverb": "Adverb",
   "posPhrase": "Phrase",
-  "posUnknown": "Unspecified"
+  "posUnknown": "Unspecified",
+  "autoDifficulty": "Auto",
+  "settingsFooterWish": "⭐ Have a wonderful experience with Bufopia! ⭐",
+  "guest": "Guest",
+
+  "noPracticeQuestionsFound": "No matching practice question set found.",
+  "errorLoadingPracticeQuestions": "Error loading practice questions: {error}",
+  "@errorLoadingPracticeQuestions": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "incorrectTryAgain": "Incorrect, please try again!",
+  "correctAddXp": "Correct! +{count} XP",
+  "@correctAddXp": {
+    "placeholders": {
+      "count": { "type": "int" }
+    }
+  },
+  "errorSubmittingAnswer": "Error submitting answer: {error}",
+  "@errorSubmittingAnswer": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "correctWordIs": "Correct word: {word}",
+  "@correctWordIs": {
+    "placeholders": {
+      "word": { "type": "String" }
+    }
+  },
+  "completedAllPracticeQuestions": "You have completed all practice questions!",
+  "cannotConnectMatchmaking": "Unable to connect to matchmaking: {error}",
+  "@cannotConnectMatchmaking": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "cannotConnectRoom": "Unable to connect to the room: {error}",
+  "@cannotConnectRoom": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "opponentGuessedFirstScore": "{name} guessed correctly first · +1 point · next question!",
+  "@opponentGuessedFirstScore": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "opponentGuessedFirstNext": "{name} guessed correctly first. Moving to next question...",
+  "@opponentGuessedFirstNext": {
+    "placeholders": {
+      "name": { "type": "String" }
+    }
+  },
+  "wordIncorrect": "Incorrect word",
+  "messageBlocked": "Message blocked: {reason}",
+  "@messageBlocked": {
+    "placeholders": {
+      "reason": { "type": "String" }
+    }
+  },
+  "skipVoteEnded": "Skip vote has ended ({reason})",
+  "@skipVoteEnded": {
+    "placeholders": {
+      "reason": { "type": "String" }
+    }
+  },
+  "rewardReceivedXp": "Reward received: +{xp} XP",
+  "@rewardReceivedXp": {
+    "placeholders": {
+      "xp": { "type": "int" }
+    }
+  },
+  "botRivalName": "Bot",
+  "errorInitPracticeSession": "Unable to initialize practice session: {error}",
+  "@errorInitPracticeSession": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "errorConnectMatchmaking": "Connection error finding match: {error}",
+  "@errorConnectMatchmaking": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "errorEnteringRoom": "Error entering match room: {error}",
+  "@errorEnteringRoom": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "wordChainLengthError": "Word must be between 2 and 32 letters and contain only alphabet letters!",
+  "wordChainStartLetterError": "Word must start with letter \"{letter}\"",
+  "@wordChainStartLetterError": {
+    "placeholders": {
+      "letter": { "type": "String" }
+    }
+  },
+  "wordAlreadyUsed": "Word \"{word}\" has already been used!",
+  "@wordAlreadyUsed": {
+    "placeholders": {
+      "word": { "type": "String" }
+    }
+  },
+  "errorSendingWord": "Error sending word, please try again!",
+  "wordNotInDictionary": "Word \"{word}\" is not in the dictionary!",
+  "@wordNotInDictionary": {
+    "placeholders": {
+      "word": { "type": "String" }
+    }
+  },
+  "invalidOrUsedWordPenalty": "Invalid or already used word — no lives lost ({penalty}s penalty)!",
+  "@invalidOrUsedWordPenalty": {
+    "placeholders": {
+      "penalty": { "type": "int" }
+    }
+  },
+  "invalidOrUsedWordNoHeart": "Invalid or already used word — no lives lost",
+  "cannotLoadQuestionsFromServer": "Unable to load questions from server",
+  "errorSyncingQuestions": "Error syncing questions from server: {error}",
+  "@errorSyncingQuestions": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "enterValidRoomCode": "Please enter a valid 6-digit room code!",
+  "roomCreatedSuccess": "Challenge room created successfully!",
+  "contributeWordSuccess": "Word contributed successfully",
+  "updateWordSuccess": "Word updated successfully"
 }

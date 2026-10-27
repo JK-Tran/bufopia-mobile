@@ -8,7 +8,6 @@ import 'package:bufopia/features/home/presentation/widgets/home_header/dialog/pl
 import 'package:bufopia/features/home/presentation/widgets/home_header/dialog/privacy_policy_dialog.dart';
 import 'package:bufopia/features/home/presentation/widgets/home_header/settings/settings.dart';
 import 'package:bufopia/shared/l10n/l10n.dart';
-import 'package:bufopia/shared/services/audio/sound_manager.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -40,11 +39,8 @@ class HomeSettingsDialog extends StatelessWidget {
             conflict: state.conflict!,
           );
           if (!context.mounted) return;
-          if (choice == ConflictResolutionChoice.merge) {
-            context.read<AuthBloc>().add(
-              const AuthEvent.resolveAccountConflict(action: 'merge'),
-            );
-          } else if (choice == ConflictResolutionChoice.overwrite) {
+          if (choice == ConflictResolutionChoice.overwrite ||
+              choice == ConflictResolutionChoice.merge) {
             context.read<AuthBloc>().add(
               const AuthEvent.resolveAccountConflict(action: 'overwrite'),
             );
@@ -113,8 +109,7 @@ class HomeSettingsDialog extends StatelessWidget {
                 footerBackgroundColor: isPaper ? AppColors.paperSurface : null,
                 footerBorderColor: isPaper ? AppColors.paperBorder : null,
                 footerTextColor: isPaper ? AppColors.paperTextMedium : null,
-                footerText:
-                    '⭐ Chúc bạn có trải nghiệm tuyệt vời cùng Bufopia! ⭐',
+                footerText: l10n.settingsFooterWish,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -128,7 +123,7 @@ class HomeSettingsDialog extends StatelessWidget {
                             authState.currentUser?.displayName.isNotEmpty ==
                                 true
                             ? authState.currentUser!.displayName
-                            : 'Khách';
+                            : l10n.guest;
 
                         if (isGoogleLinked) {
                           return SettingsItem(
@@ -160,7 +155,7 @@ class HomeSettingsDialog extends StatelessWidget {
                             children: [
                               AppIconButton(
                                 icon: Icons.person_rounded,
-                                tooltip: 'Xem hồ sơ',
+                                tooltip: l10n.viewProfile,
                                 size: btnHeight,
                                 iconSize: 14.r,
                                 backgroundColor: isPaper
@@ -276,7 +271,6 @@ class HomeSettingsDialog extends StatelessWidget {
                           context.read<AppBloc>().add(
                             const AppEvent.musicToggled(),
                           );
-                          SoundManager.playClick();
                         },
                       ),
                     ),
@@ -310,7 +304,6 @@ class HomeSettingsDialog extends StatelessWidget {
                           context.read<AppBloc>().add(
                             const AppEvent.sfxToggled(),
                           );
-                          SoundManager.playClick();
                         },
                       ),
                     ),

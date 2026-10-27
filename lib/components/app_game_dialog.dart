@@ -127,7 +127,7 @@ class AppGameDialog extends StatelessWidget {
       backgroundColor: Colors.transparent,
       insetPadding: insetPad,
       child: Container(
-        height: height ?? (!isScrollable ? resolvedMaxHeight : null),
+        height: height,
         constraints: BoxConstraints(
           maxWidth: resolvedMaxWidth,
           maxHeight: resolvedMaxHeight,
@@ -157,7 +157,7 @@ class AppGameDialog extends StatelessWidget {
         child: ClipRRect(
           borderRadius: BorderRadius.circular(isLandscape ? 16 : 18.w),
           child: Column(
-            mainAxisSize: isScrollable ? MainAxisSize.min : MainAxisSize.max,
+            mainAxisSize: height != null ? MainAxisSize.max : MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               // ── 1. Header Bar ──────────────────────────────────────────
@@ -172,12 +172,17 @@ class AppGameDialog extends StatelessWidget {
                     child: child,
                   ),
                 )
-              else
+              else if (height != null)
                 Expanded(
                   child: Padding(
                     padding: bodyPad,
                     child: child,
                   ),
+                )
+              else
+                Padding(
+                  padding: bodyPad,
+                  child: child,
                 ),
 
               // ── 3. Footer Bar ──────────────────────────────────────────

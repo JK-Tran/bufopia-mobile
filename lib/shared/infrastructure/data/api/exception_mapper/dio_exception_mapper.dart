@@ -48,6 +48,7 @@ class DioExceptionMapper {
               kind: RemoteExceptionKind.serverDefined,
               httpErrorCode: httpErrorCode,
               serverError: serverError,
+              rootException: exception,
             );
           }
 

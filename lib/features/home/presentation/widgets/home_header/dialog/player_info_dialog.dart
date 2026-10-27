@@ -125,11 +125,8 @@ class _PlayerInfoDialogState extends State<PlayerInfoDialog> {
             conflict: state.conflict!,
           );
           if (!context.mounted) return;
-          if (choice == ConflictResolutionChoice.merge) {
-            context.read<AuthBloc>().add(
-              const AuthEvent.resolveAccountConflict(action: 'merge'),
-            );
-          } else if (choice == ConflictResolutionChoice.overwrite) {
+          if (choice == ConflictResolutionChoice.overwrite ||
+              choice == ConflictResolutionChoice.merge) {
             context.read<AuthBloc>().add(
               const AuthEvent.resolveAccountConflict(action: 'overwrite'),
             );

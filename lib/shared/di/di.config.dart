@@ -620,17 +620,7 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i627.DeviceAuthService>(),
         gh<_i970.AuthDataSource>(),
         gh<_i491.FirebaseAuthService>(),
-      ),
-    );
-    gh.lazySingleton<_i597.WordGuessRepository>(
-      () => _i127.WordGuessRepositoryImpl(
-        gh<_i876.WordGuessDataSource>(),
-        gh<_i323.DeckDataMapper>(),
-        gh<_i567.PracticeResultDataMapper>(),
-        gh<_i860.GameStateDataMapper>(),
-        gh<_i611.HistoryItemDataMapper>(),
-        gh<_i855.MatchInfoDataMapper>(),
-        gh<_i551.WordGuessSocketService>(),
+        gh<_i345.RealtimeRoutingService>(),
       ),
     );
     gh.lazySingleton<_i367.GetBattleDeckUseCase>(
@@ -760,64 +750,23 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i522.AppAudioService>(),
       ),
     );
-    gh.lazySingleton<_i76.ConnectGuessMatchmakeUseCase>(
-      () => _i76.ConnectGuessMatchmakeUseCase(gh<_i597.WordGuessRepository>()),
-    );
-    gh.lazySingleton<_i929.ConnectGuessRoomUseCase>(
-      () => _i929.ConnectGuessRoomUseCase(gh<_i597.WordGuessRepository>()),
-    );
-    gh.lazySingleton<_i190.DisconnectGuessUseCase>(
-      () => _i190.DisconnectGuessUseCase(gh<_i597.WordGuessRepository>()),
-    );
-    gh.lazySingleton<_i781.GetGuessDeckUseCase>(
-      () => _i781.GetGuessDeckUseCase(gh<_i597.WordGuessRepository>()),
-    );
-    gh.lazySingleton<_i514.GetGuessRoomLookupUseCase>(
-      () => _i514.GetGuessRoomLookupUseCase(gh<_i597.WordGuessRepository>()),
-    );
-    gh.lazySingleton<_i197.ObserveGuessGameUseCase>(
-      () => _i197.ObserveGuessGameUseCase(gh<_i597.WordGuessRepository>()),
-    );
-    gh.lazySingleton<_i662.SubmitGuessChatUseCase>(
-      () => _i662.SubmitGuessChatUseCase(gh<_i597.WordGuessRepository>()),
-    );
-    gh.lazySingleton<_i675.SubmitGuessEndUseCase>(
-      () => _i675.SubmitGuessEndUseCase(gh<_i597.WordGuessRepository>()),
-    );
-    gh.lazySingleton<_i738.SubmitGuessMatchRecordUseCase>(
-      () =>
-          _i738.SubmitGuessMatchRecordUseCase(gh<_i597.WordGuessRepository>()),
-    );
-    gh.lazySingleton<_i270.SubmitGuessPracticeUseCase>(
-      () => _i270.SubmitGuessPracticeUseCase(gh<_i597.WordGuessRepository>()),
-    );
-    gh.lazySingleton<_i676.SubmitGuessReadyUseCase>(
-      () => _i676.SubmitGuessReadyUseCase(gh<_i597.WordGuessRepository>()),
-    );
-    gh.lazySingleton<_i268.SubmitGuessRestartUseCase>(
-      () => _i268.SubmitGuessRestartUseCase(gh<_i597.WordGuessRepository>()),
-    );
-    gh.lazySingleton<_i660.SubmitGuessSkipUseCase>(
-      () => _i660.SubmitGuessSkipUseCase(gh<_i597.WordGuessRepository>()),
-    );
-    gh.lazySingleton<_i44.SubmitGuessStartUseCase>(
-      () => _i44.SubmitGuessStartUseCase(gh<_i597.WordGuessRepository>()),
-    );
-    gh.lazySingleton<_i944.SubmitGuessVaultUseCase>(
-      () => _i944.SubmitGuessVaultUseCase(gh<_i597.WordGuessRepository>()),
-    );
-    gh.lazySingleton<_i568.SubmitGuessVoteUseCase>(
-      () => _i568.SubmitGuessVoteUseCase(gh<_i597.WordGuessRepository>()),
-    );
-    gh.lazySingleton<_i819.SubmitGuessWordUseCase>(
-      () => _i819.SubmitGuessWordUseCase(gh<_i597.WordGuessRepository>()),
-    );
     gh.lazySingleton<_i799.ChatDataSource>(
       () => _i799.ChatDataSourceImpl(
         gh<_i981.WordChainSocketService>(),
         gh<_i551.WordGuessSocketService>(),
       ),
       dispose: (i) => i.dispose(),
+    );
+    gh.lazySingleton<_i597.WordGuessRepository>(
+      () => _i127.WordGuessRepositoryImpl(
+        gh<_i876.WordGuessDataSource>(),
+        gh<_i323.DeckDataMapper>(),
+        gh<_i567.PracticeResultDataMapper>(),
+        gh<_i860.GameStateDataMapper>(),
+        gh<_i611.HistoryItemDataMapper>(),
+        gh<_i855.MatchInfoDataMapper>(),
+        gh<_i551.WordGuessSocketService>(),
+      ),
     );
     gh.factory<_i451.VocabularyBloc>(
       () => _i451.VocabularyBloc(
@@ -871,25 +820,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i975.SubmitStartSessionUseCase>(
       () => _i975.SubmitStartSessionUseCase(gh<_i571.WordChainRepository>()),
     );
-    gh.factory<_i208.WordGuessBloc>(
-      () => _i208.WordGuessBloc(
-        gh<_i781.GetGuessDeckUseCase>(),
-        gh<_i270.SubmitGuessPracticeUseCase>(),
-        gh<_i76.ConnectGuessMatchmakeUseCase>(),
-        gh<_i929.ConnectGuessRoomUseCase>(),
-        gh<_i197.ObserveGuessGameUseCase>(),
-        gh<_i190.DisconnectGuessUseCase>(),
-        gh<_i819.SubmitGuessWordUseCase>(),
-        gh<_i660.SubmitGuessSkipUseCase>(),
-        gh<_i568.SubmitGuessVoteUseCase>(),
-        gh<_i675.SubmitGuessEndUseCase>(),
-        gh<_i662.SubmitGuessChatUseCase>(),
-        gh<_i676.SubmitGuessReadyUseCase>(),
-        gh<_i44.SubmitGuessStartUseCase>(),
-        gh<_i268.SubmitGuessRestartUseCase>(),
-        gh<_i980.PracticeRepository>(),
-      ),
-    );
     gh.factory<_i7.WordChainBloc>(
       () => _i7.WordChainBloc(
         gh<_i975.SubmitStartSessionUseCase>(),
@@ -921,6 +851,84 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i1025.SubmitChatUseCase>(
       () => _i1025.SubmitChatUseCase(gh<_i420.ChatRepository>()),
     );
+    gh.lazySingleton<_i76.ConnectGuessMatchmakeUseCase>(
+      () => _i76.ConnectGuessMatchmakeUseCase(gh<_i597.WordGuessRepository>()),
+    );
+    gh.lazySingleton<_i929.ConnectGuessRoomUseCase>(
+      () => _i929.ConnectGuessRoomUseCase(gh<_i597.WordGuessRepository>()),
+    );
+    gh.lazySingleton<_i190.DisconnectGuessUseCase>(
+      () => _i190.DisconnectGuessUseCase(gh<_i597.WordGuessRepository>()),
+    );
+    gh.lazySingleton<_i781.GetGuessDeckUseCase>(
+      () => _i781.GetGuessDeckUseCase(gh<_i597.WordGuessRepository>()),
+    );
+    gh.lazySingleton<_i514.GetGuessRoomLookupUseCase>(
+      () => _i514.GetGuessRoomLookupUseCase(gh<_i597.WordGuessRepository>()),
+    );
+    gh.lazySingleton<_i197.ObserveGuessGameUseCase>(
+      () => _i197.ObserveGuessGameUseCase(gh<_i597.WordGuessRepository>()),
+    );
+    gh.lazySingleton<_i662.SubmitGuessChatUseCase>(
+      () => _i662.SubmitGuessChatUseCase(gh<_i597.WordGuessRepository>()),
+    );
+    gh.lazySingleton<_i675.SubmitGuessEndUseCase>(
+      () => _i675.SubmitGuessEndUseCase(gh<_i597.WordGuessRepository>()),
+    );
+    gh.lazySingleton<_i738.SubmitGuessMatchRecordUseCase>(
+      () =>
+          _i738.SubmitGuessMatchRecordUseCase(gh<_i597.WordGuessRepository>()),
+    );
+    gh.lazySingleton<_i270.SubmitGuessPracticeUseCase>(
+      () => _i270.SubmitGuessPracticeUseCase(gh<_i597.WordGuessRepository>()),
+    );
+    gh.lazySingleton<_i676.SubmitGuessReadyUseCase>(
+      () => _i676.SubmitGuessReadyUseCase(gh<_i597.WordGuessRepository>()),
+    );
+    gh.lazySingleton<_i268.SubmitGuessRestartUseCase>(
+      () => _i268.SubmitGuessRestartUseCase(gh<_i597.WordGuessRepository>()),
+    );
+    gh.lazySingleton<_i660.SubmitGuessSkipUseCase>(
+      () => _i660.SubmitGuessSkipUseCase(gh<_i597.WordGuessRepository>()),
+    );
+    gh.lazySingleton<_i44.SubmitGuessStartUseCase>(
+      () => _i44.SubmitGuessStartUseCase(gh<_i597.WordGuessRepository>()),
+    );
+    gh.lazySingleton<_i944.SubmitGuessVaultUseCase>(
+      () => _i944.SubmitGuessVaultUseCase(gh<_i597.WordGuessRepository>()),
+    );
+    gh.lazySingleton<_i568.SubmitGuessVoteUseCase>(
+      () => _i568.SubmitGuessVoteUseCase(gh<_i597.WordGuessRepository>()),
+    );
+    gh.lazySingleton<_i819.SubmitGuessWordUseCase>(
+      () => _i819.SubmitGuessWordUseCase(gh<_i597.WordGuessRepository>()),
+    );
+    gh.factory<_i65.ChatBloc>(
+      () => _i65.ChatBloc(
+        gh<_i1025.SubmitChatUseCase>(),
+        gh<_i677.GetChatStreamUseCase>(),
+        gh<_i129.GetChatHistoryUseCase>(),
+      ),
+    );
+    gh.factory<_i208.WordGuessBloc>(
+      () => _i208.WordGuessBloc(
+        gh<_i781.GetGuessDeckUseCase>(),
+        gh<_i270.SubmitGuessPracticeUseCase>(),
+        gh<_i76.ConnectGuessMatchmakeUseCase>(),
+        gh<_i929.ConnectGuessRoomUseCase>(),
+        gh<_i197.ObserveGuessGameUseCase>(),
+        gh<_i190.DisconnectGuessUseCase>(),
+        gh<_i819.SubmitGuessWordUseCase>(),
+        gh<_i660.SubmitGuessSkipUseCase>(),
+        gh<_i568.SubmitGuessVoteUseCase>(),
+        gh<_i675.SubmitGuessEndUseCase>(),
+        gh<_i662.SubmitGuessChatUseCase>(),
+        gh<_i676.SubmitGuessReadyUseCase>(),
+        gh<_i44.SubmitGuessStartUseCase>(),
+        gh<_i268.SubmitGuessRestartUseCase>(),
+        gh<_i980.PracticeRepository>(),
+      ),
+    );
     gh.factory<_i741.ReviewBloc>(
       () => _i741.ReviewBloc(
         gh<_i54.GetWeakWordsUseCase>(),
@@ -930,13 +938,6 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i944.SubmitGuessVaultUseCase>(),
         gh<_i101.DeviceUidService>(),
         gh<_i491.FirebaseAuthService>(),
-      ),
-    );
-    gh.factory<_i65.ChatBloc>(
-      () => _i65.ChatBloc(
-        gh<_i1025.SubmitChatUseCase>(),
-        gh<_i677.GetChatStreamUseCase>(),
-        gh<_i129.GetChatHistoryUseCase>(),
       ),
     );
     return this;

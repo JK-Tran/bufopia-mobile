@@ -11,6 +11,15 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 enum ConflictResolutionChoice { merge, overwrite, cancel }
 
+extension on AccountConflict {
+  String get displayName =>
+      cloudLastActive.isNotEmpty ? cloudLastActive : 'Player';
+
+  int get level => cloudMatches > 0 ? cloudMatches : 1;
+
+  int get xp => cloudElo;
+}
+
 class AccountConflictDialog extends StatelessWidget {
   const AccountConflictDialog({
     required this.conflict,
@@ -43,9 +52,9 @@ class AccountConflictDialog extends StatelessWidget {
         : AppColors.grayMedium;
 
     return AppGameDialog(
-      title: l10n.accountConflictTitle,
-      icon: Icons.sync_problem_rounded,
-      maxWidth: 340.w,
+      title: l10n.googleCloudSave,
+      icon: Icons.cloud_done_rounded,
+      maxWidth: 320.w,
       backgroundColor: isPaper ? AppColors.paperCardBg : AppColors.white,
       borderColor: isPaper ? AppColors.paperBorder : AppColors.blueLight,
       headerGradientColors: isPaper
@@ -55,16 +64,7 @@ class AccountConflictDialog extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          AppText.b2(
-            conflict.message.isNotEmpty
-                ? conflict.message
-                : l10n.accountConflictDefaultMsg,
-            color: textDark,
-            textAlign: TextAlign.center,
-          ),
-          SizedBox(height: 12.h),
-
-          // Thông tin tài khoản Google đám mây
+          // Thẻ tài khoản đám mây gọn gàng
           Container(
             padding: EdgeInsets.symmetric(horizontal: 12.w, vertical: 10.h),
             decoration: BoxDecoration(
@@ -72,67 +72,91 @@ class AccountConflictDialog extends StatelessWidget {
               borderRadius: BorderRadius.circular(10.r),
               border: Border.all(color: cardBorder, width: 1.w),
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: Row(
               children: [
-                Row(
-                  children: [
-                    Icon(
-                      Icons.cloud_done_rounded,
-                      size: 18.w,
-                      color: isPaper ? AppColors.paperGreen : AppColors.blue,
-                    ),
-                    SizedBox(width: 6.w),
-                    AppText.t3(
-                      l10n.googleCloudSave,
-                      fontWeight: FontWeight.w700,
-                      color: textDark,
-                      fontSize: 14.sp,
-                    ),
-                  ],
+                Container(
+                  width: 36.r,
+                  height: 36.r,
+                  decoration: BoxDecoration(
+                    color: (isPaper ? AppColors.paperGreen : AppColors.blue)
+                        .withValues(alpha: 0.15),
+                    shape: BoxShape.circle,
+                  ),
+                  child: Icon(
+                    Icons.cloud_done_rounded,
+                    size: 20.r,
+                    color: isPaper ? AppColors.paperGreen : AppColors.blue,
+                  ),
                 ),
-                SizedBox(height: 6.h),
-                if (conflict.cloudElo > 0)
-                  AppText.b2(
-                    l10n.eloScore(conflict.cloudElo),
-                    color: textMuted,
+                SizedBox(width: 10.w),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      AppText.t3(
+                        conflict.displayName,
+                        fontWeight: FontWeight.w700,
+                        color: textDark,
+                        fontSize: 13.5.sp,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      SizedBox(height: 2.h),
+                      Row(
+                        children: [
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 6.w,
+                              vertical: 1.h,
+                            ),
+                            decoration: BoxDecoration(
+                              color: AppColors.orange.withValues(alpha: 0.15),
+                              borderRadius: BorderRadius.circular(4.r),
+                            ),
+                            child: AppText.c1(
+                              'Cấp ${conflict.level}',
+                              fontWeight: FontWeight.w700,
+                              color: AppColors.orangeDark,
+                              fontSize: 10.5.sp,
+                            ),
+                          ),
+                          SizedBox(width: 6.w),
+                          AppText.c1(
+                            '${conflict.xp} XP',
+                            color: textMuted,
+                            fontSize: 11.sp,
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                if (conflict.cloudMatches > 0)
-                  AppText.b2(
-                    l10n.matchesPlayed(conflict.cloudMatches),
-                    color: textMuted,
-                  ),
-                if (conflict.cloudLastActive.isNotEmpty)
-                  AppText.b2(
-                    l10n.lastActive(conflict.cloudLastActive),
-                    color: textMuted,
-                  ),
+                ),
               ],
             ),
           ),
-          SizedBox(height: 14.h),
+          SizedBox(height: 12.h),
 
-          // Nút Gộp dữ liệu (Merge)
+          AppText.b2(
+            l10n.syncCloudPrompt,
+            color: textMuted,
+            textAlign: TextAlign.center,
+            fontSize: 12.sp,
+          ),
+          SizedBox(height: 12.h),
+
+          // Nút Đồng bộ bản lưu
           AppButton(
-            text: l10n.mergeProgressRecommended,
+            text: l10n.syncCloudSave,
             backgroundColor: isPaper ? AppColors.paperGreen : AppColors.green,
             extrusionColor: isPaper
                 ? AppColors.paperGreenExtrusion
                 : AppColors.greenDark,
-            fontSize: 12.sp,
-            onPressed: () =>
-                Navigator.of(context).pop(ConflictResolutionChoice.merge),
-          ),
-          SizedBox(height: 8.h),
-
-          // Nút Dùng bản lưu đám mây (Overwrite)
-          AppButton.secondary(
-            text: l10n.useCloudDataOverwrite,
+            height: 34.h,
             fontSize: 12.sp,
             onPressed: () =>
                 Navigator.of(context).pop(ConflictResolutionChoice.overwrite),
           ),
-          SizedBox(height: 6.h),
+          SizedBox(height: 4.h),
 
           // Huỷ
           TextButton(

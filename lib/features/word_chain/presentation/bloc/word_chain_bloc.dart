@@ -20,6 +20,7 @@ import 'package:bufopia/features/word_chain/domain/usecases/send_chain_word_use_
 import 'package:bufopia/features/word_chain/domain/usecases/submit_practice_word_use_case.dart';
 import 'package:bufopia/features/word_chain/domain/usecases/submit_start_session_use_case.dart';
 import 'package:bufopia/shared/infrastructure/domain/usecase/io/empty_input.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:bufopia/shared/services/socket/models/socket_event.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -155,7 +156,7 @@ class WordChainBloc extends BaseBloc<WordChainEvent, WordChainState> {
           mode: WordChainGameMode.bot,
           relaxed: event.relaxed,
           myPlayerIndex: 0,
-          rivalName: 'Máy (Bot)',
+          rivalName: S.current.botRivalName,
           rivalAvatar: '',
           inputWord: '',
           rejectedReason: null,
@@ -193,7 +194,7 @@ class WordChainBloc extends BaseBloc<WordChainEvent, WordChainState> {
       },
       doOnError: (e) => safeEmit(
         state.copyWith(
-          errorMessage: 'Không thể khởi tạo phiên luyện tập: $e',
+          errorMessage: S.current.errorInitPracticeSession('$e'),
         ),
       ),
       doOnSuccessOrError: () => safeEmit(state.copyWith(isLoading: false)),
@@ -234,7 +235,7 @@ class WordChainBloc extends BaseBloc<WordChainEvent, WordChainState> {
       safeEmit(
         state.copyWith(
           isLoading: false,
-          errorMessage: 'Lỗi kết nối tìm trận: $e',
+          errorMessage: S.current.errorConnectMatchmaking('$e'),
         ),
       );
     }
@@ -276,7 +277,7 @@ class WordChainBloc extends BaseBloc<WordChainEvent, WordChainState> {
       safeEmit(
         state.copyWith(
           isLoading: false,
-          errorMessage: 'Lỗi vào phòng thi đấu: $e',
+          errorMessage: S.current.errorEnteringRoom('$e'),
         ),
       );
     }
@@ -321,12 +322,10 @@ class WordChainBloc extends BaseBloc<WordChainEvent, WordChainState> {
 
     final word = _normalizeWord(state.inputWord);
 
-    // 1. Kiểm tra định dạng từ: 2 - 32 ký tự chữ cái tiếng Anh
     if (!RegExp(r'^[a-z]{2,32}$').hasMatch(word)) {
       safeEmit(
         state.copyWith(
-          rejectedReason:
-              'Từ phải gồm từ 2 đến 32 chữ cái và chỉ chứa ký tự chữ cái!',
+          rejectedReason: S.current.wordChainLengthError,
         ),
       );
       return;
@@ -334,12 +333,11 @@ class WordChainBloc extends BaseBloc<WordChainEvent, WordChainState> {
 
     final requiredLetter = state.gameState.requiredLetter.toLowerCase();
 
-    // 2. Kiểm tra chữ cái bắt đầu nếu ván đấu đã có chữ cái yêu cầu
     if (requiredLetter.isNotEmpty && !word.startsWith(requiredLetter)) {
       safeEmit(
         state.copyWith(
-          rejectedReason:
-              'Từ phải bắt đầu bằng chữ "${requiredLetter.toUpperCase()}"',
+          rejectedReason: S.current
+              .wordChainStartLetterError(requiredLetter.toUpperCase()),
         ),
       );
       return;
@@ -352,7 +350,7 @@ class WordChainBloc extends BaseBloc<WordChainEvent, WordChainState> {
     if (isUsed) {
       safeEmit(
         state.copyWith(
-          rejectedReason: 'Từ "$word" đã được dùng trước đó!',
+          rejectedReason: S.current.wordAlreadyUsed(word),
         ),
       );
       return;
@@ -386,7 +384,7 @@ class WordChainBloc extends BaseBloc<WordChainEvent, WordChainState> {
           safeEmit(
             state.copyWith(
               isCheckingWord: false,
-              rejectedReason: 'Lỗi gửi từ, vui lòng thử lại!',
+              rejectedReason: S.current.errorSendingWord,
             ),
           );
         },
@@ -418,7 +416,7 @@ class WordChainBloc extends BaseBloc<WordChainEvent, WordChainState> {
             state.copyWith(
               isCheckingWord: false,
               gameState: updatedState,
-              rejectedReason: 'Từ "$word" không có trong từ điển!',
+              rejectedReason: S.current.wordNotInDictionary(word),
             ),
           );
           return;
@@ -486,7 +484,7 @@ class WordChainBloc extends BaseBloc<WordChainEvent, WordChainState> {
           state.copyWith(
             isCheckingWord: false,
             gameState: state.gameState.copyWith(mistakes: currentMistakes),
-            rejectedReason: 'Từ "$word" không có trong từ điển!',
+            rejectedReason: S.current.wordNotInDictionary(word),
           ),
         );
       },
@@ -720,9 +718,8 @@ class WordChainBloc extends BaseBloc<WordChainEvent, WordChainState> {
       state.copyWith(
         isCheckingWord: false,
         rejectedReason: event.penalty > 0
-            ? 'Từ chưa hợp lệ hoặc đã dùng — '
-                  'không mất tim (phạt ${event.penalty}s)!'
-            : 'Từ chưa hợp lệ hoặc đã dùng — không mất tim',
+            ? S.current.invalidOrUsedWordPenalty(event.penalty)
+            : S.current.invalidOrUsedWordNoHeart,
       ),
     );
   }
@@ -838,7 +835,7 @@ class WordChainBloc extends BaseBloc<WordChainEvent, WordChainState> {
     safeEmit(
       state.copyWith(
         isOpponentLeft: true,
-        opponentLeftMessage: event.message ?? 'Đối thủ đã thoát khỏi trận đấu!',
+        opponentLeftMessage: event.message ?? S.current.opponentLeftMatch,
         isCheckingWord: false,
         isLoading: false,
       ),

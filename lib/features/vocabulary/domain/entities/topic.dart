@@ -63,10 +63,13 @@ extension TopicX on Topic {
       case 'nâng cao':
       case 'khó':
         return l10n.diffHard;
+      case 'auto':
+      case 'tự động':
+        return l10n.autoDifficulty;
       default:
         return difficulty.isNotEmpty
-            ? difficulty
-            : (isAuto ? l10n.multiTopic : l10n.diffEasy);
+            ? (isAuto ? l10n.autoDifficulty : difficulty)
+            : (isAuto ? l10n.autoDifficulty : l10n.diffEasy);
     }
   }
 

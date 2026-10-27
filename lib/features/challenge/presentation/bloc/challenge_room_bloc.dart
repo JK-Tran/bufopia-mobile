@@ -9,6 +9,7 @@ import 'package:bufopia/features/challenge/domain/usecases/get_room_info_use_cas
 import 'package:bufopia/features/challenge/domain/usecases/get_social_state_use_case.dart';
 import 'package:bufopia/features/challenge/domain/usecases/submit_social_accept_use_case.dart';
 import 'package:bufopia/features/challenge/domain/usecases/submit_social_invite_use_case.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
@@ -112,7 +113,7 @@ class ChallengeRoomBloc
     if (code.length < 6) {
       safeEmit(
         state.copyWith(
-          errorMessage: 'Vui lòng nhập đúng mã phòng gồm 6 chữ số!',
+          errorMessage: S.current.enterValid6DigitCode,
         ),
       );
       return null;
@@ -164,8 +165,8 @@ class ChallengeRoomBloc
         safeEmit(
           state.copyWith(
             successMessage: output.success
-                ? 'Đã gửi lời mời thi đấu thành công!'
-                : 'Chờ 10 giây trước khi gửi tiếp lời mời.',
+                ? S.current.inviteSentSuccess
+                : S.current.inviteCooldownWait,
           ),
         );
       },

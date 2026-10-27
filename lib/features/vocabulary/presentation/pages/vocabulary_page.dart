@@ -271,12 +271,14 @@ class _VocabularyPageState
 
     final isPaper = context.read<AppBloc>().state.isPaperTheme;
 
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
+
     AppGameDialog.show<void>(
       context: context,
       title: context.l10n.opponentLeftMatchTitle,
       icon: Icons.person_off_rounded,
-      maxWidth: 520.w,
-      maxHeight: 260.h,
+      maxWidth: isLandscape ? 380.0 : 310.w,
       backgroundColor: isPaper ? AppColors.paperCardBg : AppColors.white,
       borderColor: isPaper ? AppColors.paperBorder : AppColors.blueLight,
       headerGradientColors: isPaper
@@ -342,7 +344,6 @@ class _VocabularyPageState
           AppText.b2(
             context.l10n.opponentLeftMidwayDesc,
             color: isPaper ? AppColors.paperTextDark : AppColors.grayMedium,
-            fontWeight: FontWeight.w700,
             fontSize: 12.sp,
             textAlign: TextAlign.center,
           ),

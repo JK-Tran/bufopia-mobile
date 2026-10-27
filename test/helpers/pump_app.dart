@@ -18,6 +18,7 @@ extension PumpApp on WidgetTester {
     Widget widget, {
     AppBloc? appBloc,
     AuthBloc? authBloc,
+    Locale? locale,
   }) {
     final effectiveAppBloc = appBloc ?? MockAppBloc();
     final effectiveAuthBloc = authBloc ?? MockAuthBloc();
@@ -41,6 +42,7 @@ extension PumpApp on WidgetTester {
             DeviceConstants.designDeviceHeight,
           ),
           builder: (context, child) => MaterialApp(
+            locale: locale ?? const Locale('vi'),
             localizationsDelegates: AppLocalizations.localizationsDelegates,
             supportedLocales: AppLocalizations.supportedLocales,
             home: widget,

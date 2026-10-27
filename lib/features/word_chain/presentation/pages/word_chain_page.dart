@@ -13,6 +13,7 @@ import 'package:bufopia/features/word_chain/presentation/bloc/word_chain_bloc.da
 import 'package:bufopia/features/word_chain/presentation/widgets/dialog/word_chain_result_dialog.dart';
 import 'package:bufopia/features/word_chain/presentation/widgets/dialog/word_chain_surrender_dialog.dart';
 import 'package:bufopia/features/word_chain/presentation/widgets/word_chain_body.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:bufopia/shared/services/audio/app_audio_service.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -163,8 +164,8 @@ class _WordChainPageState extends State<WordChainPage> {
         }
         AppToast.showWarning(
           context,
-          'Đối thủ đã thoát khỏi trận đấu!',
-          title: 'TRẬN ĐẤU KẾT THÚC',
+          context.l10n.opponentLeftMatch,
+          title: context.l10n.matchResults,
         );
       }
     }
@@ -173,12 +174,14 @@ class _WordChainPageState extends State<WordChainPage> {
 
     final isPaper = context.read<AppBloc>().state.isPaperTheme;
 
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
+
     AppGameDialog.show<void>(
       context: context,
-      title: 'ĐỐI THỦ ĐÃ RỜI TRẬN',
+      title: context.l10n.opponentLeftMatchTitle,
       icon: Icons.person_off_rounded,
-      maxWidth: 520.w,
-      maxHeight: 260.h,
+      maxWidth: isLandscape ? 380.0 : 310.w,
       backgroundColor: isPaper ? AppColors.paperCardBg : AppColors.white,
       borderColor: isPaper ? AppColors.paperBorder : AppColors.blueLight,
       headerGradientColors: isPaper
@@ -203,7 +206,7 @@ class _WordChainPageState extends State<WordChainPage> {
               ),
             ]
           : null,
-      footerText: '⚡ Trận đấu kết thúc do đối thủ rời phòng ⚡',
+      footerText: context.l10n.matchEndedOpponentLeft,
       footerBackgroundColor: isPaper ? AppColors.paperSurface : null,
       footerBorderColor: isPaper ? AppColors.paperBorder : null,
       footerTextColor: isPaper ? AppColors.paperTextMedium : null,
@@ -241,7 +244,7 @@ class _WordChainPageState extends State<WordChainPage> {
               ),
               SizedBox(height: 8.h),
               AppText.t2(
-                'CHIẾN THẮNG DANH DỰ! 🏆',
+                context.l10n.honoraryVictory,
                 color: isPaper
                     ? AppColors.paperStreakFlame
                     : AppColors.orangeDark,
@@ -250,10 +253,8 @@ class _WordChainPageState extends State<WordChainPage> {
               ),
               SizedBox(height: 4.h),
               AppText.b2(
-                'Đối thủ đã thoát khỏi trận đấu giữa chừng.'
-                '\nChiến thắng thuộc về bạn!',
+                context.l10n.opponentLeftMidwayDesc,
                 color: isPaper ? AppColors.paperTextDark : AppColors.grayMedium,
-                fontWeight: FontWeight.w700,
                 fontSize: 12.sp,
                 textAlign: TextAlign.center,
               ),
@@ -373,157 +374,159 @@ class _WordChainPageState extends State<WordChainPage> {
           ),
           BlocListener<WordChainBloc, WordChainState>(
             listener: (context, state) {
-          // 1. Tự động đọc phát âm khi có từ mới trong chuỗi
-          if (state.gameState.messages.length > _lastMessageCount) {
-            _lastMessageCount = state.gameState.messages.length;
-            final latestMsg = state.gameState.messages.last;
-            final word = latestMsg.entry.word;
-            _handlePlayAudio(word);
-          } else if (state.gameState.messages.isEmpty) {
-            _lastMessageCount = 0;
-          }
-
-          // 2. Hiển thị thông báo lỗi nếu có
-          // (chỉ hiển thị 1 lần khi có lỗi mới)
-          if (state.errorMessage != null &&
-              state.errorMessage!.isNotEmpty &&
-              state.errorMessage != _lastErrorMessage) {
-            _lastErrorMessage = state.errorMessage;
-            AppToast.showError(context, state.errorMessage!);
-          } else if (state.errorMessage == null) {
-            _lastErrorMessage = null;
-          }
-
-          // 3. Đối thủ rời trận
-          if (state.isOpponentLeft &&
-              !_isOpponentLeftDialogShown &&
-              !_isExiting) {
-            if (_isResultDialogShown) {
-              _isResultDialogShown = false;
-              if (Navigator.of(context, rootNavigator: true).canPop()) {
-                Navigator.of(context, rootNavigator: true).pop();
+              // 1. Tự động đọc phát âm khi có từ mới trong chuỗi
+              if (state.gameState.messages.length > _lastMessageCount) {
+                _lastMessageCount = state.gameState.messages.length;
+                final latestMsg = state.gameState.messages.last;
+                final word = latestMsg.entry.word;
+                _handlePlayAudio(word);
+              } else if (state.gameState.messages.isEmpty) {
+                _lastMessageCount = 0;
               }
-            }
-            _showOpponentLeftDialog();
-          }
 
-          // 4. Quản lý trạng thái Dialog kết thúc ván đấu
-          if (!state.isGameOver) {
-            if (_isResultDialogShown) {
-              _isResultDialogShown = false;
-              if (Navigator.of(context, rootNavigator: true).canPop()) {
-                Navigator.of(context, rootNavigator: true).pop();
+              // 2. Hiển thị thông báo lỗi nếu có
+              // (chỉ hiển thị 1 lần khi có lỗi mới)
+              if (state.errorMessage != null &&
+                  state.errorMessage!.isNotEmpty &&
+                  state.errorMessage != _lastErrorMessage) {
+                _lastErrorMessage = state.errorMessage;
+                AppToast.showError(context, state.errorMessage!);
+              } else if (state.errorMessage == null) {
+                _lastErrorMessage = null;
               }
-            }
-          } else if (!_isResultDialogShown &&
-              !_isExiting &&
-              !state.isOpponentLeft) {
-            _isResultDialogShown = true;
-            final isWinner = state.gameState.winner == state.myPlayerIndex;
-            final myIdx = state.myPlayerIndex;
-            final allMsgs = state.gameState.messages;
-            final p1Msgs = allMsgs.where((m) => m.actor == myIdx).toList();
-            final p2Msgs = allMsgs.where((m) => m.actor != myIdx).toList();
-            final p1Words = p1Msgs.length;
-            final p2Words = p2Msgs.length;
-            final p1Mistakes = state.gameState.mistakes.isNotEmpty
-                ? state.gameState.mistakes[myIdx]
-                : 0;
-            final p2Mistakes = state.gameState.mistakes.length > 1
-                ? state.gameState.mistakes[1 - myIdx]
-                : 0;
-            final p1Total = p1Words + p1Mistakes;
-            final p2Total = p2Words + p2Mistakes;
-            final p1Acc = p1Total == 0
-                ? '0%'
-                : '${((p1Words / p1Total) * 100).toInt()}%';
-            final p2Acc = p2Total == 0
-                ? '0%'
-                : '${((p2Words / p2Total) * 100).toInt()}%';
-            final p1Lives = state.gameState.lives.isNotEmpty
-                ? (state.gameState.lives[myIdx] ?? 3)
-                : 3;
-            final p2Lives = state.gameState.lives.length > 1
-                ? (state.gameState.lives[1 - myIdx] ?? 3)
-                : 3;
 
-            String computeFastestTime(int actorIndex) {
-              final msgs = allMsgs.where((m) => m.actor == actorIndex).toList();
-              if (msgs.isEmpty) return '—';
-
-              double? minSeconds;
-              for (var i = 0; i < allMsgs.length; i++) {
-                final m = allMsgs[i];
-                if (m.actor != actorIndex) continue;
-                if (m.time <= 0) continue;
-
-                if (m.time < 120) {
-                  final s = m.time.toDouble();
-                  if (minSeconds == null || s < minSeconds) {
-                    minSeconds = s;
+              // 3. Đối thủ rời trận
+              if (state.isOpponentLeft &&
+                  !_isOpponentLeftDialogShown &&
+                  !_isExiting) {
+                if (_isResultDialogShown) {
+                  _isResultDialogShown = false;
+                  if (Navigator.of(context, rootNavigator: true).canPop()) {
+                    Navigator.of(context, rootNavigator: true).pop();
                   }
-                } else {
-                  final prevTime = (i > 0 && allMsgs[i - 1].time > 0)
-                      ? allMsgs[i - 1].time
-                      : state.gameState.turnStartedAt;
-                  if (prevTime > 0 && m.time > prevTime) {
-                    final s = (m.time - prevTime) / 1000.0;
-                    if (s > 0.3 && s < 60) {
+                }
+                _showOpponentLeftDialog();
+              }
+
+              // 4. Quản lý trạng thái Dialog kết thúc ván đấu
+              if (!state.isGameOver) {
+                if (_isResultDialogShown) {
+                  _isResultDialogShown = false;
+                  if (Navigator.of(context, rootNavigator: true).canPop()) {
+                    Navigator.of(context, rootNavigator: true).pop();
+                  }
+                }
+              } else if (!_isResultDialogShown &&
+                  !_isExiting &&
+                  !state.isOpponentLeft) {
+                _isResultDialogShown = true;
+                final isWinner = state.gameState.winner == state.myPlayerIndex;
+                final myIdx = state.myPlayerIndex;
+                final allMsgs = state.gameState.messages;
+                final p1Msgs = allMsgs.where((m) => m.actor == myIdx).toList();
+                final p2Msgs = allMsgs.where((m) => m.actor != myIdx).toList();
+                final p1Words = p1Msgs.length;
+                final p2Words = p2Msgs.length;
+                final p1Mistakes = state.gameState.mistakes.isNotEmpty
+                    ? state.gameState.mistakes[myIdx]
+                    : 0;
+                final p2Mistakes = state.gameState.mistakes.length > 1
+                    ? state.gameState.mistakes[1 - myIdx]
+                    : 0;
+                final p1Total = p1Words + p1Mistakes;
+                final p2Total = p2Words + p2Mistakes;
+                final p1Acc = p1Total == 0
+                    ? '0%'
+                    : '${((p1Words / p1Total) * 100).toInt()}%';
+                final p2Acc = p2Total == 0
+                    ? '0%'
+                    : '${((p2Words / p2Total) * 100).toInt()}%';
+                final p1Lives = state.gameState.lives.isNotEmpty
+                    ? (state.gameState.lives[myIdx] ?? 3)
+                    : 3;
+                final p2Lives = state.gameState.lives.length > 1
+                    ? (state.gameState.lives[1 - myIdx] ?? 3)
+                    : 3;
+
+                String computeFastestTime(int actorIndex) {
+                  final msgs = allMsgs
+                      .where((m) => m.actor == actorIndex)
+                      .toList();
+                  if (msgs.isEmpty) return '—';
+
+                  double? minSeconds;
+                  for (var i = 0; i < allMsgs.length; i++) {
+                    final m = allMsgs[i];
+                    if (m.actor != actorIndex) continue;
+                    if (m.time <= 0) continue;
+
+                    if (m.time < 120) {
+                      final s = m.time.toDouble();
                       if (minSeconds == null || s < minSeconds) {
                         minSeconds = s;
                       }
+                    } else {
+                      final prevTime = (i > 0 && allMsgs[i - 1].time > 0)
+                          ? allMsgs[i - 1].time
+                          : state.gameState.turnStartedAt;
+                      if (prevTime > 0 && m.time > prevTime) {
+                        final s = (m.time - prevTime) / 1000.0;
+                        if (s > 0.3 && s < 60) {
+                          if (minSeconds == null || s < minSeconds) {
+                            minSeconds = s;
+                          }
+                        }
+                      }
                     }
                   }
+
+                  if (minSeconds != null && minSeconds > 0) {
+                    return '${minSeconds.toStringAsFixed(1)}s';
+                  }
+                  return '—';
                 }
+
+                final p1Fastest = computeFastestTime(myIdx);
+                final p2Fastest = computeFastestTime(1 - myIdx);
+                final p1Streak = p1Words.toString();
+                final p2Streak = p2Words.toString();
+
+                WordChainResultDialog.show(
+                  context,
+                  bloc: _bloc,
+                  isWinner: isWinner,
+                  finishReason: state.gameState.finishReason,
+                  reward: state.reward,
+                  player1Name: myName,
+                  player1Avatar: myAvatar,
+                  player1Lives: p1Lives,
+                  player2Name: state.rivalName,
+                  player2Avatar: state.rivalAvatar,
+                  player2Lives: p2Lives,
+                  p1CorrectCount: p1Words,
+                  p2CorrectCount: p2Words,
+                  p1FastestTime: p1Fastest,
+                  p2FastestTime: p2Fastest,
+                  p1Accuracy: p1Acc,
+                  p2Accuracy: p2Acc,
+                  p1Streak: p1Streak,
+                  p2Streak: p2Streak,
+                  onRematch: () {
+                    _lastMessageCount = 0;
+                    _bloc.add(const WordChainEvent.requestRematch());
+                  },
+                  onBackHome: () {
+                    _isExiting = true;
+                    if (mounted && Navigator.of(context).canPop()) {
+                      Navigator.of(context).pop();
+                    }
+                  },
+                );
               }
-
-              if (minSeconds != null && minSeconds > 0) {
-                return '${minSeconds.toStringAsFixed(1)}s';
-              }
-              return '—';
-            }
-
-            final p1Fastest = computeFastestTime(myIdx);
-            final p2Fastest = computeFastestTime(1 - myIdx);
-            final p1Streak = p1Words.toString();
-            final p2Streak = p2Words.toString();
-
-            WordChainResultDialog.show(
-              context,
-              bloc: _bloc,
-              isWinner: isWinner,
-              finishReason: state.gameState.finishReason,
-              reward: state.reward,
-              player1Name: myName,
-              player1Avatar: myAvatar,
-              player1Lives: p1Lives,
-              player2Name: state.rivalName,
-              player2Avatar: state.rivalAvatar,
-              player2Lives: p2Lives,
-              p1CorrectCount: p1Words,
-              p2CorrectCount: p2Words,
-              p1FastestTime: p1Fastest,
-              p2FastestTime: p2Fastest,
-              p1Accuracy: p1Acc,
-              p2Accuracy: p2Acc,
-              p1Streak: p1Streak,
-              p2Streak: p2Streak,
-              onRematch: () {
-                _lastMessageCount = 0;
-                _bloc.add(const WordChainEvent.requestRematch());
-              },
-              onBackHome: () {
-                _isExiting = true;
-                if (mounted && Navigator.of(context).canPop()) {
-                  Navigator.of(context).pop();
-                }
-              },
-            );
-          }
-        },
-      ),
-    ],
-    child: PopScope(
+            },
+          ),
+        ],
+        child: PopScope(
           canPop: false,
           onPopInvokedWithResult: (didPop, _) {
             if (didPop) return;

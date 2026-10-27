@@ -12,17 +12,32 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class HomeFeedbackDialog extends StatelessWidget {
-  const HomeFeedbackDialog({super.key});
+export 'package:bufopia/features/home/presentation/widgets/home_header/feedback/feedback.dart';
 
-  static Future<void> show(BuildContext context) {
+class HomeFeedbackDialog extends StatelessWidget {
+  const HomeFeedbackDialog({this.initialWordEntry, super.key});
+
+  final FeedbackWordEntry? initialWordEntry;
+
+  static Future<void> show(
+    BuildContext context, {
+    FeedbackWordEntry? initialWordEntry,
+  }) {
     return showDialog<void>(
       context: context,
       barrierColor: AppColors.black.withValues(alpha: 0.5),
-      builder: (_) => BlocProvider(
-        create: (_) => sl<FeedbackBloc>()..add(const FeedbackEvent.initiated()),
-        child: const HomeFeedbackDialog(),
-      ),
+      builder: (_) {
+        final bloc = sl<FeedbackBloc>()..add(const FeedbackEvent.initiated());
+        if (initialWordEntry != null) {
+          bloc
+            ..add(const FeedbackEvent.tabChanged(FeedbackActiveTab.wordList))
+            ..add(FeedbackEvent.wordEntrySelected(initialWordEntry));
+        }
+        return BlocProvider(
+          create: (_) => bloc,
+          child: HomeFeedbackDialog(initialWordEntry: initialWordEntry),
+        );
+      },
     );
   }
 
@@ -33,6 +48,8 @@ class HomeFeedbackDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isPaper = context.select<AppBloc, bool>((b) => b.state.isPaperTheme);
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
 
     return BlocConsumer<FeedbackBloc, FeedbackState>(
       listenWhen: (prev, curr) =>
@@ -47,11 +64,15 @@ class HomeFeedbackDialog extends StatelessWidget {
             ? state.allWords
             : state.historyWords;
 
+        final dialogHeight = state.isSubmittedSuccess
+            ? (isLandscape ? 280.0 : 320.h)
+            : (isLandscape ? 330.0 : 560.h);
+
         return AppGameDialog(
           title: context.l10n.feedbackReport.toUpperCase(),
           icon: Icons.chat_bubble_rounded,
           maxWidth: 340.w,
-          maxHeight: state.isSubmittedSuccess ? 320.h : 560.h,
+          height: dialogHeight,
           isScrollable: false,
           footerText: context.l10n.feedbackFooter,
           padding: EdgeInsets.fromLTRB(10.w, 8.h, 10.w, 8.h),
@@ -103,16 +124,40 @@ class HomeFeedbackDialog extends StatelessWidget {
                       child: state.activeTab == FeedbackActiveTab.general
                           ? FeedbackTab(
                               isSubmitting: state.isSubmitting,
-                              onSubmit: ({
-                                required category,
-                                required message,
-                                contact,
-                              }) async => context.read<FeedbackBloc>().add(
-                                FeedbackEvent.submitGeneralFeedback(
-                                  category: category,
-                                  message: message,
-                                  contact: contact,
-                                ),
+                              onSubmit:
+                                  ({
+                                    required category,
+                                    required message,
+                                    contact,
+                                  }) async => context.read<FeedbackBloc>().add(
+                                    FeedbackEvent.submitGeneralFeedback(
+                                      category: category,
+                                      message: message,
+                                      contact: contact,
+                                    ),
+                                  ),
+                            )
+                          : state.selectedWordEntry != null
+                          ? FeedbackReport(
+                              entry: state.selectedWordEntry!,
+                              isSubmitting: state.isSubmitting,
+                              onBack: () => context.read<FeedbackBloc>().add(
+                                const FeedbackEvent.wordEntrySelected(null),
+                              ),
+                              onSubmit:
+                                  ({
+                                    required issueType,
+                                    required content,
+                                    contact,
+                                  }) async => context.read<FeedbackBloc>().add(
+                                    FeedbackEvent.submitWordReport(
+                                      issueType: issueType,
+                                      content: content,
+                                      contact: contact,
+                                    ),
+                                  ),
+                              onPlayAudio: () => _onPlayAudio(
+                                state.selectedWordEntry!.word,
                               ),
                             )
                           : state.isLoading
@@ -123,28 +168,6 @@ class HomeFeedbackDialog extends StatelessWidget {
                                 ),
                               ),
                             )
-                          : state.selectedWordEntry != null
-                          ? FeedbackReport(
-                              entry: state.selectedWordEntry!,
-                              isSubmitting: state.isSubmitting,
-                              onBack: () => context.read<FeedbackBloc>().add(
-                                const FeedbackEvent.wordEntrySelected(null),
-                              ),
-                              onSubmit: ({
-                                required issueType,
-                                required content,
-                                contact,
-                              }) async => context.read<FeedbackBloc>().add(
-                                FeedbackEvent.submitWordReport(
-                                  issueType: issueType,
-                                  content: content,
-                                  contact: contact,
-                                ),
-                              ),
-                              onPlayAudio: () => _onPlayAudio(
-                                state.selectedWordEntry!.word,
-                              ),
-                            )
                           : FeedbackWordList(
                               entries: displayEntries,
                               isFullDictionaryMode: state.isFullDictionaryMode,
@@ -153,9 +176,8 @@ class HomeFeedbackDialog extends StatelessWidget {
                                     FeedbackEvent.wordEntrySelected(entry),
                                   ),
                               onPlayAudio: _onPlayAudio,
-                              onSearchAllVocabulary: () => context
-                                  .read<FeedbackBloc>()
-                                  .add(
+                              onSearchAllVocabulary: () =>
+                                  context.read<FeedbackBloc>().add(
                                     const FeedbackEvent
                                         .toggleFullDictionaryMode(),
                                   ),

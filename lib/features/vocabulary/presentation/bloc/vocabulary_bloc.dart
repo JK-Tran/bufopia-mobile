@@ -16,6 +16,7 @@ import 'package:bufopia/features/vocabulary/domain/entities/match_record.dart';
 import 'package:bufopia/features/vocabulary/domain/usecases/get_battle_deck_use_case.dart';
 import 'package:bufopia/features/vocabulary/domain/usecases/submit_battle_reward_use_case.dart';
 import 'package:bufopia/features/vocabulary/domain/usecases/submit_match_result_use_case.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:bufopia/shared/services/audio/sound_manager.dart';
 import 'package:bufopia/shared/services/device/device_uid_service.dart';
 import 'package:bufopia/shared/services/firebase/firebase_auth_service.dart';
@@ -353,7 +354,7 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
           safeEmit(
             state.copyWith(
               isLoading: false,
-              errorMessage: 'Không thể tải bộ câu hỏi từ máy chủ',
+              errorMessage: S.current.cannotLoadQuestionsFromServer,
             ),
           );
           return;
@@ -948,7 +949,7 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
       safeEmit(
         state.copyWith(
           isLoading: false,
-          errorMessage: 'Lỗi đồng bộ bộ đề từ máy chủ: $e',
+          errorMessage: S.current.errorSyncingQuestions('$e'),
         ),
       );
     }
@@ -1289,7 +1290,7 @@ class VocabularyBloc extends BaseBloc<VocabularyEvent, VocabularyState> {
     safeEmit(
       state.copyWith(
         isOpponentLeft: true,
-        opponentLeftMessage: event.message ?? 'Đối thủ đã thoát khỏi trận đấu!',
+        opponentLeftMessage: event.message ?? S.current.opponentLeftMatch,
         isRoundLocked: true,
         isRematchRequested: false,
         isOpponentWantRematch: false,

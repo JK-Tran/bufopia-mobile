@@ -637,6 +637,12 @@ class AppLocalizationsEn extends AppLocalizations {
   String get useCloudDataOverwrite => 'Use cloud data (Overwrite)';
 
   @override
+  String get syncCloudSave => 'SYNC CLOUD SAVE';
+
+  @override
+  String get syncCloudPrompt => 'Sync this cloud save to continue your journey?';
+
+  @override
   String get weakWordsPractice => 'WEAK WORDS PRACTICE';
 
   @override
@@ -721,6 +727,14 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get opponentLeftTitle => 'OPPONENT LEFT';
+
+  @override
+  String opponentLeftPrompt(String rivalName) {
+    return 'Opponent ($rivalName) left the room. Do you want to end the match or continue playing solo?';
+  }
+
+  @override
+  String get continueSolo => 'Play Solo';
 
   @override
   String get honoraryVictory => 'HONORABLE VICTORY! 🏆';
@@ -1186,6 +1200,21 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get matchmakingCancelled => 'Matchmaking cancelled.';
+
+  @override
+  String get matchedOpponentFound => 'OPPONENT FOUND';
+
+  @override
+  String get readyToCompete => 'READY TO COMPETE';
+
+  @override
+  String get waitingForOpponentReadyDesc => 'Waiting for opponent to be ready...';
+
+  @override
+  String get preparingMatch => 'Preparing match...';
+
+  @override
+  String get preparingMatchDesc => 'You will enter the match as soon as connection and deck are ready.';
 
   @override
   String connectionError(String error) {
@@ -1940,4 +1969,147 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get posUnknown => 'Unspecified';
+
+  @override
+  String get autoDifficulty => 'Auto';
+
+  @override
+  String get settingsFooterWish => '⭐ Have a wonderful experience with Bufopia! ⭐';
+
+  @override
+  String get guest => 'Guest';
+
+  @override
+  String get noPracticeQuestionsFound => 'No matching practice question set found.';
+
+  @override
+  String errorLoadingPracticeQuestions(String error) {
+    return 'Error loading practice questions: $error';
+  }
+
+  @override
+  String get incorrectTryAgain => 'Incorrect, please try again!';
+
+  @override
+  String correctAddXp(int count) {
+    return 'Correct! +$count XP';
+  }
+
+  @override
+  String errorSubmittingAnswer(String error) {
+    return 'Error submitting answer: $error';
+  }
+
+  @override
+  String correctWordIs(String word) {
+    return 'Correct word: $word';
+  }
+
+  @override
+  String get completedAllPracticeQuestions => 'You have completed all practice questions!';
+
+  @override
+  String cannotConnectMatchmaking(String error) {
+    return 'Unable to connect to matchmaking: $error';
+  }
+
+  @override
+  String cannotConnectRoom(String error) {
+    return 'Unable to connect to the room: $error';
+  }
+
+  @override
+  String opponentGuessedFirstScore(String name) {
+    return '$name guessed correctly first · +1 point · next question!';
+  }
+
+  @override
+  String opponentGuessedFirstNext(String name) {
+    return '$name guessed correctly first. Moving to next question...';
+  }
+
+  @override
+  String get wordIncorrect => 'Incorrect word';
+
+  @override
+  String messageBlocked(String reason) {
+    return 'Message blocked: $reason';
+  }
+
+  @override
+  String skipVoteEnded(String reason) {
+    return 'Skip vote has ended ($reason)';
+  }
+
+  @override
+  String rewardReceivedXp(int xp) {
+    return 'Reward received: +$xp XP';
+  }
+
+  @override
+  String get botRivalName => 'Bot';
+
+  @override
+  String errorInitPracticeSession(String error) {
+    return 'Unable to initialize practice session: $error';
+  }
+
+  @override
+  String errorConnectMatchmaking(String error) {
+    return 'Connection error finding match: $error';
+  }
+
+  @override
+  String errorEnteringRoom(String error) {
+    return 'Error entering match room: $error';
+  }
+
+  @override
+  String get wordChainLengthError => 'Word must be between 2 and 32 letters and contain only alphabet letters!';
+
+  @override
+  String wordChainStartLetterError(String letter) {
+    return 'Word must start with letter \"$letter\"';
+  }
+
+  @override
+  String wordAlreadyUsed(String word) {
+    return 'Word \"$word\" has already been used!';
+  }
+
+  @override
+  String get errorSendingWord => 'Error sending word, please try again!';
+
+  @override
+  String wordNotInDictionary(String word) {
+    return 'Word \"$word\" is not in the dictionary!';
+  }
+
+  @override
+  String invalidOrUsedWordPenalty(int penalty) {
+    return 'Invalid or already used word — no lives lost (${penalty}s penalty)!';
+  }
+
+  @override
+  String get invalidOrUsedWordNoHeart => 'Invalid or already used word — no lives lost';
+
+  @override
+  String get cannotLoadQuestionsFromServer => 'Unable to load questions from server';
+
+  @override
+  String errorSyncingQuestions(String error) {
+    return 'Error syncing questions from server: $error';
+  }
+
+  @override
+  String get enterValidRoomCode => 'Please enter a valid 6-digit room code!';
+
+  @override
+  String get roomCreatedSuccess => 'Challenge room created successfully!';
+
+  @override
+  String get contributeWordSuccess => 'Word contributed successfully';
+
+  @override
+  String get updateWordSuccess => 'Word updated successfully';
 }

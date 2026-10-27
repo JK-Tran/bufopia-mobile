@@ -117,8 +117,8 @@ class VocabularyResultDialog extends StatelessWidget {
 
     final screenW = MediaQuery.of(context).size.width;
     final dialogWidth = isLandscape
-        ? 620.0
-        : (screenW - 20.w).clamp(320.0, 480.0);
+        ? 600.0
+        : (screenW - 32.w).clamp(310.0, 360.0);
     final dialogPadding = isLandscape
         ? const EdgeInsets.symmetric(horizontal: 16, vertical: 12)
         : EdgeInsets.symmetric(horizontal: 8.w, vertical: 14.h);

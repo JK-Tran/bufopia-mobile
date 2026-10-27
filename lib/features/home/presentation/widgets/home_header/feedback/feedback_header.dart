@@ -4,7 +4,7 @@ import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-enum FeedbackActiveTab { history, general }
+enum FeedbackActiveTab { history, general, wordList }
 
 class FeedbackHeader extends StatelessWidget {
   const FeedbackHeader({

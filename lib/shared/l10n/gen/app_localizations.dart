@@ -1291,6 +1291,18 @@ abstract class AppLocalizations {
   /// **'Use cloud data (Overwrite)'**
   String get useCloudDataOverwrite;
 
+  /// No description provided for @syncCloudSave.
+  ///
+  /// In en, this message translates to:
+  /// **'SYNC CLOUD SAVE'**
+  String get syncCloudSave;
+
+  /// No description provided for @syncCloudPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Sync this cloud save to continue your journey?'**
+  String get syncCloudPrompt;
+
   /// No description provided for @weakWordsPractice.
   ///
   /// In en, this message translates to:
@@ -1446,6 +1458,18 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'OPPONENT LEFT'**
   String get opponentLeftTitle;
+
+  /// No description provided for @opponentLeftPrompt.
+  ///
+  /// In en, this message translates to:
+  /// **'Opponent ({rivalName}) left the room. Do you want to end the match or continue playing solo?'**
+  String opponentLeftPrompt(String rivalName);
+
+  /// No description provided for @continueSolo.
+  ///
+  /// In en, this message translates to:
+  /// **'Play Solo'**
+  String get continueSolo;
 
   /// No description provided for @honoraryVictory.
   ///
@@ -2280,6 +2304,36 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Matchmaking cancelled.'**
   String get matchmakingCancelled;
+
+  /// No description provided for @matchedOpponentFound.
+  ///
+  /// In en, this message translates to:
+  /// **'OPPONENT FOUND'**
+  String get matchedOpponentFound;
+
+  /// No description provided for @readyToCompete.
+  ///
+  /// In en, this message translates to:
+  /// **'READY TO COMPETE'**
+  String get readyToCompete;
+
+  /// No description provided for @waitingForOpponentReadyDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'Waiting for opponent to be ready...'**
+  String get waitingForOpponentReadyDesc;
+
+  /// No description provided for @preparingMatch.
+  ///
+  /// In en, this message translates to:
+  /// **'Preparing match...'**
+  String get preparingMatch;
+
+  /// No description provided for @preparingMatchDesc.
+  ///
+  /// In en, this message translates to:
+  /// **'You will enter the match as soon as connection and deck are ready.'**
+  String get preparingMatchDesc;
 
   /// No description provided for @connectionError.
   ///
@@ -3648,6 +3702,216 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Unspecified'**
   String get posUnknown;
+
+  /// No description provided for @autoDifficulty.
+  ///
+  /// In en, this message translates to:
+  /// **'Auto'**
+  String get autoDifficulty;
+
+  /// No description provided for @settingsFooterWish.
+  ///
+  /// In en, this message translates to:
+  /// **'⭐ Have a wonderful experience with Bufopia! ⭐'**
+  String get settingsFooterWish;
+
+  /// No description provided for @guest.
+  ///
+  /// In en, this message translates to:
+  /// **'Guest'**
+  String get guest;
+
+  /// No description provided for @noPracticeQuestionsFound.
+  ///
+  /// In en, this message translates to:
+  /// **'No matching practice question set found.'**
+  String get noPracticeQuestionsFound;
+
+  /// No description provided for @errorLoadingPracticeQuestions.
+  ///
+  /// In en, this message translates to:
+  /// **'Error loading practice questions: {error}'**
+  String errorLoadingPracticeQuestions(String error);
+
+  /// No description provided for @incorrectTryAgain.
+  ///
+  /// In en, this message translates to:
+  /// **'Incorrect, please try again!'**
+  String get incorrectTryAgain;
+
+  /// No description provided for @correctAddXp.
+  ///
+  /// In en, this message translates to:
+  /// **'Correct! +{count} XP'**
+  String correctAddXp(int count);
+
+  /// No description provided for @errorSubmittingAnswer.
+  ///
+  /// In en, this message translates to:
+  /// **'Error submitting answer: {error}'**
+  String errorSubmittingAnswer(String error);
+
+  /// No description provided for @correctWordIs.
+  ///
+  /// In en, this message translates to:
+  /// **'Correct word: {word}'**
+  String correctWordIs(String word);
+
+  /// No description provided for @completedAllPracticeQuestions.
+  ///
+  /// In en, this message translates to:
+  /// **'You have completed all practice questions!'**
+  String get completedAllPracticeQuestions;
+
+  /// No description provided for @cannotConnectMatchmaking.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to connect to matchmaking: {error}'**
+  String cannotConnectMatchmaking(String error);
+
+  /// No description provided for @cannotConnectRoom.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to connect to the room: {error}'**
+  String cannotConnectRoom(String error);
+
+  /// No description provided for @opponentGuessedFirstScore.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} guessed correctly first · +1 point · next question!'**
+  String opponentGuessedFirstScore(String name);
+
+  /// No description provided for @opponentGuessedFirstNext.
+  ///
+  /// In en, this message translates to:
+  /// **'{name} guessed correctly first. Moving to next question...'**
+  String opponentGuessedFirstNext(String name);
+
+  /// No description provided for @wordIncorrect.
+  ///
+  /// In en, this message translates to:
+  /// **'Incorrect word'**
+  String get wordIncorrect;
+
+  /// No description provided for @messageBlocked.
+  ///
+  /// In en, this message translates to:
+  /// **'Message blocked: {reason}'**
+  String messageBlocked(String reason);
+
+  /// No description provided for @skipVoteEnded.
+  ///
+  /// In en, this message translates to:
+  /// **'Skip vote has ended ({reason})'**
+  String skipVoteEnded(String reason);
+
+  /// No description provided for @rewardReceivedXp.
+  ///
+  /// In en, this message translates to:
+  /// **'Reward received: +{xp} XP'**
+  String rewardReceivedXp(int xp);
+
+  /// No description provided for @botRivalName.
+  ///
+  /// In en, this message translates to:
+  /// **'Bot'**
+  String get botRivalName;
+
+  /// No description provided for @errorInitPracticeSession.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to initialize practice session: {error}'**
+  String errorInitPracticeSession(String error);
+
+  /// No description provided for @errorConnectMatchmaking.
+  ///
+  /// In en, this message translates to:
+  /// **'Connection error finding match: {error}'**
+  String errorConnectMatchmaking(String error);
+
+  /// No description provided for @errorEnteringRoom.
+  ///
+  /// In en, this message translates to:
+  /// **'Error entering match room: {error}'**
+  String errorEnteringRoom(String error);
+
+  /// No description provided for @wordChainLengthError.
+  ///
+  /// In en, this message translates to:
+  /// **'Word must be between 2 and 32 letters and contain only alphabet letters!'**
+  String get wordChainLengthError;
+
+  /// No description provided for @wordChainStartLetterError.
+  ///
+  /// In en, this message translates to:
+  /// **'Word must start with letter \"{letter}\"'**
+  String wordChainStartLetterError(String letter);
+
+  /// No description provided for @wordAlreadyUsed.
+  ///
+  /// In en, this message translates to:
+  /// **'Word \"{word}\" has already been used!'**
+  String wordAlreadyUsed(String word);
+
+  /// No description provided for @errorSendingWord.
+  ///
+  /// In en, this message translates to:
+  /// **'Error sending word, please try again!'**
+  String get errorSendingWord;
+
+  /// No description provided for @wordNotInDictionary.
+  ///
+  /// In en, this message translates to:
+  /// **'Word \"{word}\" is not in the dictionary!'**
+  String wordNotInDictionary(String word);
+
+  /// No description provided for @invalidOrUsedWordPenalty.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid or already used word — no lives lost ({penalty}s penalty)!'**
+  String invalidOrUsedWordPenalty(int penalty);
+
+  /// No description provided for @invalidOrUsedWordNoHeart.
+  ///
+  /// In en, this message translates to:
+  /// **'Invalid or already used word — no lives lost'**
+  String get invalidOrUsedWordNoHeart;
+
+  /// No description provided for @cannotLoadQuestionsFromServer.
+  ///
+  /// In en, this message translates to:
+  /// **'Unable to load questions from server'**
+  String get cannotLoadQuestionsFromServer;
+
+  /// No description provided for @errorSyncingQuestions.
+  ///
+  /// In en, this message translates to:
+  /// **'Error syncing questions from server: {error}'**
+  String errorSyncingQuestions(String error);
+
+  /// No description provided for @enterValidRoomCode.
+  ///
+  /// In en, this message translates to:
+  /// **'Please enter a valid 6-digit room code!'**
+  String get enterValidRoomCode;
+
+  /// No description provided for @roomCreatedSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Challenge room created successfully!'**
+  String get roomCreatedSuccess;
+
+  /// No description provided for @contributeWordSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Word contributed successfully'**
+  String get contributeWordSuccess;
+
+  /// No description provided for @updateWordSuccess.
+  ///
+  /// In en, this message translates to:
+  /// **'Word updated successfully'**
+  String get updateWordSuccess;
 }
 
 class _AppLocalizationsDelegate extends LocalizationsDelegate<AppLocalizations> {
