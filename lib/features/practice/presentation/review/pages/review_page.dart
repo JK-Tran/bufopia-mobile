@@ -1,8 +1,5 @@
-import 'package:bufopia/components/app_button.dart';
-import 'package:bufopia/components/app_icon_button.dart';
 import 'package:bufopia/components/app_toast.dart';
 import 'package:bufopia/core/base/base_page_state.dart';
-import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/router/app_router.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
@@ -13,8 +10,9 @@ import 'package:bufopia/features/practice/domain/entities/word_memory.dart';
 import 'package:bufopia/features/practice/presentation/review/bloc/review_bloc.dart';
 import 'package:bufopia/features/practice/presentation/review/pages/review_practice_page.dart';
 import 'package:bufopia/features/practice/presentation/review/widgets/dialog/pronunciation_assessment_dialog.dart';
-import 'package:bufopia/features/practice/presentation/review/widgets/review_header.dart';
+import 'package:bufopia/features/practice/presentation/review/widgets/review_action_row.dart';
 import 'package:bufopia/features/practice/presentation/review/widgets/review_player_card.dart';
+import 'package:bufopia/features/practice/presentation/review/widgets/review_top_bar.dart';
 import 'package:bufopia/features/practice/presentation/review/widgets/review_word_grid.dart';
 import 'package:bufopia/features/vocabulary/domain/entities/word.dart';
 import 'package:bufopia/shared/l10n/l10n.dart';
@@ -42,6 +40,17 @@ class _ReviewPageState extends BasePageState<ReviewPage, ReviewBloc> {
   void initState() {
     super.initState();
     bloc.add(const ReviewEvent.init());
+  }
+
+  void _onBack() {
+    context.read<AppBloc>().add(
+      const AppEvent.clickSoundPlayed(),
+    );
+    if (context.canPop()) {
+      context.pop();
+    } else {
+      context.go(AppRouter.home);
+    }
   }
 
   void _onStartPractice(
@@ -137,65 +146,12 @@ class _ReviewPageState extends BasePageState<ReviewPage, ReviewBloc> {
                   child: Column(
                     children: [
                       // 1. Top Bar
-                      Row(
-                        children: [
-                          AppIconButton(
-                            icon: Icons.arrow_back_ios_new_rounded,
-                            tooltip: context.l10n.back,
-                            size: 36.r,
-                            iconSize: 18.r,
-                            backgroundColor: isPaper
-                                ? AppColors.paperCardBg
-                                : AppColors.white,
-                            iconColor: isPaper
-                                ? AppColors.paperTextDark
-                                : AppColors.grayDark,
-                            borderColor: isPaper
-                                ? AppColors.paperBorder
-                                : AppColors.grayLight,
-                            extrusionColor: isPaper
-                                ? AppColors.paperExtrusion
-                                : AppColors.grayExtrusion,
-                            extrusionHeight: 2.5,
-                            onPressed: () {
-                              context.read<AppBloc>().add(
-                                const AppEvent.clickSoundPlayed(),
-                              );
-                              if (context.canPop()) {
-                                context.pop();
-                              } else {
-                                context.go(AppRouter.home);
-                              }
-                            },
-                          ),
-
-                          Expanded(
-                            child: Center(
-                              child: ReviewHeader(isPaperTheme: isPaper),
-                            ),
-                          ),
-
-                          AppIconButton(
-                            icon: Icons.settings_rounded,
-                            tooltip: context.l10n.settings,
-                            size: 36.r,
-                            iconSize: 18.r,
-                            backgroundColor: isPaper
-                                ? AppColors.paperCardBg
-                                : AppColors.white,
-                            iconColor: isPaper
-                                ? AppColors.paperHeaderIcon
-                                : AppColors.sky,
-                            borderColor: isPaper
-                                ? AppColors.paperBorder
-                                : AppColors.grayLight,
-                            extrusionColor: isPaper
-                                ? AppColors.paperExtrusion
-                                : AppColors.grayExtrusion,
-                            extrusionHeight: 2.5,
-                            onPressed: () => HomeSettingsDialog.show(context),
-                          ),
-                        ],
+                      ReviewTopBar(
+                        isPaperTheme: isPaper,
+                        onBackPressed: _onBack,
+                        onSettingsPressed: () => HomeSettingsDialog.show(
+                          context,
+                        ),
                       ),
 
                       SizedBox(height: 10.h),
@@ -259,199 +215,17 @@ class _ReviewPageState extends BasePageState<ReviewPage, ReviewBloc> {
                                   SizedBox(height: 10.h),
 
                                   // 2.2 Action Row (Title + Buttons)
-                                  LayoutBuilder(
-                                    builder: (context, constraints) {
-                                      final isCompact =
-                                          constraints.maxWidth < 560;
-
-                                      final saveButton = AppButton(
-                                        text: isCompact
-                                            ? context.l10n.saveAllToVault
-                                            : '${context.l10n.saveAllToVault} '
-                                                  '(${weakWords.length})',
-                                        icon: Icon(
-                                          Icons.bookmark_border_rounded,
-                                          size: 15.r,
-                                          color: isPaper
-                                              ? AppColors.paperTextDark
-                                              : AppColors.grayDark,
-                                        ),
-                                        height: 36.h,
-                                        fontSize: 12.sp,
-                                        backgroundColor: isPaper
-                                            ? AppColors.paperSurface
-                                            : AppColors.white,
-                                        borderColor: isPaper
-                                            ? AppColors.paperBorder
-                                            : AppColors.grayLight,
-                                        extrusionColor: isPaper
-                                            ? AppColors.paperExtrusion
-                                            : AppColors.grayExtrusion,
-                                        textColor: isPaper
-                                            ? AppColors.paperTextDark
-                                            : AppColors.grayDark,
-                                        extrusionHeight: 2.5,
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: 10.w,
-                                        ),
-                                        onPressed: () => _onSaveToInventory(
-                                          weakWords.length,
-                                        ),
-                                      );
-
-                                      final practiceButton = AppButton(
-                                        text: context.l10n.startPracticing,
-                                        icon: Icon(
-                                          Icons.auto_stories_rounded,
-                                          size: 16.r,
-                                          color: AppColors.white,
-                                        ),
-                                        height: 36.h,
-                                        fontSize: 12.sp,
-                                        extrusionHeight: 2.5,
-                                        backgroundColor: isPaper
-                                            ? AppColors.paperGreen
-                                            : AppColors.greenDark,
-                                        borderColor: isPaper
-                                            ? AppColors.paperGreenBorder
-                                            : AppColors.greenLight,
-                                        extrusionColor: isPaper
-                                            ? AppColors.paperGreenExtrusion
-                                            : AppColors.green,
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: 12.w,
-                                        ),
-                                        onPressed: () => _onStartPractice(
-                                          weakWords,
-                                          state.vocabMap,
-                                          state.uid,
-                                          state.token,
-                                        ),
-                                      );
-
-                                      final isZero = weakWords.isEmpty;
-                                      final Color badgeBg;
-                                      final Color badgeBorder;
-                                      final Color badgeTextColor;
-
-                                      if (isPaper) {
-                                        badgeBg = isZero
-                                            ? AppColors.feedbackSuccessBg
-                                            : AppColors.paperAmberBadgeBg;
-                                        badgeBorder = isZero
-                                            ? AppColors.feedbackSuccessBorder
-                                            : AppColors.paperAmberBadgeBorder;
-                                        badgeTextColor = isZero
-                                            ? AppColors.feedbackSuccessIcon
-                                            : AppColors.paperAmberBadgeText;
-                                      } else {
-                                        badgeBg = isZero
-                                            ? AppColors.topicEasyBg
-                                            : AppColors.topicMediumBg;
-                                        badgeBorder = isZero
-                                            ? AppColors.greenLight
-                                            : AppColors.orangeLight;
-                                        badgeTextColor = isZero
-                                            ? AppColors.greenDark
-                                            : AppColors.orangeDark;
-                                      }
-
-                                      if (isCompact) {
-                                        return Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.stretch,
-                                          children: [
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Row(
-                                                  mainAxisSize:
-                                                      MainAxisSize.min,
-                                                  children: [
-                                                    AppText.t3(
-                                                      context.l10n
-                                                          .weakWordsList(
-                                                            weakWords.length,
-                                                          ),
-                                                      color: isPaper
-                                                          ? AppColors
-                                                                .paperTextDark
-                                                          : AppColors.grayDark,
-                                                      fontWeight:
-                                                          FontWeight.w700,
-                                                    ),
-                                                    SizedBox(width: 8.w),
-                                                    Container(
-                                                      padding:
-                                                          EdgeInsets.symmetric(
-                                                            horizontal: 8.w,
-                                                            vertical: 2.h,
-                                                          ),
-                                                      decoration: BoxDecoration(
-                                                        color: badgeBg,
-                                                        borderRadius:
-                                                            BorderRadius.circular(
-                                                              10.r,
-                                                            ),
-                                                        border: Border.all(
-                                                          color: badgeBorder,
-                                                          width: 1.w,
-                                                        ),
-                                                      ),
-                                                      child: AppText.c1(
-                                                        '${weakWords.length}',
-                                                        color: badgeTextColor,
-                                                        fontWeight:
-                                                            FontWeight.w700,
-                                                        fontSize: 12.sp,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
-                                            ),
-                                            SizedBox(height: 8.h),
-                                            Row(
-                                              children: [
-                                                Expanded(
-                                                  flex: 4,
-                                                  child: saveButton,
-                                                ),
-                                                SizedBox(width: 8.w),
-                                                Expanded(
-                                                  flex: 5,
-                                                  child: practiceButton,
-                                                ),
-                                              ],
-                                            ),
-                                          ],
-                                        );
-                                      }
-
-                                      // Web Landscape / Desktop: Wide single-line layout
-                                      return Row(
-                                        children: [
-                                          Expanded(
-                                            child: AppText.t3(
-                                              context.l10n.weakWordsList(
-                                                weakWords.length,
-                                              ),
-                                              color: isPaper
-                                                  ? AppColors.paperTextDark
-                                                  : AppColors.grayDark,
-                                              fontWeight: FontWeight.w700,
-                                              overflow: TextOverflow.ellipsis,
-                                            ),
-                                          ),
-                                          SizedBox(width: 10.w),
-                                          saveButton,
-                                          SizedBox(width: 10.w),
-                                          practiceButton,
-                                        ],
-                                      );
-                                    },
+                                  ReviewActionRow(
+                                    weakWordsCount: weakWords.length,
+                                    isPaperTheme: isPaper,
+                                    onSaveToInventory: () =>
+                                        _onSaveToInventory(weakWords.length),
+                                    onStartPractice: () => _onStartPractice(
+                                      weakWords,
+                                      state.vocabMap,
+                                      state.uid,
+                                      state.token,
+                                    ),
                                   ),
 
                                   SizedBox(height: 6.h),

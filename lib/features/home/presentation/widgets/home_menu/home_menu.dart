@@ -1,7 +1,7 @@
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
 import 'package:bufopia/features/home/presentation/widgets/home_menu/home_menu_item.dart';
-import 'package:bufopia/features/practice/presentation/widgets/study_hub_dialog.dart';
+import 'package:bufopia/features/practice/presentation/dialog/study_hub_dialog.dart';
 import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

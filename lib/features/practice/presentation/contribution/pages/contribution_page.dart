@@ -105,6 +105,11 @@ class _ContributionPageState
     });
   }
 
+  void _onTabChanged(int index) {
+    context.read<AppBloc>().add(const AppEvent.clickSoundPlayed());
+    setState(() => _activeTabIndex = index);
+  }
+
   @override
   Widget buildPage(BuildContext context) {
     final isPaper = context.select<AppBloc, bool>((b) => b.state.isPaperTheme);
@@ -258,7 +263,6 @@ class _ContributionPageState
                                 );
                               }
 
-                              // Mobile Portrait: Segmented Switcher + Active Tab
                               return _buildOuterCard(
                                 isPaper: isPaper,
                                 child: Column(
@@ -281,14 +285,7 @@ class _ContributionPageState
                                               isPaper: isPaper,
                                               icon: Icons
                                                   .add_circle_outline_rounded,
-                                              onTap: () {
-                                                context.read<AppBloc>().add(
-                                                  const AppEvent.clickSoundPlayed(),
-                                                );
-                                                setState(
-                                                  () => _activeTabIndex = 0,
-                                                );
-                                              },
+                                              onTap: () => _onTabChanged(0),
                                             ),
                                           ),
                                           SizedBox(width: 8.w),
@@ -301,14 +298,7 @@ class _ContributionPageState
                                               isSelected: _activeTabIndex == 1,
                                               isPaper: isPaper,
                                               icon: Icons.history_rounded,
-                                              onTap: () {
-                                                context.read<AppBloc>().add(
-                                                  const AppEvent.clickSoundPlayed(),
-                                                );
-                                                setState(
-                                                  () => _activeTabIndex = 1,
-                                                );
-                                              },
+                                              onTap: () => _onTabChanged(1),
                                             ),
                                           ),
                                         ],

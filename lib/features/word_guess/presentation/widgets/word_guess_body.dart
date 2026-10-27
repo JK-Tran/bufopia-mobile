@@ -302,7 +302,7 @@ class WordGuessBody extends StatelessWidget {
                                           isPaperTheme: isPaper,
                                         ),
 
-                                        // Banner biểu quyết Bỏ qua (Phòng đối kháng)
+                                        // Banner biểu quyết Bỏ qua
                                         if (!isSolo &&
                                             state.gameState.activeProposal !=
                                                 null) ...[
@@ -340,7 +340,7 @@ class WordGuessBody extends StatelessWidget {
                                   ),
                                 ),
 
-                                // ── C. Đáy bàn đấu: Thanh dock nhập từ ──────────
+                                // C. Đáy bàn đấu: Thanh dock nhập từ
                                 WordGuessInputBar(
                                   controller: textController,
                                   focusNode: focusNode,
