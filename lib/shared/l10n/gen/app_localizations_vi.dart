@@ -1636,6 +1636,37 @@ class AppLocalizationsVi extends AppLocalizations {
   }
 
   @override
+  String get cannotOpenCameraPermission => 'Không thể mở máy ảnh. Vui lòng cấp quyền truy cập máy ảnh trong Cài đặt.';
+
+  @override
+  String get noCameraAvailable => 'Không tìm thấy máy ảnh khả dụng.';
+
+  @override
+  String cameraInitError(String error) {
+    return 'Lỗi khởi động máy ảnh: $error';
+  }
+
+  @override
+  String takePictureError(String error) {
+    return 'Chụp ảnh thất bại: $error';
+  }
+
+  @override
+  String get retake => 'Chụp lại';
+
+  @override
+  String get useThisPhoto => 'Dùng ảnh này';
+
+  @override
+  String get alignFaceInCircle => 'Căn khuôn mặt vào hình tròn';
+
+  @override
+  String get toggleFlash => 'Bật/tắt đèn flash';
+
+  @override
+  String get switchCamera => 'Đổi máy ảnh';
+
+  @override
   String get nameRequiredOnline => 'Vui lòng đặt tên hiển thị (2–25 ký tự) trước khi tham gia đấu Online!';
 
   @override

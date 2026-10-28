@@ -1,5 +1,6 @@
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -45,7 +46,7 @@ class CameraAvatarGuide extends StatelessWidget {
                 ),
               ),
               child: AppText.b2(
-                'Căn khuôn mặt vào hình tròn',
+                context.l10n.alignFaceInCircle,
                 color: AppColors.white.withValues(alpha: 0.9),
               ),
             ),

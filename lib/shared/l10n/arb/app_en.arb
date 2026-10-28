@@ -882,6 +882,25 @@
       "count": { "type": "int" }
     }
   },
+  "cannotOpenCameraPermission": "Cannot open camera. Please grant camera permission in Settings.",
+  "noCameraAvailable": "No available camera found.",
+  "cameraInitError": "Camera initialization error: {error}",
+  "@cameraInitError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "takePictureError": "Failed to take picture: {error}",
+  "@takePictureError": {
+    "placeholders": {
+      "error": { "type": "String" }
+    }
+  },
+  "retake": "Retake",
+  "useThisPhoto": "Use this photo",
+  "alignFaceInCircle": "Align face inside the circle",
+  "toggleFlash": "Toggle flash",
+  "switchCamera": "Switch camera",
 
   "nameRequiredOnline": "Please enter a display name (2–25 characters) before joining Online match!",
   "nameInvalidNotice": "Invalid name. Please use 2–25 characters and avoid default names.",

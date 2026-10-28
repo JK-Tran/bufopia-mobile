@@ -3073,6 +3073,60 @@ abstract class AppLocalizations {
   /// **'{count} photos'**
   String albumPhotosCount(int count);
 
+  /// No description provided for @cannotOpenCameraPermission.
+  ///
+  /// In en, this message translates to:
+  /// **'Cannot open camera. Please grant camera permission in Settings.'**
+  String get cannotOpenCameraPermission;
+
+  /// No description provided for @noCameraAvailable.
+  ///
+  /// In en, this message translates to:
+  /// **'No available camera found.'**
+  String get noCameraAvailable;
+
+  /// No description provided for @cameraInitError.
+  ///
+  /// In en, this message translates to:
+  /// **'Camera initialization error: {error}'**
+  String cameraInitError(String error);
+
+  /// No description provided for @takePictureError.
+  ///
+  /// In en, this message translates to:
+  /// **'Failed to take picture: {error}'**
+  String takePictureError(String error);
+
+  /// No description provided for @retake.
+  ///
+  /// In en, this message translates to:
+  /// **'Retake'**
+  String get retake;
+
+  /// No description provided for @useThisPhoto.
+  ///
+  /// In en, this message translates to:
+  /// **'Use this photo'**
+  String get useThisPhoto;
+
+  /// No description provided for @alignFaceInCircle.
+  ///
+  /// In en, this message translates to:
+  /// **'Align face inside the circle'**
+  String get alignFaceInCircle;
+
+  /// No description provided for @toggleFlash.
+  ///
+  /// In en, this message translates to:
+  /// **'Toggle flash'**
+  String get toggleFlash;
+
+  /// No description provided for @switchCamera.
+  ///
+  /// In en, this message translates to:
+  /// **'Switch camera'**
+  String get switchCamera;
+
   /// No description provided for @nameRequiredOnline.
   ///
   /// In en, this message translates to:

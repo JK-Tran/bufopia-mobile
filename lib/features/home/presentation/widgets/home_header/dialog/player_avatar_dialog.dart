@@ -1,9 +1,10 @@
-﻿import 'package:bufopia/components/components.dart';
+import 'package:bufopia/components/components.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
 import 'package:bufopia/features/home/presentation/pages/camera_page.dart';
 import 'package:bufopia/features/home/presentation/widgets/home_header/dialog/player_gallery_picker_dialog.dart';
+import 'package:bufopia/features/home/presentation/widgets/home_header/dialog/player_photo_crop_dialog.dart';
 import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -41,14 +42,20 @@ class PlayerAvatarDialog extends StatelessWidget {
     try {
       final file = await CameraPage.open(context);
       if (file != null && context.mounted) {
-        Navigator.of(context).pop(file.path);
+        final croppedPath = await PlayerPhotoCropDialog.show(
+          context,
+          imagePath: file.path,
+          isNetworkOrAsset: false,
+        );
+        if (croppedPath != null && context.mounted) {
+          Navigator.of(context).pop(croppedPath);
+        }
       }
     } on Object {
       if (context.mounted) {
         AppToast.showWarning(
           context,
-          'KhÃ´ng thá»ƒ má»Ÿ mÃ¡y áº£nh. '
-          'Vui lÃ²ng cáº¥p quyá»n truy cáº­p mÃ¡y áº£nh trong CÃ i Ä‘áº·t.',
+          context.l10n.cannotOpenCameraPermission,
         );
       }
     }
@@ -57,7 +64,6 @@ class PlayerAvatarDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isPaper = context.select<AppBloc, bool>((b) => b.state.isPaperTheme);
-
     final l10n = context.l10n;
 
     return AppGameDialog(

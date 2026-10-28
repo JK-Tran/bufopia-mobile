@@ -1,5 +1,6 @@
 import 'package:bufopia/components/app_button.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
@@ -32,7 +33,7 @@ class CameraPreviewControls extends StatelessWidget {
           // Nút Chụp lại (AppButton.secondary chuẩn 3D Game)
           Expanded(
             child: AppButton.secondary(
-              text: 'Chụp lại',
+              text: context.l10n.retake,
               icon: Icon(
                 Icons.refresh_rounded,
                 size: 18.r,
@@ -46,7 +47,7 @@ class CameraPreviewControls extends StatelessWidget {
           // Nút Dùng ảnh này (AppButton.primary chuẩn 3D Game)
           Expanded(
             child: AppButton.primary(
-              text: 'Dùng ảnh này',
+              text: context.l10n.useThisPhoto,
               icon: Icon(
                 Icons.check_circle_rounded,
                 size: 18.r,

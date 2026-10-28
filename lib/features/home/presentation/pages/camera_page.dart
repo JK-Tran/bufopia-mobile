@@ -5,6 +5,7 @@ import 'package:bufopia/core/base/base_page_state.dart';
 import 'package:bufopia/core/base/default_bloc.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
+import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -89,7 +90,7 @@ class _CameraPageState extends BasePageState<CameraPage, DefaultBloc>
       if (!mounted) return;
 
       if (_cameras.isEmpty) {
-        AppToast.showWarning(context, 'Không tìm thấy camera khả dụng.');
+        AppToast.showWarning(context, context.l10n.noCameraAvailable);
         return;
       }
 
@@ -126,7 +127,10 @@ class _CameraPageState extends BasePageState<CameraPage, DefaultBloc>
       }
     } on Object catch (e) {
       if (mounted) {
-        AppToast.showWarning(context, 'Lỗi khởi động máy ảnh: $e');
+        AppToast.showWarning(
+          context,
+          context.l10n.cameraInitError(e.toString()),
+        );
       }
     }
   }
@@ -205,7 +209,10 @@ class _CameraPageState extends BasePageState<CameraPage, DefaultBloc>
     } on CameraException catch (e) {
       if (mounted) {
         setState(() => _isCapturing = false);
-        AppToast.showWarning(context, 'Chụp ảnh thất bại: ${e.description}');
+        AppToast.showWarning(
+          context,
+          context.l10n.takePictureError(e.description ?? e.code),
+        );
       }
     }
   }
@@ -316,6 +323,7 @@ class _CameraPageState extends BasePageState<CameraPage, DefaultBloc>
                   children: [
                     // Nút Đóng
                     _buildRoundTopButton(
+                      tooltip: context.l10n.close,
                       icon: Icons.close,
                       onPressed: () => Navigator.of(context).pop(),
                       size: 24,
@@ -323,6 +331,7 @@ class _CameraPageState extends BasePageState<CameraPage, DefaultBloc>
                     const Spacer(),
                     // Nút Flash
                     _buildRoundTopButton(
+                      tooltip: context.l10n.toggleFlash,
                       icon: _getFlashIcon(),
                       color: _currentFlashMode == FlashMode.off
                           ? Colors.white
@@ -334,6 +343,7 @@ class _CameraPageState extends BasePageState<CameraPage, DefaultBloc>
                       SizedBox(width: 12.w),
                       // Nút Lật Camera
                       _buildRoundTopButton(
+                        tooltip: context.l10n.switchCamera,
                         icon: Icons.cameraswitch,
                         onPressed: _switchCamera,
                         size: 24,
@@ -354,48 +364,54 @@ class _CameraPageState extends BasePageState<CameraPage, DefaultBloc>
               child: Container(
                 padding: EdgeInsets.symmetric(vertical: 32.h),
                 child: Center(
-                  child: GestureDetector(
-                    onTap: _isCapturing ? null : _takePicture,
-                    child: Container(
-                      width: 74.r,
-                      height: 74.r,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(
-                          color: Colors.white,
-                          width: 4.w,
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.45),
-                            blurRadius: 10.r,
-                            spreadRadius: 1.r,
+                  child: Semantics(
+                    button: true,
+                    label: context.l10n.takePhoto,
+                    child: GestureDetector(
+                      onTap: _isCapturing ? null : _takePicture,
+                      child: Container(
+                        width: 74.r,
+                        height: 74.r,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          border: Border.all(
+                            color: Colors.white,
+                            width: 4.w,
                           ),
-                        ],
-                      ),
-                      child: _isCapturing
-                          ? const Padding(
-                              padding: EdgeInsets.all(12),
-                              child: CircularProgressIndicator(
-                                strokeWidth: 3,
-                                valueColor: AlwaysStoppedAnimation<Color>(
-                                  Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.45),
+                              blurRadius: 10.r,
+                              spreadRadius: 1.r,
+                            ),
+                          ],
+                        ),
+                        child: _isCapturing
+                            ? const Padding(
+                                padding: EdgeInsets.all(12),
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 3,
+                                  valueColor: AlwaysStoppedAnimation<Color>(
+                                    Colors.white,
+                                  ),
+                                ),
+                              )
+                            : Container(
+                                margin: EdgeInsets.all(4.r),
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: Colors.white,
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withValues(
+                                        alpha: 0.2,
+                                      ),
+                                      blurRadius: 4.r,
+                                    ),
+                                  ],
                                 ),
                               ),
-                            )
-                          : Container(
-                              margin: EdgeInsets.all(4.r),
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.white,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withValues(alpha: 0.2),
-                                    blurRadius: 4.r,
-                                  ),
-                                ],
-                              ),
-                            ),
+                      ),
                     ),
                   ),
                 ),
@@ -476,6 +492,7 @@ class _CameraPageState extends BasePageState<CameraPage, DefaultBloc>
                 child: Row(
                   children: [
                     _buildRoundTopButton(
+                      tooltip: context.l10n.close,
                       icon: Icons.close,
                       onPressed: () => Navigator.of(context).pop(),
                       size: 24,
@@ -533,7 +550,7 @@ class _CameraPageState extends BasePageState<CameraPage, DefaultBloc>
                             ),
                             SizedBox(width: 8.w),
                             AppText.b1(
-                              'Chụp lại',
+                              context.l10n.retake,
                               color: Colors.white,
                               fontWeight: FontWeight.w600,
                             ),
@@ -571,7 +588,7 @@ class _CameraPageState extends BasePageState<CameraPage, DefaultBloc>
                             ),
                             SizedBox(width: 8.w),
                             AppText.b1(
-                              'Xác nhận',
+                              context.l10n.confirm,
                               color: Colors.white,
                               fontWeight: FontWeight.w600,
                             ),
@@ -592,10 +609,11 @@ class _CameraPageState extends BasePageState<CameraPage, DefaultBloc>
   Widget _buildRoundTopButton({
     required IconData icon,
     required VoidCallback onPressed,
+    String? tooltip,
     Color color = Colors.white,
     double size = 26,
   }) {
-    return GestureDetector(
+    final button = GestureDetector(
       onTap: onPressed,
       child: Container(
         width: 44.r,
@@ -624,6 +642,11 @@ class _CameraPageState extends BasePageState<CameraPage, DefaultBloc>
         ),
       ),
     );
+
+    if (tooltip != null) {
+      return Tooltip(message: tooltip, child: button);
+    }
+    return button;
   }
 
   IconData _getFlashIcon() {
