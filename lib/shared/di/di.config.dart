@@ -400,7 +400,9 @@ extension GetItInjectableX on _i174.GetIt {
     gh.factory<_i567.PracticeResultDataMapper>(
       () => _i567.PracticeResultDataMapper(gh<_i702.UserDataMapper>()),
     );
-    gh.lazySingleton<_i522.AppAudioService>(() => _i522.AppAudioServiceImpl());
+    gh.lazySingleton<_i522.AppAudioService>(
+      () => _i522.AppAudioServiceImpl(gh<_i160.AppPreferences>()),
+    );
     gh.lazySingleton<_i491.FirebaseAuthService>(
       () => _i491.FirebaseAuthServiceImpl(),
     );
@@ -903,13 +905,6 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i819.SubmitGuessWordUseCase>(
       () => _i819.SubmitGuessWordUseCase(gh<_i597.WordGuessRepository>()),
     );
-    gh.factory<_i65.ChatBloc>(
-      () => _i65.ChatBloc(
-        gh<_i1025.SubmitChatUseCase>(),
-        gh<_i677.GetChatStreamUseCase>(),
-        gh<_i129.GetChatHistoryUseCase>(),
-      ),
-    );
     gh.factory<_i208.WordGuessBloc>(
       () => _i208.WordGuessBloc(
         gh<_i781.GetGuessDeckUseCase>(),
@@ -927,6 +922,15 @@ extension GetItInjectableX on _i174.GetIt {
         gh<_i44.SubmitGuessStartUseCase>(),
         gh<_i268.SubmitGuessRestartUseCase>(),
         gh<_i980.PracticeRepository>(),
+        gh<_i738.SubmitGuessMatchRecordUseCase>(),
+        gh<_i491.FirebaseAuthService>(),
+      ),
+    );
+    gh.factory<_i65.ChatBloc>(
+      () => _i65.ChatBloc(
+        gh<_i1025.SubmitChatUseCase>(),
+        gh<_i677.GetChatStreamUseCase>(),
+        gh<_i129.GetChatHistoryUseCase>(),
       ),
     );
     gh.factory<_i741.ReviewBloc>(

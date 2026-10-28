@@ -115,17 +115,39 @@ class WordChainInputBar extends StatelessWidget {
             valueListenable: controller,
             builder: (_, value, _) {
               final canSend = isInputEnabled && value.text.trim().isNotEmpty;
+              if (isPaper) {
+                return AppButton(
+                  text: l10n.send,
+                  height: 44.h,
+                  width: 72.w,
+                  fontSize: 14.sp,
+                  backgroundColor: AppColors.paperGreen,
+                  borderColor: AppColors.paperGreenBorder,
+                  extrusionColor: AppColors.paperGreenExtrusion,
+                  isLoading: isCheckingWord,
+                  icon: isCheckingWord
+                      ? null
+                      : Icon(
+                          Icons.send_rounded,
+                          size: 16.r,
+                          color: AppColors.white,
+                        ),
+                  onPressed: canSend ? onSubmit : null,
+                );
+              }
               return AppButton.success(
                 text: l10n.send,
                 height: 44.h,
                 width: 72.w,
                 fontSize: 14.sp,
                 isLoading: isCheckingWord,
-                icon: Icon(
-                  Icons.send_rounded,
-                  size: 16.r,
-                  color: AppColors.white,
-                ),
+                icon: isCheckingWord
+                    ? null
+                    : Icon(
+                        Icons.send_rounded,
+                        size: 16.r,
+                        color: AppColors.white,
+                      ),
                 onPressed: canSend ? onSubmit : null,
               );
             },

@@ -222,7 +222,7 @@ class WordChainResultDialog extends StatelessWidget {
                   children: [
                     // Tiêu đề trận đấu
                     AppText.h1(
-                      isWinner ? l10n.victory : '😢 ${l10n.matchEnd}',
+                      isWinner ? l10n.victory : l10n.matchEnd,
                       color: isWinner
                           ? (isPaper
                                 ? AppColors.paperGreenDark
@@ -286,6 +286,7 @@ class WordChainResultDialog extends StatelessWidget {
 
   Widget _buildRematchButton(BuildContext context) {
     final l10n = context.l10n;
+    final isPaper = context.select<AppBloc, bool>((b) => b.state.isPaperTheme);
     WordChainState? chainState;
     try {
       chainState = context.watch<WordChainBloc>().state;
@@ -324,12 +325,29 @@ class WordChainResultDialog extends StatelessWidget {
       );
     }
 
+    final btnWidth = (isRematchPending || isRivalReady) ? 180.w : 130.w;
+    final btnFontSize = (isRematchPending || isRivalReady) ? 10.sp : 12.sp;
+
+    if (isPaper) {
+      return AppButton(
+        text: btnText,
+        icon: btnIcon,
+        width: btnWidth,
+        height: 38.h,
+        fontSize: btnFontSize,
+        backgroundColor: AppColors.paperGreen,
+        borderColor: AppColors.paperGreenBorder,
+        extrusionColor: AppColors.paperGreenExtrusion,
+        onPressed: isRematchPending ? null : onRematch,
+      );
+    }
+
     return AppButton.success(
       text: btnText,
       icon: btnIcon,
-      width: (isRematchPending || isRivalReady) ? 180.w : 130.w,
+      width: btnWidth,
       height: 38.h,
-      fontSize: (isRematchPending || isRivalReady) ? 10.sp : 12.sp,
+      fontSize: btnFontSize,
       onPressed: isRematchPending ? null : onRematch,
     );
   }

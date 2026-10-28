@@ -11,6 +11,7 @@ import 'package:bufopia/features/word_guess/domain/entities/game_state.dart';
 import 'package:bufopia/features/word_guess/domain/entities/history_item.dart';
 import 'package:bufopia/features/word_guess/domain/entities/match_info.dart';
 import 'package:bufopia/features/word_guess/domain/entities/practice_result.dart';
+import 'package:bufopia/features/word_guess/domain/entities/word_guess_result.dart';
 import 'package:bufopia/features/word_guess/domain/entities/word_info.dart';
 import 'package:bufopia/features/word_guess/domain/usecases/connect_guess_matchmake_use_case.dart';
 import 'package:bufopia/features/word_guess/domain/usecases/connect_guess_room_use_case.dart';
@@ -19,6 +20,7 @@ import 'package:bufopia/features/word_guess/domain/usecases/get_guess_deck_use_c
 import 'package:bufopia/features/word_guess/domain/usecases/observe_guess_game_use_case.dart';
 import 'package:bufopia/features/word_guess/domain/usecases/submit_guess_chat_use_case.dart';
 import 'package:bufopia/features/word_guess/domain/usecases/submit_guess_end_use_case.dart';
+import 'package:bufopia/features/word_guess/domain/usecases/submit_guess_match_record_use_case.dart';
 import 'package:bufopia/features/word_guess/domain/usecases/submit_guess_practice_use_case.dart';
 import 'package:bufopia/features/word_guess/domain/usecases/submit_guess_ready_use_case.dart';
 import 'package:bufopia/features/word_guess/domain/usecases/submit_guess_restart_use_case.dart';
@@ -29,6 +31,7 @@ import 'package:bufopia/features/word_guess/domain/usecases/submit_guess_word_us
 import 'package:bufopia/shared/infrastructure/domain/usecase/io/empty_input.dart';
 import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:bufopia/shared/services/audio/sound_manager.dart';
+import 'package:bufopia/shared/services/firebase/firebase_auth_service.dart';
 import 'package:bufopia/shared/services/socket/models/socket_event.dart';
 import 'package:bufopia/shared/utils/string_utils.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -57,6 +60,8 @@ class WordGuessBloc extends BaseBloc<WordGuessEvent, WordGuessState> {
     this._submitStartUseCase,
     this._submitRestartUseCase,
     this._practiceRepository,
+    this._submitMatchRecordUseCase,
+    this._firebaseAuthService,
   ) : super(const WordGuessState()) {
     // Solo Practice
     on<_StartPractice>(_onStartPractice);
@@ -104,6 +109,9 @@ class WordGuessBloc extends BaseBloc<WordGuessEvent, WordGuessState> {
   final SubmitGuessStartUseCase _submitStartUseCase;
   final SubmitGuessRestartUseCase _submitRestartUseCase;
   final PracticeRepository _practiceRepository;
+  final SubmitGuessMatchRecordUseCase _submitMatchRecordUseCase;
+  final FirebaseAuthService _firebaseAuthService;
+  bool _isMatchSaved = false;
 
   StreamSubscription<dynamic>? _gameStreamSubscription;
   Timer? _countdownTimer;
@@ -132,21 +140,24 @@ class WordGuessBloc extends BaseBloc<WordGuessEvent, WordGuessState> {
     final effectiveDifficulty = event.difficulty ?? state.difficulty;
     return runBlocCatching(
       handleLoading: false,
-      doOnSubscribe: () => safeEmit(
-        state.copyWith(
-          isLoading: true,
-          mode: WordGuessGameMode.practice,
-          topicId: event.topic,
-          difficulty: effectiveDifficulty,
-          myUid: event.uid ?? '',
-          currentQuestionIndex: 0,
-          practiceCorrectCount: 0,
-          practiceEarnedXp: 0,
-          inputWord: '',
-          errorMessage: null,
-          infoMessage: null,
-        ),
-      ),
+      doOnSubscribe: () {
+        _isMatchSaved = false;
+        safeEmit(
+          state.copyWith(
+            isLoading: true,
+            mode: WordGuessGameMode.practice,
+            topicId: event.topic,
+            difficulty: effectiveDifficulty,
+            myUid: event.uid ?? '',
+            currentQuestionIndex: 0,
+            practiceCorrectCount: 0,
+            practiceEarnedXp: 0,
+            inputWord: '',
+            errorMessage: null,
+            infoMessage: null,
+          ),
+        );
+      },
       action: () async {
         final output = await _getDeckUseCase.execute(
           GetGuessDeckInput(
@@ -404,6 +415,7 @@ class WordGuessBloc extends BaseBloc<WordGuessEvent, WordGuessState> {
           infoMessage: S.current.completedAllPracticeQuestions,
         ),
       );
+      unawaited(_saveMatchRecord());
     }
   }
 
@@ -531,6 +543,7 @@ class WordGuessBloc extends BaseBloc<WordGuessEvent, WordGuessState> {
     return runBlocCatching(
       handleLoading: false,
       doOnSubscribe: () {
+        _isMatchSaved = false;
         _hadMultiplayer = false;
         safeEmit(
           state.copyWith(
@@ -668,6 +681,7 @@ class WordGuessBloc extends BaseBloc<WordGuessEvent, WordGuessState> {
     _submitEndUseCase.execute(
       SubmitGuessEndInput(sessionId: sessionId),
     );
+    unawaited(_saveMatchRecord());
   }
 
   FutureOr<void> _onSendChat(
@@ -682,6 +696,7 @@ class WordGuessBloc extends BaseBloc<WordGuessEvent, WordGuessState> {
     _RestartGame event,
     Emitter<WordGuessState> emit,
   ) {
+    _isMatchSaved = false;
     final sessionId = state.gameState.sessionId.isNotEmpty
         ? state.gameState.sessionId
         : (state.gameState.roomCode);
@@ -1015,6 +1030,10 @@ class WordGuessBloc extends BaseBloc<WordGuessEvent, WordGuessState> {
           _startCountdownTimer();
         } else {
           _stopCountdownTimer();
+          if (e.state.status == 'finished') {
+            _stopAutoHintTimer();
+            unawaited(_saveMatchRecord());
+          }
         }
       },
       wordHint: (e) {
@@ -1280,6 +1299,70 @@ class WordGuessBloc extends BaseBloc<WordGuessEvent, WordGuessState> {
   void _stopCountdownTimer() {
     _countdownTimer?.cancel();
     _countdownTimer = null;
+  }
+
+  Future<void> _saveMatchRecord() async {
+    if (_isMatchSaved) return;
+    _isMatchSaved = true;
+
+    try {
+      final uid = state.myUid;
+      if (uid.isEmpty || uid == 'guest') return;
+
+      final token = await _firebaseAuthService.getIdToken();
+      final res = state.result;
+      final randSuffix = Random().nextInt(999999);
+      final matchId =
+          'guess_${DateTime.now().millisecondsSinceEpoch}_$randSuffix';
+
+      final scores = state.gameState.players.isNotEmpty
+          ? state.gameState.players.map((p) => p.effectiveScore).toList()
+          : [res.foundCount];
+
+      final payload = <String, dynamic>{
+        'id': matchId,
+        'uid': uid,
+        'game': 'guess',
+        'roomCode': state.roomCode ?? 'SOLO',
+        'topicId': state.topicId,
+        'scores': scores,
+        'winner': state.gameState.winnerUid ?? uid,
+        'players': state.gameState.players
+            .map(
+              (p) => {
+                'uid': p.uid,
+                'name': p.name,
+                'foundCount': p.effectiveScore,
+                'isHost': p.isHost,
+              },
+            )
+            .toList(),
+        'wordsSummary': res.wordsPlayed.map(
+          (w) {
+            final en = (w.en ?? w.masked).toLowerCase().trim();
+            final isSkipped = res.skippedWords.contains(en);
+            return {
+              'en': w.en ?? w.masked,
+              'vi': w.vi,
+              'phonetic': w.phonetic,
+              'status': isSkipped ? 'skipped' : 'solved',
+              'skipped': isSkipped,
+              'reason': isSkipped ? 'skipped' : 'solved',
+            };
+          },
+        ).toList(),
+        'timestamp': DateTime.now().millisecondsSinceEpoch,
+      };
+
+      await _submitMatchRecordUseCase.execute(
+        SubmitGuessMatchRecordInput(
+          matchPayload: payload,
+          token: token,
+        ),
+      );
+    } on Object catch (_) {
+      // Ignored non-blocking
+    }
   }
 
   @override

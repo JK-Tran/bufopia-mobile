@@ -1636,6 +1636,37 @@ class AppLocalizationsEn extends AppLocalizations {
   }
 
   @override
+  String get cannotOpenCameraPermission => 'Cannot open camera. Please grant camera permission in Settings.';
+
+  @override
+  String get noCameraAvailable => 'No available camera found.';
+
+  @override
+  String cameraInitError(String error) {
+    return 'Camera initialization error: $error';
+  }
+
+  @override
+  String takePictureError(String error) {
+    return 'Failed to take picture: $error';
+  }
+
+  @override
+  String get retake => 'Retake';
+
+  @override
+  String get useThisPhoto => 'Use this photo';
+
+  @override
+  String get alignFaceInCircle => 'Align face inside the circle';
+
+  @override
+  String get toggleFlash => 'Toggle flash';
+
+  @override
+  String get switchCamera => 'Switch camera';
+
+  @override
   String get nameRequiredOnline => 'Please enter a display name (2–25 characters) before joining Online match!';
 
   @override

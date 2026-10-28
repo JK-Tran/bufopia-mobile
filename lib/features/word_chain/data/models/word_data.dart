@@ -18,6 +18,28 @@ abstract class WordData with _$WordData {
 
   const WordData._();
 
-  factory WordData.fromJson(Map<String, dynamic> json) =>
-      _$WordDataFromJson(json);
+  factory WordData.fromJson(Map<String, dynamic> json) {
+    final vi =
+        (json['vi'] as String? ??
+                json['meaning'] as String? ??
+                json['translation'] as String?)
+            ?.trim();
+    final definition =
+        (json['definition'] as String? ??
+                json['meaning'] as String? ??
+                json['description'] as String?)
+            ?.trim();
+    final example = (json['example'] as String? ?? json['exampleEn'] as String?)
+        ?.trim();
+    final word = (json['word'] as String? ?? json['en'] as String? ?? '')
+        .trim();
+
+    return _$WordDataFromJson({
+      ...json,
+      'word': word,
+      if (vi != null && vi.isNotEmpty) 'vi': vi,
+      if (definition != null && definition.isNotEmpty) 'definition': definition,
+      if (example != null && example.isNotEmpty) 'example': example,
+    });
+  }
 }

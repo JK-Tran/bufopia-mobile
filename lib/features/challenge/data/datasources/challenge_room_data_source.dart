@@ -25,7 +25,7 @@ class ChallengeRoomDataSource {
     required String targetUid,
     required String roomCode,
   }) async {
-    final response = await _noneAuthAppServerApiClient.request(
+    final response = await _noneAuthAppServerApiClient.request<JSON, JSON>(
       method: RestMethod.post,
       successResponseMapperType: SuccessResponseMapperType.jsonObject,
       path: '/social/invite',
@@ -34,6 +34,7 @@ class ChallengeRoomDataSource {
         'targetUid': targetUid,
         'roomCode': roomCode,
       },
+      decoder: (data) => data! as JSON,
     );
     return response != null;
   }
@@ -42,14 +43,15 @@ class ChallengeRoomDataSource {
     required String uid,
     required String invitationId,
   }) async {
-    final response = await _noneAuthAppServerApiClient.request(
+    final response = await _noneAuthAppServerApiClient.request<JSON, JSON>(
       method: RestMethod.post,
       successResponseMapperType: SuccessResponseMapperType.jsonObject,
       path: '/social/accept',
       queryParameters: {'uid': uid},
       body: {'id': invitationId},
+      decoder: (data) => data! as JSON,
     );
-    if (response != null && response is Map<String, dynamic>) {
+    if (response != null) {
       return response['roomCode'] as String?;
     }
     return null;
@@ -59,12 +61,13 @@ class ChallengeRoomDataSource {
     required String uid,
     required String invitationId,
   }) async {
-    final response = await _noneAuthAppServerApiClient.request(
+    final response = await _noneAuthAppServerApiClient.request<JSON, JSON>(
       method: RestMethod.post,
       successResponseMapperType: SuccessResponseMapperType.jsonObject,
       path: '/social/dismiss',
       queryParameters: {'uid': uid},
       body: {'id': invitationId},
+      decoder: (data) => data! as JSON,
     );
     return response != null;
   }

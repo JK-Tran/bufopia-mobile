@@ -153,6 +153,7 @@ class _ChallengeRoomViewState extends State<ChallengeRoomView> {
               if (state.currentTab == ChallengeRoomTab.join)
                 ChallengeJoin(
                   controller: _codeController,
+                  isLoading: state.isActionLoading || state.isLoading,
                   onJoin: _handleJoinRoom,
                 )
               else

@@ -22,6 +22,7 @@ import 'package:bufopia/features/word_chain/domain/usecases/submit_start_session
 import 'package:bufopia/shared/infrastructure/domain/usecase/io/empty_input.dart';
 import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:bufopia/shared/services/socket/models/socket_event.dart';
+import 'package:bufopia/shared/utils/log_utils.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
@@ -170,17 +171,30 @@ class WordChainBloc extends BaseBloc<WordChainEvent, WordChainState> {
         ),
       ),
       action: () async {
-        final output = await _submitStartSessionUseCase.execute(
-          SubmitStartSessionInput(
-            uid: event.uid,
-            language: event.language,
-          ),
-        );
-        _practiceSessionId = output.session.sessionId;
+        final effectiveLanguage =
+            (event.language.isNotEmpty && event.language != 'vi')
+            ? event.language
+            : 'en';
+        _language = effectiveLanguage;
+
+        var sessionKey = '';
+        try {
+          final output = await _submitStartSessionUseCase.execute(
+            SubmitStartSessionInput(
+              uid: event.uid,
+              language: effectiveLanguage,
+            ),
+          );
+          _practiceSessionId = output.session.sessionId;
+          sessionKey = output.session.sessionId;
+        } on Object catch (e) {
+          Log.d('Failed to init practice reward session: $e');
+          _practiceSessionId = null;
+        }
 
         safeEmit(
           state.copyWith(
-            sessionId: output.session.sessionId,
+            sessionId: sessionKey,
             gameState: resetGameState.copyWith(
               turnStartedAt: DateTime.now().millisecondsSinceEpoch,
             ),
@@ -192,11 +206,12 @@ class WordChainBloc extends BaseBloc<WordChainEvent, WordChainState> {
           _startCountdown();
         }
       },
-      doOnError: (e) => safeEmit(
-        state.copyWith(
-          errorMessage: S.current.errorInitPracticeSession('$e'),
-        ),
-      ),
+      doOnError: (e) {
+        // Không chặn ván đấu nếu phiên thưởng thất bại
+        if (!event.relaxed) {
+          _startCountdown();
+        }
+      },
       doOnSuccessOrError: () => safeEmit(state.copyWith(isLoading: false)),
     );
   }
@@ -378,6 +393,20 @@ class WordChainBloc extends BaseBloc<WordChainEvent, WordChainState> {
             );
             if (detailOutput.word.valid) {
               _wordDetailsCache[word] = detailOutput.word;
+              final currentMsgs = state.gameState.messages;
+              if (currentMsgs.any((m) => m.entry.word.toLowerCase() == word)) {
+                final updated = currentMsgs.map((m) {
+                  if (m.entry.word.toLowerCase() == word) {
+                    return m.copyWith(entry: detailOutput.word);
+                  }
+                  return m;
+                }).toList();
+                safeEmit(
+                  state.copyWith(
+                    gameState: state.gameState.copyWith(messages: updated),
+                  ),
+                );
+              }
             }
           } on Object catch (_) {}
         },
@@ -446,7 +475,9 @@ class WordChainBloc extends BaseBloc<WordChainEvent, WordChainState> {
         // Cập nhật lượt đi tiếp theo cho Bot
         final lastChar = word.substring(word.length - 1);
         final newUsedWords = [...state.gameState.usedWords, word];
+        _wordDetailsCache[word] = wordEntity;
         final newMessage = TurnMessage(
+          actor: state.myPlayerIndex,
           entry: wordEntity,
           time: DateTime.now().millisecondsSinceEpoch,
         );
@@ -544,11 +575,18 @@ class WordChainBloc extends BaseBloc<WordChainEvent, WordChainState> {
             GetWordInput(word: botWord, lang: _language),
           );
           if (detailOutput.word.valid) {
-            detailedWordEntity = detailOutput.word;
+            detailedWordEntity = detailOutput.word.copyWith(
+              vi:
+                  (detailOutput.word.vi != null &&
+                      detailOutput.word.vi!.isNotEmpty)
+                  ? detailOutput.word.vi
+                  : botWordEntity.vi,
+            );
           }
         } on Object catch (_) {
           // Giữ botWordEntity ban đầu nếu tra cứu chi tiết gặp lỗi mạng
         }
+        _wordDetailsCache[botWord] = detailedWordEntity;
 
         final lastChar = botWord.substring(botWord.length - 1);
         final newUsedWords = [...state.gameState.usedWords, botWord];
@@ -674,7 +712,12 @@ class WordChainBloc extends BaseBloc<WordChainEvent, WordChainState> {
     for (final msg in messages) {
       final wordKey = msg.entry.word.toLowerCase();
       if (wordKey.isEmpty) continue;
-      if (!_wordDetailsCache.containsKey(wordKey)) {
+      final cached = _wordDetailsCache[wordKey];
+      final isCachedDetailed =
+          cached != null &&
+          ((cached.vi != null && cached.vi!.isNotEmpty) ||
+              (cached.definition != null && cached.definition!.isNotEmpty));
+      if (!isCachedDetailed) {
         try {
           final detailOutput = await _getWordUseCase.execute(
             GetWordInput(word: wordKey, lang: _language),
@@ -687,15 +730,27 @@ class WordChainBloc extends BaseBloc<WordChainEvent, WordChainState> {
       }
     }
 
-    if (hasNewEnrichment && !isClosed) {
-      final updatedMessages = state.gameState.messages.map((m) {
-        final key = m.entry.word.toLowerCase();
-        if (_wordDetailsCache.containsKey(key)) {
-          return m.copyWith(entry: _wordDetailsCache[key]!);
+    // Luôn kiểm tra xem state hiện tại có tin nhắn nào chưa được gán thông tin
+    // chi tiết từ cache hay không
+    final updatedMessages = state.gameState.messages.map((m) {
+      final key = m.entry.word.toLowerCase();
+      if (_wordDetailsCache.containsKey(key)) {
+        final cached = _wordDetailsCache[key]!;
+        final currentHasDetails =
+            (m.entry.vi != null && m.entry.vi!.isNotEmpty) ||
+            (m.entry.definition != null && m.entry.definition!.isNotEmpty);
+        final cachedHasDetails =
+            (cached.vi != null && cached.vi!.isNotEmpty) ||
+            (cached.definition != null && cached.definition!.isNotEmpty);
+        if (!currentHasDetails && cachedHasDetails) {
+          hasNewEnrichment = true;
+          return m.copyWith(entry: cached);
         }
-        return m;
-      }).toList();
+      }
+      return m;
+    }).toList();
 
+    if (hasNewEnrichment && !isClosed) {
       safeEmit(
         state.copyWith(
           gameState: state.gameState.copyWith(messages: updatedMessages),

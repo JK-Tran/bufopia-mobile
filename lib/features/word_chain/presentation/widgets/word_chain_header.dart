@@ -151,15 +151,19 @@ class WordChainHeader extends StatelessWidget {
                   shape: BoxShape.circle,
                   width: 32.r,
                   height: 32.r,
-                  backgroundColor: btnBg,
-                  borderColor: btnBorder,
-                  extrusionColor: btnExtrusion,
+                  backgroundColor: isPaper
+                      ? AppColors.paperGreen
+                      : AppColors.green,
+                  borderColor: isPaper
+                      ? AppColors.paperGreenBorder
+                      : AppColors.white.withValues(alpha: 0.35),
+                  extrusionColor: isPaper
+                      ? AppColors.paperGreenExtrusion
+                      : AppColors.greenDark,
                   child: Icon(
                     Icons.refresh_rounded,
                     size: 16.r,
-                    color: isPaper
-                        ? AppColors.paperGreenDark
-                        : AppColors.primary,
+                    color: AppColors.white,
                   ),
                 ),
                 SizedBox(width: 6.w),

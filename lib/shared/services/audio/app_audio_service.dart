@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:audioplayers/audioplayers.dart';
+import 'package:bufopia/shared/services/local_storage/app_preferences.dart';
 import 'package:bufopia/shared/utils/log_utils.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:injectable/injectable.dart';
@@ -38,13 +39,17 @@ abstract class AppAudioService {
 
 @LazySingleton(as: AppAudioService)
 class AppAudioServiceImpl implements AppAudioService {
-  AppAudioServiceImpl() {
+  AppAudioServiceImpl(this._appPreferences) {
     _bgmPlayer = AudioPlayer();
     _clickPlayer = AudioPlayer();
     _feedbackPlayer = AudioPlayer();
     _ttsPlayer = AudioPlayer();
     _flutterTts = FlutterTts();
+    _isMusicEnabled = _appPreferences.isMusicEnabled;
+    _isSfxEnabled = _appPreferences.isSfxEnabled;
   }
+
+  final AppPreferences _appPreferences;
 
   static const String _bgmAssetPath = 'sounds/music-app.mp3';
   static const String _clickAssetPath = 'sounds/click.wav';
@@ -203,6 +208,13 @@ class AppAudioServiceImpl implements AppAudioService {
         mode: PlayerMode.mediaPlayer,
         ctx: _audioCtx,
       );
+      // Đảm bảo dừng ngay nếu trong lúc chờ khởi chạy,
+      // nhạc đã bị tắt hoặc rời khỏi Home
+      if (!_isMusicEnabled || !_isHomeActive) {
+        await _bgmPlayer.stop();
+        _isPlayingBgm = false;
+        return;
+      }
       _isPlayingBgm = true;
     } on Object catch (e, stackTrace) {
       Log.e('Error playing BGM: $e', stackTrace: stackTrace);
@@ -404,6 +416,7 @@ class AppAudioServiceImpl implements AppAudioService {
       '🎵 [SoundManager] setMusicEnabled: $enabled (isHome: $_isHomeActive)',
     );
     _isMusicEnabled = enabled;
+    await _appPreferences.saveIsMusicEnabled(isMusicEnabled: enabled);
     if (enabled && _isHomeActive) {
       await playBgm();
     } else {
@@ -415,6 +428,7 @@ class AppAudioServiceImpl implements AppAudioService {
   Future<void> setSfxEnabled({required bool enabled}) async {
     Log.d('🔔 [SoundManager] setSfxEnabled: $enabled');
     _isSfxEnabled = enabled;
+    await _appPreferences.saveIsSfxEnabled(isSfxEnabled: enabled);
   }
 
   @override

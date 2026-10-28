@@ -13,6 +13,7 @@ abstract class WordGuessSocketService {
   Stream<SocketConnectionState> get connectionStateStream;
   bool get isConnected;
   String? get currentRoomCode;
+  bool isConnectedToRoom(String roomCode);
 
   Future<void> connectMatchmake({
     required String uid,
@@ -79,6 +80,7 @@ class WordGuessSocketServiceImpl extends BaseSocketService
 
   String? _currentRoomCode;
   String? _myUid;
+  SocketEvent? _lastRoomStateEvent;
   final Map<String, int> _playerIndexMap = {};
   Map<String, dynamic>? _lastMatchmakeArgs;
   Map<String, dynamic>? _lastRoomArgs;
@@ -88,6 +90,16 @@ class WordGuessSocketServiceImpl extends BaseSocketService
 
   @override
   String? get currentRoomCode => _currentRoomCode;
+
+  @override
+  bool isConnectedToRoom(String roomCode) {
+    if (!isConnected || _currentRoomCode == null) return false;
+    final normalized = roomCode.trim().toUpperCase().replaceFirst(
+      RegExp('^ROOM_'),
+      '',
+    );
+    return _currentRoomCode == normalized;
+  }
 
   @override
   Future<void> connectMatchmake({
@@ -200,11 +212,14 @@ class WordGuessSocketServiceImpl extends BaseSocketService
       RegExp('^ROOM_'),
       '',
     );
-    if (isConnected && _currentRoomCode == normalizedCode) {
+    if (isConnectedToRoom(normalizedCode)) {
       Log.d(
-        'Already connected to room $normalizedCode, keeping active socket',
+        'Already connected to room $normalizedCode, reusing active socket.',
         name: logTag,
       );
+      if (_lastRoomStateEvent != null) {
+        emitEvent(_lastRoomStateEvent!);
+      }
       return;
     }
     _currentRoomCode = normalizedCode;
@@ -243,6 +258,7 @@ class WordGuessSocketServiceImpl extends BaseSocketService
           deviceSecret: deviceSecret,
         ),
       );
+      _currentRoomCode = normalizedCode;
       return;
     }
 
@@ -296,6 +312,7 @@ class WordGuessSocketServiceImpl extends BaseSocketService
       difficulty: difficulty,
     );
     await connectUrl(url);
+    _currentRoomCode = normalizedCode;
     sendRaw({
       'type': 'join',
       'name': name,
@@ -376,6 +393,7 @@ class WordGuessSocketServiceImpl extends BaseSocketService
     _currentRoomCode = null;
     _lastMatchmakeArgs = null;
     _lastRoomArgs = null;
+    _lastRoomStateEvent = null;
     _playerIndexMap.clear();
     await super.disconnect();
   }
@@ -500,7 +518,12 @@ class WordGuessSocketServiceImpl extends BaseSocketService
         if (myUid.isNotEmpty) _myUid = myUid;
         final state = json['state'] as Map<String, dynamic>? ?? {};
         _updatePlayers(state['players']);
-        emitEvent(GuessRoomConnectedEvent(myUid: myUid, rawState: state));
+        final connectedEvent = GuessRoomConnectedEvent(
+          myUid: myUid,
+          rawState: state,
+        );
+        _lastRoomStateEvent = connectedEvent;
+        emitEvent(connectedEvent);
       case 'room_state':
         final rootMyUid = json['myUid']?.toString() ?? _myUid ?? '';
         if (rootMyUid.isNotEmpty) _myUid = rootMyUid;
@@ -521,7 +544,9 @@ class WordGuessSocketServiceImpl extends BaseSocketService
           }
         }
         _updatePlayers(state['players']);
-        emitEvent(GuessRoomStateEvent(rawState: state));
+        final roomStateEvent = GuessRoomStateEvent(rawState: state);
+        _lastRoomStateEvent = roomStateEvent;
+        emitEvent(roomStateEvent);
       case 'word_solved':
         emitEvent(GuessWordSolvedEvent.fromJson(json));
       case 'word_hint':

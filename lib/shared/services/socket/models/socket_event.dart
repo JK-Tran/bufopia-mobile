@@ -681,12 +681,26 @@ class GuessWordSolvedEvent extends SocketEvent {
   });
 
   factory GuessWordSolvedEvent.fromJson(Map<String, dynamic> json) {
+    var item = json['historyItem'] as Map<String, dynamic>?;
+    if (item == null) {
+      final hasSolver =
+          json.containsKey('solvedBy') ||
+          json.containsKey('solverUid') ||
+          json.containsKey('solverName') ||
+          json.containsKey('playerUid') ||
+          json.containsKey('playerName') ||
+          json.containsKey('uid') ||
+          json.containsKey('name');
+      if (hasSolver) {
+        item = json;
+      }
+    }
     return GuessWordSolvedEvent(
       sessionId: json['sessionId']?.toString() ?? '',
       index: json['index'] as int? ?? 0,
-      word: json['word'] as String? ?? '',
-      meaning: json['meaning'] as String? ?? '',
-      historyItem: json['historyItem'] as Map<String, dynamic>?,
+      word: json['word'] as String? ?? json['en'] as String? ?? '',
+      meaning: json['meaning'] as String? ?? json['vi'] as String? ?? '',
+      historyItem: item,
     );
   }
 
