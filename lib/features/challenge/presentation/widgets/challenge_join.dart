@@ -11,11 +11,13 @@ class ChallengeJoin extends StatelessWidget {
   const ChallengeJoin({
     required this.controller,
     required this.onJoin,
+    this.isLoading = false,
     super.key,
   });
 
   final TextEditingController controller;
   final VoidCallback onJoin;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +51,7 @@ class ChallengeJoin extends StatelessWidget {
             alignment: Alignment.centerLeft,
             child: TextField(
               controller: controller,
-              keyboardType: TextInputType.text,
+              keyboardType: TextInputType.number,
               style: TextStyle(
                 fontSize: fontSize,
                 fontWeight: FontWeight.w700,
@@ -68,7 +70,7 @@ class ChallengeJoin extends StatelessWidget {
                 isDense: true,
                 contentPadding: EdgeInsets.zero,
               ),
-              onSubmitted: (_) => onJoin(),
+              onSubmitted: (_) => isLoading ? null : onJoin(),
             ),
           ),
         ),
@@ -95,7 +97,8 @@ class ChallengeJoin extends StatelessWidget {
             borderColor: AppColors.paperGreenBorder,
             extrusionColor: AppColors.paperGreenExtrusion,
             extrusionHeight: 2,
-            onPressed: onJoin,
+            isLoading: isLoading,
+            onPressed: isLoading ? null : onJoin,
           )
         else
           AppButton.primary(
@@ -113,7 +116,8 @@ class ChallengeJoin extends StatelessWidget {
             ),
             borderRadius: BorderRadius.circular(isLandscape ? 8.0 : 8.r),
             extrusionHeight: 2,
-            onPressed: onJoin,
+            isLoading: isLoading,
+            onPressed: isLoading ? null : onJoin,
           ),
       ],
     );

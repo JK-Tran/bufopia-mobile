@@ -16,7 +16,15 @@ class AppBloc extends BaseBloc<AppEvent, AppState> {
   AppBloc(
     this._appPreferences,
     this._audioService,
-  ) : super(const AppState()) {
+  ) : super(
+          AppState(
+            isMusicEnabled: _appPreferences.isMusicEnabled,
+            isSfxEnabled: _appPreferences.isSfxEnabled,
+            languageCode: _appPreferences.languageCode,
+            isDarkMode: _appPreferences.isDarkMode,
+            appTheme: _appPreferences.appTheme,
+          ),
+        ) {
     on<Initiated>(_onInitiated);
     on<MusicToggled>(_onMusicToggled);
     on<SfxToggled>(_onSfxToggled);

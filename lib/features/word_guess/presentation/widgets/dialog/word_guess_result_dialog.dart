@@ -33,6 +33,7 @@ class WordGuessResultDialog extends StatefulWidget {
     this.wordsPlayed = const [],
     this.players = const [],
     this.history = const [],
+    this.wordsSummary = const [],
     this.skippedWords = const {},
     this.myUid = '',
     this.myName = '',
@@ -46,6 +47,7 @@ class WordGuessResultDialog extends StatefulWidget {
   final List<WordInfo> wordsPlayed;
   final List<RoomPlayer> players;
   final List<HistoryItem> history;
+  final List<Map<String, dynamic>> wordsSummary;
   final Set<String> skippedWords;
   final String myUid;
   final String myName;
@@ -65,6 +67,7 @@ class WordGuessResultDialog extends StatefulWidget {
     List<WordInfo> wordsPlayed = const [],
     List<RoomPlayer> players = const [],
     List<HistoryItem> history = const [],
+    List<Map<String, dynamic>> wordsSummary = const [],
     Set<String> skippedWords = const {},
     String myUid = '',
     String myName = '',
@@ -81,6 +84,7 @@ class WordGuessResultDialog extends StatefulWidget {
         wordsPlayed: wordsPlayed,
         players: players,
         history: history,
+        wordsSummary: wordsSummary,
         skippedWords: skippedWords,
         myUid: myUid,
         myName: myName,
@@ -183,21 +187,150 @@ class _WordGuessResultDialogState extends State<WordGuessResultDialog> {
   String _getSolverName(BuildContext context, String word) {
     if (widget.isSolo) return context.l10n.you;
     final normalized = word.toLowerCase().trim();
+
+    // 1. Kiểm tra trong wordsSummary nếu backend gửi tổng kết
+    final summaryItem = widget.wordsSummary.firstWhereOrNull((s) {
+      final sEn = (s['en'] as String? ?? s['word'] as String? ?? '')
+          .toLowerCase()
+          .trim();
+      return sEn == normalized;
+    });
+
+    String? solverUid;
+    String? solverName;
+
+    if (summaryItem != null) {
+      solverUid =
+          summaryItem['playerUid']?.toString() ??
+          summaryItem['solverUid']?.toString() ??
+          summaryItem['solvedByUid']?.toString() ??
+          summaryItem['uid']?.toString();
+      solverName =
+          summaryItem['playerName']?.toString() ??
+          summaryItem['solverName']?.toString() ??
+          summaryItem['solvedByName']?.toString() ??
+          summaryItem['name']?.toString();
+      final solvedBy = summaryItem['solvedBy']?.toString();
+      if (solvedBy != null && solvedBy.isNotEmpty) {
+        if (solverUid == null &&
+            (solvedBy.length > 15 || solvedBy.contains('-'))) {
+          solverUid = solvedBy;
+        } else {
+          solverName ??= solvedBy;
+        }
+      }
+    }
+
+    // 2. Kiểm tra trong history
     final matched = widget.history.firstWhereOrNull(
       (h) =>
           h.word.toLowerCase().trim() == normalized ||
           h.guess.toLowerCase().trim() == normalized,
     );
-    if (matched != null && matched.solverName.isNotEmpty) {
-      if (matched.playerUid == widget.myUid) return context.l10n.you;
-      return matched.solverName;
+
+    if (matched != null) {
+      solverUid ??= matched.playerUid.isNotEmpty
+          ? matched.playerUid
+          : (matched.solvedBy.isNotEmpty &&
+                    (matched.solvedBy.length > 15 ||
+                        matched.solvedBy.contains('-'))
+                ? matched.solvedBy
+                : null);
+      solverName ??= matched.playerName.isNotEmpty
+          ? matched.playerName
+          : (matched.solverName.isNotEmpty && matched.solverName != solverUid
+                ? matched.solverName
+                : null);
     }
+
+    // 3. Nếu là chính mình (You / Bạn)
+    final isMe =
+        (solverUid != null &&
+            solverUid.isNotEmpty &&
+            solverUid == widget.myUid) ||
+        (matched?.playerUid.isNotEmpty == true &&
+            matched!.playerUid == widget.myUid) ||
+        (matched?.solvedBy.isNotEmpty == true &&
+            matched!.solvedBy == widget.myUid) ||
+        (solverName != null &&
+            solverName.isNotEmpty &&
+            solverName == widget.myName &&
+            widget.myName.isNotEmpty) ||
+        (matched?.playerName.isNotEmpty == true &&
+            matched!.playerName == widget.myName &&
+            widget.myName.isNotEmpty);
+
+    if (isMe) return context.l10n.you;
+
+    // 4. Khớp với danh sách người chơi widget.players bằng UID
+    if (solverUid != null && solverUid.isNotEmpty) {
+      final playerByUid = widget.players.firstWhereOrNull(
+        (p) => p.uid == solverUid,
+      );
+      if (playerByUid != null) {
+        return playerByUid.uid == widget.myUid
+            ? context.l10n.you
+            : playerByUid.name;
+      }
+    }
+
+    // 5. Khớp với danh sách người chơi bằng Name
+    if (solverName != null && solverName.isNotEmpty) {
+      final playerByName = widget.players.firstWhereOrNull(
+        (p) => p.name == solverName,
+      );
+      if (playerByName != null) {
+        return playerByName.uid == widget.myUid
+            ? context.l10n.you
+            : playerByName.name;
+      }
+      return solverName;
+    }
+
+    // 6. Nếu matched trong history có thông tin solverName hợp lệ
+    if (matched != null) {
+      if (matched.playerName.isNotEmpty) {
+        return matched.playerName;
+      }
+      if (matched.solverName.isNotEmpty && matched.solverName != widget.myUid) {
+        final player = widget.players.firstWhereOrNull(
+          (p) => p.uid == matched.solverName,
+        );
+        if (player != null) {
+          return player.uid == widget.myUid ? context.l10n.you : player.name;
+        }
+        return matched.solverName;
+      }
+    }
+
+    // 7.  nếu từ này không phải do tôi giải, tìm đối thủ trong phòng
+    final rival = widget.players.firstWhereOrNull((p) => p.uid != widget.myUid);
+    if (rival != null && rival.name.isNotEmpty) {
+      return rival.name;
+    }
+
     return widget.myName.isNotEmpty ? widget.myName : context.l10n.you;
   }
 
   bool _isWordSkipped(String word) {
     final normalized = word.toLowerCase().trim();
     if (widget.skippedWords.contains(normalized)) return true;
+
+    final summaryItem = widget.wordsSummary.firstWhereOrNull((s) {
+      final sEn = (s['en'] as String? ?? s['word'] as String? ?? '')
+          .toLowerCase()
+          .trim();
+      return sEn == normalized;
+    });
+    if (summaryItem != null) {
+      final isSkipped =
+          summaryItem['skipped'] == true ||
+          summaryItem['isSkipped'] == true ||
+          summaryItem['status'] == 'skipped' ||
+          summaryItem['reason'] == 'skipped';
+      if (isSkipped) return true;
+    }
+
     final matched = widget.history.firstWhereOrNull(
       (h) =>
           h.word.toLowerCase().trim() == normalized ||
@@ -975,46 +1108,46 @@ class _WordGuessResultDialogState extends State<WordGuessResultDialog> {
             SizedBox(height: 8.h),
           ],
 
-          // Row 4: Mic Icon for Pronunciation practice 3D
-          InkWell(
-            onTap: () {
-              context.read<AppBloc>().add(const AppEvent.clickSoundPlayed());
-              sl<AppAudioService>().speakWord(en);
-              AppToast.show(
-                context,
-                message: l10n.listenAndPracticeWord(en),
-              );
-            },
-            borderRadius: BorderRadius.circular(14.r),
-            child: Container(
-              padding: EdgeInsets.all(5.r),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: isPaper ? AppColors.paperSurfaceWarm : AppColors.white,
-                border: Border.all(
-                  color: isPaper
-                      ? AppColors.paperBorder
-                      : AppColors.classicBorder,
-                  width: 1.2.w,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: isPaper
-                        ? AppColors.paperExtrusion
-                        : AppColors.grayExtrusion,
-                    offset: Offset(0, 1.5.h),
-                  ),
-                ],
-              ),
-              child: Icon(
-                Icons.mic_none_rounded,
-                size: 16.r,
-                color: isPaper
-                    ? AppColors.paperTextMedium
-                    : AppColors.grayMedium,
-              ),
-            ),
-          ),
+          // // Row 4: Mic Icon for Pronunciation practice 3D
+          // InkWell(
+          //   onTap: () {
+          //     context.read<AppBloc>().add(const AppEvent.clickSoundPlayed());
+          //     sl<AppAudioService>().speakWord(en);
+          //     AppToast.show(
+          //       context,
+          //       message: l10n.listenAndPracticeWord(en),
+          //     );
+          //   },
+          //   borderRadius: BorderRadius.circular(14.r),
+          //   child: Container(
+          //     padding: EdgeInsets.all(5.r),
+          //     decoration: BoxDecoration(
+          //       shape: BoxShape.circle,
+          //       color: isPaper ? AppColors.paperSurfaceWarm : AppColors.white
+          //       border: Border.all(
+          //         color: isPaper
+          //             ? AppColors.paperBorder
+          //             : AppColors.classicBorder,
+          //         width: 1.2.w,
+          //       ),
+          //       boxShadow: [
+          //         BoxShadow(
+          //           color: isPaper
+          //               ? AppColors.paperExtrusion
+          //               : AppColors.grayExtrusion,
+          //           offset: Offset(0, 1.5.h),
+          //         ),
+          //       ],
+          //     ),
+          //     child: Icon(
+          //       Icons.mic_none_rounded,
+          //       size: 16.r,
+          //       color: isPaper
+          //           ? AppColors.paperTextMedium
+          //           : AppColors.grayMedium,
+          //     ),
+          //   ),
+          // ),
           SizedBox(height: 8.h),
 
           // Dashed Divider

@@ -34,7 +34,7 @@ class WordChainRoomDialog extends StatefulWidget {
     required this.onEnterRoom,
     super.key,
     this.relaxed = false,
-    this.language = 'vi',
+    this.language = 'en',
   });
 
   final ValueChanged<String> onEnterRoom;
@@ -45,7 +45,7 @@ class WordChainRoomDialog extends StatefulWidget {
     BuildContext context, {
     required ValueChanged<String> onEnterRoom,
     bool relaxed = false,
-    String language = 'vi',
+    String language = 'en',
   }) {
     return showDialog<void>(
       context: context,
@@ -74,6 +74,7 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
   // Trạng thái tạo phòng (Host)
   String? _createdRoomCode;
   bool _isCreatingRoom = false;
+  bool _isJoiningRoom = false;
   bool _isRoomCreated = false;
   Timer? _roomHandshakeTimer;
   StreamSubscription<SocketEvent>? _socketSubscription;
@@ -140,7 +141,7 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
         ? currentUser!.uid
         : (cachedUid?.isNotEmpty == true)
         ? cachedUid!
-        : fbUid ?? 'guest_${DateTime.now().millisecondsSinceEpoch % 10000}';
+        : fbUid ?? 'guest';
   }
 
   String _getMyName() {
@@ -193,7 +194,6 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
       final uid = _getMyUid();
       final data = await _dataSource.getSocialState(
         uid: uid,
-        language: widget.language,
       );
       if (data == null || !mounted) return;
 
@@ -321,6 +321,7 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
 
   // ── 3. Xử lý Vào phòng (Guest - Nhập mã hoặc link) ───────────────
   void _handleJoinRoom() {
+    if (_isJoiningRoom) return;
     final rawText = _codeController.text.trim();
     if (rawText.isEmpty) return;
 
@@ -336,6 +337,8 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
       );
       return;
     }
+
+    setState(() => _isJoiningRoom = true);
 
     // Nếu đang host phòng cũ thì hủy trước khi vào phòng mới
     if (_isRoomCreated) {
@@ -676,7 +679,7 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
             alignment: Alignment.centerLeft,
             child: TextField(
               controller: _codeController,
-              keyboardType: TextInputType.text,
+              keyboardType: TextInputType.number,
               style: TextStyle(
                 fontSize: fontSize,
                 fontWeight: FontWeight.w700,
@@ -695,7 +698,7 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
                 isDense: true,
                 contentPadding: EdgeInsets.zero,
               ),
-              onSubmitted: (_) => _handleJoinRoom(),
+              onSubmitted: (_) => _isJoiningRoom ? null : _handleJoinRoom(),
             ),
           ),
         ),
@@ -719,7 +722,8 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
             borderColor: AppColors.paperGreenBorder,
             extrusionColor: AppColors.paperGreenExtrusion,
             extrusionHeight: 2,
-            onPressed: _handleJoinRoom,
+            isLoading: _isJoiningRoom,
+            onPressed: _isJoiningRoom ? null : _handleJoinRoom,
           )
         else
           AppButton(
@@ -740,7 +744,8 @@ class _WordChainRoomDialogState extends State<WordChainRoomDialog>
             borderColor: AppColors.white.withValues(alpha: 0.35),
             extrusionColor: AppColors.modeBotButtonExtrusion,
             extrusionHeight: 2,
-            onPressed: _handleJoinRoom,
+            isLoading: _isJoiningRoom,
+            onPressed: _isJoiningRoom ? null : _handleJoinRoom,
           ),
       ],
     );

@@ -73,8 +73,9 @@ class WordChainMessageList extends StatelessWidget {
 
     return ListView.builder(
       controller: scrollController,
+      physics: const BouncingScrollPhysics(),
       keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-      padding: EdgeInsets.only(top: 8.h, bottom: 20.h),
+      padding: EdgeInsets.symmetric(horizontal: 4.w, vertical: 8.h),
       itemCount: messages.length,
       itemBuilder: (context, index) {
         final message = messages[index];

@@ -1,16 +1,16 @@
-import 'package:bufopia/components/components.dart';
+﻿import 'package:bufopia/components/components.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
 import 'package:bufopia/features/home/presentation/widgets/home_header/dialog/player_gallery_picker_dialog.dart';
-import 'package:bufopia/features/home/presentation/widgets/home_header/dialog/player_photo_crop_dialog.dart';
+
 import 'package:bufopia/shared/l10n/l10n.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:bufopia/features/home/presentation/pages/camera_page.dart';
 
-/// Hộp thoại chọn nguồn ảnh đại diện (Chụp ảnh mới hoặc Mở thư viện)
+/// Há»™p thoáº¡i chá»n nguá»“n áº£nh Ä‘áº¡i diá»‡n (Chá»¥p áº£nh má»›i hoáº·c Má»Ÿ thÆ° viá»‡n)
 class PlayerAvatarDialog extends StatelessWidget {
   const PlayerAvatarDialog({
     required this.currentAvatarUrl,
@@ -41,25 +41,18 @@ class PlayerAvatarDialog extends StatelessWidget {
 
   Future<void> _openCamera(BuildContext context) async {
     try {
-      final picker = ImagePicker();
-      final pickedFile = await picker.pickImage(
-        source: ImageSource.camera,
-        imageQuality: 95,
-      );
-
-      if (pickedFile == null || !context.mounted) return;
-
-      final croppedPath = await PlayerPhotoCropDialog.show(
-        context,
-        imagePath: pickedFile.path,
-        isNetworkOrAsset: false,
-      );
-
-      if (croppedPath != null && context.mounted) {
-        Navigator.of(context).pop(croppedPath);
+      final file = await CameraPage.open(context);
+      if (file != null && context.mounted) {
+        Navigator.of(context).pop(file.path);
       }
     } on Object {
-      // Bỏ qua lỗi chụp ảnh
+      if (context.mounted) {
+        AppToast.showWarning(
+          context,
+          'KhÃ´ng thá»ƒ má»Ÿ mÃ¡y áº£nh. '
+          'Vui lÃ²ng cáº¥p quyá»n truy cáº­p mÃ¡y áº£nh trong CÃ i Ä‘áº·t.',
+        );
+      }
     }
   }
 

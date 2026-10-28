@@ -154,7 +154,6 @@ class _WordGuessRoomDialogState extends State<WordGuessRoomDialog> {
       final uid = _getMyUid();
       final data = await sl<WordChainDataSource>().getSocialState(
         uid: uid,
-        activity: 'guess',
       );
       if (data != null && mounted) {
         final social = WordChainSocialState.fromJson(data);
@@ -570,7 +569,7 @@ class _WordGuessRoomDialogState extends State<WordGuessRoomDialog> {
                         if (!_isRoomCreated && _currentTabIndex == 1) ...[
                           WordGuessRoomJoin(
                             controller: _joinCodeController,
-                            isChecking: _isCheckingRoom,
+                            isChecking: _isCheckingRoom || _isConnectingRoom,
                             onJoin: _onJoinRoom,
                           ),
                         ] else ...[

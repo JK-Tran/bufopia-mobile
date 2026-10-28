@@ -25,6 +25,8 @@ class WordChainDataSource {
       queryParameters: {
         'lexicon': lexicon,
         'details': details,
+        'meaning': 1,
+        'phonetics': 2,
         if (lang != 'en') 'lang': lang,
       },
       decoder: (data) => WordData.fromJson(data! as JSON),
@@ -44,8 +46,8 @@ class WordChainDataSource {
       queryParameters: {
         'letter': letter,
         'lexicon': 'chain-v3',
-        if (exclude != null && exclude.isNotEmpty) 'exclude': exclude.join(','),
-        if (lang != 'en') 'lang': lang,
+        'exclude': exclude?.join(','),
+        'lang': lang,
       },
       decoder: (data) => WordData.fromJson(data! as JSON),
     );
@@ -89,8 +91,7 @@ class WordChainDataSource {
         'sessionId': sessionId,
         'index': index,
         'answer': answer,
-        if (bridgeWord != null && bridgeWord.isNotEmpty)
-          'bridgeWord': bridgeWord,
+        'bridgeWord': bridgeWord,
       },
       decoder: (data) => RewardData.fromJson(data! as JSON),
     );
@@ -99,18 +100,22 @@ class WordChainDataSource {
   /// Lấy danh sách đối thủ gần đây và lời mời thi đấu (GET /api/social/state)
   Future<Map<String, dynamic>?> getSocialState({
     required String uid,
-    String activity = 'chain',
-    String language = 'vi',
+    String? activity,
+    String? language,
   }) async {
-    final response = await _noneAuthAppServerApiClient.request(
+    final queryParams = <String, dynamic>{'uid': uid};
+    if (activity != null && activity.isNotEmpty) {
+      queryParams['activity'] = activity;
+    }
+    if (language != null && language.isNotEmpty) {
+      queryParams['language'] = language;
+    }
+    final response = await _noneAuthAppServerApiClient.request<JSON, JSON>(
       method: RestMethod.get,
       successResponseMapperType: SuccessResponseMapperType.jsonObject,
       path: '/social/state',
-      queryParameters: {
-        'uid': uid,
-        'activity': activity,
-        'language': language,
-      },
+      queryParameters: queryParams,
+      decoder: (data) => data! as JSON,
     );
     if (response is Map<String, dynamic>) {
       return response;
@@ -126,7 +131,7 @@ class WordChainDataSource {
     String activity = 'chain',
     String language = 'vi',
   }) async {
-    final response = await _noneAuthAppServerApiClient.request(
+    final response = await _noneAuthAppServerApiClient.request<JSON, JSON>(
       method: RestMethod.post,
       successResponseMapperType: SuccessResponseMapperType.jsonObject,
       path: '/social/invite',
@@ -137,6 +142,7 @@ class WordChainDataSource {
         'activity': activity,
         'language': language,
       },
+      decoder: (data) => data! as JSON,
     );
     return response != null;
   }
@@ -148,7 +154,7 @@ class WordChainDataSource {
     String activity = 'chain',
     String language = 'vi',
   }) async {
-    final response = await _noneAuthAppServerApiClient.request(
+    final response = await _noneAuthAppServerApiClient.request<JSON, JSON>(
       method: RestMethod.post,
       successResponseMapperType: SuccessResponseMapperType.jsonObject,
       path: '/social/accept',
@@ -158,6 +164,7 @@ class WordChainDataSource {
         'activity': activity,
         'language': language,
       },
+      decoder: (data) => data! as JSON,
     );
     if (response is Map<String, dynamic>) {
       return response['roomCode']?.toString();
@@ -170,7 +177,7 @@ class WordChainDataSource {
     required String uid,
     required String invitationId,
   }) async {
-    final response = await _noneAuthAppServerApiClient.request(
+    final response = await _noneAuthAppServerApiClient.request<JSON, JSON>(
       method: RestMethod.post,
       successResponseMapperType: SuccessResponseMapperType.jsonObject,
       path: '/social/dismiss',
@@ -178,21 +185,19 @@ class WordChainDataSource {
       body: {
         'id': invitationId,
       },
+      decoder: (data) => data! as JSON,
     );
     return response != null;
   }
 
   /// Kiểm tra thông tin phòng trước khi vào (GET /api/rooms/:roomCode)
   Future<bool> checkRoom({required String roomCode}) async {
-    try {
-      final response = await _noneAuthAppServerApiClient.request(
-        method: RestMethod.get,
-        successResponseMapperType: SuccessResponseMapperType.jsonObject,
-        path: '/rooms/$roomCode',
-      );
-      return response != null;
-    } on Object catch (_) {
-      return false;
-    }
+    final response = await _noneAuthAppServerApiClient.request<JSON, JSON>(
+      method: RestMethod.get,
+      successResponseMapperType: SuccessResponseMapperType.jsonObject,
+      path: '/rooms/$roomCode',
+      decoder: (data) => data! as JSON,
+    );
+    return response != null;
   }
 }
