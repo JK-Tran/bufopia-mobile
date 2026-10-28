@@ -151,8 +151,9 @@ class WordChainHeader extends StatelessWidget {
                   shape: BoxShape.circle,
                   width: 32.r,
                   height: 32.r,
-                  backgroundColor:
-                      isPaper ? AppColors.paperGreen : AppColors.green,
+                  backgroundColor: isPaper
+                      ? AppColors.paperGreen
+                      : AppColors.green,
                   borderColor: isPaper
                       ? AppColors.paperGreenBorder
                       : AppColors.white.withValues(alpha: 0.35),

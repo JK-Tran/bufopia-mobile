@@ -576,7 +576,8 @@ class WordChainBloc extends BaseBloc<WordChainEvent, WordChainState> {
           );
           if (detailOutput.word.valid) {
             detailedWordEntity = detailOutput.word.copyWith(
-              vi: (detailOutput.word.vi != null &&
+              vi:
+                  (detailOutput.word.vi != null &&
                       detailOutput.word.vi!.isNotEmpty)
                   ? detailOutput.word.vi
                   : botWordEntity.vi,
@@ -712,7 +713,8 @@ class WordChainBloc extends BaseBloc<WordChainEvent, WordChainState> {
       final wordKey = msg.entry.word.toLowerCase();
       if (wordKey.isEmpty) continue;
       final cached = _wordDetailsCache[wordKey];
-      final isCachedDetailed = cached != null &&
+      final isCachedDetailed =
+          cached != null &&
           ((cached.vi != null && cached.vi!.isNotEmpty) ||
               (cached.definition != null && cached.definition!.isNotEmpty));
       if (!isCachedDetailed) {

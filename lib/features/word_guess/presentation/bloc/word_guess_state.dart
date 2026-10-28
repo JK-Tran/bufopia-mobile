@@ -153,12 +153,16 @@ abstract class WordGuessState with _$WordGuessState {
           .toList();
     }
 
-    return history.map((h) => WordInfo(
-      en: h.word,
-      vi: h.meaning,
-      phonetic: h.phonetic,
-      masked: h.word,
-    )).toList();
+    return history
+        .map(
+          (h) => WordInfo(
+            en: h.word,
+            vi: h.meaning,
+            phonetic: h.phonetic,
+            masked: h.word,
+          ),
+        )
+        .toList();
   }
 
   Set<String> _resolveSkipped(List<HistoryItem> history) {
