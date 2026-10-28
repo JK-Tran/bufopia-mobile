@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:bufopia/components/components.dart';
 import 'package:bufopia/core/constants/app_text.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
+import 'package:bufopia/features/home/presentation/pages/camera_page.dart';
 import 'package:bufopia/features/home/presentation/widgets/home_header/dialog/player_photo_crop_dialog.dart';
 import 'package:bufopia/features/home/presentation/widgets/home_header/gallery/gallery_albums_tab.dart';
 import 'package:bufopia/features/home/presentation/widgets/home_header/gallery/gallery_bottom_bar.dart';
@@ -145,23 +146,24 @@ class _PlayerGalleryPickerDialogState extends State<PlayerGalleryPickerDialog>
 
   Future<void> _openCamera() async {
     try {
-      final picker = ImagePicker();
-      final picked = await picker.pickImage(
-        source: ImageSource.camera,
-        imageQuality: 95,
-      );
+      final cameraFile = await CameraPage.open(context);
 
-      if (picked != null && mounted) {
-        final file = File(picked.path);
+      if (cameraFile != null && mounted) {
         setState(() {
-          _additionalFiles.insert(0, file);
-          _selectedFile = file;
+          _additionalFiles.insert(0, cameraFile);
+          _selectedFile = cameraFile;
           _selectedAsset = null;
         });
         await _onNextPressed();
       }
     } on Object {
-      // Bỏ qua lỗi máy ảnh
+      if (mounted) {
+        AppToast.showWarning(
+          context,
+          'Không thể mở máy ảnh. '
+          'Vui lòng cấp quyền truy cập máy ảnh trong Cài đặt.',
+        );
+      }
     }
   }
 

@@ -1,5 +1,7 @@
 import 'package:bufopia/components/app_icon_button.dart';
 import 'package:bufopia/components/app_toast.dart';
+import 'package:bufopia/core/base/base_page_state.dart';
+import 'package:bufopia/core/base/default_bloc.dart';
 import 'package:bufopia/core/router/app_router.dart';
 import 'package:bufopia/core/themes/app_colors.dart';
 import 'package:bufopia/features/app/bloc/app_bloc.dart';
@@ -23,8 +25,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 /// Màn hình chọn chủ đề trò chơi Đoán từ khuyết (Word Guess Topic Page)
-/// Chuẩn Screenshot 1: Lưới kẹp ghim chủ đề, 2 theme (Paper & Classic),
-/// thanh dưới gồm nút [Đóng góp từ] và [Tiếp tục]
+/// Kế thừa `BasePageState` theo chuẩn kiến trúc BasePage
 class WordGuessTopicPage extends StatefulWidget {
   const WordGuessTopicPage({super.key});
 
@@ -32,7 +33,14 @@ class WordGuessTopicPage extends StatefulWidget {
   State<WordGuessTopicPage> createState() => _WordGuessTopicPageState();
 }
 
-class _WordGuessTopicPageState extends State<WordGuessTopicPage> {
+class _WordGuessTopicPageState
+    extends BasePageState<WordGuessTopicPage, DefaultBloc> {
+  @override
+  bool get useSafeArea => false;
+
+  @override
+  EdgeInsetsGeometry? get pagePadding => EdgeInsets.zero;
+
   String _selectedTopicId = 'auto';
 
   @override
@@ -172,7 +180,7 @@ class _WordGuessTopicPageState extends State<WordGuessTopicPage> {
   }
 
   @override
-  Widget build(BuildContext context) {
+  Widget buildPage(BuildContext context) {
     final isPaper = context.select<AppBloc, bool>((b) => b.state.isPaperTheme);
 
     return Scaffold(

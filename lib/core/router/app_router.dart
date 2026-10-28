@@ -109,7 +109,7 @@ class AppRouter {
             final chainRoomQuery = state.uri.queryParameters['chain_room'];
             final roomCode = extra?['roomCode'] as String? ?? chainRoomQuery;
             final relaxed = extra?['relaxed'] as bool? ?? false;
-            final language = extra?['language'] as String? ?? 'vi';
+            final language = extra?['language'] as String? ?? 'en';
             final mode =
                 extra?['mode'] as WordChainGameMode? ??
                 (roomCode != null && roomCode.isNotEmpty

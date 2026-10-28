@@ -20,7 +20,9 @@ class HomeBloc extends BaseBloc<HomeEvent, HomeState> {
     Initiated event,
     Emitter<HomeState> emit,
   ) async {
-    await _audioService.playBgm();
+    if (_audioService.isMusicEnabled) {
+      await _audioService.playBgm();
+    }
   }
 
   @override

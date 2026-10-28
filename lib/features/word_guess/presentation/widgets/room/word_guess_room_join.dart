@@ -53,6 +53,7 @@ class WordGuessRoomJoin extends StatelessWidget {
           ),
           child: TextField(
             controller: controller,
+            keyboardType: TextInputType.number,
             style: TextStyle(
               fontSize: 14.sp,
               fontWeight: FontWeight.w700,
@@ -71,7 +72,7 @@ class WordGuessRoomJoin extends StatelessWidget {
               ),
               border: InputBorder.none,
             ),
-            onSubmitted: (_) => onJoin(),
+            onSubmitted: (_) => isChecking ? null : onJoin(),
           ),
         ),
         SizedBox(height: 4.h),
@@ -99,6 +100,30 @@ class WordGuessRoomJoin extends StatelessWidget {
           isLoading: isChecking,
           onPressed: isChecking ? null : onJoin,
         ),
+        if (isChecking) ...[
+          SizedBox(height: 10.h),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              SizedBox(
+                width: 14.r,
+                height: 14.r,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  valueColor: AlwaysStoppedAnimation<Color>(
+                    isPaper ? const Color(0xFF438E44) : AppColors.green,
+                  ),
+                ),
+              ),
+              SizedBox(width: 8.w),
+              AppText.c1(
+                'Đang kiểm tra và kết nối vào phòng...',
+                color: textColorMuted,
+                fontWeight: FontWeight.w600,
+              ),
+            ],
+          ),
+        ],
       ],
     );
   }

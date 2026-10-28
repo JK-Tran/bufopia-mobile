@@ -252,6 +252,7 @@ class WordChainSocketServiceImpl extends BaseSocketService
           deviceSecret: deviceSecret,
         ),
       );
+      _currentRoomCode = normalizedCode;
       return;
     }
 
@@ -314,6 +315,7 @@ class WordChainSocketServiceImpl extends BaseSocketService
       avatar: avatar,
     );
     await connectUrl(url);
+    _currentRoomCode = normalizedCode;
   }
 
   @override

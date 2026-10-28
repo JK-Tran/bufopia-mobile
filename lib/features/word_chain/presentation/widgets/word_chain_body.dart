@@ -290,9 +290,7 @@ class _WordChainBodyState extends State<WordChainBody> {
                         requiredLetter: state.gameState.requiredLetter,
                         rivalName: state.rivalName,
                         rejectedReason: state.rejectedReason,
-                        lastCorrectWord:
-                            state.gameState.messages.isNotEmpty &&
-                                state.isMyTurn
+                        lastCorrectWord: state.gameState.messages.isNotEmpty
                             ? lastMessageWord
                             : null,
                       ),

@@ -48,10 +48,12 @@ class _PlayerPhotoCropDialogState extends State<PlayerPhotoCropDialog> {
 
   bool _isSaving = false;
   static const double _defaultScale = 1.2;
+  DateTime? _openedAt;
 
   @override
   void initState() {
     super.initState();
+    _openedAt = DateTime.now();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _resetTransform();
     });
@@ -121,19 +123,34 @@ class _PlayerPhotoCropDialogState extends State<PlayerPhotoCropDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: AppColors.darkBackground,
-      body: SafeArea(
-        child: Column(
-          children: [
-            _buildTopBar(),
-            Expanded(
-              child: Center(
-                child: _buildCropBox(),
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (didPop) return;
+        final elapsed = _openedAt != null
+            ? DateTime.now().difference(_openedAt!).inMilliseconds
+            : 1000;
+        // Chặn phím Back trong 600ms đầu để tránh nhận nhầm cử chỉ Back
+        // sót lại khi vừa thoát từ ứng dụng Camera ngoài
+        if (elapsed < 600) {
+          return;
+        }
+        Navigator.of(context).pop();
+      },
+      child: Scaffold(
+        backgroundColor: AppColors.darkBackground,
+        body: SafeArea(
+          child: Column(
+            children: [
+              _buildTopBar(),
+              Expanded(
+                child: Center(
+                  child: _buildCropBox(),
+                ),
               ),
-            ),
-            _buildBottomHint(),
-          ],
+              _buildBottomHint(),
+            ],
+          ),
         ),
       ),
     );

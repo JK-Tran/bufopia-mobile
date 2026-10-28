@@ -11,7 +11,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get_it/get_it.dart';
 
 /// Item hiển thị từ vựng dạng từ điển trong luồng nối từ (Word Chain).
-/// Thiết kế chuẩn UI/UX 3D Game & Paper theme.
+/// Thiết kế chuẩn UI/UX 3D Game & Paper theme, tối ưu layout không bị ngắt đôi từ dài.
 class WordChainMessageItem extends StatelessWidget {
   const WordChainMessageItem({
     required this.message,
@@ -46,27 +46,43 @@ class WordChainMessageItem extends StatelessWidget {
 
     // Màu sắc thẻ từ
     final cardBg = isPaper
-        ? (isMe ? AppColors.paperCardBg : AppColors.paperBackground)
-        : (isMe ? AppColors.white : AppColors.grayLight.withValues(alpha: 0.3));
+        ? (isMe ? AppColors.paperSurfaceWarm : AppColors.paperCardBg)
+        : (isMe ? AppColors.white : const Color(0xFFF8FAFC));
 
     final cardBorder = isMe
-        ? (isPaper ? AppColors.paperGreen : AppColors.green)
+        ? (isPaper ? AppColors.paperGreenBorder : AppColors.green)
         : (isPaper ? AppColors.paperBorder : AppColors.classicBorder);
 
     final titleColor = isPaper ? AppColors.paperTextDark : AppColors.grayDark;
-
     final subTextColor = isPaper
         ? AppColors.paperTextMuted
         : AppColors.grayMedium;
 
-    final tagBg = isPaper
-        ? AppColors.paperCardBg
-        : AppColors.grayLight.withValues(alpha: 0.5);
+    final meaningColor = isPaper
+        ? AppColors.paperGreenDark
+        : (isMe ? AppColors.greenDark : AppColors.primary);
 
-    final tagBorder = isPaper ? AppColors.paperBorder : AppColors.grayLight;
+    final tagBg = isPaper
+        ? AppColors.paperBadgeBg
+        : (isMe
+              ? AppColors.green.withValues(alpha: 0.1)
+              : AppColors.grayLight.withValues(alpha: 0.6));
+
+    final tagBorder = isPaper
+        ? AppColors.paperBadgeBorder
+        : AppColors.grayLight;
+    final tagText = isPaper
+        ? AppColors.paperBadgeText
+        : (isMe ? AppColors.greenDark : AppColors.grayDark);
+
+    final hasPhonetic = entry.phonetic != null && entry.phonetic!.isNotEmpty;
+    final hasPos = entry.partOfSpeech != null && entry.partOfSpeech!.isNotEmpty;
+    final hasVi = entry.vi != null && entry.vi!.isNotEmpty;
+    final hasDef = entry.definition != null && entry.definition!.isNotEmpty;
+    final hasExample = entry.example != null && entry.example!.isNotEmpty;
 
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 6.h, horizontal: 8.w),
+      padding: EdgeInsets.symmetric(vertical: 5.h, horizontal: 8.w),
       child: Column(
         crossAxisAlignment: isMe
             ? CrossAxisAlignment.end
@@ -75,17 +91,19 @@ class WordChainMessageItem extends StatelessWidget {
           // Tên người gửi
           Padding(
             padding: EdgeInsets.only(
-              left: isMe ? 0 : 44.w,
-              right: isMe ? 44.w : 0,
-              bottom: 4.h,
+              left: isMe ? 0 : 42.w,
+              right: isMe ? 42.w : 0,
+              bottom: 3.h,
             ),
             child: AppText.c1(
               playerName,
               color: subTextColor,
-              fontSize: 12.sp,
+              fontSize: 11.sp,
+              fontWeight: FontWeight.w600,
             ),
           ),
-          // Hàng nội dung thẻ + Avatar
+
+          // Hàng Avatar + Khung thẻ tin nhắn
           Row(
             mainAxisAlignment: isMe
                 ? MainAxisAlignment.end
@@ -101,10 +119,14 @@ class WordChainMessageItem extends StatelessWidget {
                 ),
                 SizedBox(width: 8.w),
               ],
+
               Flexible(
                 child: Container(
-                  constraints: BoxConstraints(maxWidth: 340.w),
-                  padding: EdgeInsets.all(12.w),
+                  constraints: BoxConstraints(maxWidth: 0.76.sw),
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 12.w,
+                    vertical: 10.h,
+                  ),
                   decoration: BoxDecoration(
                     color: cardBg,
                     borderRadius: BorderRadius.only(
@@ -124,8 +146,16 @@ class WordChainMessageItem extends StatelessWidget {
                     boxShadow: [
                       BoxShadow(
                         color: isPaper
-                            ? AppColors.paperExtrusion.withValues(alpha: 0.4)
-                            : AppColors.black.withValues(alpha: 0.06),
+                            ? (isMe
+                                  ? AppColors.paperGreenExtrusion.withValues(
+                                      alpha: 0.25,
+                                    )
+                                  : AppColors.paperExtrusion.withValues(
+                                      alpha: 0.4,
+                                    ))
+                            : (isMe
+                                  ? AppColors.greenDark.withValues(alpha: 0.15)
+                                  : AppColors.black.withValues(alpha: 0.05)),
                         offset: Offset(0, 2.h),
                         blurRadius: 4.r,
                       ),
@@ -135,50 +165,52 @@ class WordChainMessageItem extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      // Hàng 1: Từ vựng + Phiên âm + Nút loa phát âm
+                      // Hàng 1: Từ vựng to rõ (không ngắt dòng giữa từ)
                       Row(
-                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          Flexible(
-                            child: AppText.t2(
+                          Expanded(
+                            child: Text(
                               entry.word,
-                              color: titleColor,
-                              fontSize: 18.sp,
-                              fontWeight: FontWeight.w700,
+                              style: TextStyle(
+                                fontSize: 18.sp,
+                                fontWeight: FontWeight.w800,
+                                color: titleColor,
+                                letterSpacing: 0.2,
+                                height: 1.2,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
-                          if (entry.phonetic != null &&
-                              entry.phonetic!.isNotEmpty) ...[
-                            SizedBox(width: 6.w),
-                            AppText.c1(
-                              entry.phonetic!,
-                              color: subTextColor,
-                              fontSize: 12.sp,
-                            ),
-                          ],
-                          const Spacer(),
+                          SizedBox(width: 8.w),
                           // Nút loa phát âm
                           Material(
                             color: Colors.transparent,
                             child: InkWell(
                               onTap: _handlePlayAudio,
-                              borderRadius: BorderRadius.circular(16.r),
+                              borderRadius: BorderRadius.circular(8.r),
                               child: Container(
                                 padding: EdgeInsets.all(4.w),
                                 decoration: BoxDecoration(
-                                  color: tagBg,
+                                  color: isPaper
+                                      ? AppColors.paperSurfaceWarm
+                                      : tagBg,
                                   borderRadius: BorderRadius.circular(8.r),
                                   border: Border.all(
-                                    color: tagBorder,
+                                    color: isPaper
+                                        ? AppColors.paperBorder
+                                        : tagBorder,
                                     width: 1.w,
                                   ),
                                 ),
                                 child: Icon(
                                   Icons.volume_up_rounded,
-                                  size: 18.r,
+                                  size: 16.r,
                                   color: isPaper
                                       ? AppColors.paperGreenDark
-                                      : AppColors.primary,
+                                      : (isMe
+                                            ? AppColors.greenDark
+                                            : AppColors.primary),
                                 ),
                               ),
                             ),
@@ -186,15 +218,15 @@ class WordChainMessageItem extends StatelessWidget {
                         ],
                       ),
 
-                      // Hàng 2: Tag loại từ + Nghĩa tiếng Việt
-                      if ((entry.partOfSpeech != null &&
-                              entry.partOfSpeech!.isNotEmpty) ||
-                          (entry.vi != null && entry.vi!.isNotEmpty)) ...[
-                        SizedBox(height: 6.h),
-                        Row(
+                      // Hàng 2: Loại từ + Phiên âm (Wrap tự xuống dòng)
+                      if (hasPos || hasPhonetic) ...[
+                        SizedBox(height: 4.h),
+                        Wrap(
+                          crossAxisAlignment: WrapCrossAlignment.center,
+                          spacing: 6.w,
+                          runSpacing: 4.h,
                           children: [
-                            if (entry.partOfSpeech != null &&
-                                entry.partOfSpeech!.isNotEmpty) ...[
+                            if (hasPos)
                               Container(
                                 padding: EdgeInsets.symmetric(
                                   horizontal: 6.w,
@@ -212,57 +244,75 @@ class WordChainMessageItem extends StatelessWidget {
                                   StringUtils.formatPartOfSpeech(
                                     entry.partOfSpeech,
                                   ),
-                                  color: isPaper
-                                      ? AppColors.paperTextDark
-                                      : AppColors.grayDark,
+                                  color: tagText,
                                   fontSize: 10.sp,
+                                  fontWeight: FontWeight.w700,
                                 ),
                               ),
-                              SizedBox(width: 6.w),
-                            ],
-                            if (entry.vi != null && entry.vi!.isNotEmpty) ...[
-                              Expanded(
-                                child: AppText.b2(
-                                  entry.vi!,
-                                  color: titleColor,
-                                  fontSize: 12.sp,
-                                  fontWeight: FontWeight.w600,
-                                ),
+                            if (hasPhonetic)
+                              AppText.c1(
+                                entry.phonetic!,
+                                color: subTextColor,
+                                fontSize: 12.sp,
+                                fontWeight: FontWeight.w500,
                               ),
-                            ],
                           ],
                         ),
                       ],
 
-                      // Hàng 3: Định nghĩa tiếng Anh
-                      if (entry.definition != null &&
-                          entry.definition!.isNotEmpty) ...[
+                      // Hàng 3: Nghĩa tiếng Việt
+                      if (hasVi) ...[
                         SizedBox(height: 6.h),
                         AppText.b2(
+                          entry.vi!,
+                          color: meaningColor,
+                          fontSize: 13.sp,
+                          fontWeight: FontWeight.w700,
+                        ),
+                      ],
+
+                      // Hàng 4: Định nghĩa tiếng Anh
+                      if (hasDef) ...[
+                        SizedBox(height: 4.h),
+                        AppText.b2(
                           entry.definition!,
-                          color: titleColor,
+                          color: titleColor.withValues(alpha: 0.85),
                           fontSize: 12.sp,
                         ),
                       ],
 
-                      // Hàng 4: Câu ví dụ
-                      if (entry.example != null &&
-                          entry.example!.isNotEmpty) ...[
+                      // Hàng 5: Khung trích dẫn câu ví dụ
+                      if (hasExample) ...[
                         SizedBox(height: 6.h),
                         Container(
-                          padding: EdgeInsets.only(top: 4.h),
+                          width: double.infinity,
+                          padding: EdgeInsets.symmetric(
+                            horizontal: 8.w,
+                            vertical: 6.h,
+                          ),
                           decoration: BoxDecoration(
+                            color: isPaper
+                                ? AppColors.paperBackground
+                                : AppColors.grayLight.withValues(alpha: 0.4),
+                            borderRadius: BorderRadius.circular(6.r),
                             border: Border(
-                              top: BorderSide(
-                                color: tagBorder.withValues(alpha: 0.5),
-                                width: 0.8.w,
+                              left: BorderSide(
+                                color: isPaper
+                                    ? AppColors.paperGreen
+                                    : (isMe
+                                          ? AppColors.green
+                                          : AppColors.primary),
+                                width: 2.5.w,
                               ),
                             ),
                           ),
-                          child: AppText.c1(
+                          child: Text(
                             '“${entry.example!}”',
-                            color: subTextColor,
-                            fontSize: 12.sp,
+                            style: TextStyle(
+                              color: subTextColor,
+                              fontSize: 11.5.sp,
+                              fontStyle: FontStyle.italic,
+                            ),
                           ),
                         ),
                       ],
@@ -270,6 +320,7 @@ class WordChainMessageItem extends StatelessWidget {
                   ),
                 ),
               ),
+
               if (isMe) ...[
                 SizedBox(width: 8.w),
                 AppAvatar(
